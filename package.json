@@ -1,0 +1,44 @@
+{
+  "name": "manage-system",
+  "version": "4.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run serve",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
+    "countup.js": "^2.0.5",
+    "echarts": "^4.8.0",
+    "element-ui": "^2.11.0",
+    "file-saver": "^2.0.2",
+    "js-base64": "^3.2.4",
+    "js-md5": "^0.7.3",
+    "mavon-editor": "^2.6.17",
+    "v-charts": "^1.19.0",
+    "vue": "^2.6.10",
+    "vue-countup-v2": "^4.0.0",
+    "vue-countupjs": "^1.0.0",
+    "vue-cropperjs": "^3.0.0",
+    "vue-echarts": "^5.0.0-beta.0",
+    "vue-i18n": "^8.10.0",
+    "vue-quill-editor": "^3.0.6",
+    "vue-router": "^3.0.3",
+    "vue-schart": "^2.0.0",
+    "vue-tree-chart": "^1.2.9",
+    "vue2-org-tree": "^1.3.4",
+    "vuedraggable": "^2.17.0",
+    "xlsx": "^0.16.5",
+    "xlsx-style": "^0.8.13"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.9.0",
+    "@vue/cli-service": "^3.9.0",
+    "less": "^3.12.2",
+    "less-loader": "^6.2.0",
+    "script-loader": "^0.7.2",
+    "vue-template-compiler": "^2.6.10"
+  }
+}

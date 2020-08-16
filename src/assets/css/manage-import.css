@@ -1,0 +1,29 @@
+.box{padding: 20px;border-radius: 8px;width: auto;height: 100%;overflow-y: scroll;-webkit-box-sizing: border-box;box-sizing: border-box;color: #333333;font-size: 14px;display: flex;}
+
+.left{width: 35%;margin-right: 48px;background: #FFFFFF;height: 100%;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);border-radius:10px;padding: 24px;}
+.l-box-1{width: 100%;}
+.ids{margin-top: 20px;width: 100%;}
+.l-title{font-size: 20px;font-weight: bold;color: #333333;border-left: 8px solid #2BBB61;padding-left: 16px;display: flex;align-items: center;}
+.l-box-1+.l-box-1{margin-top: 50px;}
+.box /deep/.el-input__inner{border-left: none ;border-right: noe;border-top: none;padding: 0 10px ;}
+.box /deep/ .el-textarea__inner{margin-top: 20px;padding:20px;}
+.l-box-2{margin-top: 20px;display: flex;width: 100%;justify-content: center;}
+
+.right{width: 60%;height: 100%;border-radius:10px;}
+.box /deep/ .el-table th{text-align: center;font-size: 18px;}
+.box /dedp/ .el-table td, .el-table th{text-align: center;font-size: 14px;}
+.box /deep/ .el-table td, .el-table th.is-leaf{background-color: #FFFFFF;border: 0;padding: 12px;text-align: center;border-radius: 10px;}
+
+.user-img{width: 50px;height: 50px;border-radius: 50%;}
+.student-name{margin-left: 10px;white-space: nowrap;}
+
+.page{display: flex;justify-content: center;align-items:center;margin-top:20px;}
+
+.card-box{margin-top: 40px;}
+.bg-purple {background: #d3dce6;}
+.bg-purple-light {background: #e5e9f2;}
+.grid-content {background-color: #FFFFFF;min-height: 140px;padding: 0 30px;border-radius: 15px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);flex-direction: column;display: flex;justify-content: center;align-items: center;color: #FFFFFF;}
+.card-box .i{background-color: #FB4B1C;font-size: 18px;padding: 14px 46px;font-weight: bold;border-radius: 4px;}
+.card-box .ii{color: #333333;margin-top: 4px;}
+
+.hint{font-size: 14px;color: #333333;margin-top: 20px;letter-spacing: 1.5px;}
