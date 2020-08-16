@@ -61,7 +61,7 @@
 					</div>
 					<div class="search">
 						<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-						<el-button type="primary" @click="" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
+						<el-button type="primary" @click="" class="buttom" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
 					</div>
 				</div>
 				

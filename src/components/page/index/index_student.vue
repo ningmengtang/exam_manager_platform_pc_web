@@ -18,7 +18,7 @@
 						<div class="card-left">
 							<div class="card-c">可以下载</div>
 							<div class="card-cc">
-								<ICountUp :endVal="mayDownload" />
+								<ICountUp :endVal="download" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_2"></div>
@@ -29,7 +29,7 @@
 						<div class="card-left">
 							<div class="card-c">下载失效</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal3" />
+								<ICountUp :endVal="disabled" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_3"></div>
@@ -38,22 +38,7 @@
 			</el-row>
 		</div>
 		<div class="papers-box">
-			<!-- <div class="p-li">
-				<div class="p-icon-box">
-					<div class="p-icon"></div>
-				</div>
-				<div class="p-particula">
-					<div class="top-box">
-						<div class="subject">语文</div>
-						<div class="grade">一年级</div>
-					</div>
-					<div class="p-title">2019年人教版第一单元测验</div>
-					<div class="p-time">时间2020年10月10日~2020年10月20日</div>
-					<div class="p-status">可以下载</div>
-					<i class="p-status-icon el-icon-download"></i>
-				</div>
-			</div> -->
-			<div class="p-li" :style="style.pLi" v-for="(d,i) in papers" :key="d.i" >
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i"  :style="d.status==1?(0):style.pLi" >
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
@@ -76,20 +61,6 @@
 			 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 			</el-pagination>
 		</div>
-		<!-- 提示框 -->
-		<el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
-
-		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
-			<div class="ts-box">
-				<div class="big-icon  el-icon-success"></div>
-				<div class="ii">自行下载试卷完成</div>
-			</div>
-
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="dialogVisible = false">取 消</el-button>
-				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-			</span>
-		</el-dialog>
 	</div>
 </template>
 
@@ -106,9 +77,10 @@
 			this.colors = ['#67C23A', '#409EFF', '#F56C6C']
 			return {
 				total:0,
-				pageSize:6,
+				pageSize:3,
 				pageNum:1,
-				mayDownload:0,
+				download:0,
+				disabled:0,
 				status:'',
 				endVal: 100,
 				endVal2: 0,
@@ -129,35 +101,6 @@
 				},
 				currentPage: 1,
 				papers:{},
-				download: [{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '10',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '10',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '1',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '1',
-						o: false
-					},
-				],
 				dialogVisible: false,
 			}
 		},
@@ -166,16 +109,18 @@
 			ICountUp
 		},
 		mounted() {
-          studentIndex({}).then(res=>{
+          studentIndex({pageNum:this.pageNum,pageSize:this.pageSize}).then(res=>{
 			  let papers=res.data.data;
+			  console.log(papers)
 			  //下载状态
 			  let status=this.status=papers.list.status
 			  // 一共条数
 			  this.total=Number(papers.total);
 			  // this.mayDownload=Number(papers.downloadStatus);
+			  this.download=papers.download;
+			  this.disabled=papers.disabled;
 
 			  this.papers=papers.list;
-			  // console.log(Number(papers[0]['eid']))
 		  })
 
 
@@ -190,7 +135,18 @@
 				console.log(`每页 ${val} 条`);
 			},
 			handleCurrentChange(val) {
+				 studentIndex({pageNum:val,pageSize:this.pageSize}).then(res=>{
+					 let papers=res.data.data;
+					 //下载状态
+					 let status=this.status=papers.list.status
+					 // 一共条数
+					 this.total=Number(papers.total);
+					 // this.mayDownload=Number(papers.downloadStatus);
+					 
+					 this.papers=papers.list;
+				 })
 				console.log(`当前页: ${val}`);
+				
 			},
 		}
 	};

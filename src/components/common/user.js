@@ -30,7 +30,16 @@ export default function usertype() {
 			color = '#2BBB61'
 			break;
 		case 'school':
-
+		items.splice(2, 0, {
+			icon: 'el-icon-sell',
+			index: `distribution_${loginUserType}`,
+			title: '订购管理'
+		},{
+			icon: 'el-icon-s-custom',
+			index: `distributio_${loginUserType}`,
+			title: '教师管理'
+		})
+             color = '#2BBB61'
 			break;
 		case 'user':
 
