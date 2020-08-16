@@ -194,8 +194,8 @@
 								case 200:
 									//存登录数据
 									localStorage.setItem('loginToken', wd.data.token)
-									localStorage.setItem('usesrID', wd.data.id)
-									localStorage.setItem('usesrName', wd.data.name)
+									localStorage.setItem('userID', wd.data.id)
+									localStorage.setItem('userName', wd.data.name)
 									this.$message.success('登录成功')
 									this.$router.push('/index_student')
 									break;

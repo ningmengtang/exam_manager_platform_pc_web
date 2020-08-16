@@ -13,6 +13,7 @@ export function get(url, params) {
 			resolve(res)
 		}).catch(err => {
 			reject(err)
+			
 		})
 	})
 }

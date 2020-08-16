@@ -25,6 +25,13 @@ const i18n = new VueI18n({
     locale: 'zh',
     messages
 });
+//全局变量
+Vue.prototype.global = {  
+      loginUserType:localStorage.getItem('loginUserType'),  
+      loginToken: localStorage.getItem('loginToken'),  
+      userID:localStorage.getItem('userID'),  
+	  userName:localStorage.getItem('userName')
+    };  
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */
   if (to.meta.title) {
@@ -41,7 +48,6 @@ router.beforeEach((to, from, next) => {
   // else{
   //    	   next()
   // }
-console.log(to.path.indexOf(`role`)==-1)
   // if(to.path.indexOf(`role`)==-1&&to.path !=='/login'){
   // 		 next('/login');
   // }else{

@@ -43,8 +43,8 @@
 .right .ii .text{margin-left: 10px;}
 .right .fault{color: #fb4919;}
 .right .icon.i{font-size: 14px;}
-.right .del{font-size: 30px;padding: 5px 30px;border-left: 1px solid #DDDDDD;margin-left: 20px;color: #999999;cursor: pointer;}
-
+.right .del{font-size: 24px;padding: 5px 30px;border-left: 1px solid #DDDDDD;margin-left: 20px;color: #999999;cursor: pointer;}
+.del i{margin: 0 10px;}
 .page{display: flex;justify-content: center;align-items:center;margin-top:20px;}
 
 .ts-box{display: flex;flex-wrap: wrap;}

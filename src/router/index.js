@@ -26,6 +26,11 @@ export default new Router({
 				    meta: { title: '教师-系统首页' }
 				},
 				{
+				    path: '/index_school',
+				    component: () => import(/* webpackChunkName: "index_teacher" */ '../components/page/index/index_school.vue'),
+				    meta: { title: '学校-系统首页' }
+				},
+				{
 				    path: '/manage_student',
 				    component: () => import(/* webpackChunkName: "manage_student" */ '../components/page/manage/manage_student.vue'),
 				    meta: { title: '学生-试卷管理' }
@@ -35,6 +40,12 @@ export default new Router({
 				    component: () => import(/* webpackChunkName: "manage_teacher" */ '../components/page/manage/manage_teacher.vue'),
 				    meta: { title: '教师-试卷管理' }
 				},
+				{
+				    path: '/manage_school',
+				    component: () => import(/* webpackChunkName: "manage_teacher" */ '../components/page/manage/manage_school.vue'),
+				    meta: { title: '学校-试卷管理' }
+				},
+				
 				{
 				    path: '/manage_teacher_import',
 				    component: () => import(/* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_teacher_import.vue'),
@@ -59,35 +70,10 @@ export default new Router({
 				    path: '/distribution_teacher',
 				    component: () => import(/* webpackChunkName: "personal_teacher" */ '../components/page/distribution/distribution_teacher.vue'),
 				    meta: { title: '教师-试卷分发' }
-				},
+				}
 				
 				
-                {
-                    path: '/table',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
-                    meta: { title: '基础表格' }
-                },
-                
-                {
-                    path:'/technological',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/technological/index.vue'),
-                    meta: { title: '流程管理' }
-                },
-                {
-                    path:'/role',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/role/index.vue'),
-                    meta: { title: '角色管理' }
-                },
-                {
-                    path:'/checkwork',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/checkwork/index.vue'),
-                    meta: { title: '考勤管理' }
-                },
-                {
-                    path:'/scheduling',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/scheduling/index.vue'),
-                    meta: { title: '排班管理' }
-                }
+               
             ]
         },
         {
