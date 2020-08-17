@@ -28,8 +28,10 @@
 .message-top {margin-bottom: 24px;border-left: 8px solid #19ADFB;display: flex;align-items: center;padding-left: 10px;font-weight: bold;font-size: 20px;padding-top: 2px;padding-bottom: 2px;}
 .message-box{margin:26px 0;}
 .message-box .i{margin-top: 8px;}
-.message-box .bottom-box{display: flex;width: 100%;justify-content: center;}
-.message-box .bottom{color: #FFFFFF;background-color: #2BBB61;position: absolute;bottom: 42px;}
+.message-box .bottom-box{display: flex;justify-content: center;color: #FFFFFF;position: absolute;bottom: 42px;width: calc(100% - 34px);}
+.message-box .bottom{color: #FFFFFF;background-color: #2BBB61;}
+.message-box .bottom-i{color: #FFFFFF;background-color: #2BBB61;}
+.message-box .bottom-i.ii{background-color: #FFFFFF;color: #333333;}
 
 /* 右边 */
 .right-box{width: 33%;padding: 34px;margin-left: 20px;background-color: #FFFFFF;position: relative;}

@@ -14,7 +14,7 @@
 			<div class="search">
 				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
-				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }"><span class="el-icon-plus"></span> 新增教师</el-button>
+				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增教师</el-button>
 			</div>
 		</div>
 		<!-- 管理 -->
@@ -224,6 +224,9 @@
 			submit() {
 				//关闭窗口
 				this.dialogTableVisible = false;
+			},
+			goAdd(){
+				this.$router.push('manage_school_add')
 			}
 		},
 		mounted() {

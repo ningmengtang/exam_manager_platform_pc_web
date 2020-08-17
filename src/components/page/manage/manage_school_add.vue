@@ -36,10 +36,10 @@
 		<div class="middle-box">
 			<div class="message-top" :style="{'border-color':color}">负责班级</div>
 			<div class="message-box">
-				<div class="i">1.2017年2班班主任、语文老师、英语老师    </div>
-				<div class="i">1.2017年2班班主任、语文老师、英语老师    </div>
+				<div class="i">1.2017年2班班主任、语文老师、英语老师 </div>
+				<div class="i">1.2017年2班班主任、语文老师、英语老师 </div>
 				<div class="bottom-box">
-				<el-button class="bottom">分配班级</el-button>
+					<el-button class="bottom" @click="goClass()">分配班级</el-button>
 				</div>
 			</div>
 		</div>
@@ -47,118 +47,32 @@
 		<div class="right-box">
 			<div class="message-top" :style="{'border-color':color}">是否冻结账号</div>
 			<div class="message-box">
-				<el-switch
-				  style="display: block"
-				  v-model="value2"
-				  active-color="#13ce66"
-				  inactive-color="#F0F0F0"
-				  active-text="是"
-				  inactive-text="否">
+				<el-switch style="display: block" v-model="value2" active-color="#13ce66" inactive-color="#F0F0F0" active-text="是"
+				 inactive-text="否">
 				</el-switch>
 				<el-form ref="form" :model="form" label-width="80px" class="form" style="margin-top: 20px;">
 					<el-form-item label="手机号:">
 						<el-input v-model="form.phone"></el-input>
 					</el-form-item>
 				</el-form>
+				<div class="message-top" :style="{'border-color':color}">修改密码</div>
+				<el-switch style="display: block" v-model="value3" active-color="#13ce66" inactive-color="#F0F0F0" active-text="是"
+				 inactive-text="否">
+				</el-switch>
+				<el-form ref="form" :model="form" label-width="80px" class="form" style="margin-top: 20px;">
+					<el-form-item label="旧密码:">
+						<el-input v-model="form.passsword"></el-input>
+					</el-form-item>
+					<el-form-item label="新密码:">
+						<el-input v-model="form.reusePassword"></el-input>
+					</el-form-item>
+				</el-form>
 				<div class="bottom-box">
-				<el-button class="bottom">分配班级</el-button>
-				<el-button class="bottom">分配班级</el-button>
+					<el-button class="bottom-i" @click="black()">确认修改</el-button>
+					<el-button class="bottom-i ii" @click="black()">取消修改</el-button>
 				</div>
 			</div>
 		</div>
-		<!-- 操作1 -->
-		<el-dialog title="" :visible.sync="dialogTableVisible">
-			<div class="ts-select">
-				<div class="t-title">请选试卷标签</div>
-				<div class="t-content">
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">年份</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav2" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">教程版本</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav3" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
-				<div class="student-box">
-					<div class="page">
-						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="100" :total="1000">
-						</el-pagination>
-					</div>
-					<div class="block-time">
-						<div></div>
-						<!-- 	<div>
-							<span style="margin-right:10px ;">选择日期</span>
-							<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-							</el-date-picker>
-						</div> -->
-						<div class="block-a">
-							<el-button @click="toggleSelection()" class="out">取消选择</el-button>
-							<el-button @click="submit()" class="affirm">确认新增</el-button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</el-dialog>
-		<!-- 操作二 -->
-		<el-dialog title="" :visible.sync="dialogTableVisible2">
-			<div class="ts-select i">
-				<div class="t-title">试卷信息导入向导<el-progress :percentage="percentage"></el-progress>
-				</div>
-				<div class="t-box">
-					<div class="t-left">
-						<div class="arr"><span>您已经选择：</span></div>
-						<div class="choice">1.<span class="i">2017、人教版、英语、一年级、第一单元 </span></div>
-						<div class="choice">2.<span class="i">2017、人教版、英语、一年级、第一单元 </span></div>
-						<div class="lead">请导入 <span class="i">[一年级]</span> 信息</div>
-						<el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
-							<i class="el-icon-upload"></i>
-							<div class="el-upload__text">
-								将文件拖到此处，或
-								<em>点击上传</em>
-							</div>
-						</el-upload>
-					</div>
-					<div class="t-right">
-						<div class="log">导入日志</div>
-						<div class="other">正在上传“北京师范小学2017级学生1班学生信息.xls”...<br>
-							上传成功<br>
-							导入学生信息成功！<br>
-							已识别到导入学生信息{201}条<br>
-							正在上传“北京师范小学2017级学生1班学生信息.xls”...<br>
-							上传成功<br>
-							导入学生信息成功！<br>
-							已识别到导入学生信息{201}条<br>
-						</div>
-					</div>
-				</div>
-				<div class="student-box">
-					<div class="block-time">
-						<div></div>
-						<div class="block-a">
-							<el-button @click="toggleSelection()" class="out">稍后导入</el-button>
-							<el-button @click="netx()" class="affirm">下一步</el-button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</el-dialog>
 	</div>
 </template>
 <script>
@@ -178,7 +92,8 @@
 				array_nav5: [],
 				array_nav9: [],
 				value2: true,
-				percentage:50,
+				value3: true,
+				percentage: 50,
 				cities: ['全部', '分发完成', '正在分发', '分发失败'],
 				class2: ['全部', '一年级', '二年级', '三年级'],
 				class1: ['全部', '一班', '二班', '三班'],
@@ -200,11 +115,13 @@
 				},
 				form: {
 					name: '454',
-					sex:'',
-					role:'',
-					school:'',
+					sex: '',
+					role: '',
+					school: '',
 					type: '',
 					phone: '',
+					passsword: '',
+					reusePassword: '',
 					personnel: '',
 					site: ''
 				},
@@ -305,19 +222,16 @@
 					this.$refs.multipleTable.clearSelection();
 				}
 			},
-			//进度条
-			format(percentage) {
-				return percentage === 100 ? '满' : `${percentage}%`;
+			goAdd() {
+				this.$router.push(`/order_school`)
 			},
-			submit() {
-				//关闭窗口
-				this.dialogTableVisible = false;
-				this.dialogTableVisible2 = true;
+			black() {
+				this.$router.push(`/manage_school_subordinate`)
 			},
-			netx(){
-				this.percentage=100;
-			   this.dialogTableVisible2 = false;
+			goClass() {
+               this.$router.push(`/manage_school_class`)
 			}
+
 		},
 		mounted() {
 			this.color = user().color;
