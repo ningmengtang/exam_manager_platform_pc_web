@@ -35,8 +35,8 @@
 				</el-form-item>
 			</el-form>
 			<div class="buttom-box">
-				<el-button class="buttom-true" :style="{'background-color':color}">确认订购</el-button>
-				<el-button class="buttom-false">取消订购</el-button>
+				<el-button class="buttom-true" :style="{'background-color':color}" @click="black()">确认订购</el-button>
+				<el-button class="buttom-false" @click="black()">取消订购</el-button>
 			</div>
 		</div>
 		<!-- 右边 -->
@@ -337,6 +337,9 @@
 			netx(){
 				this.percentage=100;
 			   this.dialogTableVisible2 = false;
+			},
+			black(){
+				this.$router.push('manage_school')
 			}
 		},
 		mounted() {

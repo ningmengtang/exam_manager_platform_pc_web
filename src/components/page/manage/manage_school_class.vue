@@ -7,7 +7,7 @@
 					<img src="../../../assets/img/img.jpg" class="user-img" />
 					<div class="user-top">
 						<div class="username">
-							<div class="name">小明</div>
+							<div class="name">小明2</div>
 							<div class="user-id">ID:6556565</div>
 							<div class="identity" :style="{'background-color':color}">老师</div>
 							<div class="message">
@@ -65,7 +65,7 @@
 			</div>
 			<!-- 上次的试卷列表 -->
 			<div class="upload-papers">
-				<el-button class="li-box top"><i class="i el-icon-plus"></i>新增班级</el-button>
+				<el-button class="li-box top"   @click="dialogTableVisible = true"><i class="i el-icon-plus" ></i>新增班级</el-button>
 				<div class="li-box" v-for="item in papers ">
 					<div class="papers-box">
 						<div class="p-title">{{item.title}}
@@ -87,6 +87,51 @@
 				 :current-page.sync="currentPage" :page-size="100" :total="1000">
 				</el-pagination>
 			</div>
+			<!-- 弹窗 -->
+			<el-dialog title="" :visible.sync="dialogTableVisible">
+				<div class="ts-select">
+					<div class="t-title">请选择班级</div>
+					<div class="t-content">
+						<div class="group">
+							<div class="row-group">
+								<div class="th-group">年份</div>
+								<div class="td-group" change>
+									<el-checkbox-group v-model="array_nav2" @change="getValue()">
+										<el-checkbox-button v-for="(d,i) in class2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
+									</el-checkbox-group>
+								</div>
+							</div>
+						</div>
+						<div class="group">
+							<div class="row-group">
+								<div class="th-group">班级</div>
+								<div class="td-group" change>
+									<el-checkbox-group v-model="array_nav3" @change="getValue()">
+										<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
+									</el-checkbox-group>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
+					<div class="student-box">
+						<div class="page">
+							<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+							 :current-page.sync="currentPage" :page-size="100" :total="1000">
+							</el-pagination>
+						</div>
+						<div class="block-time">
+							<div></div>
+							<div class="block-a">
+								<el-button @click="submit()" class="reset">重置</el-button>
+								<el-button @click="toggleSelection()" class="out">取消选择</el-button>
+								<el-button @click="submit()" class="affirm">确认分配</el-button>
+							</div>
+						</div>
+			
+					</div>
+				</div>
+			</el-dialog>
 		</div>
 	</div>
 </template>
@@ -101,6 +146,14 @@
 				endVal1: 6,
 				endVal2: 454,
 				currentPage: 1,
+				dialogTableVisible: false,
+				array_nav2: [],
+				array_nav3: [],
+				array_nav4: [],
+				array_nav5: [],
+				array_nav9: [],
+				class2: ['全部', '一年级', '二年级', '三年级'],
+				class1: ['全部', '一班', '二班', '三班'],
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -168,10 +221,13 @@
 			handleCurrentChange(val) {
 				console.log(`当前页: ${val}`);
 			},
+			submit(){
+				this.dialogTableVisible=false
+			}
 		},
 		mounted() {
 			this.color = user().color;
 		}
 	};
 </script>
-<style scoped src="../../../assets/css/manage-add.css"></style>
+<style scoped src="../../../assets/css/manage-class.css"></style>
