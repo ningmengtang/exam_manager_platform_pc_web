@@ -18,75 +18,51 @@
 				</div>
 			</div>
 			<el-form ref="form" :model="form" label-width="80px" class="form">
-				<el-form-item label="订购总数">
+				<el-form-item label="姓名">
 					<el-input v-model="form.name"></el-input>
 				</el-form-item>
-				<el-form-item label="订购类型">
-					<el-input v-model="form.type"></el-input>
+				<el-form-item label="性别">
+					<el-input v-model="form.sex"></el-input>
 				</el-form-item>
-				<el-form-item label="联系电话">
-					<el-input v-model="form.phone"></el-input>
+				<el-form-item label="角色">
+					<el-input v-model="form.role"></el-input>
 				</el-form-item>
-				<el-form-item label="收货人员">
-					<el-input v-model="form.personnel"></el-input>
-				</el-form-item>
-				<el-form-item label="收货地址">
-					<el-input v-model="form.site"></el-input>
+				<el-form-item label="所在单位">
+					<el-input v-model="form.school"></el-input>
 				</el-form-item>
 			</el-form>
-			<div class="buttom-box">
-				<el-button class="buttom-true" :style="{'background-color':color}">确认订购</el-button>
-				<el-button class="buttom-false">取消订购</el-button>
+		</div>
+		<!-- 中间 -->
+		<div class="middle-box">
+			<div class="message-top" :style="{'border-color':color}">负责班级</div>
+			<div class="message-box">
+				<div class="i">1.2017年2班班主任、语文老师、英语老师    </div>
+				<div class="i">1.2017年2班班主任、语文老师、英语老师    </div>
+				<div class="bottom-box">
+				<el-button class="bottom">分配班级</el-button>
+				</div>
 			</div>
 		</div>
 		<!-- 右边 -->
 		<div class="right-box">
-			<div class="message-top" :style="{'border-color':color}">订单详细
-				<el-button type="success" class="buttom" @click="dialogTableVisible = true" :style="{'background-color': color, 'border-color': color }"><span
-					 class="el-icon-plus"></span>
-					新增订购单</el-button>
-			</div>
-
-			<!--订单列表 -->
-			<div class="upload-papers">
-				<div class="li-box" v-for="(item,i) in papers " :key="item.i">
-					<div class="ranking">{{i+1}}</div>
-					<div class="papers-box">
-						<div class="p-title">{{item.title}}
-							<div class="label-box">
-								<div class="label">2019</div>
-								<div class="label">人教版</div>
-								<div class="label">语文</div>
-								<div class="label">一年级</div>
-								<div class="label">一年级</div>
-							</div>
-						</div>
-						<div class="p-particular">
-							<div>数量20份</div>
-							<div>单价20元</div>
-							<div>总价400元</div>
-							<div class="fault">学生信息未导入，点击重导</div>
-						</div>
-					</div>
-					<i class="close el-icon-close" :style="{'color':color}"></i>
-				</div>
-			</div>
-			<div class="page">
-				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
-				</el-pagination>
-			</div>
-			<div class="bottom-box">
-				<div class="discount">
-					<div class="i">折扣：</div>
-					<div class="ii">￥666,666.00</div>
-				</div>
-				<div class="last">
-					<div class="remind">不同年级、不同科目价格不同，购买的数量越多，价格越优惠</div>
-					<div class="discount">
-						<div class="i">折扣：</div>
-						<div class="ii">￥666,666.00</div>
-					</div>
+			<div class="message-top" :style="{'border-color':color}">是否冻结账号</div>
+			<div class="message-box">
+				<el-switch
+				  style="display: block"
+				  v-model="value2"
+				  active-color="#13ce66"
+				  inactive-color="#F0F0F0"
+				  active-text="是"
+				  inactive-text="否">
+				</el-switch>
+				<el-form ref="form" :model="form" label-width="80px" class="form" style="margin-top: 20px;">
+					<el-form-item label="手机号:">
+						<el-input v-model="form.phone"></el-input>
+					</el-form-item>
+				</el-form>
+				<div class="bottom-box">
+				<el-button class="bottom">分配班级</el-button>
+				<el-button class="bottom">分配班级</el-button>
 				</div>
 			</div>
 		</div>
@@ -201,6 +177,7 @@
 				array_nav4: [],
 				array_nav5: [],
 				array_nav9: [],
+				value2: true,
 				percentage:50,
 				cities: ['全部', '分发完成', '正在分发', '分发失败'],
 				class2: ['全部', '一年级', '二年级', '三年级'],
@@ -223,6 +200,9 @@
 				},
 				form: {
 					name: '454',
+					sex:'',
+					role:'',
+					school:'',
 					type: '',
 					phone: '',
 					personnel: '',
@@ -344,4 +324,4 @@
 		}
 	};
 </script>
-<style scoped src="../../../assets/css/order.css"></style>
+<style scoped src="../../../assets/css/manage-add.css"></style>

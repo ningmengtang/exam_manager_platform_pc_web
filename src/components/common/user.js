@@ -36,7 +36,7 @@ export default function usertype() {
 			title: '订购管理'
 		},{
 			icon: 'el-icon-s-custom',
-			index: `distributio_${loginUserType}`,
+			index: `manage_${loginUserType}_subordinate`,
 			title: '教师管理'
 		})
              color = '#2BBB61'

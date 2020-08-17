@@ -114,10 +114,8 @@
 			  let status=this.status=papers.list.status
 			  // 一共条数
 			  this.total=Number(papers.total);
-			  // this.mayDownload=Number(papers.downloadStatus);
 			  this.download=papers.download;
 			  this.disabled=papers.disabled;
-
 			  this.papers=papers.list;
 		  })
 

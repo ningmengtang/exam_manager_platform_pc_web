@@ -62,6 +62,21 @@ export default new Router({
 				    meta: { title: '学校-订购管理' }
 				},
 				{
+				    path: 'manage_school_subordinate',
+				    component: () => import(/* webpackChunkName: "manage_school_subordinate"*/ '../components/page/manage/manage_school_subordinate.vue'),
+				    meta: { title: '学校-教师管理' }
+				},
+				{
+				    path: 'manage_school_add',
+				    component: () => import(/* webpackChunkName: "manage_school_add"*/ '../components/page/manage/manage_school_add.vue'),
+				    meta: { title: '学校-教师管理-新增老师' }
+				},
+				{
+				    path: 'magage_school_class',
+				    component: () => import(/* webpackChunkName: "manage_school_add"*/ '../components/page/manage/magage_school_class.vue'),
+				    meta: { title: '学校-教师管理-分配班级' }
+				},
+				{
 				    path: '/personal_student',
 				    component: () => import(/* webpackChunkName: "personal_student" */ '../components/page/personal/personal_student.vue'),
 				    meta: { title: '学生-个人中心' }
