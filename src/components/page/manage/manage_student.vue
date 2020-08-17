@@ -5,14 +5,14 @@
 				<div class="th-group">分发状态</div>
 				<div class="td-group" change>
 					<el-checkbox-group v-model="array_nav" @change="getValue()">
-						<el-checkbox-button v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox-button>
+						<el-checkbox-button v-for="(d,i) in tag" :label="d" :key="d.i">{{d}}</el-checkbox-button>
 					</el-checkbox-group>
 				</div>
 			</div>
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">年份</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav" @change="getValue()">
+					<el-checkbox-group v-model="array_nav_2" @change="getValue()">
 						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
 					</el-checkbox-group>
 				</div>
@@ -20,7 +20,7 @@
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">教材版本</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav" @change="getValue()">
+					<el-checkbox-group v-model="array_nav_3" @change="getValue()">
 						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
 					</el-checkbox-group>
 				</div>
@@ -28,7 +28,7 @@
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">学习科目</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav" @change="getValue()">
+					<el-checkbox-group v-model="array_nav_4" @change="getValue()">
 						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
 					</el-checkbox-group>
 				</div>
@@ -36,7 +36,7 @@
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">学习年级</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav" @change="getValue()">
+					<el-checkbox-group v-model="array_nav_5" @change="getValue()">
 						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
 					</el-checkbox-group>
 				</div>
@@ -44,7 +44,7 @@
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">单元测试</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav" @change="getValue()">
+					<el-checkbox-group v-model="array_nav_6" @change="getValue()">
 						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
 					</el-checkbox-group>
 				</div>
@@ -52,7 +52,7 @@
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">试卷用途</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav" @change="getValue()">
+					<el-checkbox-group v-model="array_nav_7" @change="getValue()">
 						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
 					</el-checkbox-group>
 				</div>
@@ -129,15 +129,28 @@
 	</div>
 </template>
 <script>
-		import {studentIndex} from '@/api/api.js'
+		import {selectTag} from '@/api/api.js'
 	export default {
 		data() {
 			return {
+				tag:['全部'],
+				tag2:['全部'],
+				tag3:['全部'],
+				tag4:['全部'],
+				tag5:['全部'],
+				tag6:['全部'],
+				tag7:['全部'],
 				array_nav: [], //存储el-chckbox数组
+				array_nav_2: [],
+				array_nav_3: [],
+				array_nav_4: [],
+				array_nav_5: [],
+				array_nav_6: [],
+				array_nav_7: [],
 				search: '',
 				currentPage: 1,
 				dialogVisible: false,
-				cities: ['全部', '上海', '北京', '广州', '深圳'],
+				cities: ['全部', '上海上海', '北京', '广州', '深圳'],
 				cities2: ['全部', '1', '2', '3', '4'],
 				checkboxGroup2: ['上海'],
 
@@ -163,8 +176,14 @@
 			}
 		},
 		mounted() {
-
+          selectTag().then(res=>{
+			 let tag=res.data.data;
+			 this.tag=this.tag.push(tag['8']['text'])
+			 console.log(tag['8'][0]['text'])
+			 this.tag
+		  })
 		}
+		
 	};
 </script>
 

@@ -1,0 +1,95 @@
+.box{color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;height: 100%;padding: 36px;display: flex;}
+
+.left-box{width: 40%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;}
+.left-box .user-img{width: 90px;height: 90px;border-radius: 50%;}
+.left-box .card-top{display: flex;align-items: center;justify-content: center;flex-direction: column;}
+.left-box .user-top{width: 100%;margin-top: 30px;}
+.left-box .username{}
+.left-box .name{font-size: 20px;}
+.left-box .user-id{font-size: 18px;color: rgba(128, 128, 128, 1);margin-top: 12px;}
+.left-box .ii{font-size: 25px;font-weight: bold;color: rgba(128, 128, 128, 1);margin-left: auto;}
+.left-box .identity{font-size: 20px;color: #FFFFFF;background-color: #19ADFB;display: inline-block;padding: 10px 46px;border-radius: 4px;margin: 12px 0;}
+.left-box .school{font-size: 20px;font-weight: bold;}
+.left-box .message{margin-left: auto;font-size: 20px;color: #333333;}
+.left-box .grade{margin-top: 12px;color: #999999;font-size: 20px;}
+.left-box .form{margin: 58px 0;color: #FFFFFF;}
+.left-box .buttom-true{color: #FFFFFF;}
+/* .left-box .buttom-false{} */
+
+.left-box .change-box{margin-top: 90px;display: flex;}
+.left-box .li{padding: 15px 14px;display: flex;align-items: center;flex-direction: column;justify-content: space-around;width: 100%;}
+.left-box .icon{font-size: 60px;color: #2bbb61;}
+.left-box .name-change{font-size: 22px;margin-top: 12px;}
+.left-box .particular-change{font-size: 16px;color: rgba(153, 153, 153, 1);margin-left: 18px;}
+.left-box .icon2{font-size: 25px;font-weight: bold;color: rgba(153, 153, 153, 1);margin-left: auto;}
+
+.right-box{width: 75%;padding: 0 34px;margin-left: 20px;}
+
+.message-top {margin-bottom: 24px;border-left: 8px solid #19ADFB;display: flex;align-items: center;padding-left: 10px;font-weight: bold;font-size: 20px;padding-top: 2px;padding-bottom: 2px;}
+
+
+.right-box .upload-papers{margin-top: 22px;}
+.right-box .buttom{margin-left: 20px;}
+.right-box .ranking{margin-right: 12px;color: #2BBB61;font-size: 18px;}
+.right-box .li-box{display: flex;padding: 10px 25px;background-color: #FFFFFF;align-items: center;border-radius: 4px;}
+.li-box+.li-box{margin-top: 10px;}
+.right-box .label{width: 50px;height: 50px;background-color: rgba(212, 212, 212, 1);border-radius: 50%;}
+.right-box .teacher{font-size: 14px;color: #19ADFA;margin: 0 12px;max-width: 55px;}
+.right-box .papers-box{margin-left: 18px;width: calc( 100% - 50px);display: flex;flex-direction: column;}
+.right-box .p-title{font-size: 16px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;display: flex;}
+.right-box .label-box{display: flex;flex-wrap: wrap;}
+.label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}
+.label:nth-child(1n+1){background-color: #fb4919;}
+.label:nth-child(2n+2){background-color: #19aefb;}
+.label:nth-child(3n+3){background-color: #2bbb61;}
+.right-box .p-particular{font-size: 16px;color: #999999;margin-top: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;display: flex;}
+.p-particular div+div{margin-left: 24px;}
+.p-particular .fault{color: #E2633B;cursor: pointer;}
+.right-box .close{color: #a6a6a6;font-size:20px;margin-left: auto;display: flex;align-items: center;font-weight: bold;cursor: pointer;}
+
+
+
+.page{font-size: 18px;color: #a6a6a6;text-align: center;margin-top: 18px;}
+
+
+.bottom-box{margin: 20px 0; }
+.discount {text-align: right;}
+.discount .i{color: #333333;font-size: 18px;}
+.discount .ii{color: #FB4919;font-size: 22px;font-weight: bold;}
+.last{display: flex;justify-content: space-between;}
+.last .remind{display: flex;align-items: flex-end;font-size: 18px;}
+
+/* 弹窗 */
+.ts-select{}
+.ts-select .t-title{border-left: 8px solid #2BBB61;padding-left: 8px;font-size: 18px;font-weight: bold;color: #333333;display: flex;justify-content: space-between;align-items: center;}
+.ts-select .t-box{display: flex;margin-top: 10px;}
+.ts-select .t-left{width: 50%;}
+.ts-select .choice{margin-top: 5px;}
+.ts-select  .i{color: #2BBB61;}
+.ts-select .lead{font-size: 18px;font-weight: bold;margin-top: 10px;}
+.ts-select .t-right{width: 50%;margin-left: 20px;}
+.t-right .log{font-weight: bold;font-size: 18px;color: #333333;margin-bottom: 10px;}
+.t-right .other{text-align: justify;letter-spacing: 1.5px;line-height: 1.8;}
+.ts-select .t-content{margin-top: 8px;}
+.ts-select .arr{margin-left: 18px;margin-top: 5px;margin-bottom: 5px;}
+.ts-select .arr span{color: #999999;}
+.ts-select .arr span:nth-child(2){color: #2BBB61;}
+.ts-select .student-box{margin-top: 10px;}
+.ts-select .student-name{margin:  0 10px ;white-space: nowrap;}
+.box /deep/ .el-table th{text-align: center;}
+.box /deep/ .el-table td, .el-table th.is-leaf{text-align: center;}
+.box /deep/.el-date-editor .el-range-separator{padding: 0;}
+.ts-select .block-time{margin-top: 20px;display: flex;align-items: center;justify-content: space-between;}
+.ts-select .block-a{color: #FFFFFF;}
+.ts-select .out{padding: 14px 20px;background-color: #2BBB61;color: #FFFFFF;border-radius: 4px;}
+.ts-select .affirm {padding: 14px 20px;background-color: #FB4919;color: #FFFFFF;border-radius: 4px;}
+.group,.row-group{display: flex;align-items: center;}
+.group /deep/ .el-checkbox-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
+.group /deep/ .el-checkbox-button.is-checked .el-checkbox-button__inner {background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);}
+.group /deep/ .el-checkbox-button--small .el-checkbox-button__inner{font-size: 14px;}
+.group /deep/ .el-checkbox-button, .el-checkbox-button__inner{min-width: 92px;}
+.ts-select /deep/ .el-progress{width: 200px;}
+.row-group .th-group{font-size: 14px;margin-right: 14px;padding: 8px 22px;min-width: 100px;}
+.row-group .td-group{font-size: 14px;}
+.box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
+.box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}

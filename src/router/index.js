@@ -57,6 +57,11 @@ export default new Router({
 				    meta: { title: '教师-试卷管理-提交试卷' }
 				},
 				{
+				    path: '/order_school',
+				    component: () => import(/* webpackChunkName: "order_school" */ '../components/page/order/order_school.vue'),
+				    meta: { title: '学校-订购管理' }
+				},
+				{
 				    path: '/personal_student',
 				    component: () => import(/* webpackChunkName: "personal_student" */ '../components/page/personal/personal_student.vue'),
 				    meta: { title: '学生-个人中心' }

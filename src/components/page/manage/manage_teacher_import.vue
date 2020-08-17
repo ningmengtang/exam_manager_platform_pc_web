@@ -65,19 +65,19 @@
 				<el-row :gutter="20">
 					<el-col :span="8">
 						<div class="grid-content bg-purple">
-							<div class="i">确认提交试卷</div>
+							<el-button class="i">确认提交试卷</el-button>
 							<div class="ii">(按模板提交)</div>
 						</div>
 						</el-col>
 					<el-col :span="8">
 						<div class="grid-content bg-purple">
-							<div class="i" style="background-color: #2BBB61;">下载模板</div>
+							<el-button class="i" style="background-color: #2BBB61;">下载模板</el-button>
 							<div class="ii">(WORD提交模板)</div>
 						</div>
 						</el-col>
 					<el-col :span="8">
 						<div class="grid-content bg-purple">
-							<div class="i" >确认提交</div>
+							<el-button class="i" >确认提交</el-button>
 							<div class="ii">(图片试卷)</div>
 						</div>
 						</el-col>

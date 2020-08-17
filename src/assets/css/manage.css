@@ -2,7 +2,7 @@
 .group{margin: 10px 0;background-color: #FFFFFF;padding: 20px;border-radius: 8px;background-image: url(../img/bg-bird.png);background-repeat: no-repeat;background-position: calc( 100% - 20px ) 20px;}
 .row-group{width: 100%;display: flex;align-items: center;}
 .row-group .th-group{font-size: 14px;margin-right: 38px;width: 60px;}
-.group /deep/ .el-checkbox-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
+.group /deep/ .el-checkbox-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px;min-width: 92px;}
 .group .right{display: flex;align-self: center;flex-direction: column;margin-right: 240px;}
 .right-son+.right-son{margin-top: 30px;}
 .group .bg-purple{background-color: #FFFFFF;display: flex;justify-content: center;align-items: center;flex-direction: column;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);width:288px;height:140px;border-radius: 10px;}
@@ -14,9 +14,10 @@
 .search /deep/ .el-input{width:auto;}
 .search /deep/ .el-input__inner{width: 400px;height: 36px;line-height: 36px;}
 .search /deep/ .el-input--small .el-input__icon{line-height: 36px;}
-.search /deep/ .el-button--mini, .el-button--small{border-radius: 0 8px 8px 0;}
+/* .search /deep/ .el-button--mini, .el-button--small{border-radius: 0 8px 8px 0;} */
 .search .cancel {margin-left:20px;font-size: 14px;color:rgba(80, 80, 80, 1)}
 .search .buttom{height: 36px;}
+.search .buttom .i{font-size: 20px;}
 
 
 .particular{margin-top: 10px;}

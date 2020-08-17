@@ -25,3 +25,8 @@ export function studentIndex(data){
 	const result =post('/api/student/exam/studentExam',data)
 	return result;
 }
+//试卷标签查询
+export function selectTag(data){
+	const result =get('/api/tag/selectByChild',data)
+	return result;
+}

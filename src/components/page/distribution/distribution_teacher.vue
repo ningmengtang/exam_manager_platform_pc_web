@@ -37,11 +37,11 @@
 						<div class="status_box">
 							<i class="icon el-icon-time"></i>
 							<span class="text">正在分发</span>
-							<el-button type="text" class="download" >立即分发</el-button></span>
+							<el-button type="text" class="download">立即分发</el-button></span>
 						</div>
 					</div>
 					<span v-else-if="data.o == '2'" style="display: contents;">
-						<el-button type="text" class="download hover"  @click="dialogTableVisible = true">立即分发</el-button>
+						<el-button type="text" class="download hover" @click="dialogTableVisible = true">立即分发</el-button>
 					</span>
 				</div>
 			</div>
@@ -53,42 +53,42 @@
 		</div>
 		<!-- 提示框 -->
 		<el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
-		<el-dialog title="" :visible.sync="dialogTableVisible">
 		<!-- Table -->
-		  <div class="ts-select">
-			   <div class="t-title">请选择班级</div>
-			   <div class="t-content">
-				  <div class="group">
-				  	<div class="row-group">
-				  		<div class="th-group">分发状态</div>
-				  		<div class="td-group" change>
-				  			<el-checkbox-group v-model="array_nav2" @change="getValue()">
-				  				<el-checkbox-button  v-for="(d,i) in class2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-				  			</el-checkbox-group>
-				  		</div>
-				  	</div>
-				  </div>
-				  <div class="group">
-				  	<div class="row-group">
-				  		<div class="th-group">分发状态</div>
-				  		<div class="td-group" change>
-				  			<el-checkbox-group v-model="array_nav3" @change="getValue()">
-				  				<el-checkbox-button  v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-				  			</el-checkbox-group>
-				  		</div>
-				  	</div>
-				  </div>
-			   </div>
-			   <div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
-			   <div class="student-box">
-			   		 <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-			   		 	<el-table-column type="selection" width="55"></el-table-column>
-			   		 	<el-table-column label="学号" width="120">
-			   		 		<template slot-scope="scope">
-			   		 			{{ scope.row.date }}
-			   		 		</template>
-			   		 	</el-table-column>
-			   		 	<el-table-column prop="name" label="名字" width="120">
+		<el-dialog title="" :visible.sync="dialogTableVisible">
+			<div class="ts-select">
+				<div class="t-title">请选择班级</div>
+				<div class="t-content">
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">分发状态</div>
+							<div class="td-group" change>
+								<el-checkbox-group v-model="array_nav2" @change="getValue()">
+									<el-checkbox-button v-for="(d,i) in class2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
+								</el-checkbox-group>
+							</div>
+						</div>
+					</div>
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">分发状态</div>
+							<div class="td-group" change>
+								<el-checkbox-group v-model="array_nav3" @change="getValue()">
+									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
+								</el-checkbox-group>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
+				<div class="student-box">
+					<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+						<el-table-column type="selection" width="55"></el-table-column>
+						<el-table-column label="学号" width="120">
+							<template slot-scope="scope">
+								{{ scope.row.date }}
+							</template>
+						</el-table-column>
+						<el-table-column prop="name" label="名字" width="120">
 							<template slot-scope="scope">
 								<div style="display: flex;align-items: center;">
 									<img src="../../../assets/img/img.jpg" class="user-img" />
@@ -96,147 +96,141 @@
 								</div>
 							</template>
 						</el-table-column>
-			   		 	<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
+						<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
 						<el-table-column prop="class" label="班级" show-overflow-tooltip></el-table-column>
-			   		 </el-table>
-					 <div class="page">
-					 	<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-					 	 :current-page.sync="currentPage" :page-size="100" :total="1000">
-					 	</el-pagination>
-					 </div>
-					  <div class="block-time">
-						 <div>
-						  <span  style="margin-right:10px ;">选择日期</span>
-					      <el-date-picker
-					       v-model="value1"
-					       type="daterange"
-					       range-separator="至"
-					       start-placeholder="开始日期"
-					       end-placeholder="结束日期">
-					      </el-date-picker>
-						 </div>
-						 <div class="block-a">
-						  <el-button @click="toggleSelection()" class="out">取消选择</el-button>
-						 <el-button @click="submit()" class="affirm">确认</el-button>
-						 </div>
-					   </div>
-					  
-			   </div>
-		  </div>
+					</el-table>
+					<div class="page">
+						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+						 :current-page.sync="currentPage" :page-size="100" :total="1000">
+						</el-pagination>
+					</div>
+					<div class="block-time">
+						<div>
+							<span style="margin-right:10px ;">选择日期</span>
+							<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+							</el-date-picker>
+						</div>
+						<div class="block-a">
+							<el-button @click="toggleSelection()" class="out">取消选择</el-button>
+							<el-button @click="submit()" class="affirm">确认</el-button>
+						</div>
+					</div>
+
+				</div>
+			</div>
 		</el-dialog>
 	</div>
 </template>
 <script>
-import user from '../../common/user';
-export default {
-	data() {
-		return {
-			color: '',
-			checkAll: false,
-			isIndeterminate: true,
-			array_nav: [], //存储el-chckbox数组
-			array_nav2: [], //存储el-chckbox数组
-			array_nav3: [],
-			array_nav4:[],
-			array_nav5:[],
-			search: '',
-			value1:'',
-			 multipleSelection: [],
-			currentPage: 1,
-			dialogVisible: false,
-			cities: ['全部', '分发完成', '正在分发', '分发失败'],
-			class2: ['全部', '一年级', '二年级', '三年级'],
-			class1: ['全部', '一班', '二班', '三班'],
-			student:[1,2,3,4,5],
-			checkboxGroup2: ['上海'],
-			li: [
-				{
-					teacher: '古得老师',
-					title: '2019年人教版一年级第一单元作业5656565656',
-					synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-					time: '2020年10月11日上传',
-					label: '2019',
-					o: '1'
-				},
-				{
-					teacher: '古得老师',
-					title: '2019年人教版一年级第一单元作业5656565656',
-					synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-					time: '2020年10月11日上传',
-					label: '2019',
-					o: '2'
+	import user from '../../common/user';
+	export default {
+		data() {
+			return {
+				color: '',
+				checkAll: false,
+				isIndeterminate: true,
+				array_nav: [], //存储el-chckbox数组
+				array_nav2: [], //存储el-chckbox数组
+				array_nav3: [],
+				array_nav4: [],
+				array_nav5: [],
+				search: '',
+				value1: '',
+				multipleSelection: [],
+				currentPage: 1,
+				dialogVisible: false,
+				cities: ['全部', '分发完成', '正在分发', '分发失败'],
+				class2: ['全部', '一年级', '二年级', '三年级'],
+				class1: ['全部', '一班', '二班', '三班'],
+				student: [1, 2, 3, 4, 5],
+				checkboxGroup2: ['上海'],
+				li: [{
+						teacher: '古得老师',
+						title: '2019年人教版一年级第一单元作业5656565656',
+						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
+						time: '2020年10月11日上传',
+						label: '2019',
+						o: '1'
+					},
+					{
+						teacher: '古得老师',
+						title: '2019年人教版一年级第一单元作业5656565656',
+						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
+						time: '2020年10月11日上传',
+						label: '2019',
+						o: '2'
+					}
+				],
+				tableData: [{
+					date: '1',
+					name: '王小虎',
+					grade: '一年级',
+					class: '1'
+				}, {
+					date: '2',
+					name: '王小虎',
+					grade: '二年级',
+					class: '1'
+				}, {
+					date: '3',
+					name: '王小虎',
+					grade: '三年级',
+					class: '1'
+				}, {
+					date: '4',
+					name: '王小虎',
+					grade: '四年级',
+					class: '1'
+				}],
+				dialogTableVisible: false,
+				dialogFormVisible: false,
+			};
+		},
+		methods: {
+			//获取选择标签的内容
+			getValue() {
+				this.array_nav4 = this.array_nav2.concat(this.array_nav3)
+				console.log(this.array_nav4);
+			},
+			handleSizeChange(val) {
+				console.log(`每页 ${val} 条`);
+			},
+			handleCurrentChange(val) {
+				console.log(`当前页: ${val}`);
+			},
+			searchO() {
+
+			},
+			toggleSelection(rows) {
+				if (rows) {
+					rows.forEach(row => {
+						this.$refs.multipleTable.toggleRowSelection(row);
+					});
+				} else {
+					this.$refs.multipleTable.clearSelection();
 				}
-			],
-			tableData: [{
-			          date: '1',
-			          name: '王小虎',
-			          grade: '一年级',
-					  class:'1'
-			        }, {
-			          date: '2',
-			          name: '王小虎',
-			          grade: '二年级',
-					  class:'1'
-			        }, {
-			          date: '3',
-			          name: '王小虎',
-			          grade: '三年级',
-					  class:'1'
-			        }, {
-			          date: '4',
-			          name: '王小虎',
-			          grade: '四年级',
-					  class:'1'
-			        }],
-			        dialogTableVisible: false,
-			        dialogFormVisible: false,
-		};
-	},
-	methods: {
-		getValue() {
-			
-			this.array_nav4=this.array_nav2.concat(this.array_nav3)
-			console.log(this.array_nav4);
+			},
+			handleSelectionChange(val) {
+				this.multipleSelection = val;
+			},
+			toggleSelection(rows) {
+				if (rows) {
+					rows.forEach(row => {
+						this.$refs.multipleTable.toggleRowSelection(row);
+					});
+				} else {
+					this.$refs.multipleTable.clearSelection();
+				}
+			},
+			submit() {
+				//关闭窗口
+				this.dialogTableVisible = false;
+			}
 		},
-		handleSizeChange(val) {
-			console.log(`每页 ${val} 条`);
-		},
-		handleCurrentChange(val) {
-			console.log(`当前页: ${val}`);
-		},
-		searchO(){
-			
-		},
-		toggleSelection(rows) {
-		        if (rows) {
-		          rows.forEach(row => {
-		            this.$refs.multipleTable.toggleRowSelection(row);
-		          });
-		        } else {
-		          this.$refs.multipleTable.clearSelection();
-		        }
-		      },
-		handleSelectionChange(val) {
-		        this.multipleSelection = val;
-		},
-		toggleSelection(rows) {
-			    if (rows) {
-			        rows.forEach(row => {
-			         this.$refs.multipleTable.toggleRowSelection(row);
-			     });
-		} else {
-			        this.$refs.multipleTable.clearSelection();
-		 }
-		},
-		submit(){
-			//关闭窗口
-			this.dialogTableVisible=false;
+		mounted() {
+			this.color = user().color;
 		}
-	},
-	mounted() {
-		this.color = user().color;
-	}
-};
+	};
 </script>
 
 <style scoped src="../../../assets/css/distribution.css"></style>
