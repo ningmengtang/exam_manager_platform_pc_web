@@ -67,6 +67,11 @@ export default new Router({
 				    meta: { title: '教师-个人中心' }
 				},
 				{
+				    path: '/personal_school',
+				    component: () => import(/* webpackChunkName: "personal_teacher" */ '../components/page/personal/personal_school.vue'),
+				    meta: { title: '学校-个人中心' }
+				},
+				{
 				    path: '/distribution_teacher',
 				    component: () => import(/* webpackChunkName: "personal_teacher" */ '../components/page/distribution/distribution_teacher.vue'),
 				    meta: { title: '教师-试卷分发' }

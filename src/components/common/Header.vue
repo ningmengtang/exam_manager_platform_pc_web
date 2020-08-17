@@ -103,7 +103,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.username = localStorage.getItem('usesrName');
+		this.username = localStorage.getItem('userName');
 		if (document.body.clientWidth < 1500) {
 			this.collapseChage();
 		}

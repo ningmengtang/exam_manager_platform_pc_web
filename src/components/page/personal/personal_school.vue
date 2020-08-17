@@ -36,10 +36,11 @@
 		<!-- 右边 -->
 		<div class="right-box">
 			<div class="message-row">
+				<div class="message-top i" :style="{'border-color':color}">试卷入库</div>
 				<el-row :gutter="20" type="flex" class="el-row-box">
 					<el-col :span="6">
 						<div class="card-box">
-							<div class="card-t">我的上传</div>
+							<div class="card-t">全部试卷</div>
 							<div class="num"><ICountUp :endVal="endVal2" /></div>
 						</div>
 					</el-col>
@@ -63,22 +64,63 @@
 					</el-col>
 				</el-row>
 			</div>
-			<!-- 上次的试卷列表 -->
-			<div class="upload-papers">
-				<div class="li-box" v-for="item in papers ">
-					<div class="label"><img src="../../../assets/img/img.jpg" class="label" /></div>
-					<div class="teacher" :style="{'color':color}">{{item.label}}</div>
-					<div class="papers-box">
-						<div class="p-title">{{item.title}}</div>
-						<div class="p-particular">{{item.particular}}</div>
-					</div>
-					<div class="time">{{item.time}}</div>
-				</div>
+			<div class="message-row">
+				<div class="message-top i" :style="{'border-color':color}">订购管理</div>
+				<el-row :gutter="20" type="flex" class="el-row-box" style="background-color: #E35841;">
+					<el-col :span="6">
+						<div class="card-box">
+							<div class="card-t">全部订购</div>
+							<div class="num"><ICountUp :endVal="endVal2" /></div>
+						</div>
+					</el-col>
+					<el-col :span="6">
+						<div class="card-box">
+							<div class="card-t">订购完成</div>
+							<div class="num"><ICountUp :endVal="endVal2" /></div>
+						</div>
+					</el-col>
+					<el-col :span="6">
+						<div class="card-box">
+							<div class="card-t">订购申请</div>
+							<div class="num"><ICountUp :endVal="endVal2" /></div>
+						</div>
+					</el-col>
+					<el-col :span="6">
+						<div class="card-box">
+							<div class="card-t">订购失败</div>
+							<div class="num"><ICountUp :endVal="endVal2" /></div>
+						</div>
+					</el-col>
+				</el-row>
 			</div>
-			<div class="page">
-				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
-				</el-pagination>
+			<div class="message-row i">
+				<div class="message-top i" :style="{'border-color':color}">用户管理</div>
+				<el-row :gutter="20" type="flex" class="el-row-box" style="background-color: #3B66E2;">
+					<el-col :span="6">
+						<div class="card-box">
+							<div class="card-t">全部试卷</div>
+							<div class="num"><ICountUp :endVal="endVal2" /></div>
+						</div>
+					</el-col>
+					<el-col :span="6">
+						<div class="card-box">
+							<div class="card-t">入库完成</div>
+							<div class="num"><ICountUp :endVal="endVal2" /></div>
+						</div>
+					</el-col>
+					<el-col :span="6">
+						<div class="card-box">
+							<div class="card-t">正在入库</div>
+							<div class="num"><ICountUp :endVal="endVal2" /></div>
+						</div>
+					</el-col>
+					<el-col :span="6">
+						<div class="card-box">
+							<div class="card-t">入库失败</div>
+							<div class="num"><ICountUp :endVal="endVal2" /></div>
+						</div>
+					</el-col>
+				</el-row>
 			</div>
 		</div>
 	</div>

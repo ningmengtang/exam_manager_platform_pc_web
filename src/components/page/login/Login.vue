@@ -197,7 +197,7 @@
 									localStorage.setItem('userID', wd.data.id)
 									localStorage.setItem('userName', wd.data.name)
 									this.$message.success('登录成功')
-									this.$router.push('/index_student')
+									this.$router.push(`/index_${type}`)
 									break;
 								case 300033:
 									this.$message.error('用户已登录')

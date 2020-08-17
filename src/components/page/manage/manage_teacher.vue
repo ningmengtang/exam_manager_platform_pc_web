@@ -115,7 +115,10 @@
 						<el-button type="text" class="download"  @click="goImport">重新入库</el-button>
 						<div class="status">取消入库</div>
 					</span>
-					<i class="del el-icon-delete-solid"></i>
+					<div class="del">
+						<i class="el-icon-download"></i>
+						<i class="el-icon-delete-solid"></i>
+					</div>
 				</div>
 			</div>
 			<!-- 分页 -->

@@ -13,6 +13,7 @@
 .left-box .message{margin-left: auto;font-size: 20px;color: #333333;}
 .left-box .grade{margin-top: 12px;color: #999999;font-size: 20px;}
 
+
 .left-box .change-box{margin-top: 90px;display: flex;}
 .left-box .li{padding: 15px 14px;display: flex;align-items: center;flex-direction: column;justify-content: space-around;width: 100%;}
 .left-box .icon{font-size: 60px;color: #2bbb61;}
@@ -23,12 +24,21 @@
 .right-box{width: 60%;padding: 0 34px;margin-left: 60px;}
 
 .message-top {margin-bottom: 24px;border-left: 8px solid #19ADFB;display: flex;align-items: center;padding-left: 10px;font-weight: bold;font-size: 20px;padding-top: 2px;padding-bottom: 2px;}
+/* 学生端 */
 .grid-content {display: flex;align-items: center;height: 100px;}
 .el-row {margin-bottom: 20px;}
 .bg-purple {background: #d3dce6;}
 .bg-purple-light {background: #e5e9f2;}
 .grid-content {background-color: #4163e3;min-height: 140px;padding: 0 30px;border-radius: 15px;box-shadow: 0px 2px 14px 1px rgba(0, 0, 0, 0.2);}
 .grid-content.other{background-color: #FFFFFF;display: flex;justify-content: center;flex-direction: column;align-items: center;}
+/* 教师端 */
+.el-row-box{height: 188px;background-color: #2BBB61;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.14);}
+.card-box{color: #FFFFFF;height: 100%;display: flex;justify-content: center;align-items: center;flex-direction: column;}
+.card-box .card-t{font-size: 18px;}
+.card-box .num{font-size: 40px;margin-top: 10px;}
+/* 学校端 */
+.message-top.i{margin-bottom: 16px;}
+
 .row-bg {padding: 10px 0;background-color: #f9fafc;}
 .message-row .card-left {width: 50%;padding: 0;display: flex;flex-direction: column;background:none;color: #FFFFFF;}
 .card-left .card-c{font-size: 18px;margin-top: 12px;}
@@ -40,6 +50,7 @@
 .message-row .card-title{font-size: 24px;display: flex;width: 100%;flex-wrap: wrap;}
 .message-row .card-i {width: 100%;display: flex;justify-content: center;align-items: center;border-radius: 10px;}
 
+
 .right-box .upload-papers{margin-top: 22px;}
 .right-box .li-box{display: flex;padding: 10px 25px;background-color: #FFFFFF;align-items: center;border-radius: 4px;}
 .li-box+.li-box{margin-top: 10px;}
@@ -49,6 +60,8 @@
 .right-box .p-title{font-size: 16px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 .right-box .p-particular{font-size: 16px;color: #999999;margin-top: 2px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 .right-box .time{color: #a6a6a6;font-size:16px;margin-left: auto;display: flex;align-items: center;	}
+
+
 
 .page{font-size: 18px;color: #a6a6a6;text-align: center;margin-top: 18px;}
 

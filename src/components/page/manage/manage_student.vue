@@ -129,6 +129,7 @@
 	</div>
 </template>
 <script>
+		import {studentIndex} from '@/api/api.js'
 	export default {
 		data() {
 			return {

@@ -69,8 +69,6 @@
 	import bus from '../../common/bus'
 	import ICountUp from 'vue-countup-v2'
 	import {studentIndex} from '@/api/api.js'
-	import axios from 'axios'
-
 	export default {
 		name: 'index_student',
 		data() {
