@@ -57,9 +57,14 @@
 		</div>
 		<!-- 分页 -->
 		<div class="page">
-			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
-			</el-pagination>
+			<el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage1"
+                :page-size="pageSize1"
+                layout=" prev, pager, next , total"
+                :total="total1">
+            </el-pagination>
 		</div>
 	</div>
 </template>
@@ -75,8 +80,10 @@
 			this.colors = ['#67C23A', '#409EFF', '#F56C6C']
 			return {
 				total:0,
-				pageSize:3,
-				pageNum:1,
+				pageSize1:9,
+				pageNum1:1,
+				currentPage1:1,
+				total1:0,
 				download:0,
 				disabled:0,
 				status:'',
@@ -107,19 +114,48 @@
 			ICountUp
 		},
 		mounted() {
-          studentIndex({pageNum:this.pageNum,pageSize:this.pageSize}).then(res=>{
-			  let papers=res.data.data;
-			  console.log(papers)
-			  //下载状态
-			  let status=this.status=papers.list.status
-			  // 一共条数
-			  this.total=Number(papers.total);
-			  // this.mayDownload=Number(papers.downloadStatus);
-			  this.download=papers.download;
-			  this.disabled=papers.disabled;
+			// 统计数据全部数据
+			this.total  = 0
+			this.download = 0
+			this.disabled = 0
+			studentIndex({
+				"pageNum":1,
+				"pageSize":999
+			}).then(res=>{
+				if(res.data.data.list){
+					let list = res.data.data.list
+					for(var i=0;i<list.length;i++){
+						if(list[i].status == 1 ){
+							this.download++
+						}else if(list[i].status == 0){
+							this.disabled++
+						}
+					}
+					this.total  =  list.total
+				}
+			})
+			studentIndex({
+				"pageNum":this.pageNum1,
+				"pageSize":this.pageSize1
+			}).then(res=>{
+				this.papers = res.data.data.list
+				this.total1 = res.data.data.total
+				this.currentPage1 = res.data.data.pageNum
+			})
 
-			  this.papers=papers.list;
-		  })
+        //   	studentIndex({pageNum:this.pageNum,pageSize:this.pageSize}).then(res=>{
+		// 	  let papers=res.data.data;
+		// 	  console.log(papers)
+		// 	  //下载状态
+		// 	  let status=this.status=papers.list.status
+		// 	  // 一共条数
+		// 	  this.total=Number(papers.total);
+		// 	  // this.mayDownload=Number(papers.downloadStatus);
+		// 	  this.download=papers.download;
+		// 	  this.disabled=papers.disabled;
+
+		// 	  this.papers=papers.list;
+		//   })
 
 
 
@@ -129,27 +165,54 @@
 			getValue() {
 				console.log(this.array_nav)
 			},
+			 //改变时
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				this.pageSize1 = val;
+				studentIndex({
+					"pageNum":this.pageNum1,
+					"pageSize":this.pageSize1
+				}).then(res=>{
+					this.papers = res.data.data.list
+					this.total1 = res.data.data.total
+					this.currentPage1 = res.data.data.pageNum
+				})
 			},
+			//条目改变时
 			handleCurrentChange(val) {
-				 studentIndex({pageNum:val,pageSize:this.pageSize}).then(res=>{
-					 let papers=res.data.data;
-					 //下载状态
-					 let status=this.status=papers.list.status
-					 // 一共条数
-					 this.total=Number(papers.total);
-					 // this.mayDownload=Number(papers.downloadStatus);
-					 
-					 this.papers=papers.list;
-				 })
-				console.log(`当前页: ${val}`);
-				
+				this.pageNum1 = val;
+				studentIndex({
+					"pageNum":this.pageNum1,
+					"pageSize":this.pageSize1
+				}).then(res=>{
+					this.papers = res.data.data.list
+					this.total1 = res.data.data.total
+					this.currentPage1 = res.data.data.pageNum
+				})
 			},
+			// handleSizeChange(val) {
+			// 	console.log(`每页 ${val} 条`);
+			// },
+			// handleCurrentChange(val) {
+			// 	 studentIndex({pageNum:val,pageSize:this.pageSize}).then(res=>{
+			// 		 let papers=res.data.data;
+			// 		 //下载状态
+			// 		 let status=this.status=papers.list.status
+			// 		 // 一共条数
+			// 		 this.total=Number(papers.total);
+			// 		 // this.mayDownload=Number(papers.downloadStatus);
+					 
+			// 		 this.papers=papers.list;
+			// 	 })
+			// 	console.log(`当前页: ${val}`);
+				
+			// },
 		}
 	};
 </script>
 
 <style scoped src="../../../assets/css/index.css"></style>
 <style scoped>
+	.header{
+		background-color:rgb(25, 174, 251);
+	}
 </style>

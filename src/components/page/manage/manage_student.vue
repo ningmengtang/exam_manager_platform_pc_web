@@ -112,7 +112,7 @@
 				</el-pagination>
 			</div>
 		</div>
-		<el-button type="text"  @click="dialogVisible = true" >点击打开 Dialog</el-button>
+		<!-- <el-button type="text"  @click="dialogVisible = true" >点击打开 Dialog</el-button> -->
 
 		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose" >
 			<div class="ts-box">
@@ -129,7 +129,7 @@
 	</div>
 </template>
 <script>
-		import {selectTag} from '@/api/api.js'
+	import {selectTag} from '@/api/api.js'
 	export default {
 		data() {
 			return {
@@ -178,9 +178,12 @@
 		mounted() {
           selectTag().then(res=>{
 			 let tag=res.data.data;
+			 console.log(tag)
 			 this.tag=this.tag.push(tag['8']['text'])
 			 console.log(tag['8'][0]['text'])
-			 this.tag
+			 
+		  }).catch(err=>{
+			  console.log(err)
 		  })
 		}
 		

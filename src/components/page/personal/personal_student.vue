@@ -19,9 +19,9 @@
 				</div>
 			</div>
 			<div class="change-box">
-				<div class="li">
+				<div class="li" @click="userInfo">
 					<i class="icon el-icon-user-solid"></i>
-					<div class="name-change">个人信息</div>
+					<div class="name-change" >个人信息</div>
 				</div>
 				<div class="li">
 					<i class="icon el-icon-thirdmima"></i>
@@ -96,12 +96,14 @@
 <script>
 	import Schart from 'vue-schart'
 	import ICountUp from 'vue-countup-v2'
+	import {StudentAccountInfo} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				endVal1: 6,
 				endVal2: 454,
 				currentPage: 1,
+				userID:'',
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -140,9 +142,30 @@
 			handleCurrentChange(val) {
 				console.log(`当前页: ${val}`);
 			},
+			userInfo(){
+				StudentAccountInfo({
+					"id":this.userID
+				}).then(res=>{
+					if(res.data.data.list){
+						this.userInfoList =res.data.data.list[0]
+
+					}else{
+						this.$message.error('查询不到个人信息')
+					}
+				})
+			},
+			// 修改密码
+			userUpdatePwd(){
+				
+			}
 		},
 		mounted() {
-
+			let userID = localStorage.getItem('userID');
+			if(userID){
+				this.userID = userID
+			}else{
+				this.$message.error('查询不到个人信息')
+			}
 		}
 	};
 </script>

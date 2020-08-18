@@ -17,7 +17,7 @@
 							<span slot="label">
 								<i class="icon el-icon-user-solid"></i>
 							</span>
-							<el-input size="medium" :placeholder="placeholder" v-model="param.username" class="i">
+							<el-input size="medium" :placeholder="placeholder" v-model="param.username" class="i" v-on:blur="vcodeRefresh">
 							</el-input>
 						</el-form-item>
 						<el-form-item prop="password">
@@ -33,7 +33,7 @@
 							</span>
 							<el-input size="medium" placeholder="验证码" v-model="param.code" class="i"></el-input>
 							<img class="main_content_login_img_vcode" style="height:32px;width:100px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);"
-							 :src="vcodeimg" alt="验证码" @click="vcode()">
+							 :src="vcodeimg" alt="验证码" @click="vcodeRefresh" >
 						</el-form-item>
 						<el-button type="primary" @click="submitForm()" class="submit">登录</el-button>
 					</el-form>
@@ -43,11 +43,11 @@
 				</div>
 			</div>
 			<div class="right-nav">
-				<div class="navigation" @click="identity('admin')">管理员登录</div>
-				<div class="navigation" @click="identity('user')">专家登录</div>
-				<div class="navigation" @click="identity('school')">学校登录</div>
-				<div class="navigation" @click="identity('teacher')">教师登录</div>
-				<div class="navigation" @click="identity('student')">学生登录</div>
+				<div class="navigation"  @click="identity('admin')">管理员登录</div>
+				<div class="navigation"  @click="identity('user')">专家登录</div>
+				<div class="navigation"  @click="identity('school')">学校登录</div>
+				<div class="navigation"  @click="identity('teacher')">教师登录</div>
+				<div class="navigation"  @click="identity('student')">学生登录</div>
 			</div>
 		</div>
 	</div>
@@ -68,7 +68,7 @@
 				param: {
 					country: '',
 					username: '',
-					password: '123456',
+					password: '',
 					code: '',
 				},
 				vcodeimg: require("../../../assets/img/img_gray_sample.jpg"),
@@ -134,6 +134,7 @@
 				}
 				//记录现在谁登录
 				this.type = name;
+				// console.log(this.type)
 				let type = localStorage.setItem('loginUserType', this.type);
 				this.type == 'student' ?
 					(this.placeholder = '身份证号码',
@@ -170,13 +171,20 @@
 					)
 			},
 			//获取验证码
-			vcode() {
-				userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
+			vcodeRefresh(){
+				if(this.param.username){
+					this.vcodeimg = "/api/user/account/vcodeimg?key="+this.param.username+"&d=" + new Date().getTime()
+				}
+				
 			},
+			// vcode() {
+			// 	userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
+			// },
 			submitForm() {
 				this.$refs.login.validate((valid) => {
 					if (valid) {
 						let type = localStorage.getItem('loginUserType')
+						console.log(type)
 						let form = this.param;
 						let data
 						type == 'student' ? (data = {
@@ -190,12 +198,15 @@
 						})
 						userLogin(`${type}`, data).then(res => {
 							let wd = res.data;
+							// console.log(res)
 							switch (wd.stateCode) {
 								case 200:
 									//存登录数据
 									localStorage.setItem('loginToken', wd.data.token)
 									localStorage.setItem('userID', wd.data.id)
 									localStorage.setItem('userName', wd.data.name)
+									// localStorage.setItem('userType',type)
+
 									this.$message.success('登录成功')
 									this.$router.push(`/index_${type}`)
 									break;
@@ -233,7 +244,8 @@
 		},
 		mounted() {
 			let loginUserType = localStorage.getItem('loginUserType')
-			userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
+			localStorage.setItem('loginUserType', this.type);
+			// userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
 		}
 	};
 </script>
@@ -418,5 +430,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+	.slectColor{
+		background-color:#409EFF ;
 	}
 </style>

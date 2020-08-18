@@ -27,6 +27,11 @@ export function studentIndex(data){
 }
 //试卷标签查询
 export function selectTag(data){
-	const result =get('/api/tag/selectByChild',data)
+	const result =get('/api/tag/selectByChild'+'?d=' + new Date() * 1,data)
+	return result;
+}
+// 学生信息
+export function StudentAccountInfo(data){
+	const result =post('/api/student/account/selectListByOptions',data)
 	return result;
 }

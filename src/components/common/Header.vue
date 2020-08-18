@@ -1,5 +1,5 @@
 <template>
-	<div class="header">
+	<div class="header" :style="{ 'background-color': getColor }">
 		<!-- 折叠按钮 -->
 		<!-- <div class="collapse-btn" @click="collapseChage">
             <i v-if="!collapse" class="el-icon-s-fold"></i>
@@ -50,7 +50,8 @@ export default {
 			fullscreen: false,
 			username: '',
 			message: 2,
-			bg_color: ''
+			bg_color: '',
+			getColor:''
 		};
 	},
 	methods: {
@@ -58,7 +59,7 @@ export default {
 		handleCommand(command) {
 
 			var token = localStorage.getItem('loginToken');
-			userLoginOut('',{'token':token}).then(res=>{
+			userLoginOut({}).then(res=>{
 				console.log(res.data)
 				if(res.data.result){
 					 localStorage.clear();
@@ -100,13 +101,21 @@ export default {
 				}
 			}
 			this.fullscreen = !this.fullscreen;
-		}
+		},
+		// getColor(){
+
+		// }
 	},
 	mounted() {
 		this.username = localStorage.getItem('userName');
+		this.loginUserType = localStorage.getItem('loginUserType')
 		if (document.body.clientWidth < 1500) {
 			this.collapseChage();
 		}
+		if(this.loginUserType == 'student'){
+			this.getColor ='rgb(25, 174, 251)'
+		}
+		console.log(this.getColor)
 		this.bg_color = user().color;
 	}
 };
@@ -155,7 +164,7 @@ export default {
 	text-align: center;
 	border-radius: 15px;
 	cursor: pointer;
-	color: #409eff;
+	/* color: #409eff; */
 }
 .btn-bell-badge {
 	position: absolute;
@@ -176,11 +185,11 @@ export default {
 }
 .username {
 	font-size: 18px;
-	color: #333333;
+	/* color: #333333; */
 }
 .user-school {
 	font-size: 14px;
-	color: rgba(166, 166, 166, 1);
+	/* color: rgba(166, 166, 166, 1); */
 }
 
 .user-name {
