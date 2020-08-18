@@ -1,6 +1,6 @@
 .box{color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;height: 100%;padding: 36px;display: flex;}
 
-.left-box{width: 40%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;}
+.left-box{width: 33%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;}
 .left-box .user-img{width: 90px;height: 90px;border-radius: 50%;}
 .left-box .card-top{display: flex;align-items: center;justify-content: center;flex-direction: column;}
 .left-box .user-top{width: 100%;margin-top: 30px;}
@@ -23,30 +23,18 @@
 .left-box .particular-change{font-size: 16px;color: rgba(153, 153, 153, 1);margin-left: 18px;}
 .left-box .icon2{font-size: 25px;font-weight: bold;color: rgba(153, 153, 153, 1);margin-left: auto;}
 
-.right-box{width: 75%;padding: 0 34px;margin-left: 20px;}
-
+/* 中间 */
+.middle-box{width: 33%;padding: 34px;margin-left: 20px;background-color: #FFFFFF;position: relative;}
 .message-top {margin-bottom: 24px;border-left: 8px solid #19ADFB;display: flex;align-items: center;padding-left: 10px;font-weight: bold;font-size: 20px;padding-top: 2px;padding-bottom: 2px;}
+.message-box{margin:26px 0;}
+.message-box .i{margin-top: 8px;}
+.message-box .bottom-box{display: flex;justify-content: center;color: #FFFFFF;position: absolute;bottom: 42px;width: calc(100% - 34px);}
+.message-box .bottom{color: #FFFFFF;background-color: #2BBB61;}
+.message-box .bottom-i{color: #FFFFFF;background-color: #2BBB61;}
+.message-box .bottom-i.ii{background-color: #FFFFFF;color: #333333;}
 
-
-.right-box .upload-papers{margin-top: 22px;}
-.right-box .buttom{margin-left: 20px;}
-.right-box .ranking{margin-right: 12px;color: #2BBB61;font-size: 18px;}
-.right-box .li-box{display: flex;padding: 10px 25px;background-color: #FFFFFF;align-items: center;border-radius: 4px;}
-.li-box+.li-box{margin-top: 10px;}
-.right-box .label{width: 50px;height: 50px;background-color: rgba(212, 212, 212, 1);border-radius: 50%;}
-.right-box .teacher{font-size: 14px;color: #19ADFA;margin: 0 12px;max-width: 55px;}
-.right-box .papers-box{margin-left: 18px;width: calc( 100% - 50px);display: flex;flex-direction: column;}
-.right-box .p-title{font-size: 16px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;display: flex;}
-.right-box .label-box{display: flex;flex-wrap: wrap;}
-.label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}
-.label:nth-child(1n+1){background-color: #fb4919;}
-.label:nth-child(2n+2){background-color: #19aefb;}
-.label:nth-child(3n+3){background-color: #2bbb61;}
-.right-box .p-particular{font-size: 16px;color: #999999;margin-top: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;display: flex;}
-.p-particular div+div{margin-left: 24px;}
-.p-particular .fault{color: #E2633B;cursor: pointer;}
-.right-box .close{color: #a6a6a6;font-size:20px;margin-left: auto;display: flex;align-items: center;font-weight: bold;cursor: pointer;}
-
+/* 右边 */
+.right-box{width: 33%;padding: 34px;margin-left: 20px;background-color: #FFFFFF;position: relative;}
 
 
 .page{font-size: 18px;color: #a6a6a6;text-align: center;margin-top: 18px;}

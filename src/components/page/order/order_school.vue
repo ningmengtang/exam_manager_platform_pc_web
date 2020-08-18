@@ -35,8 +35,8 @@
 				</el-form-item>
 			</el-form>
 			<div class="buttom-box">
-				<el-button class="buttom-true" :style="{'background-color':color}">确认订购</el-button>
-				<el-button class="buttom-false">取消订购</el-button>
+				<el-button class="buttom-true" :style="{'background-color':color}" @click="black()">确认订购</el-button>
+				<el-button class="buttom-false" @click="black()">取消订购</el-button>
 			</div>
 		</div>
 		<!-- 右边 -->
@@ -118,24 +118,6 @@
 				</div>
 				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
 				<div class="student-box">
-					<!-- 	<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-						<el-table-column type="selection" width="55"></el-table-column>
-						<el-table-column label="学号" width="120">
-							<template slot-scope="scope">
-								{{ scope.row.date }}
-							</template>
-						</el-table-column>
-						<el-table-column prop="name" label="名字" width="120">
-							<template slot-scope="scope">
-								<div style="display: flex;align-items: center;">
-									<img src="../../../assets/img/img.jpg" class="user-img" />
-									<div class="student-name">{{ scope.row.name }}</div>
-								</div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="class" label="班级" show-overflow-tooltip></el-table-column>
-					</el-table> -->
 					<div class="page">
 						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 						 :current-page.sync="currentPage" :page-size="100" :total="1000">
@@ -160,7 +142,7 @@
 		<!-- 操作二 -->
 		<el-dialog title="" :visible.sync="dialogTableVisible2">
 			<div class="ts-select i">
-				<div class="t-title">试卷信息导入向导<el-progress :percentage="50"></el-progress>
+				<div class="t-title">试卷信息导入向导<el-progress :percentage="percentage"></el-progress>
 				</div>
 				<div class="t-box">
 					<div class="t-left">
@@ -168,6 +150,13 @@
 						<div class="choice">1.<span class="i">2017、人教版、英语、一年级、第一单元 </span></div>
 						<div class="choice">2.<span class="i">2017、人教版、英语、一年级、第一单元 </span></div>
 						<div class="lead">请导入 <span class="i">[一年级]</span> 信息</div>
+						<el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
+							<i class="el-icon-upload"></i>
+							<div class="el-upload__text">
+								将文件拖到此处，或
+								<em>点击上传</em>
+							</div>
+						</el-upload>
 					</div>
 					<div class="t-right">
 						<div class="log">导入日志</div>
@@ -187,7 +176,7 @@
 						<div></div>
 						<div class="block-a">
 							<el-button @click="toggleSelection()" class="out">稍后导入</el-button>
-							<el-button @click="submit()" class="affirm">下一步</el-button>
+							<el-button @click="netx()" class="affirm">下一步</el-button>
 						</div>
 					</div>
 
@@ -212,6 +201,7 @@
 				array_nav4: [],
 				array_nav5: [],
 				array_nav9: [],
+				percentage:50,
 				cities: ['全部', '分发完成', '正在分发', '分发失败'],
 				class2: ['全部', '一年级', '二年级', '三年级'],
 				class1: ['全部', '一班', '二班', '三班'],
@@ -343,6 +333,13 @@
 				//关闭窗口
 				this.dialogTableVisible = false;
 				this.dialogTableVisible2 = true;
+			},
+			netx(){
+				this.percentage=100;
+			   this.dialogTableVisible2 = false;
+			},
+			black(){
+				this.$router.push('manage_school')
 			}
 		},
 		mounted() {
