@@ -4,57 +4,57 @@
 			<div class="row-group">
 				<div class="th-group">分发状态</div>
 				<div class="td-group" change>
-					<el-checkbox-group v-model="array_nav" @change="getValue()">
-						<el-checkbox-button v-for="(d,i) in tag" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-					</el-checkbox-group>
+					<el-radio-group v-model="disStatus" @change="getQuery">
+						<el-radio-button v-for="(itme,index) in DisStatusList" :label="itme.text"></el-radio-button>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">年份</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav_2" @change="getValue()">
-						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
-					</el-checkbox-group>
+					<el-radio-group v-model="years" @change="getQuery">
+						<el-radio-button v-for="(itme,index) in YearsList" :label="itme.text"></el-radio-button>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">教材版本</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav_3" @change="getValue()">
-						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
-					</el-checkbox-group>
+					<el-radio-group v-model="version" @change="getQuery">
+						<el-radio-button v-for="(itme,index) in VersionList" :label="itme.text"></el-radio-button>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">学习科目</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav_4" @change="getValue()">
-						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
-					</el-checkbox-group>
+					<el-radio-group v-model="subject" @change="getQuery">
+						<el-radio-button v-for="(itme,index) in SubjectList" :label="itme.text"></el-radio-button>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">学习年级</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav_5" @change="getValue()">
-						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
-					</el-checkbox-group>
+					<el-radio-group v-model="grade" @change="getQuery">
+						<el-radio-button v-for="(itme,index) in GradeList" :label="itme.text"></el-radio-button>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">单元测试</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav_6" @change="getValue()">
-						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
-					</el-checkbox-group>
+					<el-radio-group v-model="elementTest" @change="getQuery">
+						<el-radio-button v-for="(itme,index) in ElementTextList" :label="itme.text"></el-radio-button>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">试卷用途</div>
 				<div class="td-group">
-					<el-checkbox-group v-model="array_nav_7" @change="getValue()">
-						<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{city2}}</el-checkbox-button>
-					</el-checkbox-group>
+					<el-radio-group v-model="purpose" @change="getQuery">
+						<el-radio-button v-for="(itme,index) in PurposeList" :label="itme.text"></el-radio-button>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="search">
@@ -129,17 +129,30 @@
 	</div>
 </template>
 <script>
-	import {selectTag} from '@/api/api.js'
+	import {selectTag,ApiTagSelectList} from '@/api/api.js'
 	export default {
 		data() {
 			return {
-				tag:['全部'],
-				tag2:['全部'],
-				tag3:['全部'],
-				tag4:['全部'],
-				tag5:['全部'],
-				tag6:['全部'],
-				tag7:['全部'],
+				DisStatusList:[],
+				ElementTextList:[],
+				PurposeList:[],
+				SubjectList:[],
+				GradeList:[],
+				VersionList:[],
+				YearsList:[],
+				disStatus:'全部',
+				elementTest:'全部',
+				purpose:'全部',
+				subject:'全部',
+				grade:'全部',
+				version:'全部',
+				years:'全部',
+				// tag2:['全部'],
+				// tag3:['全部'],
+				// tag4:['全部'],
+				// tag5:['全部'],
+				// tag6:['全部'],
+				// tag7:['全部'],
 				array_nav: [], //存储el-chckbox数组
 				array_nav_2: [],
 				array_nav_3: [],
@@ -147,6 +160,8 @@
 				array_nav_5: [],
 				array_nav_6: [],
 				array_nav_7: [],
+				TagType:[],
+				TagTypeList:[],
 				search: '',
 				currentPage: 1,
 				dialogVisible: false,
@@ -173,18 +188,145 @@
 						done();
 					})
 					.catch(_ => {});
+			},
+			getQuery(){
+				// console.log(this.disStatus)
+				// console.log(this.elementTest)
+				// console.log(this.purpose)
+				// console.log(this.subject)
+				// console.log(this.grade)
+				// console.log(this.version)
+				// console.log(this.years)
+				// switch(''){
+
+				// }
+			},
+			TagTypePromise(tagType,index){
+				return new Promise((resolve,reject)=>{
+					ApiTagSelectList({
+						"pageSize":999,
+						"pageNum":1,
+						"parentId":tagType.id
+					}).then(res=>{
+						let all = [{
+							"id":null,
+							"sn":null,
+							"text":'全部'
+						}]
+						let children = all.concat(res.data.data.list)
+						switch(tagType.text){
+							case '分发状态':
+								this.DisStatusList = children
+							break;
+							case '年份':
+								this.YearsList = children
+							break;
+							case '教材版本':
+								this.VersionList = children
+							break;
+							case '学习科目':
+								this.SubjectList = children
+							break;
+							case '学习年级':
+								this.GradeList = children
+							break;
+							case '单元测试':
+								this.ElementTextList = children
+							break;
+							case '试卷用途':
+								this.PurposeList= children
+							break;
+						}
+						// this.TagTypeList.push({
+						// 	"id":tagType.id,
+						// 	"sn":tagType.sn,
+						// 	"parentId":tagType.parentId,
+						// 	"text":tagType.text,
+						// 	"children":res.data.data.list
+						// })
+						resolve(res)
+					})
+				})
+			},
+			async getTypeList(tagType,index){
+				await this.TagTypePromise(tagType,index)
+				// return n 
 			}
+
 		},
 		mounted() {
-          selectTag().then(res=>{
-			 let tag=res.data.data;
-			 console.log(tag)
-			 this.tag=this.tag.push(tag['8']['text'])
-			 console.log(tag['8'][0]['text'])
-			 
-		  }).catch(err=>{
-			  console.log(err)
-		  })
+			this.TagTypeList = []
+			ApiTagSelectList({
+				"parentId":0,
+				"pageSize":999,
+				"pageNum":1
+			}).then(res=>{
+				console.log(res)
+				this.TagType = res.data.data.list
+				var arr = []
+				for(var i=0;i<this.TagType.length;i++){
+					this.getTypeList(this.TagType[i],i)
+				}
+			})
+			// 全部试卷查询
+			studentIndex({
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res=>{
+				console.log(res)
+				
+			})
+
+			
+			// selectTag().then(res=>{
+			// 	// console.log(res)
+			// 	let data = res.data.data
+			// 	console.log(data)
+			// 	for(let i in data){
+			// 		// console.log(i)
+			// 		if(i == 'dis_status'){
+			// 			for(let a=0;a<data[i].length;a++){
+			// 				this.DisStatusList.push(data[i][a])
+			// 			}
+			// 		}else if(i == 'element_test'){
+			// 			for(let a=0;a<data[i].length;a++){
+			// 				this.ElementTextList.push(data[i][a])
+			// 			}
+			// 			// this.ElementTextList.push(data[i])
+			// 		}else if(i == 'purpose'){
+			// 			for(let a=0;a<data[i].length;a++){
+			// 				this.PurposeList.push(data[i][a])
+			// 			}
+			// 			// this.PurposeList.push(data[i])
+			// 		}else if(i == 'subject'){
+			// 			for(let a=0;a<data[i].length;a++){
+			// 				this.SubjectList.push(data[i][a])
+			// 			}
+			// 			// this.SubjectList.push(data[i])
+			// 		}else if(i == 'grade'){
+			// 			for(let a=0;a<data[i].length;a++){
+			// 				this.GradeList.push(data[i][a])
+			// 			}
+			// 			// this.GradeList.push(data[i])
+			// 		}else if(i == 'version'){
+			// 			for(let a=0;a<data[i].length;a++){
+			// 				this.VersionList.push(data[i][a])
+			// 			}
+			// 			// this.VersionList.push(data[i])
+			// 		}else if(i == 'years'){
+			// 			for(let a=0;a<data[i].length;a++){
+			// 				this.YearsList.push(data[i][a])
+			// 			}
+			// 			// this.YearsList.push(data[i])
+			// 		}
+					
+			// 	}
+			// 	console.log(this.DisStatusList)
+				
+			// }).catch(err=>{
+			// 	console.log(err)
+			// })
+			
 		}
 		
 	};
