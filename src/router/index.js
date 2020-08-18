@@ -32,13 +32,23 @@ export default new Router({
 				},
 				{
 				    path: '/index_admin',
-				    component: () => import(/* webpackChunkName:"index_student"*/ '../components/page/index/index_admin.vue'),
+				    component: () => import(/* webpackChunkName:"index_admin"*/ '../components/page/index/index_admin.vue'),
 				    meta: { title: '管理员-系统首页' }
+				},
+				{
+				    path: '/index_user',
+				    component: () => import(/* webpackChunkName:"index_student"*/ '../components/page/index/index_user.vue'),
+				    meta: { title: '专家-系统首页' }
 				},
 				{
 				    path: '/manage_student',
 				    component: () => import(/* webpackChunkName: "manage_student" */ '../components/page/manage/manage_student.vue'),
 				    meta: { title: '学生-试卷管理' }
+				},
+				{
+				    path: '/manage_user',
+				    component: () => import(/* webpackChunkName: "manage_student" */ '../components/page/manage/manage_user.vue'),
+				    meta: { title: '专家-试卷管理' }
 				},
 				{
 				    path: '/manage_teacher',
@@ -60,6 +70,11 @@ export default new Router({
 				    path: '/manage_teacher_import',
 				    component: () => import(/* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_teacher_import.vue'),
 				    meta: { title: '教师-试卷管理-学生导入' }
+				},
+				{
+				    path: '/manage_user_import',
+				    component: () => import(/* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_teacher_import.vue'),
+				    meta: { title: '教师-专家-提交试卷' }
 				},
 				{
 				    path: '/manage_teacher_submit',
@@ -125,6 +140,11 @@ export default new Router({
 				    path: '/personal_admin',
 				    component: () => import(/* webpackChunkName: "personal_school" */ '../components/page/personal/personal_admin.vue'),
 				    meta: { title: '管理员-个人中心' }
+				},
+				{
+				    path: '/personal_user',
+				    component: () => import(/* webpackChunkName: "personal_user" */ '../components/page/personal/personal_user.vue'),
+				    meta: { title: '专家-个人中心' }
 				},
 				{
 				    path: '/distribution_teacher',
