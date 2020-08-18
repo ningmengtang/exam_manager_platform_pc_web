@@ -43,7 +43,7 @@
 							<div class="card-left">
 								<div class="card-c">全部试卷</div>
 								<div class="card-cc">
-									<ICountUp :endVal="endVal2" />
+									<ICountUp :endVal="total" />
 								</div>
 							</div>
 							<div class="card-right"></div>
@@ -52,9 +52,9 @@
 					<el-col :span="8">
 						<div class="grid-content bg-purple" :style="style.card_2">
 							<div class="card-left">
-								<div class="card-c">全部试卷</div>
+								<div class="card-c">可下载试卷</div>
 								<div class="card-cc">
-									<ICountUp :endVal="endVal2" />
+									<ICountUp :endVal="download" />
 								</div>
 							</div>
 							<div class="card-right" :style="style.cardRight_2"></div>
@@ -63,9 +63,9 @@
 					<el-col :span="8">
 						<div class="grid-content bg-purple" :style="style.card_3">
 							<div class="card-left">
-								<div class="card-c">全部试卷</div>
+								<div class="card-c">失效试卷</div>
 								<div class="card-cc">
-									<ICountUp :endVal="endVal2" />
+									<ICountUp :endVal="disabled" />
 								</div>
 							</div>
 							<div class="card-right" :style="style.cardRight_3"></div>
@@ -86,9 +86,14 @@
 				</div>	
 			</div>
 			<div class="page">
-				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
-				</el-pagination>
+				<el-pagination
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentChange"
+					:current-page="currentPage1"
+					:page-size="pageSize1"
+					layout=" prev, pager, next , total"
+					:total="total1">
+            	</el-pagination>
 			</div>
 		</div>
 	</div>
@@ -96,14 +101,24 @@
 <script>
 	import Schart from 'vue-schart'
 	import ICountUp from 'vue-countup-v2'
-	import {StudentAccountInfo} from '@/api/api.js'
+	import {StudentAccountInfo,studentIndex} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				endVal1: 6,
 				endVal2: 454,
-				currentPage: 1,
 				userID:'',
+
+
+				total:0,
+				total1:0,
+				currentPage1:0,
+				pageSize1:6,
+				pageNum1:1,
+
+				download:0,
+				disabled:0,
+
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -142,6 +157,30 @@
 			handleCurrentChange(val) {
 				console.log(`当前页: ${val}`);
 			},
+			 //改变时
+			handleSizeChange(val) {
+				this.pageSize1 = val;
+				studentIndex({
+					"pageNum":this.pageNum1,
+					"pageSize":this.pageSize1
+				}).then(res=>{
+					this.papers = res.data.data.list
+					this.total1 = res.data.data.total
+					this.currentPage1 = res.data.data.pageNum
+				})
+			},
+			//条目改变时
+			handleCurrentChange(val) {
+				this.pageNum1 = val;
+				studentIndex({
+					"pageNum":this.pageNum1,
+					"pageSize":this.pageSize1
+				}).then(res=>{
+					this.papers = res.data.data.list
+					this.total1 = res.data.data.total
+					this.currentPage1 = res.data.data.pageNum
+				})
+			},
 			userInfo(){
 				StudentAccountInfo({
 					"id":this.userID
@@ -166,6 +205,41 @@
 			}else{
 				this.$message.error('查询不到个人信息')
 			}
+			
+			// 统计数据全部数据
+			this.total  = 0
+			this.download = 0
+			this.disabled = 0
+			studentIndex({
+				"pageNum":1,
+				"pageSize":999
+			}).then(res=>{
+				if(res.data.data.list){
+					// console.log(res)
+					// let list = res.data.data.list
+
+					// for(var i=0;i<list.length;i++){
+					// 	if(list[i].status == 1 ){
+					// 		this.download++
+					// 	}else if(list[i].status == 0){
+					// 		this.disabled++
+					// 	}
+					// }
+					this.total  =  res.data.data.total
+					this.disabled = res.data.data.disabled
+					this.download = res.data.data.download
+				}
+			})
+			studentIndex({
+				"pageNum":this.pageNum1,
+				"pageSize":this.pageSize1
+			}).then(res=>{
+				console.log(res)
+				// this.papers = res.data.data.list
+				// console.log(this.papers)
+				this.total1 = res.data.data.total
+				this.currentPage1 = res.data.data.pageNum
+			})
 		}
 	};
 </script>

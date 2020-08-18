@@ -123,15 +123,9 @@
 				"pageSize":999
 			}).then(res=>{
 				if(res.data.data.list){
-					let list = res.data.data.list
-					for(var i=0;i<list.length;i++){
-						if(list[i].status == 1 ){
-							this.download++
-						}else if(list[i].status == 0){
-							this.disabled++
-						}
-					}
-					this.total  =  list.total
+					this.total  =  res.data.data.total
+					this.disabled = res.data.data.disabled
+					this.download = res.data.data.download
 				}
 			})
 			studentIndex({
@@ -211,8 +205,12 @@
 </script>
 
 <style scoped src="../../../assets/css/index.css"></style>
-<style scoped>
-	.header{
-		background-color:rgb(25, 174, 251);
+// 修改element 自带样式
+<style >
+	.el-pagination button:disabled {
+		background-color: #f5f5f5;
+	}
+	.el-pager li.active{
+		background-color: #f5f5f5;
 	}
 </style>
