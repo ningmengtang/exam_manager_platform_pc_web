@@ -32,7 +32,7 @@
 								<i class="icon el-icon-thirdyanzhengmatianchong"></i>
 							</span>
 							<el-input size="medium" placeholder="验证码" v-model="param.code" class="i"></el-input>
-							<img class="main_content_login_img_vcode" style="height:32px;width:100px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);"
+							<img class="main_content_login_img_vcode" style="height:50px;width:120px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);"
 							 :src="vcodeimg" alt="验证码" @click="vcodeRefresh" >
 						</el-form-item>
 						<el-button type="primary" @click="submitForm()" class="submit">登录</el-button>

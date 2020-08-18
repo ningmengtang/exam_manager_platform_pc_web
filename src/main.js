@@ -38,22 +38,14 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title
   }
   const role  = localStorage.getItem('loginUserType');
-  const token  = localStorage.getItem('userToken');
-  // if(!role &&to.path !=='/login'){
-	 //  next('/login');
-	 //  if(role==''&&token==''){
-		//   next('/login');
-	 //  }
-  // }
-  // else{
-  //    	   next()
-  // }
-  // if(to.path.indexOf(`role`)==-1&&to.path !=='/login'){
-  // 		 next('/login');
-  // }else{
-  // 		   next()
-  // }
- next()
+  const token  = localStorage.getItem('loginToken');
+  if(!role && !token && to.path !== '/login'){
+        next('/login');
+  }else if(role && token && to.path == '/login'){
+        next(`/index_${role}`)
+  }else{
+      next()
+  }
 });
 
 // router.beforeEach((to, from, next) => {
