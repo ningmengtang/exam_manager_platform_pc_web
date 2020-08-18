@@ -5,13 +5,15 @@
 .group /deep/ .el-checkbox-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
 .group /deep/ .el-checkbox-button.is-checked .el-checkbox-button__inner {background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);}
 .group /deep/ .el-checkbox-button--small .el-checkbox-button__inner{font-size: 14px;}
-.row-group .th-group{font-size: 14px;margin-right: 14px;padding: 8px 22px;}
+.row-group .th-group{font-size: 14px;margin-right: 14px;padding: 8px 22px;min-width: 100px;}
 .row-group .td-group{font-size: 14px;}
 
 .search{height: 50px;background-color: #FFFFFF;border-radius: 8px;display: flex;align-items: center;padding: 0 20px ;margin-top: 25px;margin-bottom: ;}
 .search /deep/ .el-input{width:auto;}
-.search /deep/ .el-input__inner{width: 400px;height: 36px;}
-.search /deep/ .el-button--mini, .el-button--small{border-radius: 0 8px 8px 0;}
+.search /deep/ .el-input__inner{width: 400px;height: 36px;line-height: 36px;}
+.search /deep/ .el-input--small .el-input__icon{line-height: 36px;}
+/* .search /deep/ .el-button--mini, .el-button--small{height: 36px;} */
+.search .go{height: 36px;}
 .search .cancel {margin-left:20px;font-size: 14px;color:rgba(80, 80, 80, 1)}
 
 .particular{margin-top: 10px;}
@@ -31,11 +33,13 @@
 
 .label+.label{margin-left: 15px;}
 .right{margin-left: auto;align-items: center;}
-.icon{font-size: 25px;color: rgba(166, 166, 166, 1);font-weight: bold;margin-right: 8px;}
+.icon{font-size: 25px;color: rgba(166, 166, 166, 1);margin-right: 8px;}
 .right .status_box{display: flex;align-items: center;}
 .right .status{margin-left: 16px;font-size: 16px;margin-right: 20px;}
 .right .hover{color: #fb4919;}
 .right .text{margin-right: 20px;}
+.right .i{color: #999999;}
+.right .ii{color: #2BBB61;}
 .right .download{display: inline-flex;justify-content: center;align-items: center;color: #FFFFFF;border-radius: 4px;background-color:rgba(166, 166, 166, 1);font-size:16px;padding: 12px 20px ;}
 .right .download.hover{background-color:#FFFFFF;color: #fb4919;border: 1px solid #fb4919;}
 

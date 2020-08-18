@@ -31,6 +31,11 @@ export default new Router({
 				    meta: { title: '学校-系统首页' }
 				},
 				{
+				    path: '/index_admin',
+				    component: () => import(/* webpackChunkName:"index_student"*/ '../components/page/index/index_admin.vue'),
+				    meta: { title: '管理员-系统首页' }
+				},
+				{
 				    path: '/manage_student',
 				    component: () => import(/* webpackChunkName: "manage_student" */ '../components/page/manage/manage_student.vue'),
 				    meta: { title: '学生-试卷管理' }
@@ -42,8 +47,13 @@ export default new Router({
 				},
 				{
 				    path: '/manage_school',
-				    component: () => import(/* webpackChunkName: "manage_teacher" */ '../components/page/manage/manage_school.vue'),
+				    component: () => import(/* webpackChunkName: "manage_school" */ '../components/page/manage/manage_school.vue'),
 				    meta: { title: '学校-试卷管理' }
+				},
+				{
+				    path: '/manage_admin',
+				    component: () => import(/* webpackChunkName: "manage_teacher" */ '../components/page/manage/manage_admin.vue'),
+				    meta: { title: '管理员-试卷管理' }
 				},
 				
 				{
@@ -57,9 +67,29 @@ export default new Router({
 				    meta: { title: '教师-试卷管理-提交试卷' }
 				},
 				{
+				    path: '/manage_admin_affirm',
+				    component: () => import(/* webpackChunkName: "manage_teacher" */ '../components/page/manage/manage_admin_affirm.vue'),
+				    meta: { title: '管理员-试卷管理-试卷确认' }
+				},
+				{
 				    path: '/order_school',
 				    component: () => import(/* webpackChunkName: "order_school" */ '../components/page/order/order_school.vue'),
 				    meta: { title: '学校-订购管理' }
+				},
+				{
+				    path: '/order_school_add',
+				    component: () => import(/* webpackChunkName: "order_school_add" */ '../components/page/order/order_school_add.vue'),
+				    meta: { title: '学校-订购管理-新增订购' }
+				},
+				{
+				    path: '/order_admin',
+				    component: () => import(/* webpackChunkName: "order_admin" */ '../components/page/order/order_admin.vue'),
+				    meta: { title: '管理员-订购管理' }
+				},
+				{
+				    path: '/order_admin_add',
+				    component: () => import(/* webpackChunkName: "order_admin_add" */ '../components/page/order/order_admin_add.vue'),
+				    meta: { title: '管理员-订购管理-新增订购' }
 				},
 				{
 				    path: 'manage_school_subordinate',
@@ -88,13 +118,33 @@ export default new Router({
 				},
 				{
 				    path: '/personal_school',
-				    component: () => import(/* webpackChunkName: "personal_teacher" */ '../components/page/personal/personal_school.vue'),
+				    component: () => import(/* webpackChunkName: "personal_school" */ '../components/page/personal/personal_school.vue'),
 				    meta: { title: '学校-个人中心' }
 				},
 				{
+				    path: '/personal_admin',
+				    component: () => import(/* webpackChunkName: "personal_school" */ '../components/page/personal/personal_admin.vue'),
+				    meta: { title: '管理员-个人中心' }
+				},
+				{
 				    path: '/distribution_teacher',
-				    component: () => import(/* webpackChunkName: "personal_teacher" */ '../components/page/distribution/distribution_teacher.vue'),
+				    component: () => import(/* webpackChunkName: "distribution_teacher" */'../components/page/distribution/distribution_teacher.vue'),
 				    meta: { title: '教师-试卷分发' }
+				},
+				{
+				    path: '/distribution_admin',
+				    component: () => import(/* webpackChunkName: "distribution_admin" */ '../components/page/distribution/distribution_admin.vue'),
+				    meta: { title: '管理员-试卷分发' }
+				},
+				{
+				    path: '/distribution_admin_affirm',
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_affirm.vue'),
+				    meta: { title: '管理员-试卷分发-试卷确认' }
+				},
+				{
+				    path: '/user_control',
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/user/user_control.vue'),
+				    meta: { title: '管理员-用户管理' }
 				}
 				
 				

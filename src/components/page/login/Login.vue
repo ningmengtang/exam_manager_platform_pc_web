@@ -274,8 +274,8 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
-		background-image: url(../../../assets/img/login.jpg);
-		background-size: 100%;
+		background-image: url(../../../assets/img/login.png);
+		background-size: cover;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -288,7 +288,6 @@
 
 	.form-login {
 		width: 331px;
-		height: 500px;
 		background-color: rgb(249 249 249 / 0.9);
 		border-radius: 20px;
 		box-shadow: 0px 0px 20px 0px rgba(25, 18, 18, 0.3);

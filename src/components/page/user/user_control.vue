@@ -3,18 +3,52 @@
 		<div class="top">
 			<div class="group">
 				<div class="row-group">
-					<div class="th-group">订单状态</div>
+					<div class="th-group">用户类型</div>
 					<div class="td-group" change>
 						<el-checkbox-group v-model="array_nav" @change="getValue()">
-							<el-checkbox-button v-for="(city,k) in cities" :label="city" :key="city">{{ city }}</el-checkbox-button>
+							<el-checkbox-button v-for="(d,k) in userType" :label="d" :key="city">{{ d }}</el-checkbox-button>
+						</el-checkbox-group>
+					</div>
+				</div>
+			</div>
+			<div class="group">
+				<div class="row-group">
+					<div class="th-group">用户状态</div>
+					<div class="td-group" change>
+						<el-checkbox-group v-model="array_nav2" @change="getValue()">
+							<el-checkbox-button v-for="(d,k) in userState" :label="d" :key="city">{{ d }}</el-checkbox-button>
+						</el-checkbox-group>
+					</div>
+				</div>
+			</div>
+			<div class="group">
+				<div class="row-group">
+					<div class="th-group">年级</div>
+					<div class="td-group" change>
+						<el-checkbox-group v-model="array_nav3" @change="getValue()">
+							<el-checkbox-button v-for="(d,k) in grade" :label="d" :key="city">{{ d }}</el-checkbox-button>
+						</el-checkbox-group>
+					</div>
+				</div>
+			</div>
+			<div class="group">
+				<div class="row-group">
+					<div class="th-group">班级</div>
+					<div class="td-group" change>
+						<el-checkbox-group v-model="array_nav4" @change="getValue()">
+							<el-checkbox-button v-for="(d,k) in classNum" :label="d" :key="city">{{ d }}</el-checkbox-button>
 						</el-checkbox-group>
 					</div>
 				</div>
 			</div>
 			<div class="search">
 				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
-				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增订购单</el-button>
+				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button>
+				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增教师</el-button>
+				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增学生</el-button>
+				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增学校</el-button>
+				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增专家</el-button>
+				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增管理员</el-button>
 			</div>
 		</div>
 		<!-- 管理 -->
@@ -34,14 +68,16 @@
 					<div class="label">一年级</div>
 				</div>
 				<div class="right">
-					<div class="ii" >
+					<div class="ii">
 						<div class="status_box">
-							<i class="icon el-icon-loading ii"></i>
-							<span class="text ii">正在确认</span>
-						    <el-button class="cancel">取消订购</el-button>
+							<i class="icon el-icon-check ii"></i>
+							<span class="text ii">正常使用</span>
+							<i class="icon i el-icon-close  ii" style="cursor: pointer;"></i>
 						</div>
 					</div>
-					
+					<!-- <span v-else-if="data.o == '2'" style="display: contents;">
+						<el-button type="text" class="download hover" @click="submit">立即分发</el-button>
+					</span> -->
 				</div>
 			</div>
 			<div class="page">
@@ -138,15 +174,15 @@
 				multipleSelection: [],
 				currentPage: 1,
 				dialogVisible: false,
-				cities: ['全部', '分发完成', '正在分发', '分发失败'],
-				class2: ['全部', '一年级', '二年级', '三年级'],
-				class1: ['全部', '一班', '二班', '三班'],
-				student: [1, 2, 3, 4, 5],
+				userType: ['全部', '管理员', '题库专家', '学校','教师','学生'],
+				userState: ['全部', '正常', '冻结', '注销'],
+				grade: ['全部', '一班', '二班', '三班'],
+				classNum: ['全部', '一班', '二班', '三班'],
 				checkboxGroup2: ['上海'],
 				li: [{
 						teacher: '古得老师',
 						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '北京师范小学 教师',
+						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
 						time: '2020年10月11日上传',
 						label: '2019',
 						o: '1'
@@ -154,7 +190,7 @@
 					{
 						teacher: '古得老师',
 						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '北京师范小学 教师',
+						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
 						time: '2020年10月11日上传',
 						label: '2019',
 						o: '2'
@@ -222,11 +258,8 @@
 				}
 			},
 			submit() {
-				//关闭窗口
-				this.dialogTableVisible = false;
-			},
-			goAdd(){
-				this.$router.push('order_admin_add')
+				//go
+				this.$router.push('distribution_admin_affirm')
 			}
 		},
 		mounted() {
@@ -235,4 +268,4 @@
 	};
 </script>
 
-<style scoped src="../../../assets/css/order.css"></style>
+<style scoped src="../../../assets/css/distribution.css"></style>
