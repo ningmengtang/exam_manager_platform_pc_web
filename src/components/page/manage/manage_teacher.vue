@@ -7,7 +7,7 @@
 						<div class="th-group">分发状态</div>
 						<div class="td-group" change>
 							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city in cities" :label="city" :key="city">{{ city }}</el-checkbox-button>
+								<el-radio-button v-for="city in cities" :label="city" :key="city">{{ city }}</el-radio-button>
 							</el-checkbox-group>
 						</div>
 					</div>
@@ -15,7 +15,7 @@
 						<div class="th-group">年份</div>
 						<div class="td-group">
 							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
+								<el-radio-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-radio-button>
 							</el-checkbox-group>
 						</div>
 					</div>
@@ -23,7 +23,7 @@
 						<div class="th-group">教材版本</div>
 						<div class="td-group">
 							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
+								<el-radio-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-radio-button>
 							</el-checkbox-group>
 						</div>
 					</div>
@@ -31,7 +31,7 @@
 						<div class="th-group">学习科目</div>
 						<div class="td-group">
 							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
+								<el-radio-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-radio-button>
 							</el-checkbox-group>
 						</div>
 					</div>
@@ -39,7 +39,7 @@
 						<div class="th-group">学习年级</div>
 						<div class="td-group">
 							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
+								<el-radio-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-radio-button>
 							</el-checkbox-group>
 						</div>
 					</div>
@@ -47,7 +47,7 @@
 						<div class="th-group">单元测试</div>
 						<div class="td-group">
 							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
+								<el-radio-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-radio-button>
 							</el-checkbox-group>
 						</div>
 					</div>
@@ -55,7 +55,7 @@
 						<div class="th-group">试卷用途</div>
 						<div class="td-group">
 							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
+								<el-radio-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-radio-button>
 							</el-checkbox-group>
 						</div>
 					</div>
@@ -228,7 +228,7 @@ export default {
 	color: #2bbb61;
 }
 
-.group /deep/ .el-checkbox-button.is-checked .el-checkbox-button__inner {
+.group /deep/ .el-radio-button__orig-radio:checked+.el-radio-button__inner {
 	background-color: rgb(43, 187, 97);
 	border-color: rgb(43, 187, 97);
 }

@@ -32,9 +32,13 @@
 								<i class="icon el-icon-thirdyanzhengmatianchong"></i>
 							</span>
 							<el-input size="medium" placeholder="验证码" v-model="param.code" class="i"></el-input>
-							<img class="main_content_login_img_vcode" style="height:50px;width:120px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);"
-							 :src="vcodeimg" alt="验证码" @click="vcodeRefresh" >
+							<img class="main_content_login_img_vcode" style="height:32px;width:100px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);"
+							 :src="vcodeimg" alt="验证码" @click="vcodeRefresh">
 						</el-form-item>
+						<el-select v-model="value" placeholder="请选择" class="select"  @change="identity">
+							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+							</el-option>
+						</el-select>
 						<el-button type="primary" @click="submitForm()" class="submit">登录</el-button>
 					</el-form>
 					<div class="forget">
@@ -42,13 +46,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="right-nav">
-				<div class="navigation"  @click="identity('admin')">管理员登录</div>
-				<div class="navigation"  @click="identity('user')">专家登录</div>
-				<div class="navigation"  @click="identity('school')">学校登录</div>
-				<div class="navigation"  @click="identity('teacher')">教师登录</div>
-				<div class="navigation"  @click="identity('student')">学生登录</div>
-			</div>
+			<!-- <div class="right-nav">
+				<div class="navigation" @click="identity('admin')">管理员登录</div>
+				<div class="navigation" @click="identity('user')">专家登录</div>
+				<div class="navigation" @click="identity('school')">学校登录</div>
+				<div class="navigation" @click="identity('teacher')">教师登录</div>
+				<div class="navigation" @click="identity('student')">学生登录</div>
+			</div> -->
 		</div>
 	</div>
 </template>
@@ -71,6 +75,23 @@
 					password: '',
 					code: '',
 				},
+				options: [{
+					label: '学生',
+					value: 'student'
+				}, {
+					label: '教师',
+					value: 'teacher'
+				}, {
+					label: '学校',
+					value: 'school'
+				}, {
+					label: '专家',
+					value: 'user'
+				}, {
+					label: '管理员',
+					value: 'admin'
+				}],
+				value: '学生',
 				vcodeimg: require("../../../assets/img/img_gray_sample.jpg"),
 				rules: {
 					country: [{
@@ -132,6 +153,7 @@
 						document.title = '管理员-登录'
 						break;
 				}
+				console.log(name)
 				//记录现在谁登录
 				this.type = name;
 				// console.log(this.type)
@@ -171,15 +193,12 @@
 					)
 			},
 			//获取验证码
-			vcodeRefresh(){
-				if(this.param.username){
-					this.vcodeimg = "/api/user/account/vcodeimg?key="+this.param.username+"&d=" + new Date().getTime()
+			vcodeRefresh() {
+				if (this.param.username) {
+					this.vcodeimg = "/api/user/account/vcodeimg?key=" + this.param.username + "&d=" + new Date().getTime()
 				}
-				
+
 			},
-			// vcode() {
-			// 	userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
-			// },
 			submitForm() {
 				this.$refs.login.validate((valid) => {
 					if (valid) {
@@ -198,15 +217,18 @@
 						})
 						userLogin(`${type}`, data).then(res => {
 							let wd = res.data;
-							// console.log(res)
+							console.log(res)
 							switch (wd.stateCode) {
 								case 200:
 									//存登录数据
 									localStorage.setItem('loginToken', wd.data.token)
 									localStorage.setItem('userID', wd.data.id)
 									localStorage.setItem('userName', wd.data.name)
-									// localStorage.setItem('userType',type)
-
+                                    //判断是否是学生
+									 if(type=='student'){
+										 localStorage.setItem('userSchoolName',wd.data.schoolName)
+										 localStorage.setItem('userGrade',wd.data.grade)
+									 }
 									this.$message.success('登录成功')
 									this.$router.push(`/index_${type}`)
 									break;
@@ -244,10 +266,10 @@
 		},
 		mounted() {
 			let loginUserType = localStorage.getItem('loginUserType')
-			if(!loginUserType){
+			if (!loginUserType) {
 				localStorage.setItem('loginUserType', this.type);
 			}
-			
+
 			// userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
 		}
 	};
@@ -339,6 +361,11 @@
 	.form>>>.el-select {
 		line-height: 36px;
 		height: 36px;
+	}
+
+	.select>>>.el-input__inner {
+		text-align: center;
+		border-bottom: 1px solid rgb(48 49 51 / 12%);
 	}
 
 	.title {
@@ -433,7 +460,8 @@
 		align-items: center;
 		justify-content: center;
 	}
-	.slectColor{
-		background-color:#409EFF ;
+
+	.slectColor {
+		background-color: #409EFF;
 	}
 </style>

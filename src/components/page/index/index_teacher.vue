@@ -37,13 +37,13 @@
 				</el-col>
 				<el-col :span="5">
 					<div class="grid-content bg-purple other" >
-						<div class="card-other-i">提交试卷</div>
+						<el-button class="card-other-i" @click="submit()">提交试卷</el-button>
 						<div class="card-other-ii">(按模板提交)</div>
 					</div>
 				</el-col>
 				<el-col :span="5">
 					<div class="grid-content bg-purple other" >
-							<div class="card-other-i o">下载模板</div>
+							<el-button class="card-other-i o">下载模板</el-button>
 							<div class="card-other-ii">(WORD提交模板)</div>
 					</div>
 				</el-col>
@@ -69,18 +69,13 @@
 		</div>
 		<!-- 分页 -->
 		<div class="page">
-			<el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="currentPage"
-                :page-size="pageSize"
-                layout=" prev, pager, next , total"
-                :total="total">
-            </el-pagination>
+			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+			 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
+			</el-pagination>
 		</div>
 		<!-- <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button> -->
 
-		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
+		<!-- <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
 			<div class="ts-box">
 				<div class="big-icon  el-icon-success"></div>
 				<div class="ii">自行下载试卷完成</div>
@@ -89,7 +84,7 @@
 				<el-button @click="dialogVisible = false">取 消</el-button>
 				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
 			</span>
-		</el-dialog>
+		</el-dialog> -->
 	</div>
 </template>
 
@@ -223,7 +218,7 @@
 				"pageSize":this.pageSize,
 				"pageNum":this.pageNum
 			}).then(res=>{
-				console.log(res)
+				console.log(res.data.data.list)
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
@@ -262,6 +257,10 @@
 					this.currentPage= res.data.data.pageNum
 				})
 			},
+			//提交试卷
+			submit(){
+				this.$router.push('manage_teacher_submit')
+			}
 			    
 		}
 	};
