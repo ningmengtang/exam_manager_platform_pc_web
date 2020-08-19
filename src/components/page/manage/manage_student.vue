@@ -171,7 +171,6 @@
 				grade:0,
 				version:0,
 				years:0,
-<<<<<<< HEAD
 				obj:[],
 				// tag2:['全部'],
 				// tag3:['全部'],
@@ -179,9 +178,6 @@
 				// tag5:['全部'],
 				// tag6:['全部'],
 				// tag7:['全部'],
-=======
-				paperList:0,
->>>>>>> eed0682cbd4c2019de4920b66af9dfbd98c1507c
 				array_nav: [], //存储el-chckbox数组
 				array_nav_2: [],
 				array_nav_3: [],
@@ -197,7 +193,6 @@
 			};
 		},
 		methods: {
-<<<<<<< HEAD
 			getValue() {
 				console.log(this.array_nav)
 			},
@@ -308,9 +303,6 @@
 					})
 				})
 			},
-=======
-			getValue,handleSizeChange,handleCurrentChange,handleClose,getQuery,TagTypePromise,
->>>>>>> eed0682cbd4c2019de4920b66af9dfbd98c1507c
 			async getTypeList(tagType,index){
 				await this.TagTypePromise(tagType,index)
 				// return n 
@@ -324,11 +316,7 @@
 				"pageSize":999,
 				"pageNum":1
 			}).then(res=>{
-<<<<<<< HEAD
 				
-=======
-				// console.log(res)
->>>>>>> eed0682cbd4c2019de4920b66af9dfbd98c1507c
 				this.TagType = res.data.data.list
 				var arr = []
 				for(var i=0;i<this.TagType.length;i++){
