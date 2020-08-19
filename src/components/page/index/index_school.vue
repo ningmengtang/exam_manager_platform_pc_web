@@ -245,6 +245,13 @@
 			ICountUp
 		},
 		mounted() {
+			SchoolIndex({
+				"pageSize":999,
+				"pageNum":1
+			}).then(res=>{
+				
+				console.log(res)
+			})
 		},
 		methods: {
 			getValue() {
@@ -256,6 +263,7 @@
 			handleCurrentChange(val) {
 				console.log(`当前页: ${val}`);
 			},
+			
 
 		}
 	};

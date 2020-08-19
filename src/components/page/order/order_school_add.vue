@@ -115,6 +115,37 @@
 							</div>
 						</div>
 					</div>
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">学习科目</div>
+							<div class="td-group" change>
+								<el-checkbox-group v-model="array_nav3" @change="getValue()">
+									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
+								</el-checkbox-group>
+							</div>
+						</div>
+					</div>
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">学习年级</div>
+							<div class="td-group" change>
+								<el-checkbox-group v-model="array_nav3" @change="getValue()">
+									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
+								</el-checkbox-group>
+							</div>
+						</div>
+					</div>
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">单元</div>
+							<div class="td-group" change>
+								<el-checkbox-group v-model="array_nav3" @change="getValue()">
+									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
+								</el-checkbox-group>
+							</div>
+						</div>
+					</div>
+
 				</div>
 				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
 				<div class="student-box">
@@ -344,6 +375,10 @@
 		},
 		mounted() {
 			this.color = user().color;
+			// 获取各个标签
+			selectTag().then(res=>{
+				
+			})
 		}
 	};
 </script>

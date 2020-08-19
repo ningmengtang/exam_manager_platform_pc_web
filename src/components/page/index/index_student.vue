@@ -57,14 +57,9 @@
 		</div>
 		<!-- 分页 -->
 		<div class="page">
-			<el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="currentPage1"
-                :page-size="pageSize1"
-                layout=" prev, pager, next , total"
-                :total="total1">
-            </el-pagination>
+			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
+			</el-pagination>
 		</div>
 	</div>
 </template>
@@ -80,16 +75,17 @@
 			this.colors = ['#67C23A', '#409EFF', '#F56C6C']
 			return {
 				total:0,
-				pageSize1:9,
-				pageNum1:1,
-				currentPage1:1,
-				total1:0,
+				pageSize:9,
+				pageNum:1,
+				currentPage:1,
 				download:0,
 				disabled:0,
+
 				status:'',
-				endVal: 100,
-				endVal2: 0,
-				endVal3: 0,
+
+				// endVal: 100,
+				// endVal2: 0,
+				// endVal3: 0,
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -104,7 +100,6 @@
 					},
 					pStatus: 'color:#e2633b'
 				},
-				currentPage: 1,
 				papers:{},
 				dialogVisible: false,
 			}
@@ -115,45 +110,17 @@
 		},
 		mounted() {
 			// 统计数据全部数据
-			this.total  = 0
-			this.download = 0
-			this.disabled = 0
 			studentIndex({
-				"pageNum":1,
-				"pageSize":999
+				"pageNum":this.pageNum,
+				"pageSize":this.pageSize
 			}).then(res=>{
-				if(res.data.data.list){
-					this.total  =  res.data.data.total
-					this.disabled = res.data.data.disabled
-					this.download = res.data.data.download
-				}
-			})
-			studentIndex({
-				"pageNum":this.pageNum1,
-				"pageSize":this.pageSize1
-			}).then(res=>{
+				console.log(res)
 				this.papers = res.data.data.list
-				this.total1 = res.data.data.total
-				this.currentPage1 = res.data.data.pageNum
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+				this.download = res.data.data.download
+				this.disabled = res.data.data.disabled
 			})
-
-        //   	studentIndex({pageNum:this.pageNum,pageSize:this.pageSize}).then(res=>{
-		// 	  let papers=res.data.data;
-		// 	  console.log(papers)
-		// 	  //下载状态
-		// 	  let status=this.status=papers.list.status
-		// 	  // 一共条数
-		// 	  this.total=Number(papers.total);
-		// 	  // this.mayDownload=Number(papers.downloadStatus);
-		// 	  this.download=papers.download;
-		// 	  this.disabled=papers.disabled;
-
-		// 	  this.papers=papers.list;
-		//   })
-
-
-
-
 		},
 		methods: {
 			getValue() {
@@ -161,26 +128,31 @@
 			},
 			 //改变时
 			handleSizeChange(val) {
-				this.pageSize1 = val;
+				this.pageSize = val;
 				studentIndex({
-					"pageNum":this.pageNum1,
-					"pageSize":this.pageSize1
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize
 				}).then(res=>{
 					this.papers = res.data.data.list
-					this.total1 = res.data.data.total
-					this.currentPage1 = res.data.data.pageNum
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+					this.download = res.data.data.download
+					this.disabled = res.data.data.disabled
 				})
 			},
 			//条目改变时
 			handleCurrentChange(val) {
-				this.pageNum1 = val;
+				this.pageNum = val;
 				studentIndex({
-					"pageNum":this.pageNum1,
-					"pageSize":this.pageSize1
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize
 				}).then(res=>{
+					console.log(res)
 					this.papers = res.data.data.list
-					this.total1 = res.data.data.total
-					this.currentPage1 = res.data.data.pageNum
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+					this.download = res.data.data.download
+					this.disabled = res.data.data.disabled
 				})
 			},
 			// handleSizeChange(val) {

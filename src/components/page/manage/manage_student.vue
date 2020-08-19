@@ -80,7 +80,7 @@
 		</div>
 		
 		<div class="particular">
-			<div class="li">
+			<!-- <div class="li">
 				<img src="../../../assets/img/img.jpg" class="user-img" />
 				<div class="teacher-name">古得教师</div>
 				<div class="title-box">
@@ -99,7 +99,7 @@
 					<div class="status hover">分发完成</div>
 					<el-button type="text" class="download hover" @click="dialogVisible = true">立即下载</el-button>
 				</div>
-			</div>
+			</div> -->
 			<div class="li" v-for="item in paperList">
 				<!-- <img src="../../../assets/img/img.jpg" class="user-img" />
 				<div class="teacher-name">古得教师</div> -->
@@ -107,12 +107,16 @@
 					<div class="title">{{item.title}}</div>
 					<div class="synopsis">包含小学一年级语文2019年人教版单元作业65656566555555</div>
 				</div>
-				<div class="time">{{item.createDate}}</div>
+				<div class="time">{{item.createDate}}
+				
+				</div>
 				<div class="label-box" >
-					<div class="label">2019</div>
-					<div class="label">人教版</div>
+					<div class="label" v-for="i in item.tag_list">
+						{{i.text}}
+					</div>
+					<!-- <div class="label">人教版</div>
 					<div class="label">语文</div>
-					<div class="label">一年级</div>
+					<div class="label">一年级</div> -->
 				</div>
 				<div class="right">
 					<i class="icon el-icon-time"></i>
@@ -122,7 +126,7 @@
 			</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div>
 		</div>
@@ -147,6 +151,11 @@
 	export default {
 		data() {
 			return {
+				pageSize:4,
+				pageNum:1,
+				total:0,
+				currentPage:1,
+				paperList:[],
 				DisStatusList:[],
 				ElementTextList:[],
 				PurposeList:[],
@@ -161,6 +170,7 @@
 				grade:0,
 				version:0,
 				years:0,
+				obj:[],
 				// tag2:['全部'],
 				// tag3:['全部'],
 				// tag4:['全部'],
@@ -177,7 +187,6 @@
 				TagType:[],
 				TagTypeList:[],
 				search: '',
-				currentPage: 1,
 				dialogVisible: false,
 				cities: ['全部', '上海上海', '北京', '广州', '深圳'],
 				cities2: ['全部', '1', '2', '3', '4'],
@@ -190,12 +199,30 @@
 				console.log(this.array_nav)
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				console.log(val)
+				this.pageSize = val
+				paperWithTag({
+					"id":this.id,
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res=>{
+					this.paperList = res.data.data.list
+					this.total= res.data.data.total
+					this.currentPage= res.data.data.pageNum
+				})
 			},
 			handleCurrentChange(val) {
-			        console.log(`当前页: ${val}`);
-			      }
-			,
+				console.log(val)
+				this.pageNum = val;
+				paperWithTag({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize
+				}).then(res=>{
+					this.paperList = res.data.data.list
+					this.total= res.data.data.total
+					this.currentPage= res.data.data.pageNum
+				})
+			},
 			handleClose(done) {
 				this.$confirm('确认关闭？')
 					.then(_ => {
@@ -204,39 +231,37 @@
 					.catch(_ => {});
 			},
 			getQuery(){
-				
-				let obj = ''
-
+				this.obj = []
 				if(this.disStatus != 0 && this.disStatus){
-					obj = obj + 'id='+this.disStatus + '&'
+					this.obj.push(this.disStatus)
 				}
 				if(this.elementTest !=0 && this.elementTest){
-					obj = obj + 'id='+this.elementTest + '&'
+					this.obj.push(this.elementTest)
 				}
 				 if(this.purpose !=0 && this.purpose){
-					obj = obj + 'id='+this.purpose + '&'
+					this.obj.push(this.purpose)
 				}
 				if(this.subject !=0 && this.subject){
-					obj = obj + 'id='+this.subject + '&'
+					this.obj.push(this.subject)
 				}
 				if(this.grade !=0 && this.grade){
-					obj = obj + 'id='+this.grade + '&' 
+					this.obj.push(this.grade)
 				}
 				if(this.version !=0 && this.version){
-					obj = obj + 'id=' + this.version + '&'
+					this.obj.push(this.version)
 				}
 				if(this.years !=0 && this.years){
-					obj = obj + 'id=' + this.years + '&'
+					this.obj.push(this.years)
 				}
-
-				paperWithTag(obj,{}).then(res=>{
-					if(res.data.data){
-						this.paperList  = res.data.data
-					}else{
-						this.paperList = []
-					}
+				paperWithTag({
+					"id":this.obj,
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res=>{
+					this.paperList = res.data.data.list
+					this.total= res.data.data.total
+					this.currentPage= res.data.data.pageNum
 				})
-				// console.log(obj)
 			},
 			TagTypePromise(tagType,index){
 				return new Promise((resolve,reject)=>{
@@ -274,7 +299,7 @@
 								this.PurposeList= children
 							break;
 						}
-						console.log(this.SubjectList)
+					
 						
 						resolve(res)
 					})
@@ -293,7 +318,7 @@
 				"pageSize":999,
 				"pageNum":1
 			}).then(res=>{
-				console.log(res)
+				
 				this.TagType = res.data.data.list
 				var arr = []
 				for(var i=0;i<this.TagType.length;i++){
@@ -301,16 +326,14 @@
 				}
 			})
 			// 全部试卷查询
-			paperWithTag().then(res=>{
-				// console.log(res)
-				if(res.data.data){
-					if(res.data.data){
-						this.paperList = res.data.data
-					}else{
-						this.paperList = []
-					}
-					
-				}
+			paperWithTag({
+				"id":[],
+				"pageNum": this.pageNum,
+				"pageSize": this.pageSize
+			}).then(res=>{
+				this.paperList = res.data.data.list
+				this.total= res.data.data.total
+				this.currentPage= res.data.data.pageNum
 			})
 
 			

@@ -51,11 +51,29 @@ export function teacherIndex(data){
 }
 
 // 试卷查询
-export function paperWithTag(tagList,data){
-	const result =post('/api/paperWithTag/selectExamByTag?'+tagList +'d=' +new Date() * 1 ,data)
+export function paperWithTag(data){
+	const result =post('/api/paperWithTag/selectExamByTag'+'?d=' +new Date() * 1 ,data)
 	return result;
 }
-// /api/paperWithTag/selectExamByTag
+// 通过id查询标签
+export function tagSelectId(id,data){
+	const result =get('/api/tag/selectById/'+id +'?d=' + new Date() * 1,data)
+	return result;
+}
+
+
+// 学校首页查询试卷
+export function SchoolIndex(data){
+	const result =post('/api/school/exam/selectMyExamine',data)
+	return result;
+}
+
+
+
+
+
+
+
 
 
 
