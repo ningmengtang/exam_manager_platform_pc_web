@@ -5,7 +5,9 @@
 				<div class="th-group">分发状态</div>
 				<div class="td-group" change>
 					<el-radio-group v-model="disStatus" @change="getQuery">
-						<el-radio-button v-for="(itme,index) in DisStatusList" :label="itme.text"></el-radio-button>
+						<el-radio-button v-for="(item,index) in DisStatusList" :label="item.id">
+							{{item.text}}
+						</el-radio-button>
 					</el-radio-group>
 				</div>
 			</div>
@@ -13,7 +15,9 @@
 				<div class="th-group">年份</div>
 				<div class="td-group">
 					<el-radio-group v-model="years" @change="getQuery">
-						<el-radio-button v-for="(itme,index) in YearsList" :label="itme.text"></el-radio-button>
+						<el-radio-button v-for="(item,index) in YearsList" :label="item.id">
+							{{item.text}}
+						</el-radio-button>
 					</el-radio-group>
 				</div>
 			</div>
@@ -21,7 +25,9 @@
 				<div class="th-group">教材版本</div>
 				<div class="td-group">
 					<el-radio-group v-model="version" @change="getQuery">
-						<el-radio-button v-for="(itme,index) in VersionList" :label="itme.text"></el-radio-button>
+						<el-radio-button v-for="(item,index) in VersionList" :label="item.id">
+							{{item.text}}
+						</el-radio-button>
 					</el-radio-group>
 				</div>
 			</div>
@@ -29,7 +35,9 @@
 				<div class="th-group">学习科目</div>
 				<div class="td-group">
 					<el-radio-group v-model="subject" @change="getQuery">
-						<el-radio-button v-for="(itme,index) in SubjectList" :label="itme.text"></el-radio-button>
+						<el-radio-button v-for="(item,index) in SubjectList" :label="item.id">
+							{{item.text}}
+						</el-radio-button>
 					</el-radio-group>
 				</div>
 			</div>
@@ -37,7 +45,9 @@
 				<div class="th-group">学习年级</div>
 				<div class="td-group">
 					<el-radio-group v-model="grade" @change="getQuery">
-						<el-radio-button v-for="(itme,index) in GradeList" :label="itme.text"></el-radio-button>
+						<el-radio-button v-for="(item,index) in GradeList" :label="item.id">
+							{{item.text}}
+						</el-radio-button>
 					</el-radio-group>
 				</div>
 			</div>
@@ -45,7 +55,9 @@
 				<div class="th-group">单元测试</div>
 				<div class="td-group">
 					<el-radio-group v-model="elementTest" @change="getQuery">
-						<el-radio-button v-for="(itme,index) in ElementTextList" :label="itme.text"></el-radio-button>
+						<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id">
+							{{item.text}}
+						</el-radio-button>
 					</el-radio-group>
 				</div>
 			</div>
@@ -53,7 +65,9 @@
 				<div class="th-group">试卷用途</div>
 				<div class="td-group">
 					<el-radio-group v-model="purpose" @change="getQuery">
-						<el-radio-button v-for="(itme,index) in PurposeList" :label="itme.text"></el-radio-button>
+						<el-radio-button v-for="(item,index) in PurposeList" :label="item.id">
+							{{item.text}}
+						</el-radio-button>
 					</el-radio-group>
 				</div>
 			</div>
@@ -86,15 +100,15 @@
 					<el-button type="text" class="download hover" @click="dialogVisible = true">立即下载</el-button>
 				</div>
 			</div>
-			<div class="li">
-				<img src="../../../assets/img/img.jpg" class="user-img" />
-				<div class="teacher-name">古得教师</div>
+			<div class="li" v-for="item in paperList">
+				<!-- <img src="../../../assets/img/img.jpg" class="user-img" />
+				<div class="teacher-name">古得教师</div> -->
 				<div class="title-box">
-					<div class="title">2019年人教版一年级第一单元作业5656565656</div>
+					<div class="title">{{item.title}}</div>
 					<div class="synopsis">包含小学一年级语文2019年人教版单元作业65656566555555</div>
 				</div>
-				<div class="time">2020年10月11日上传</div>
-				<div class="label-box">
+				<div class="time">{{item.createDate}}</div>
+				<div class="label-box" >
 					<div class="label">2019</div>
 					<div class="label">人教版</div>
 					<div class="label">语文</div>
@@ -129,7 +143,7 @@
 	</div>
 </template>
 <script>
-	import {selectTag,ApiTagSelectList} from '@/api/api.js'
+	import {selectTag,ApiTagSelectList,paperWithTag} from '@/api/api.js'
 	export default {
 		data() {
 			return {
@@ -140,13 +154,13 @@
 				GradeList:[],
 				VersionList:[],
 				YearsList:[],
-				disStatus:'全部',
-				elementTest:'全部',
-				purpose:'全部',
-				subject:'全部',
-				grade:'全部',
-				version:'全部',
-				years:'全部',
+				disStatus:0,
+				elementTest:0,
+				purpose:0,
+				subject:0,
+				grade:0,
+				version:0,
+				years:0,
 				// tag2:['全部'],
 				// tag3:['全部'],
 				// tag4:['全部'],
@@ -190,16 +204,39 @@
 					.catch(_ => {});
 			},
 			getQuery(){
-				// console.log(this.disStatus)
-				// console.log(this.elementTest)
-				// console.log(this.purpose)
-				// console.log(this.subject)
-				// console.log(this.grade)
-				// console.log(this.version)
-				// console.log(this.years)
-				// switch(''){
+				
+				let obj = ''
 
-				// }
+				if(this.disStatus != 0 && this.disStatus){
+					obj = obj + 'id='+this.disStatus + '&'
+				}
+				if(this.elementTest !=0 && this.elementTest){
+					obj = obj + 'id='+this.elementTest + '&'
+				}
+				 if(this.purpose !=0 && this.purpose){
+					obj = obj + 'id='+this.purpose + '&'
+				}
+				if(this.subject !=0 && this.subject){
+					obj = obj + 'id='+this.subject + '&'
+				}
+				if(this.grade !=0 && this.grade){
+					obj = obj + 'id='+this.grade + '&' 
+				}
+				if(this.version !=0 && this.version){
+					obj = obj + 'id=' + this.version + '&'
+				}
+				if(this.years !=0 && this.years){
+					obj = obj + 'id=' + this.years + '&'
+				}
+
+				paperWithTag(obj,{}).then(res=>{
+					if(res.data.data){
+						this.paperList  = res.data.data
+					}else{
+						this.paperList = []
+					}
+				})
+				// console.log(obj)
 			},
 			TagTypePromise(tagType,index){
 				return new Promise((resolve,reject)=>{
@@ -209,8 +246,8 @@
 						"parentId":tagType.id
 					}).then(res=>{
 						let all = [{
-							"id":null,
-							"sn":null,
+							"id":0,
+							"sn":0,
 							"text":'全部'
 						}]
 						let children = all.concat(res.data.data.list)
@@ -237,13 +274,8 @@
 								this.PurposeList= children
 							break;
 						}
-						// this.TagTypeList.push({
-						// 	"id":tagType.id,
-						// 	"sn":tagType.sn,
-						// 	"parentId":tagType.parentId,
-						// 	"text":tagType.text,
-						// 	"children":res.data.data.list
-						// })
+						console.log(this.SubjectList)
+						
 						resolve(res)
 					})
 				})
@@ -269,12 +301,16 @@
 				}
 			})
 			// 全部试卷查询
-			studentIndex({
-				"pageSize":this.pageSize,
-				"pageNum":this.pageNum
-			}).then(res=>{
-				console.log(res)
-				
+			paperWithTag().then(res=>{
+				// console.log(res)
+				if(res.data.data){
+					if(res.data.data){
+						this.paperList = res.data.data
+					}else{
+						this.paperList = []
+					}
+					
+				}
 			})
 
 			

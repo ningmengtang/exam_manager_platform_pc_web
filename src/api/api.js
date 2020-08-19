@@ -22,7 +22,7 @@ export function userLoginOut(data){
 }
 //学生首页试卷
 export function studentIndex(data){
-	const result =post('/api/student/exam/studentExam',data)
+	const result =post('/api/student/home/studentExam',data)
 	return result;
 }
 //试卷标签查询
@@ -42,6 +42,24 @@ export function ApiTagSelectList(data){
 	const result =post('/api/tag/selectSelective',data)
 	return result;
 }
+
+
+// 教师查询试卷
+export function teacherIndex(data){
+	const result =post('/api/teacher/distribute/selectMyExamine',data)
+	return result;
+}
+
+// 试卷查询
+export function paperWithTag(tagList,data){
+	const result =post('/api/paperWithTag/selectExamByTag?'+tagList +'d=' +new Date() * 1 ,data)
+	return result;
+}
+// /api/paperWithTag/selectExamByTag
+
+
+
+
 
 
 

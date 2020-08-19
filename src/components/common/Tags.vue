@@ -1,7 +1,7 @@
 <template>
     <div class="tags" v-if="showTags">
         <ul>
-            <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
+            <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :style="{ 'background-color': bg_color }" :key="index">
                 <router-link :to="item.path" class="tags-li-title">
                     {{item.title}}
                 </router-link>
@@ -10,7 +10,7 @@
         </ul>
         <div class="tags-close-box">
             <el-dropdown @command="handleTags">
-                <el-button size="mini" type="primary">
+                <el-button size="mini" type="primary" :style="{ 'background-color': bg_color }">
                     标签选项<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu size="small" slot="dropdown">
@@ -24,6 +24,7 @@
 
 <script>
     import bus from './bus';
+    import user from '../common/user';
     export default {
         data() {
             return {
@@ -88,6 +89,7 @@
             }
         },
         created(){
+
             this.setTags(this.$route);
             // 监听关闭当前页面的标签页
             bus.$on('close_current_tags', () => {
@@ -106,6 +108,8 @@
                     }
                 }
             })
+
+            this.bg_color = user().color;
         }
     }
 
@@ -113,6 +117,12 @@
 
 
 <style>
+    .tags-li.active{
+        border-color: #fff;
+    } 
+    .el-button--primary{
+        border-color: #fff;
+    }
     .tags {
         position: relative;
         height: 30px;

@@ -64,7 +64,7 @@
 		data: function() {
 			return {
 				type: 'student',
-				placeholder: '身份证',
+				placeholder: '账号',
 				param: {
 					country: '',
 					username: '',
@@ -184,7 +184,7 @@
 				this.$refs.login.validate((valid) => {
 					if (valid) {
 						let type = localStorage.getItem('loginUserType')
-						console.log(type)
+						// console.log(type)
 						let form = this.param;
 						let data
 						type == 'student' ? (data = {
@@ -244,7 +244,10 @@
 		},
 		mounted() {
 			let loginUserType = localStorage.getItem('loginUserType')
-			localStorage.setItem('loginUserType', this.type);
+			if(!loginUserType){
+				localStorage.setItem('loginUserType', this.type);
+			}
+			
 			// userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
 		}
 	};

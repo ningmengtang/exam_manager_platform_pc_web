@@ -7,7 +7,7 @@
 						<div class="card-left">
 							<div class="card-c">全部试卷</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="alltotal" />
 							</div>
 						</div>
 						<div class="card-right"></div>
@@ -16,9 +16,9 @@
 				<el-col :span="5">
 					<div class="grid-content bg-purple" :style="style.card_2">
 						<div class="card-left">
-							<div class="card-c">全部试卷</div>
+							<div class="card-c">已入库</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="download" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_2"></div>
@@ -27,9 +27,9 @@
 				<el-col :span="5">
 					<div class="grid-content bg-purple" :style="style.card_3">
 						<div class="card-left">
-							<div class="card-c">全部试卷</div>
+							<div class="card-c">取消入库</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="disabled" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_3"></div>
@@ -56,12 +56,12 @@
 				</div>
 				<div class="p-particula">
 					<div class="top-box">
-						<div class="subject">语文</div>
-						<div class="grade">一年级</div>
+						<div class="subject">{{d.subject}}</div>
+						<div class="grade">{{d.gradeClass}}</div>
 					</div>
 					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.time}}</div>
-					<div class="p-status">{{d.status}}</div>
+					<div class="p-time">{{d.modifyDate}}</div>
+					<div class="p-status">{{d.status == 0?'取消入库':d.status == 1?'已入库':''}}</div>
 					<!-- <i class="p-status-icon el-icon-download"></i> -->
 					<i class="p-status-icon el-icon-download"></i>
 				</div>
@@ -69,11 +69,16 @@
 		</div>
 		<!-- 分页 -->
 		<div class="page">
-			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			 :current-page.sync="currentPage" :page-size="100" :total="1000">
-			</el-pagination>
+			<el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-size="pageSize"
+                layout=" prev, pager, next , total"
+                :total="total">
+            </el-pagination>
 		</div>
-		<el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+		<!-- <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button> -->
 
 		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
 			<div class="ts-box">
@@ -92,7 +97,7 @@
 	import Schart from 'vue-schart'
 	import bus from '../../common/bus'
 	import ICountUp from 'vue-countup-v2'
-
+	import {ApiTeacherMangerList,teacherIndex} from '@/api/api.js'
 	export default {
 		name: 'index_student',
 		data() {
@@ -117,7 +122,7 @@
 					},
 					pStatus: 'color:#e2633b'
 				},
-				currentPage: 1,
+				
 
 				papers: [{
 						title: '2019年人教版第一单元测验',
@@ -178,6 +183,13 @@
 					},
 				],
 				dialogVisible: false,
+				alltotal:0,
+				disabled:0,
+				download:0,
+				pageNum:1,
+				pageSize:9,
+				currentPage: 1,
+
 			}
 		},
 		components: {
@@ -185,17 +197,70 @@
 			ICountUp
 		},
 		mounted() {
+			teacherIndex({
+				"pageSize":999,
+				"pageNum":1
+			}).then(res=>{
+				this.alltotal = 0
+				this.disabled = 0
+				this.download = 0
+				// console.log(res)
+				let data  = res.data.data.list
+				for(var i=0;i<data.length;i++){
+					if(data[i].status == 0){
+						this.disabled++
+					}else if(data[i].status == 1){
+						this.download++
+					}
+				}
+
+				this.alltotal  =  res.data.data.total
+				// this.disabled = res.data.data.disabled
+				// this.download = res.data.data.download
+			})
+
+			teacherIndex({
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res=>{
+				console.log(res)
+				this.papers = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+				// this.total  =  res.data.data.total
+				// this.disabled = res.data.data.disabled
+				// this.download = res.data.data.download
+			})
 
 		},
 		methods: {
 			getValue() {
 				console.log(this.array_nav)
 			},
+			 //改变时
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				this.pageSize = val
+				
+				teacherIndex({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize
+				}).then(res=>{
+					this.papers = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
+			//条目改变时
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+				this.pageNum = val
+				teacherIndex({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize
+				}).then(res=>{
+					this.papers = res.data.data.list
+					this.total= res.data.data.total
+					this.currentPage= res.data.data.pageNum
+				})
 			},
 			    
 		}
