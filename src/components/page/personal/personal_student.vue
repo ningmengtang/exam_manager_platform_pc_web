@@ -226,6 +226,7 @@
 			}
 		},
 		mounted() {
+			console.log(this.global.userName)
 			let userID = this.userID;
 			if (userID) {
 				this.userID = userID
@@ -264,7 +265,7 @@
 				"pageNum": this.pageNum1,
 				"pageSize": this.pageSize1
 			}).then(res => {
-				console.log(res)
+				// console.log(res)
 				// this.papers = res.data.data.list
 				// console.log(this.papers)
 				this.total1 = res.data.data.total
