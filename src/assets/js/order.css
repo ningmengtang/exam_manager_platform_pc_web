@@ -1,0 +1,70 @@
+.box{padding: 24px 38px;}
+.top{background-color: #FFFFFF;border-radius: 10px;padding: 31px 24px;}
+
+.group,.row-group{display: flex;align-items: center;}
+.group /deep/ .el-checkbox-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
+.group /deep/ .el-checkbox-button.is-checked .el-checkbox-button__inner {background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);}
+.group /deep/ .el-checkbox-button--small .el-checkbox-button__inner{font-size: 14px;}
+.row-group .th-group{font-size: 14px;margin-right: 14px;padding: 8px 22px;}
+.row-group .td-group{font-size: 14px;}
+
+.search{height: 50px;background-color: #FFFFFF;border-radius: 8px;display: flex;align-items: center;padding: 0 20px ;margin-top: 25px;margin-bottom: ;}
+.search /deep/ .el-input{width:auto;}
+.search /deep/ .el-input__inner{width: 400px;height: 36px;line-height: 36px;}
+.search /deep/ .el-input--small .el-input__icon{line-height: 36px;}
+.search /deep/ .el-button--mini, .el-button--small{height: 36px;}
+.search .cancel {margin-left:20px;font-size: 14px;color:rgba(80, 80, 80, 1)}
+
+.particular{margin-top: 10px;}
+.particular .li{display: flex;justify-content: flex-end;align-items: center;padding: 16px 25px;background-color: #FFFFFF;border-radius: 8px;}
+.particular .li+.li{margin-top: 10px;}
+.user-img{width: 50px;height: 50px;border-radius: 50%;}
+.teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #2BBB61;margin: 0 0 0 20px; }
+.title-box{margin-left: 20px;}
+.title{font-size: 14px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 350px;}
+.synopsis{font-size: 14px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 350px;}
+.time{font-size: 14px;color: rgba(166, 166, 166, 1);margin-left: 10px;width: 200px;overflow: hidden;}
+.label-box{display: flex;margin:  0 12px 0 0;flex-wrap: wrap;}
+.label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}
+.label:nth-child(1n+1){background-color: #fb4919;}
+.label:nth-child(2n+2){background-color: #19aefb;}
+.label:nth-child(3n+3){background-color: #2bbb61;}
+
+.label+.label{margin-left: 15px;}
+.right{margin-left: auto;align-items: center;}
+.icon{font-size: 25px;color:#2BBB61;font-weight: bold;margin-right: 8px;}
+.icon.i{margin-left: 30px;}
+.right .status_box{display: flex;align-items: center;}
+.right .status_box .ii{color: #999999;}
+.right .status{margin-left: 16px;font-size: 16px;margin-right: 20px;}
+.right .cancel{background-color: #999999;color: #FFFFFF;}
+.right .hover{color: #fb4919;}
+.right .text{margin-right: 20px;color: #2BBB61;}
+.right .download{display: inline-flex;justify-content: center;align-items: center;color: #FFFFFF;border-radius: 4px;background-color:rgba(166, 166, 166, 1);font-size:16px;padding: 12px 20px ;}
+.right .download.hover{background-color:#FFFFFF;color: #fb4919;border: 1px solid #fb4919;}
+
+
+.page{display: flex;justify-content: center;align-items:center;margin-top:20px;}
+
+/* 分发选择 */
+.ts-select{}
+.ts-select .t-title{border-left: 8px solid #2BBB61;padding-left: 8px;font-size: 18px;font-weight: bold;color: #333333;}
+.ts-select .t-content{margin-top: 8px;}
+.ts-select .arr{margin-left: 18px;margin-top: 5px;margin-bottom: 5px;}
+.ts-select .arr span{color: #999999;}
+.ts-select .arr span:nth-child(2){color: #2BBB61;}
+.ts-select .student-box{margin-top: 10px;}
+.ts-select .student-name{margin:  0 10px ;white-space: nowrap;}
+.box /deep/ .el-table th{text-align: center;}
+.box /deep/ .el-table td, .el-table th.is-leaf{text-align: center;}
+.box /deep/.el-date-editor .el-range-separator{padding: 0;}
+.ts-select .block-time{margin-top: 20px;display: flex;align-items: center;justify-content: space-between;}
+.ts-select .block-a{color: #FFFFFF;}
+.ts-select .out{padding: 14px 20px;background-color: #2BBB61;color: #FFFFFF;border-radius: 4px;}
+.ts-select .affirm {padding: 14px 20px;background-color: #FB4919;color: #FFFFFF;border-radius: 4px;}
+
+.ts-box{display: flex;flex-wrap: wrap;}
+.big-icon{font-size: 100px;color: rgba(67, 207, 124, 1);width: 100%;text-align: center;}
+.ts-box .ii{font-size: 28px;color: rgba(67, 207, 124, 1);width: 100%;text-align: center;margin-top: 28px;}
+.box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
+.box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}

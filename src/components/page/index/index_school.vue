@@ -49,51 +49,6 @@
 			</el-row>
 		</div>
 		<div class="papers-box">
-<!-- 			<div class="p-li" v-for="(d,i) in papers" :key="d.i" v-if="d.o==1">
-				<div class="p-icon-box">
-					<div class="p-icon"></div>
-				</div>
-				<div class="p-particula">
-					<div class="top-box">
-						<div class="subject">语文</div>
-						<div class="grade">一年级</div>
-					</div>
-					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.time}}</div>
-					<div class="p-status">{{d.status}}</div>
-					<i class="p-status-icon el-icon-time"></i>
-				</div>
-			</div>
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" v-if="d.o==2" :style="style.pLi">
-				<div class="p-icon-box">
-					<div class="p-icon"></div>
-				</div>
-				<div class="p-particula">
-					<div class="top-box">
-						<div class="subject">语文</div>
-						<div class="grade">一年级</div>
-					</div>
-					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.time}}</div>
-					<div class="p-status" style="color: #cccccc;">{{d.status}}</div>
-					<i class="p-status-icon el-icon-download" ></i>
-				</div>
-			</div>
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" v-if="d.o==3" :style="style.pLi2">
-				<div class="p-icon-box">
-					<div class="p-icon"></div>
-				</div>
-				<div class="p-particula">
-					<div class="top-box">
-						<div class="subject">语文</div>
-						<div class="grade">一年级</div>
-					</div>
-					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.time}}</div>
-					<div class="p-status" style="color:#fb4919">{{d.status}}</div>
-					<i class="p-status-icon el-icon-loading"></i>
-				</div>
-			</div> -->
 			<div class="p-li" v-for="(d,i) in papers" :key="d.i"  :style="d.o==1?(0):d.o==2?style.pLi3:d.o==3?style.pLi2:style.pLi4">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
