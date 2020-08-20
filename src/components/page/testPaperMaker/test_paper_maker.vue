@@ -1181,13 +1181,14 @@ export default {
 
       this.qrInfoObj.uid = localStorage.getItem("userID").toString()
       this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
-
-      if(null != this.$router.params && null != this.$router.params.createTestPaperInfoObj)
+      console.log(this.$route.query.createTestPaperInfoObj)
+      // console.log(this.$router.params.createTestPaperInfoObj)
+      if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)
       {
         //进入批量生产模式
-        this.createTestPaperInfoObj == this.$router.params.createTestPaperInfoObj
+        this.createTestPaperInfoObj = this.$route.query.createTestPaperInfoObj
         
-        apiCommonExamSelectById(this.createTestPaperInfoObj.paperId).then(res => {
+        apiCommonExamSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
           if(!res.data.result)
           {
             this.$message.error('获取试卷失败，无法下载！')

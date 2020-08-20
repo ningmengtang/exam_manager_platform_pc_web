@@ -308,7 +308,8 @@
 			}
 		},
 		mounted() {
-			this.operatorId = localStorage.getItem('userID')
+			this.operatorId = Number(localStorage.getItem('userID'))
+			console.log(this.operatorId)
 			this.operatorType = localStorage.getItem('loginUserType')
 			// this.operatorId = 
 			this.color = user().color;
