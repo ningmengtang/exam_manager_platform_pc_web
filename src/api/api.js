@@ -150,6 +150,18 @@ export function apiAdminExamQuestionAnwserSheetInsert(data){
 	return result;
 }
 
+//通过id查看试卷标签
+export function apiCommonExamSelectById(data){
+	const result =get('/api/common/exam/selectById/'+data)
+	return result;
+}
+
+//更新试卷
+export function apiAdminExamUpdate(data){
+	const result =post("/api/common/exam/update",data)
+	return result;
+}
+
 // 查询管理员订单项
 export function apiAdminOrderItemList(data){
 	const result =post('/api/admin/order/item/list' ,data)
