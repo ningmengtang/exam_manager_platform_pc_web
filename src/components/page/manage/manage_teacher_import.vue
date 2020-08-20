@@ -726,7 +726,7 @@ export default {
 								//关闭屏蔽层
 								this.fullscreenLoading = false
 								this.$message.success('同步试卷至服务器完成！')
-								
+								this.$options.methods.clearTestPaperCache.bind(this)()
 								this.$router.push('/manage_teacher')
 							}
 
@@ -762,7 +762,7 @@ export default {
 									//关闭屏蔽层
 									this.fullscreenLoading = false
 									this.$message.success('同步试卷至服务器完成！')
-
+									this.$options.methods.clearTestPaperCache.bind(this)()
 									this.$router.push('/manage_teacher')
 								}
 								
