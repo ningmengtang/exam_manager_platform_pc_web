@@ -49,7 +49,7 @@
 						<div class="card-box">
 							<div class="card-t">入库完成</div>
 							<div class="num">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="success" />
 							</div>
 						</div>
 					</el-col>
@@ -57,7 +57,7 @@
 						<div class="card-box">
 							<div class="card-t">正在入库</div>
 							<div class="num">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="progress" />
 							</div>
 						</div>
 					</el-col>
@@ -65,7 +65,7 @@
 						<div class="card-box">
 							<div class="card-t">入库失败</div>
 							<div class="num">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="error" />
 							</div>
 						</div>
 					</el-col>
@@ -73,7 +73,7 @@
 			</div>
 			<!-- 上次的试卷列表 -->
 			<div class="upload-papers">
-				<div class="li-box" v-for="item in papers ">
+				<div class="li-box" v-for="(item,i) in papers " :key="item.i">
 					<div class="label"><img src="../../../assets/img/img.jpg" class="label" /></div>
 					<div class="teacher" :style="{'color':color}">{{userName}}</div>
 					<div class="papers-box">
@@ -98,7 +98,8 @@
 	import {
 		ApiTagSelectList,
 		teacherIndex,
-		teacherPersonal
+		teacherPersonal,
+		teacherSelectCount
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -106,6 +107,9 @@
 				color: '',
 				endVal1: 6,
 				endVal2: 454,
+				success:0,
+				progress:0,
+				error:0,
 				currentPage: 1,
 				total: 0,
 				pageSize: 2,
@@ -204,19 +208,22 @@
 		mounted() {
 			this.color = user().color;
 			
-			teacherIndex({
-				"pageNum": this.pageNum,
-				"pageSize": this.pageSize
-			}).then(res => {
-				console.log(res)
-				this.papers = res.data.data.list
-				this.total = res.data.data.total
-				this.currentPage = res.data.data.pageNum
-			})
-			teacherPersonal({id:21}).then(res=>{
-				console.log(res)
-			})
-
+		teacherIndex({
+			"pageSize":this.pageSize,
+			"pageNum":this.pageNum,
+			'operator_id':this.userID
+		}).then(res=>{
+			// console.log(res.data.data)
+			this.papers = res.data.data.list
+			this.total = res.data.data.total
+			this.currentPage = res.data.data.pageNum
+		})
+		//统计
+		teacherSelectCount().then(res=>{
+			  this.success= res.data.data.success
+			  this.progress=res.data.data.progress
+			  this.error=res.data.data.error
+		})
 		}
 	};
 </script>

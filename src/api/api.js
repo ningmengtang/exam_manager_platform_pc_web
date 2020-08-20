@@ -46,15 +46,26 @@ export function ApiTagSelectList(data){
 
 // 教师查询试卷
 export function teacherIndex(data){
-	const result =post('/api/teacher/distribute/selectMySelf',data)
-	return result;
-}
-//教师个人查询
-export function teacherPersonal(){
-	const result =get('/api/teacher/distribute/downloadExam',data)
+	const result =post('/api/common/exam/selectListByOptions',data)
 	return result;
 }
 
+//教师标签查询
+export function teacherSelectTag(data){
+	const result =post('/api/paperWithTag/selectTeacherTag',data)
+	return result;
+}
+// 教师个人中心统计
+export function teacherSelectCount(data){
+	const result =post('/api/teacher/distribute/selectCount',data)
+	return result;
+}
+//教师分发试卷
+export function teacherDistributeselect(data){
+	const result =post('/api/teacher/distribute/distributeselect',data)
+	return result;
+}
+//教师分发试卷
 // 试卷查询
 export function paperWithTag(data){
 	const result =post('/api/paperWithTag/selectExamByTag'+'?d=' +new Date() * 1 ,data)
@@ -69,13 +80,29 @@ export function tagSelectId(id,data){
 
 // 学校首页查询试卷
 export function SchoolIndex(data){
-	const result =post('/api/school/exam/selectMyExamine',data)
+	const result =post('/api/school/exam/schoolExam',data)
 	return result;
 }
-
-
-
-
+// 学校标签查询
+export function selectSchoolTag(data){
+	const result=post('/api/paperWithTag/selectSchoolTag',data)
+	return result;
+}
+//学校控制学生可以下载权限
+export function schoolStudentAllow(data){
+	const result=get(`/api/school/student/allow/${data}`)
+	return result;
+}
+// 学校控制学生不能下载权限
+export function schoolStudentUnAllow(data){
+	const result=get(`/api/school/student/un_allow/${data}`)
+	return result;
+}
+//试卷条件查询
+export function selectListByOptions(data){
+	const result =post ('/api/common/exam/selectListByOptions',data)
+	return result;
+}
 
 
 

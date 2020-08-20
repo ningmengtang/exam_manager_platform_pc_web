@@ -187,12 +187,14 @@
 </template>
 <script>
 	import user from '../../common/user';
-	import {handleSizeChange,handleCurrentChange,handleClose,getQuery,TagTypePromise} from '@/assets/js/manage.js'
+	import {handleSizeChange,handleCurrentChange,handleClose,TagTypePromise} from '@/assets/js/manage.js'
  	import {
 		selectTag,
 		ApiTagSelectList,
 		paperWithTag,
-		teacherIndex
+		teacherIndex,
+		teacherSelectTag,
+		teacherDistributeselect
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -222,6 +224,7 @@
 				obj:[],
 				papers:[],
 				total:0,
+				userID:localStorage.getItem('userID'),
 				cities: ['全部', '上海', '北京', '广州', '深圳'],
 				cities2: ['全部', '1', '2', '3', '4'],
 				checkboxGroup2: ['上海'],
@@ -298,12 +301,13 @@
 				if (this.years != 0 && this.years) {
 					this.obj.push(this.years)
 				}
-				teacherIndex({
+				teacherSelectTag({
 					"id": this.obj,
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {
-					this.paperList = res.data.data.list
+					console.log(res)
+					this.papers = res.data.data.list
 					this.total = res.data.data.total
 					this.currentPage = res.data.data.pageNum
 				})
@@ -371,8 +375,9 @@
 			})
 			//试卷
 			teacherIndex({
+				"pageSize":this.pageSize,
 				"pageNum":this.pageNum,
-				"pageSize":this.pageSize
+				'operator_id':this.userID
 			}).then(res=>{
 				console.log(res.data.data.list)
 				this.papers = res.data.data.list
