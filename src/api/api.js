@@ -46,7 +46,12 @@ export function ApiTagSelectList(data){
 
 // 教师查询试卷
 export function teacherIndex(data){
-	const result =post('/api/teacher/distribute/selectMyExamine',data)
+	const result =post('/api/teacher/distribute/selectMySelf',data)
+	return result;
+}
+//教师个人查询
+export function teacherPersonal(){
+	const result =get('/api/teacher/distribute/downloadExam',data)
 	return result;
 }
 

@@ -11,8 +11,8 @@
 							<div class="user-id">ID:{{userID}}</div>
 							<div class="identity">学生</div>
 							<div class="message">
-								<div class="school">北京师范小学</div>
-								<div class="grade">一年级</div>
+								<div class="school">{{userSchoolName}}</div>
+								<div class="grade">{{userGrade}}</div>
 							</div>
 						</div>
 					</div>
@@ -75,19 +75,19 @@
 			</div>
 			<!-- 上次的试卷列表 -->
 			<div class="upload-papers">
-				<div class="li-box" v-for="item in papers ">
-					<div class="label"><img src="../../../assets/img/img.jpg" class="label" /></div>
-					<div class="teacher">{{item.label}}</div>
+				<div class="li-box" v-for="(item,i) in papers " :key="item.i">
+					<!-- <div class="label"><img src="../../../assets/img/img.jpg" class="label" /></div> -->
+					<!-- <div class="teacher">{{item.label}}</div> -->
 					<div class="papers-box">
 						<div class="p-title">{{item.title}}</div>
-						<div class="p-particular">{{item.particular}}</div>
+						<div class="p-particular">包含小学一年级语文2019年人教版单元作业65656566555555</div>
 					</div>
-					<div class="time">{{item.time}}</div>
+					<div class="time">{{item.modifyDate}}</div>
 				</div>
 			</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div>
 		</div>
@@ -98,21 +98,43 @@
 	import ICountUp from 'vue-countup-v2'
 	import {
 		StudentAccountInfo,
-		studentIndex
+		studentIndex,
+		paperWithTag
 	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
+				pageSize:4,
+				pageNum:1,
+				total:0,
+				currentPage:1,
+				paperList:[],
+				DisStatusList:[],
+				ElementTextList:[],
+				PurposeList:[],
+				SubjectList:[],
+				GradeList:[],
+				VersionList:[],
+				YearsList:[],
+				disStatus:0,
+				elementTest:0,
+				purpose:0,
+				subject:0,
+				grade:0,
+				version:0,
+				years:0,
+				obj:[],
 				endVal1: 6,
 				endVal2: 454,
-				userName: this.global.userName,
-				userID: this.global.userID,
+				userName: localStorage.getItem('userName'),
+				userID: localStorage.getItem('userID'),
+				userSchoolName:localStorage.getItem('userSchoolName'),
+				userGrade:localStorage.getItem('userGrade'),
 				total: 0,
 				total1: 0,
-				currentPage1: 0,
 				pageSize1: 6,
 				pageNum1: 1,
-
+                currentPage:0,
 				download: 0,
 				disabled: 0,
 
@@ -130,43 +152,7 @@
 					},
 					pStatus: 'color:#e2633b'
 				},
-				papers: [{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-				]
+				papers: []
 			};
 		},
 		components: {
@@ -226,7 +212,7 @@
 			}
 		},
 		mounted() {
-			console.log(this.global.userName)
+			//获取用户信息
 			let userID = this.userID;
 			if (userID) {
 				this.userID = userID
@@ -239,13 +225,12 @@
 			}).then(res => {
 				if (res.data.data.list) {
 					this.userInfoList = res.data.data.list[0]
-					console.log(res)
+					// console.log(res)
 
 				} else {
 					this.$message.error('查询不到个人信息')
 				}
 			})
-
 			// 统计数据全部数据
 			this.total = 0
 			this.download = 0
@@ -261,15 +246,17 @@
 					this.download = res.data.data.download
 				}
 			})
-			studentIndex({
-				"pageNum": this.pageNum1,
-				"pageSize": this.pageSize1
-			}).then(res => {
-				// console.log(res)
-				// this.papers = res.data.data.list
-				// console.log(this.papers)
-				this.total1 = res.data.data.total
-				this.currentPage1 = res.data.data.pageNum
+			paperWithTag({
+				"id":[],
+				"pageNum": this.pageNum,
+				"pageSize": this.pageSize
+			}).then(res=>{
+				console.log(res.data.data)
+				//赋给试卷管理试卷
+				this.papers=res.data.data.list
+				this.paperList = res.data.data.list
+				this.total= res.data.data.total
+				this.currentPage= res.data.data.pageNum
 			})
 		}
 	};

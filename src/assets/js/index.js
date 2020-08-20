@@ -33,7 +33,6 @@ export function handleCurrentChange(val){
 
 // 首页信息
 export function studentIndexData(data){
-	console.log(1)
 	studentIndex({
 		"pageNum": this.pageNum,
 		"pageSize": this.pageSize

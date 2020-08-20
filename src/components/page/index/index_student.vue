@@ -110,25 +110,14 @@
 			Schart,
 			ICountUp
 		},
+		methods: {
+			handleSizeChange,handleCurrentChange,studentIndexData
+		},
 		mounted() {
 			let that =this;
 			// 统计数据全部数据
-			console.log(that.studentIndexData())
-			// studentIndex({
-			// 	"pageNum": this.pageNum,
-			// 	"pageSize": this.pageSize
-			// }).then(res => {
-			// 	console.log(res)
-			// 	this.papers = res.data.data.list
-			// 	this.total = res.data.data.total
-			// 	this.currentPage = res.data.data.pageNum
-			// 	this.download = res.data.data.download
-			// 	this.disabled = res.data.data.disabled
-			// })
+		    console.log(that.studentIndexData())
 		},
-		methods: {
-			handleSizeChange,handleCurrentChange,studentIndexData
-		}
 	};
 </script>
 

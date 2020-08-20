@@ -7,12 +7,12 @@
 					<img src="../../../assets/img/img.jpg" class="user-img" />
 					<div class="user-top">
 						<div class="username">
-							<div class="name">小明</div>
-							<div class="user-id">ID:6556565</div>
+							<div class="name">{{userName}}</div>
+							<div class="user-id">ID:{{userID}}</div>
 							<div class="identity" :style="{'background-color':color}">老师</div>
 							<div class="message">
-								<div class="school">北京师范小学</div>
-								<div class="grade">一年级</div>
+								<div class="school">{{userSchoolName}}</div>
+								<!-- <div class="grade">一年级</div> -->
 							</div>
 						</div>
 					</div>
@@ -40,25 +40,33 @@
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">我的上传</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num">
+								<ICountUp :endVal="total" />
+							</div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">入库完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num">
+								<ICountUp :endVal="endVal2" />
+							</div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">正在入库</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num">
+								<ICountUp :endVal="endVal2" />
+							</div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
-							<div class="card-t">入库完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="card-t">入库失败</div>
+							<div class="num">
+								<ICountUp :endVal="endVal2" />
+							</div>
 						</div>
 					</el-col>
 				</el-row>
@@ -67,17 +75,17 @@
 			<div class="upload-papers">
 				<div class="li-box" v-for="item in papers ">
 					<div class="label"><img src="../../../assets/img/img.jpg" class="label" /></div>
-					<div class="teacher" :style="{'color':color}">{{item.label}}</div>
+					<div class="teacher" :style="{'color':color}">{{userName}}</div>
 					<div class="papers-box">
 						<div class="p-title">{{item.title}}</div>
-						<div class="p-particular">{{item.particular}}</div>
+						<div class="p-particular">包含小学一年级语文2019年人教版单元测试</div>
 					</div>
-					<div class="time">{{item.time}}</div>
+					<div class="time">{{item.modifyDate}}</div>
 				</div>
 			</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div>
 		</div>
@@ -87,6 +95,11 @@
 	import Schart from 'vue-schart'
 	import ICountUp from 'vue-countup-v2'
 	import user from '../../common/user'
+	import {
+		ApiTagSelectList,
+		teacherIndex,
+		teacherPersonal
+	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
@@ -94,6 +107,13 @@
 				endVal1: 6,
 				endVal2: 454,
 				currentPage: 1,
+				total: 0,
+				pageSize: 2,
+				pageNum: 1,
+				userName: localStorage.getItem('userName'),
+				userID: localStorage.getItem('userID'),
+				userSchoolName: localStorage.getItem('userSchoolName'),
+				userGrade: localStorage.getItem('userGrade'),
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -156,14 +176,47 @@
 				console.log(this.array_nav)
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+			this.pageSize = val
+			teacherIndex({
+				"id":this.id,
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res=>{
+				this.papers = res.data.data.list
+				this.total= res.data.data.total
+				this.currentPage= res.data.data.pageNum
+			})
 			},
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+				console.log(val)
+				this.pageNum = val;
+				teacherIndex({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize
+				}).then(res=>{
+					this.papers = res.data.data.list
+					this.total= res.data.data.total
+					this.currentPage= res.data.data.pageNum
+				})
 			},
+			
 		},
 		mounted() {
 			this.color = user().color;
+			
+			teacherIndex({
+				"pageNum": this.pageNum,
+				"pageSize": this.pageSize
+			}).then(res => {
+				console.log(res)
+				this.papers = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+			})
+			teacherPersonal({id:21}).then(res=>{
+				console.log(res)
+			})
+
 		}
 	};
 </script>
