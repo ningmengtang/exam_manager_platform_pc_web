@@ -172,6 +172,12 @@ export default new Router({
 				    path: '/test_paper_maker',
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/testPaperMaker/test_paper_maker.vue'),
 				    meta: { title: '组卷工具' }
+				},
+				{
+					name: 'test_paper_maker_for_task',
+				    path: '/test_paper_maker_for_task',
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/testPaperMaker/test_paper_maker_for_task.vue'),
+				    meta: { title: '组卷工具批量任务' }
 				}
 				
 				

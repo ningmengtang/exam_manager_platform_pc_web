@@ -627,7 +627,7 @@ import {
 
 axios.defaults.responseType = 'json'
 export default {
-  name: 'testPaperMaker',
+  name: 'testPaperMakerForTask',
   components:{
      quillEditor,
      myQuillEditor,
@@ -1221,7 +1221,7 @@ export default {
     testFor100StudentsDownload(){
       //进入批量生产模式
       
-      var testStudents = [{suid:1}]
+      var testStudents = [{suid:1},{suid:2}]
   
       console.log("测试100个学生批量下载")
       console.log(testStudents)
@@ -2208,7 +2208,7 @@ export default {
       localStorage.setItem('testPaperCache', JSON.stringify(this.testPaperObj) )
       localStorage.setItem('testPaperCacheReady', true)
       this.$message.success('已经完成组卷！您现在可以提交试卷入库！')
-      console.log("已经完成组卷 ")
+      console.log("已经完成组卷")
       if(localStorage.getItem("loginUserType").toString() == "teacher")
       {
         this.$router.push(`/manage_teacher_import`)
@@ -2647,13 +2647,13 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       });
       //以免长时间无响应，每秒检查一次后主动取消
-      /*var checkExec = setInterval(() => {
+      var checkExec = setInterval(() => {
         if(this.fullscreenLoading == false)
         {
           clearInterval(checkExec);
           loading.close();
         }
-      }, 3000);*/
+      }, 3000);
 
       //延迟执行，让加载页面load出来
       setTimeout(() => {
@@ -2663,11 +2663,12 @@ export default {
 
         var indexOfTask = 0
                   
-        studentIdArr.forEach(studentIdArrItem => {
-          
-          this.qrInfoObj.suid=studentIdArrItem.suid
+        //每一段试卷执行一次操作，生成pdf操作
+        var checkExecForPdfTask = setInterval(() => {
 
-          var suid = studentIdArrItem.suid
+          this.qrInfoObj.suid=studentIdArr[indexOfTask].suid
+
+          var suid = studentIdArr[indexOfTask].suid
           
           //直接进入预览模式
           this.$refs.page_main_tile.scrollIntoView()
@@ -2702,9 +2703,26 @@ export default {
               
             })
 
-          },3000)
+          },5000)
 
-        });
+          //生成试卷答题卡pdf内容
+          /*var dd_contentOfAnwserSheet = this.$options.methods.getTestPaperAllQuestionAnwserSheetPreviewImg.bind(this)()
+          var docDefinitionOfAnwserSheet = { content: dd_contentOfAnwserSheet };
+          
+          const pdfDocGeneratorOfAnwserSheet = pdfMake.createPdf(docDefinitionOfAnwserSheet);
+            pdfDocGeneratorOfAnwserSheet.getBlob((blob) => {
+              //console.log(blob)
+            
+            pdfBlobForZipList.push({name:'试卷_答题卡'+ suid +'.pdf',data:blob})
+            
+          })*/
+
+          if(indexOfTask > studentIdArr.length)
+          {
+            clearInterval(checkExecForPdfTask);
+          }
+
+        },10000)
 
         //等待完成，不断检查情况
         var zip = new JSZip();

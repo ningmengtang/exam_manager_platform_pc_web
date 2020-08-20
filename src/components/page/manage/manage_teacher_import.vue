@@ -174,7 +174,7 @@
 <script>
 import user from '../../common/user';
 import {
-	selectTag,StudentSelectByTeacher,selectListByOptions,apiCommonExamAdd,apiCommonExamUpload,studentStudentExamAdd,
+	selectTag,StudentSelectByTeacher,selectListByOptions,apiCommonExamAdd,apiCommonExamUpload,studentStudentExamAdd,apiAdminExamUpdate,
 	apiAdminExamBigQuestionInsert,apiAdminExamQuestionInsert,apiAdminExamQuestionAnwserInsert,apiAdminExamQuestionAnwserSheetInsert,apiAdminExamBigQuestionWithChildrenInsert
 
 } from '@/api/api.js'
@@ -381,7 +381,7 @@ export default {
 									}
 									this.$message.success('操作成功')								
 								}else{
-									this.$message.error('操作完成，未绑定学生')
+									this.$message.success('操作完成，未绑定学生')
 									// 没有绑定学生
 								}
 							}else{
@@ -431,9 +431,9 @@ export default {
 									}
 								})
 							}
-							this.$message.error('操作成功')								
+							this.$message.success('操作成功')								
 						}else{
-							this.$message.error('操作成功')
+							this.$message.success('操作成功')
 							// 没有绑定学生
 						}
 
@@ -506,6 +506,7 @@ export default {
 
 			//读取缓存中的json试卷
 
+		this.testPaperObj.id = testPaperObjId
 		
 		if(null == this.testPaperObj.items)
 		{
@@ -591,6 +592,9 @@ export default {
 
 				questionBigItem.id = resResultData.data.id
 				questionBigItem.sn = resResultData.data.sn
+
+				questionBigItem.parent_id = questionPartItem.id
+				questionBigItem.parent_sn = questionPartItem.sn
 
 				//同步上传图片==========================================
 				/*this.$options.methods.uploadQuestionBigImg.bind(this)(questionBigItem.id,questionBigItem.imgFile).then(res =>{
@@ -689,6 +693,10 @@ export default {
 						}
 
 						//var addQuestionAnwserUrl = "/api/"+this.userTypeForMethods+"/exam/question/answer/sheet/insert"
+						var resResultData = res.data
+
+						questionAnwserSheetItem.id = resResultData.data.id
+						questionAnwserSheetItem.sn = resResultData.data.sn
 
 						apiAdminExamQuestionAnwserSheetInsert(questionAnwserSheetItemJson)
 						.then(res =>{
@@ -710,6 +718,10 @@ export default {
 							}
 
 							//var addQuestionAnwserUrl = "/api/"+this.userTypeForMethods+"/exam/question/answer/insert"
+							var resResultData = res.data
+
+							questionAnwserItem.id = resResultData.data.id
+							questionAnwserItem.sn = resResultData.data.sn
 
 							apiAdminExamQuestionAnwserInsert(questionAnwserItemJson)
 							.then(res =>{
@@ -722,11 +734,21 @@ export default {
 							//此时已经结束，关闭屏蔽层
 							if(questionItem.items.length <= 0)
 							{
-								//关闭屏蔽层
-								this.fullscreenLoading = false
-								this.$message.success('同步试卷至服务器完成！')
-								this.$options.methods.clearTestPaperCache.bind(this)()
-								this.$router.push('/manage_teacher')
+								apiAdminExamUpdate({id:this.testPaperObj.id,elementTest:JSON.stringify(this.testPaperObj)}).then(res =>{
+									if(!res.data.result)
+									{
+										this.$message.error('同步试卷至服务器出错！更新试卷试题ID失败！停止操作！')
+										return false
+									}
+
+									console.log(this.testPaperObj)
+									//关闭屏蔽层
+									this.fullscreenLoading = false
+									this.$message.success('同步试卷至服务器完成！')
+									this.$options.methods.clearTestPaperCache.bind(this)()
+									this.$router.push('/manage_teacher')
+								})
+								
 							}
 
 
@@ -754,15 +776,31 @@ export default {
 									this.$message.error('同步试卷至服务器出错！添加小题选项失败！停止操作！')
 									return false
 								}
+
+								var resResultData = res.data
+
+								questionOptionItem.id = resResultData.data.id
+								questionOptionItem.sn = resResultData.data.sn
 								
 								//此时已经结束，关闭屏蔽层
 								if(questionItem.items.length <= 0)
 								{
-									//关闭屏蔽层
-									this.fullscreenLoading = false
-									this.$message.success('同步试卷至服务器完成！')
-									this.$options.methods.clearTestPaperCache.bind(this)()
-									this.$router.push('/manage_teacher')
+									apiAdminExamUpdate({id:this.testPaperObj.id,elementTest:JSON.stringify(this.testPaperObj)}).then(res =>{
+										if(!res.data.result)
+										{
+											this.$message.error('同步试卷至服务器出错！更新试卷试题ID失败！停止操作！')
+											return false
+										}
+
+										console.log(this.testPaperObj)
+
+										//关闭屏蔽层
+										this.fullscreenLoading = false
+										this.$message.success('同步试卷至服务器完成！')
+										this.$options.methods.clearTestPaperCache.bind(this)()
+										this.$router.push('/manage_teacher')
+									})
+									
 								}
 								
 								})
@@ -855,6 +893,7 @@ export default {
 			//this.$router.push({path: '/test_paper_maker', query: {title: this.form.title , examExplain:this.form.examExplain, examTime : this.form.examTime}})
 			//window.open(newPage.href,'_blank')
 		},
+	
 		//方法结束======================================
 	},
 	mounted() {
@@ -905,7 +944,7 @@ export default {
 
 				this.testPaperObj = JSON.parse(localStorage.getItem('testPaperCache'))
 				//console.log(this.testPaperObj)
-
+				this.form.elementTest = JSON.stringify(this.testPaperObj)
 			}
 			else{
 				this.testPaperCacheReady = false
