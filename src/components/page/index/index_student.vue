@@ -114,7 +114,7 @@
 				"pageNum":this.pageNum,
 				"pageSize":this.pageSize
 			}).then(res=>{
-				console.log(res)
+				// console.log(res)
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
@@ -123,9 +123,9 @@
 			})
 		},
 		methods: {
-			getValue() {
-				console.log(this.array_nav)
-			},
+			// getValue() {
+			// 	console.log(this.array_nav)
+			// },
 			 //改变时
 			handleSizeChange(val) {
 				this.pageSize = val;

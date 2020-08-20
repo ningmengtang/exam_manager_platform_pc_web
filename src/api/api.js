@@ -68,6 +68,56 @@ export function SchoolIndex(data){
 	return result;
 }
 
+// 试卷标签绑定订单项
+export function AdminOrderTagAdd(data){
+	const result =post('/api/admin/order/tag/insert',data)
+	return result;
+}
+// 新增订单项
+export function AdminOrderItemAdd(data){
+	const result =post('/api/admin/order/item/insert',data)
+	return result;
+}
+// 
+export function AdminOrderAdd(data){
+	const result =post('/api/admin/order/insert',data)
+	return result;
+}
+
+export function AdminOrderUpload(id,data){
+	const result =post('/api/admin/order/item/upload/'+id,data)
+	return result;
+}
+// 通过老师id查询的所有学生
+export function StudentSelectByTeacher(id,pageNum,pageSize,data){
+	const result =get('/api/student/home/selectByTeacher/'+id+'?pageNum='+ pageNum +'&pageSize='+pageSize+'&d=' + new Date() * 1,data)
+	return result;
+}
+// 查询学生班级
+export function selectListByOptions(data){
+	const result =post('/api/classes/selectListByOptions',data)
+	return result;
+}
+// 试卷绑定学生
+export function studentStudentExamAdd(data){
+	const result =post('/api/student/studentExam/add',data)
+	return result;
+}
+//新增试卷
+export function apiCommonExamAdd(data){
+	const result =post('/api/common/exam/insert',data)
+	return result;
+}
+
+// 上传试卷附件
+export function apiCommonExamUpload(id,data){
+	const result =post('/api/common/exam/upload/' + id ,data)
+	return result;
+}
+
+
+// /api/admin/order/item/upload/{item_id}
+
 
 
 

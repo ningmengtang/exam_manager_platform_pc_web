@@ -2,21 +2,94 @@
 	<div class="box">
 		<div class="left">
 			<div class="l-box-1">
+				<div class="l-title">请选择试卷类型</div>
+				<!-- <el-select v-model="paperType" placeholder="请选择" class="ids" @change="changeType">
+					<el-option v-for="item in options"  :label="item.label" :value="item.label"></el-option>
+				</el-select> -->
+				<el-radio-group v-model="paperType" @change="changeType">
+					<el-radio label="图片试卷">图片试卷</el-radio>
+					<el-radio label="组件试卷">组件试卷</el-radio>
+				</el-radio-group>
+			</div>
+			<div class="l-box-1">
 				<div class="l-title">标题</div>
-				<el-input v-model="title" placeholder="请输入内容" maxlength="30" show-word-limit class="ids"></el-input>
+				<el-input v-model="form.title" placeholder="请输入内容" maxlength="30" show-word-limit class="ids"></el-input>
 			</div>
 			<div class="l-box-1">
 				<div class="l-title">试卷说明</div>
-				<el-input type="textarea" placeholder="请输入内容" v-model="textarea" maxlength="30" show-word-limit></el-input>
+				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" maxlength="30" show-word-limit></el-input>
 			</div>
 			<div class="l-box-1">
-				<div class="l-title">请选择试卷用途</div>
-				<el-select v-model="select" placeholder="请选择" class="ids">
-					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-				</el-select>
+				<div class="l-title">试卷作答时间</div>
+				<el-input v-model="form.examTime" :min="1" :max="9999"   type="number" show-word-limit class="ids">
+					<template slot="append">
+						分钟
+					</template>
+				</el-input>
 			</div>
-			<div class="l-box-2">
-				<el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
+			<div class="l-box-1">
+				<div class="l-title">试卷标签</div>
+				<div class="t-content">
+					<div class="group">
+							<div class="row-group">
+								<div class="th-group">年份</div>
+								<div class="td-group" >
+									<el-radio-group v-model="form.tag_list[0].id">
+										<el-radio-button v-for="(d,i) in tagList.years" :label="d.id" >{{d.text}}</el-radio-button>
+									</el-radio-group>
+								</div>
+							</div>
+					</div>
+					<div class="group">
+							<div class="row-group">
+								<div class="th-group">教程版本</div>
+								<div class="td-group" >
+									<el-radio-group v-model="form.tag_list[1].id" >
+										<el-radio-button v-for="(d,i) in tagList.version" :label="d.id">{{d.text}}</el-radio-button>
+									</el-radio-group>
+								</div>
+							</div>
+					</div>
+					<div class="group">
+							<div class="row-group">
+								<div class="th-group">学习科目</div>
+								<div class="td-group" >
+									<el-radio-group v-model="form.tag_list[2].id" >
+										<el-radio-button v-for="(d,i) in tagList.subject" :label="d.id">{{d.text}}</el-radio-button>
+									</el-radio-group>
+								</div>
+							</div>
+					</div>
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">学习年级</div>
+							<div class="td-group" >
+								<el-radio-group v-model="form.tag_list[3].id">
+										<el-radio-button v-for="(d,i) in tagList.grade" :label="d.id" >{{d.text}}</el-radio-button>
+								</el-radio-group>
+							</div>
+						</div>
+					</div>
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">单元</div>
+							<div class="td-group" >
+								<el-radio-group v-model="form.tag_list[4].id" >
+									<el-radio-button v-for="(d,i) in tagList.element_test" :label="d.id" >{{d.text}}</el-radio-button>
+								</el-radio-group>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+
+			<div class="l-box-2" v-if="ispaperType">
+				<el-upload 
+				class="upload-demo" 
+				drag action=""  
+				:show-file-list="false"
+                :http-request="uploadFild">
 					<i class="el-icon-upload"></i>
 					<div class="el-upload__text">
 						将文件拖到此处，或
@@ -26,12 +99,33 @@
 			</div>
 		</div>
 		<div class="right">
+			<div class="card-box">
+				<el-row :gutter="20">
+					<el-col :span="8" v-if="!ispaperType">
+						<div class="grid-content bg-purple">
+							<el-button class="i">进入组件</el-button>
+							<div class="ii">(组件试卷)</div>
+						</div>
+					</el-col>
+					<el-col :span="8" v-if="ispaperType">
+						<div class="grid-content bg-purple">
+							<el-button class="i"  @click="parperAddPic">确认提交</el-button>
+							<div class="ii">(图片试卷)</div>
+						</div>
+					</el-col>
+				</el-row>
+			</div>
 			<div class="group">
 				<el-table
-				      :data="tableData"
-				      style="width: 100%">
+				      :data="StudenList"
+				      style="width: 100%"
+					   @selection-change="handleSelectionChange">
+					   <el-table-column
+						type="selection"
+						width="55">
+					</el-table-column>
 				      <el-table-column
-				        prop="date"
+				        prop="code"
 				        label="学号"
 				        width="180">
 				      </el-table-column>
@@ -39,50 +133,29 @@
 				        prop="name"
 				        label="姓名"
 				        width="180">
-						<template slot-scope="scope">
-							<div style="display: flex;align-items: center;">
-								<img src="../../../assets/img/img.jpg" class="user-img" />
-								<div class="student-name">{{ scope.row.name }}</div>
-							</div>
-						</template>
 				      </el-table-column>
-				      <el-table-column
-				        prop="address"
-				        label="年级">
-				      </el-table-column>
+
 					  <el-table-column
-					    prop="address"
-					    label="班级">
+					    prop="schoolName"
+					    label="学校"
+						>
 					  </el-table-column>
+
+
+					  <!-- <el-table-column
+					    prop="classesId"
+					    label="班级"
+						:formatter="formStatus"
+						>
+					  </el-table-column> -->
 				    </el-table>
 			</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div>
-			<div class="card-box">
-				<el-row :gutter="20">
-					<el-col :span="8">
-						<div class="grid-content bg-purple">
-							<el-button class="i">确认提交试卷</el-button>
-							<div class="ii">(按模板提交)</div>
-						</div>
-						</el-col>
-					<el-col :span="8">
-						<div class="grid-content bg-purple">
-							<el-button class="i" style="background-color: #2BBB61;">下载模板</el-button>
-							<div class="ii">(WORD提交模板)</div>
-						</div>
-						</el-col>
-					<el-col :span="8">
-						<div class="grid-content bg-purple">
-							<el-button class="i" >确认提交</el-button>
-							<div class="ii">(图片试卷)</div>
-						</div>
-						</el-col>
-				</el-row>
-			</div>
+			
 			<div class="hint">
 				<div>温馨提示：</div>
 				<span>1.下载word模板正确填写各项题目信息后，在本页面进行上传处理，上传后将提交管理员确认，确认完
@@ -94,6 +167,7 @@
 </template>
 <script>
 import user from '../../common/user';
+import {selectTag,StudentSelectByTeacher,selectListByOptions,apiCommonExamAdd,apiCommonExamUpload,studentStudentExamAdd} from '@/api/api.js'
 export default {
 	data() {
 		return {
@@ -102,31 +176,52 @@ export default {
 			title: '',
 			textarea: '',
 			select: '',
+			total:0,
 			currentPage: 1,
+			pageNum:1,
+			pageSize:6,
 			dialogVisible: false,
+			ispaperType:true,
+			paperType:'图片试卷',
+			tagList:[],
+			AllTagList:[],
+			StudenList:[],
+			selectStudentList:[],
+			uploadFile:'',
+			form:{
+				title:'',
+				examExplain:'',
+				examTime:1,
+				elementTest:'',
+				tag_list:[
+				{
+					id:''
+				},
+				{
+					id:''
+				},
+				{
+					id:''
+				},{
+					id:''
+				},
+				{
+					id:''
+				}
+				]
+			},
+			array:[],
 			cities: ['全部', '上海', '北京', '广州', '深圳'],
 			cities2: ['全部', '1', '2', '3', '4'],
 			checkboxGroup2: ['上海'],
 			options: [
 				{
-					value: '选项1',
-					label: '黄金糕'
+					label: '图片试卷',
+					value:'图片试卷'
 				},
 				{
-					value: '选项2',
-					label: '双皮奶'
-				},
-				{
-					value: '选项3',
-					label: '蚵仔煎'
-				},
-				{
-					value: '选项4',
-					label: '龙须面'
-				},
-				{
-					value: '选项5',
-					label: '北京烤鸭'
+					label: '组件试卷',
+					value:'组件试卷'
 				}
 			],
 			li: [
@@ -175,18 +270,152 @@ export default {
 		};
 	},
 	methods: {
+		 //改变时
+		handleSizeChange(val) {
+			this.pageSize = val;
+			StudentSelectByTeacher({
+				"pageNum":this.pageNum,
+				"pageSize":this.pageSize
+			}).then(res=>{
+				this.StudenList = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+			})
+		},
+		//条目改变时
+		handleCurrentChange(val) {
+			this.pageNum = val;
+			StudentSelectByTeacher({
+				"pageNum":this.pageNum,
+				"pageSize":this.pageSize
+			}).then(res=>{
+				
+				this.StudenList = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+			})
+		},
 		getValue() {
 			console.log(this.array_nav);
 		},
-		handleSizeChange(val) {
-			console.log(`每页 ${val} 条`);
+		// handleSizeChange(val) {
+		// 	console.log(`每页 ${val} 条`);
+		// },
+		// handleCurrentChange(val) {
+		// 	console.log(`当前页: ${val}`);
+		// },
+		changeType(){
+			if(this.paperType == '图片试卷'){
+				this.ispaperType = true
+			}else if(this.paperType == '组件试卷'){
+				this.ispaperType = false
+			}
 		},
-		handleCurrentChange(val) {
-			console.log(`当前页: ${val}`);
+		handleSelectionChange(val){
+			this.selectStudentList = val
+		},
+		// 上传附件
+		uploadFild(param){
+			var that = this
+			console.log(param)
+			var file = param.file
+			this.uploadFile = new FormData()
+			this.uploadFile.append('file',file)
+		},
+		// 班级信息
+		// formStatus(row,colum){
+		// 	console.log(row)
+		// 	selectListByOptions({
+		// 		"id":row.classesId
+		// 	}).then(res=>{
+		// 		console.log(res)
+		// 		return res.data.data.list[0].name			
+		// 		// studentStudentExamAdd
+		// 	})
+		// },
+		// 试卷图片上传
+		parperAddPic(){
+
+			if(this.paperType == '图片试卷'){
+				// 新建试卷
+				if(this.uploadFile){
+					apiCommonExamAdd(this.form).then(res=>{
+					// console.log(res)
+					if(res.data.result){
+						// 上传附件
+						let examId = res.data.data.id
+						apiCommonExamUpload(examId,this.uploadFile).then(res=>{
+							if(res.data.result){
+								if(this.selectStudentList !=[]){
+									// 有绑定学生
+									for(var i=0;i<this.selectStudentList.length;i++){
+										// 绑定学生
+										studentStudentExamAdd({
+											"examinationId":examId,
+											"studentId":this.selectStudentList[i].id
+										}).then(res=>{
+											if(res.data.result){
+											}else{
+												this.$message.error(res.data.message)
+											}
+										})
+									}
+									this.$message.error('操作成功')								
+								}else{
+									this.$message.error('操作成功')
+									// 没有绑定学生
+								}
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+						
+						
+					}else{
+						this.$message.error(res.data.message)
+					}
+				})
+				}else{
+					this.$message.error('请先上传附件')
+				}
+				
+			}
+			// 组件试卷
+
+			else{
+				// 新建试卷的信息
+				cosnsole.log(this.form)
+			}
 		}
 	},
 	mounted() {
 		this.color = user().color;
+		selectTag().then(res=>{
+			this.tagList = res.data.data
+		})
+		let id = localStorage.getItem('userID');
+		if(id){
+			this.teacherId = localStorage.getItem('userID')
+			StudentSelectByTeacher(this.teacherId,this.pageNum,this.pageSize).then(res=>{
+				this.StudenList = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+			})
+		}else{
+			this.teacherId = ''
+			this.$message.error(res.data.message)
+		}
+		
+		// let teacherId = 
+		
+		// // 获取全部标签
+		// ApiTagSelectList({
+		// 	"pageNum": 1,
+		// 	"pageSize": 999
+		// }).then(res=>{
+		// 	console.log(res)
+		// 	this.AllTagList = res.data.data.list
+		// })
 	}
 };
 </script>

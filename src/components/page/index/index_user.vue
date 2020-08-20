@@ -53,7 +53,7 @@
 			<el-row :gutter="20" type="flex">
 				<el-col :span="5">
 					<div class="grid-content bg-purple other" >
-						<el-button class="card-other-i">提交试卷</el-button>
+						<el-button class="card-other-i" @click="">提交试卷</el-button>
 						<div class="card-other-ii">(按模板提交)</div>
 					</div>
 				</el-col>
