@@ -1185,7 +1185,7 @@ export default {
       if(null != this.$router.params && null != this.$router.params.createTestPaperInfoObj)
       {
         //进入批量生产模式
-        this.createTestPaperInfoObj == this.$router.params.createTestPaperInfoObj
+        this.createTestPaperInfoObj = this.$router.params.createTestPaperInfoObj
         
         apiCommonExamSelectById(this.createTestPaperInfoObj.paperId).then(res => {
           if(!res.data.result)
