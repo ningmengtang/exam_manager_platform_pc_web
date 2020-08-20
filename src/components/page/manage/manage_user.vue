@@ -64,7 +64,7 @@
 						<el-button type="primary" @click="" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
 					</div>
 				</div>
-				<div class="right">
+				<!-- <div class="right">
 					<div class="right-son">
 						<div class="bg-purple">
 							<div class="card-other-i" @click="goImport">提交试卷</div>
@@ -77,7 +77,7 @@
 							<div class="card-other-ii">(WORD提交模板)</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 

@@ -73,7 +73,7 @@ export default new Router({
 				},
 				{
 				    path: '/manage_user_import',
-				    component: () => import(/* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_teacher_import.vue'),
+				    component: () => import(/* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_user_import.vue'),
 				    meta: { title: '教师-专家-提交试卷' }
 				},
 				{
@@ -157,7 +157,8 @@ export default new Router({
 				    meta: { title: '管理员-试卷分发' }
 				},
 				{
-				    path: '/distribution_admin_affirm',
+					path: '/distribution_admin_affirm',
+				
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_affirm.vue'),
 				    meta: { title: '管理员-试卷分发-试卷确认' }
 				},

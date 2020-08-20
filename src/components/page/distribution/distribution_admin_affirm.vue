@@ -19,19 +19,23 @@
 			</div>
 			<el-form ref="form" :model="form" label-width="80px" class="form" style="margin-bottom: 20px;">
 				<el-form-item label="订购总数">
-					<el-input v-model="form.name"></el-input>
+					<el-input v-model="form.count" >
+						<template slot="append">份</template>
+					</el-input>
 				</el-form-item>
 				<el-form-item label="订购类型">
-					<el-input v-model="form.type"></el-input>
+					<el-input v-model="form.style_count">
+						<template slot="append">种</template>
+					</el-input>
 				</el-form-item>
 				<el-form-item label="联系电话">
-					<el-input v-model="form.phone"></el-input>
+					<el-input v-model="form.contact_phone"></el-input>
 				</el-form-item>
 				<el-form-item label="收货人员">
-					<el-input v-model="form.personnel"></el-input>
+					<el-input v-model="form.contacts"></el-input>
 				</el-form-item>
 				<el-form-item label="收货地址">
-					<el-input v-model="form.site"></el-input>
+					<el-input v-model="form.contact_address"></el-input>
 				</el-form-item>
 				<el-date-picker
 				      v-model="value1"
@@ -50,36 +54,42 @@
 		<!-- 右边 -->
 		<div class="right-box">
 			<div class="message-top" :style="{'border-color':color}">订单详细
-				<el-button type="success" class="buttom" @click="dialogTableVisible = true" :style="{'background-color': color, 'border-color': color }"><span
+				<!-- <el-button type="success" class="buttom" @click="dialogTableVisible = true" :style="{'background-color': color, 'border-color': color }"><span
 					 class="el-icon-plus"></span>
-					新增订购单</el-button>
+					新增订购单</el-button> -->
 			</div>
 
 			<!--订单列表 -->
 			<div class="upload-papers">
-				<div class="li-box" v-for="(item,i) in papers " :key="item.i">
+				<div class="li-box" v-for="(item,i) in papers">
 					<div class="ranking">{{i+1}}</div>
 					<div class="papers-box">
 						<div class="p-title">{{item.title}}
 							<div class="label-box">
-								<div class="label">2019</div>
-								<div class="label">人教版</div>
-								<div class="label">语文</div>
-								<div class="label">一年级</div>
-								<div class="label">一年级</div>
+								<div class="label" v-for="tag in item.tag_list">{{tag.text}}</div>
 							</div>
 						</div>
 						<div class="p-particular">
-							<div>数量20份</div>
-							<div>单价20元</div>
-							<div>总价400元</div>
-							<div class="fault">学生信息未导入，点击重导</div>
+							<div><span>数量{{item.count}} 份</span></div>
+							<div>
+								<span>
+									单价{{item.price}}元
+								</span>
+								</div>
+							<div>
+								<span>
+									总价{{item.total_price}}元
+								</span></div>
+							
+							<div class="fault" v-if="!item.file_path"  @click="uploadFile(item)">学生信息未导入，点击导入</div>
+							<div  v-if="item.file_path"  >已导入学生信息</div>
+							<!-- <div class="" v-if=""></div> -->
 						</div>
 					</div>
-					<i class="close el-icon-close" :style="{'color':color}"></i>
+					<el-button type="success" size="small" @click="addPaper" style="float:right" >分配试卷</el-button>
 				</div>
 			</div>
-			<div class="page">
+			<!-- <div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="100" :total="1000">
 				</el-pagination>
@@ -96,12 +106,12 @@
 						<div class="ii">￥666,666.00</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 		<!-- 提示框 -->
 		<el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
-				<div class="t-title">请选择班级</div>
+				<!-- <div class="t-title">请选择班级</div>
 				<div class="t-content">
 					<div class="group">
 						<div class="row-group">
@@ -123,7 +133,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
 				<div class="student-box">
 					<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
@@ -171,9 +181,16 @@
 	import Schart from 'vue-schart'
 	import ICountUp from 'vue-countup-v2'
 	import user from '../../common/user'
+	import {
+		apiAdminOrderItemList,
+		AdminOrderUpload,
+		selectAllUserTag
+	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
+				adminAffirmData:[],
+				
 				color: '',
 				endVal1: 6,
 				endVal2: 454,
@@ -204,49 +221,14 @@
 					pStatus: 'color:#e2633b'
 				},
 				form: {
-					name: '454',
-					type: '',
-					phone: '',
-					personnel: '',
-					site: ''
+					count: '',
+					style_count: '',
+					contact_phone: '',
+					contacts: '',
+					contact_address: '',
+					
 				},
-				papers: [{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-				],
+				papers: [],
 				tableData: [{
 					date: '1',
 					name: '王小虎',
@@ -268,8 +250,12 @@
 					grade: '四年级',
 					class: '1'
 				}],
+				adminAffirmData:'',
 				dialogTableVisible: false,
 				dialogTableVisible2: false,
+				pageSize:6,
+				pageNum:1,
+
 			};
 		},
 		components: {
@@ -321,10 +307,78 @@
 			},
 			black(){
 				this.$router.push('order_school')
+			},
+			uploadFile(item){
+				var input =  document.createElement('input')
+				input.type = 'file'
+				input.accept = '.xls'
+				input.addEventListener('change',(event)=>{
+					let file = event.target.files[0]
+					let data = new FormData()
+					data.append('file',file)
+					AdminOrderUpload(item.id,data).then(res=>{
+						if(res.data.result){
+							this.$message.success('上传成功')
+							apiAdminOrderItemList({
+								"order_id":this.adminAffirmData.id
+							}).then(res=>{
+								if(res.data.data.list){
+									this.papers = res.data.data.list
+								}else{
+									this.$message.error('查询不到订单项')
+								}
+								console.log(res)
+							})
+						}else{
+							this.$message.error(res.data.message)
+						}
+					})
+				})
+				input.click()
+            	input.remove() 
+			},
+			// 分配试卷
+			addPaper(item){
+				this.dialogTableVisible = true
+				// 通过标签查询试卷
+				let id = []
+				for(var i=0;i<item.tag_list.length;i++){
+					id.push(item.tag_list[i].id)
+				}
+				console.log(id)
+				selectAllUserTag({
+					"id":id,
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res=>{
+					console.log(res)
+				})
+				// apiPaperWithTagList
 			}
 		},
 		mounted() {
 			this.color = user().color;
+			let adminAffirmData = JSON.parse(sessionStorage.getItem("adminAffirmData")) 
+			if(adminAffirmData){
+				this.adminAffirmData = adminAffirmData
+				this.form.count = adminAffirmData.count
+				this.form.style_count =adminAffirmData.style_count
+				this.form.contact_phone = adminAffirmData.contact_phone
+				this.form.contacts = adminAffirmData.contacts
+				this.form.contact_address = adminAffirmData.contact_address
+				apiAdminOrderItemList({
+					"order_id":adminAffirmData.id
+				}).then(res=>{
+					if(res.data.data.list){
+						this.papers = res.data.data.list
+					}else{
+						this.$message.error('查询不到订单项')
+					}
+					console.log(res)
+				})
+			}else{
+				this.$message.error('查询不到订单信息')
+			}
 		}
 	};
 </script>

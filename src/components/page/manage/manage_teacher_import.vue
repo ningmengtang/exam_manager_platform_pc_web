@@ -6,7 +6,7 @@
 				<!-- <el-select v-model="paperType" placeholder="请选择" class="ids" @change="changeType">
 					<el-option v-for="item in options"  :label="item.label" :value="item.label"></el-option>
 				</el-select> -->
-				<el-radio-group v-model="paperType" @change="changeType">
+				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px">
 					<el-radio label="图片试卷">图片试卷</el-radio>
 					<el-radio label="组件试卷">组件试卷</el-radio>
 				</el-radio-group>
@@ -99,23 +99,21 @@
 			</div>
 		</div>
 		<div class="right">
-			<div class="card-box">
+			<div class="card-box" >
 				<el-row :gutter="20">
 					<el-col :span="8" v-if="!ispaperType">
 						<div class="grid-content bg-purple">
-							<el-button class="i">进入组件</el-button>
-							<div class="ii">(组件试卷)</div>
+							<el-button class="i" >开始组件</el-button>
 						</div>
 					</el-col>
-					<el-col :span="8" v-if="ispaperType">
+					<el-col :span="8" >
 						<div class="grid-content bg-purple">
-							<el-button class="i"  @click="parperAddPic">确认提交</el-button>
-							<div class="ii">(图片试卷)</div>
+							<el-button class="i" >确认提交试卷</el-button>
 						</div>
 					</el-col>
 				</el-row>
 			</div>
-			<div class="group">
+			<div class="group" style="margin-top:20px">
 				<el-table
 				      :data="StudenList"
 				      style="width: 100%"
@@ -289,7 +287,6 @@ export default {
 				"pageNum":this.pageNum,
 				"pageSize":this.pageSize
 			}).then(res=>{
-				
 				this.StudenList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
@@ -381,7 +378,6 @@ export default {
 				
 			}
 			// 组件试卷
-
 			else{
 				// 新建试卷的信息
 				cosnsole.log(this.form)

@@ -81,7 +81,7 @@
 
 			<div class="bottom-box">
 				<div class="discount">
-					<div class="i">折扣：</div>
+					<div class="i">总价：</div>
 					<div class="ii">{{form.total_price}}</div>
 				</div>
 				<div class="last">
@@ -421,7 +421,7 @@
 
 			// 上传学生信息
 			upload(i){
-				console.log(i)
+				// console.log(i)
 				var input =  document.createElement('input')
 				input.type = 'file'
 				input.accept = '.xls'
@@ -486,7 +486,7 @@
 			},
 			// 新建订单项
 			getOrderItem(id,sn,orderItem){
-				console.log(orderItem)
+				// console.log(orderItem)
 				AdminOrderItemAdd({
 					"count":orderItem.orderItemNum,
 					"total_price":orderItem.total_price,
@@ -495,39 +495,55 @@
 					"order_id":id,
 					"price":orderItem.price
 				}).then(res=>{
-					// console.log(res)
 					if(res.data.result){
 						let itemId = res.data.data.id
-						AdminOrderUpload(itemId,orderItem.uploadFile).then(res=>{
+						if(orderItem.uploadFile){
+							AdminOrderUpload(itemId,orderItem.uploadFile).then(res=>{
+								if(res.data.result){
+									for(var i=0;i<orderItem.children.length;i++){
+										let item = orderItem.children[i]
+										AdminOrderTagAdd({
+											"item_id":itemId,
+											"tag_id":item
+										}).then(res=>{
+											if(res.data.result){
 
-							// console.log(res)
-							if(res.data.result){
-								for(var i=0;i<orderItem.children.length;i++){
-									let item = orderItem.children[i]
-									AdminOrderTagAdd({
-										"item_id":itemId,
-										"tag_id":item
-									}).then(res=>{
-										if(res.data.result){
-
-										}else{
-											this.$message.error(res.data.message)
-										}
-										// console.log(res)
-									})
+											}else{
+												this.$message.error(res.data.message)
+											}
+										})
+									}
+									this.$message.success('新增成功')
+									this.$router.go(-1)
+								}else{
+									this.$message.error(res.data.message)
 								}
-							}else{
-								this.$message.error(res.data.message)
+							})
+						}else{
+							for(var i=0;i<orderItem.children.length;i++){
+								let item = orderItem.children[i]
+								AdminOrderTagAdd({
+									"item_id":itemId,
+									"tag_id":item
+								}).then(res=>{
+									if(res.data.result){
+
+									}else{
+										this.$message.error(res.data.message)
+									}
+								})
 							}
-						})
+							this.$message.success('新增成功')
+							this.$router.go(-1)
+						}
 					}
 				})
 			},
 			placeOrder(){
-				console.log(this.orderList)
+				// console.log(this.orderList)
 				AdminOrderAdd(this.form).then(res=>{
 					if(res.data.result){
-						console.log(res)
+						// console.log(res)
 						let id = res.data.data.id
 						let sn = res.data.data.sn
 						for(var i=0;i<this.orderList.length;i++){

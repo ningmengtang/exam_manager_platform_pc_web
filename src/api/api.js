@@ -120,7 +120,33 @@ export function apiCommonExamUpload(id,data){
 	return result;
 }
 
+// 管理员订单列表
+export function apiAdminOrderList(data){
+	const result =post('/api/admin/order/list' ,data)
+	return result;
+}
+// 管理员订单修改
+export function apiAdminOrderUpdate(data){
+	const result =post('/api/admin/order/updateById' ,data)
+	return result;
+}
 
+// 查询管理员订单项
+export function apiAdminOrderItemList(data){
+	const result =post('/api/admin/order/item/list' ,data)
+	return result;
+}
+// 查询专家
+export function apiPaperWithTagList(data){
+	const result =post('/api/paperWithTag/selectUserTag' ,data)
+	return result;
+}
+
+//专家试卷标签查询所有
+export function selectAllUserTag(data){
+	const result =post('/api/paperWithTag/selectAllUserTag' ,data)
+	return result;
+}
 // /api/admin/order/item/upload/{item_id}
 
 
