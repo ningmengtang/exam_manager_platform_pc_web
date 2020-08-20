@@ -112,7 +112,7 @@
 				error:0,
 				currentPage: 1,
 				total: 0,
-				pageSize: 2,
+				pageSize: 4,
 				pageNum: 1,
 				userName: localStorage.getItem('userName'),
 				userID: localStorage.getItem('userID'),
@@ -184,7 +184,8 @@
 			teacherIndex({
 				"id":this.id,
 				"pageSize":this.pageSize,
-				"pageNum":this.pageNum
+				"pageNum":this.pageNum,
+				'operator_id':this.userID
 			}).then(res=>{
 				this.papers = res.data.data.list
 				this.total= res.data.data.total
@@ -196,7 +197,8 @@
 				this.pageNum = val;
 				teacherIndex({
 					"pageNum":this.pageNum,
-					"pageSize":this.pageSize
+					"pageSize":this.pageSize,
+					'operator_id':this.userID
 				}).then(res=>{
 					this.papers = res.data.data.list
 					this.total= res.data.data.total

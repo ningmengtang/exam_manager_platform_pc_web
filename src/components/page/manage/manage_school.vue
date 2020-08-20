@@ -99,13 +99,13 @@
 					<div class="ii" v-if="data.status == '0'">
 						<div style="margin-bottom: 4px;" >
 							<i class="icon el-icon-check i"></i>
-							<span class="text">可以下载</span>
+							<!-- <span class="text">可以下载</span> -->
 						</div>
 					</div>
 					<div class="ii" v-else-if="data.status == '1'">
 						<div style="margin-bottom: 4px;" >
 							<i class="icon el-icon-check i"></i>
-							<span class="text">可以下载</span>
+							<!-- <span class="text">可以下载</span> -->
 						</div>
 					</div>
 					<!-- <div class="ii" v-if="data.o == '3'">
@@ -115,7 +115,7 @@
 						</div>
 					</div> -->
 					<div class="del">
-						<i class="el-icon-download" @click="dialogVisible = true"></i>
+						<!-- <i class="el-icon-download" @click="dialogVisible = true"></i> -->
 						<i class="el-icon-delete-solid" ></i>
 						<i class="el-icon-s-custom" @click="studentDownload(data.id,data.status)" :style="data.status=='0'?{'color':color}:{'color':'#999999'}"></i>
 					</div>

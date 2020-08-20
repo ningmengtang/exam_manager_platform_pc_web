@@ -84,7 +84,7 @@
 						<el-table-column type="selection" width="55"></el-table-column>
 						<el-table-column label="学号" width="120">
 							<template slot-scope="scope">
-								{{ scope.row.date }}
+								{{ scope.row.code }}
 							</template>
 						</el-table-column>
 						<el-table-column prop="name" label="名字" width="120">
@@ -95,12 +95,13 @@
 								</div>
 							</template>
 						</el-table-column>
-						<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="class" label="班级" show-overflow-tooltip></el-table-column>
+						<el-table-column prop="classes.grade" label="年级" show-overflow-tooltip></el-table-column>
+						<el-table-column prop="classes.name" label="班级" show-overflow-tooltip></el-table-column>
 					</el-table>
+					<!-- 分页 -->
 					<div class="page">
 						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="pageSize" :total="total"></el-pagination>
+						 :current-page.sync="currentPage" :page-size="studentPageSize" :total="studentTotal"></el-pagination>
 					</div>
 					<div class="block-time">
 						<div>
@@ -248,6 +249,7 @@
 			},
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
+				console.log(val)
 			},
 			toggleSelection(rows) {
 				if (rows) {
@@ -340,12 +342,19 @@
 				await this.TagTypePromise(tagType, index)
 				// return n 
 			},
+			  setCurrent(row) {
+			        this.$refs.singleTable.setCurrentRow(row);
+			      },
 			// 查询分发试卷id
 			distribution(id){
 				this.dialogTableVisible = true
-				console.log(id)
 				teacherDistributeselect({'examId':id}).then(res=>{
-					console.log(res)
+					console.log(res.data)
+					this.tableData=res.data.data.list
+					this.studentPageNum=res.data.data.pageNum
+					this.studentPageSize=res.data.data.pageSize
+					this.studentTotal=res.data.data.total
+					
 				})
 				
 			}
@@ -376,7 +385,6 @@
 				this.total = res.data.data.total
 				this.pageSize=res.data.data.pageSize
 				this.currentPage = res.data.data.pageNum
-				console.log(this.pageSize)
 			})
 		}
 	};

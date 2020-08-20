@@ -159,7 +159,7 @@
 						<div class="status">取消入库</div>
 					</span>
 					<div class="del">
-						<i class="el-icon-download" @click="dialogVisible = true"></i>
+						<!-- <i class="el-icon-download" @click="dialogVisible = true"></i> -->
 						<i class="el-icon-delete-solid"></i>
 					</div>
 				</div>
