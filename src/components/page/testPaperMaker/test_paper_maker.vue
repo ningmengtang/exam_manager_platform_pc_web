@@ -1227,7 +1227,7 @@ export default {
     multiDownloadTestPaperForStudent(studentIdArr){
       this.$options.methods.startTestPaperImgPreview.bind(this)()
 
-      var checkExec = setInterval(() => {
+      setTimeout(() => {
         if(this.fullscreenLoading == false)
         {
           //说明预览图操作已经完成
@@ -1237,7 +1237,7 @@ export default {
           this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdf.bind(this)(studentIdArr)
           
         }
-      },3000)
+      },500)
     },
     /**
      * 获取二维码信息用于防伪
@@ -2619,7 +2619,7 @@ export default {
         lock: true,
         text: "正在紧张打包中，请稍候...",
         spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
+        background: 'rgba(0, 0, 0, 0)'
       });
 
       //延迟执行，让加载页面load出来
@@ -2700,9 +2700,9 @@ export default {
 
             clearInterval(checkExec);
             loading.close();
-            
+            this.$router.push('/')
           }
-        }, 10000);
+        }, 3000);
         //以免长时间无响应，30秒后主动取消
         /*setTimeout(() => {
           loading.close();
@@ -2978,7 +2978,7 @@ export default {
       })
       //循环输出试卷部分，完成================================================================================================
       
-      console.log("获取所有试卷部分、大题、小题图片完成 <<<<< ")
+      console.log("获取所有试卷答题卡图片完成 <<<<< ")
       //console.log(previewImgArr)
       //console.log(this.testPaperObj)
       return previewImgArr
