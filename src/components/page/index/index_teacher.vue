@@ -37,11 +37,11 @@
 				</el-col>
 				<el-col :span="5">
 					<div class="grid-content bg-purple other" >
-						<el-button class="card-other-i" @click="submit()">提交试卷</el-button>
-						<div class="card-other-ii">(按模板提交)</div>
+						<el-button class="card-other-i" @click="submit">提交试卷</el-button>
+						<!-- <div class="card-other-ii">(按模板提交)</div> -->
 					</div>
 				</el-col>
-			<!-- 	<el-col :span="5">
+				<!-- <el-col :span="5">
 					<div class="grid-content bg-purple other" >
 							<el-button class="card-other-i o">下载模板</el-button>
 							<div class="card-other-ii">(WORD提交模板)</div>
@@ -234,7 +234,8 @@
 			},
 			//提交试卷
 			submit(){
-				this.$router.push('manage_teacher_submit')
+				
+				this.$router.push('manage_teacher_import')
 			}
 			    
 		}

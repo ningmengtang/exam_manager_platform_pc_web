@@ -1,6 +1,6 @@
 .box{padding: 20px;border-radius: 8px;width: auto;height: 100%;overflow-y: scroll;-webkit-box-sizing: border-box;box-sizing: border-box;color: #333333;font-size: 14px;display: flex;}
 
-.left{width: 35%;margin-right: 48px;background: #FFFFFF;height: 100%;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);border-radius:10px;padding: 24px;}
+.left{margin-right: 48px;background: #FFFFFF;height: 1200px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);border-radius:10px;padding: 24px;width: 410px;}
 .l-box-1{width: 100%;}
 .ids{margin-top: 20px;width: 100%;}
 .l-title{font-size: 20px;font-weight: bold;color: #333333;border-left: 8px solid #2BBB61;padding-left: 16px;display: flex;align-items: center;}
@@ -27,3 +27,25 @@
 .card-box .ii{color: #333333;margin-top: 4px;}
 
 .hint{font-size: 14px;color: #333333;margin-top: 20px;letter-spacing: 1.5px;}
+.group .th-group{
+    padding:10px 0px;
+}
+.group /deep/ .el-radio-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
+.group /deep/ .el-radio-button.is-checked .el-radio-button__inner {background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);}
+.group /deep/ .el-radio-button--small .el-radio-button__inner{font-size: 14px;}
+.group /deep/ .el-radio-button, .el-radio-button__inner{min-width: 92px;}
+.group /deep/ .el-radio-button__orig-radio:checked+.el-radio-button__inner{
+    background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);color: #fff;
+}
+
+
+.box /deep/ .el-radio__input.is-checked .el-radio__inner{
+    border-color:rgb(43, 187, 97);
+    background: rgb(43, 187, 97);
+}
+.box /deep/ .el-radio__input.is-checked+.el-radio__label{
+    color: #2BBB61;
+}
+.group /deep/  .el-radio-button__inner:hover{
+    color: #2BBB61;
+}

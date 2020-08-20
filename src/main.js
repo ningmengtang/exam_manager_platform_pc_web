@@ -13,6 +13,16 @@ import './components/common/directives';
 import 'babel-polyfill';
 import './assets/icon/iconfont.css';
 import Vue2OrgTree from 'vue2-org-tree'
+//富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.snow.css' // 富文本编辑器外部引用样式  三种样式三选一引入即可
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.bubble.css'
+
+//富文本编辑器
+Vue.use(VueQuillEditor)
+
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(VCharts)

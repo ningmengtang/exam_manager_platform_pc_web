@@ -4,6 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+	
     routes: [
         {
             path: '/',
@@ -73,7 +74,7 @@ export default new Router({
 				},
 				{
 				    path: '/manage_user_import',
-				    component: () => import(/* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_teacher_import.vue'),
+				    component: () => import(/* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_user_import.vue'),
 				    meta: { title: '教师-专家-提交试卷' }
 				},
 				{
@@ -157,7 +158,8 @@ export default new Router({
 				    meta: { title: '管理员-试卷分发' }
 				},
 				{
-				    path: '/distribution_admin_affirm',
+					path: '/distribution_admin_affirm',
+				
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_affirm.vue'),
 				    meta: { title: '管理员-试卷分发-试卷确认' }
 				},
@@ -165,6 +167,12 @@ export default new Router({
 				    path: '/user_control',
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/user/user_control.vue'),
 				    meta: { title: '管理员-用户管理' }
+				},
+				{
+					name: 'test_paper_maker',
+				    path: '/test_paper_maker',
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/testPaperMaker/test_paper_maker.vue'),
+				    meta: { title: '组卷工具' }
 				}
 				
 				

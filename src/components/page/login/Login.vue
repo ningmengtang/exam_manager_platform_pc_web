@@ -223,7 +223,7 @@
 									localStorage.setItem('loginToken', wd.data.token)
 									localStorage.setItem('userID', wd.data.id)
 									localStorage.setItem('userName', wd.data.name)
-									// console.log(res)
+									//console.log(res)
 									//判断是否是学生
 									if (type == 'student') {
 										localStorage.setItem('userSchoolName', wd.data.schoolName)

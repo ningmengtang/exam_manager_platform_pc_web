@@ -217,6 +217,9 @@
 			getValue() {
 				console.log(this.array_nav)
 			},
+			goImport() {
+				this.$router.push('manage_teacher_import')
+			},
 			handleSizeChange(val) {
 				console.log(`每页 ${val} 条`);
 			},
