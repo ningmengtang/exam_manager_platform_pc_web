@@ -120,14 +120,33 @@ export function apiCommonExamUpload(id,data){
 	return result;
 }
 
-// 管理员订单列表
-export function apiAdminOrderList(data){
-	const result =post('/api/admin/order/list' ,data)
+// 管理员-插入大题
+export function apiAdminExamBigQuestionInsert(data){
+	const result =post("/api/admin/exam/bigQuestion/insert",data)
 	return result;
 }
-// 管理员订单修改
-export function apiAdminOrderUpdate(data){
-	const result =post('/api/admin/order/updateById' ,data)
+
+// 管理员-插入大题绑定小题
+export function apiAdminExamBigQuestionWithChildrenInsert(data){
+	const result =post("/api/admin/exam/bigQuestionWithChildren/withQuestionWithChildren/insert",data)
+	return result;
+}
+
+// 管理员-插入小题
+export function apiAdminExamQuestionInsert(data){
+	const result =post("/api/admin/exam/question/insert",data)
+	return result;
+}
+
+// 管理员-插入答案
+export function apiAdminExamQuestionAnwserInsert(data){
+	const result =post("/api/admin/exam/question/answer/insert",data)
+	return result;
+}
+
+//插入答题卡
+export function apiAdminExamQuestionAnwserSheetInsert(data){
+	const result =post("/api/admin/exam/question/answer/sheet/insert",data)
 	return result;
 }
 
