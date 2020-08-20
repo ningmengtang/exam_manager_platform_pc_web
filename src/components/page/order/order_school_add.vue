@@ -392,8 +392,11 @@
 							price = price + this.AllTagList[i].price
 						}
 					}
-
-					
+					// console.log(this.array_nav1)
+					// console.log(this.array_nav2)
+					// 	console.log(this.array_nav3)
+					// console.log(this.array_nav4)
+					// 	console.log(this.array_nav5)
 					this.orderItemList.push({
 						"children":[this.array_nav1,this.array_nav2,this.array_nav3,this.array_nav4,this.array_nav5],
 						"childrenName":[name1,name2,name3,name4,name5],

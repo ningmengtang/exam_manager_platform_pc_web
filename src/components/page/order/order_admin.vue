@@ -13,11 +13,11 @@
 					</div>
 				</div>
 			</div>
-			<div class="search">
+			<!-- <div class="search">
 				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-button type="primary"  :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增订购单</el-button>
-			</div>
+			</div> -->
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
