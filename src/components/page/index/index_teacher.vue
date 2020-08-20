@@ -56,7 +56,7 @@
 				</div>
 				<div class="p-particula">
 					<div class="top-box">
-						<div class="subject">{{d.subject}}</div>
+						<div class="subject">语文</div>
 						<div class="grade">{{d.gradeClass}}</div>
 					</div>
 					<div class="p-title">{{d.title}}</div>
@@ -100,7 +100,8 @@
 				endVal: 100,
 				endVal1: 5000,
 				endVal2: 454,
-				total:0,	
+				total:0,
+				userID:localStorage.getItem('userID'),
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -156,7 +157,7 @@
 				disabled:0,
 				download:0,
 				pageNum:1,
-				pageSize:9,
+				pageSize:3,
 				currentPage: 1,
 
 			}
@@ -168,7 +169,8 @@
 		mounted() {
 			teacherIndex({
 				"pageSize":999,
-				"pageNum":1
+				"pageNum":1,
+				'operator_id':this.userID
 			}).then(res=>{
 				this.alltotal = 0
 				this.disabled = 0
@@ -190,14 +192,14 @@
 
 			teacherIndex({
 				"pageSize":this.pageSize,
-				"pageNum":this.pageNum
+				"pageNum":this.pageNum,
+				'operator_id':this.userID
 			}).then(res=>{
 				console.log(res.data.data.list)
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
 			})
-
 		},
 		methods: {
 			getValue() {
@@ -209,7 +211,8 @@
 				
 				teacherIndex({
 					"pageNum":this.pageNum,
-					"pageSize":this.pageSize
+					"pageSize":this.pageSize,
+					'operator_id':this.userID
 				}).then(res=>{
 					this.papers = res.data.data.list
 					this.total = res.data.data.total
@@ -221,7 +224,8 @@
 				this.pageNum = val
 				teacherIndex({
 					"pageNum":this.pageNum,
-					"pageSize":this.pageSize
+					"pageSize":this.pageSize,
+					'operator_id':this.userID
 				}).then(res=>{
 					this.papers = res.data.data.list
 					this.total= res.data.data.total

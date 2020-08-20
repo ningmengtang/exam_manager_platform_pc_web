@@ -177,7 +177,6 @@ export function improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(orderItemId
 	const result =post('/api/admin/improt/excel/improtSchoolAndTeachersAndStudentsInfoByAlredyUpload/'+orderItemId+'/'+parperId ,data)
 	return result;
 }
-
 export function apiAdminOrderUpdate(data){
 	const result =post('/api/admin/order/updateById' ,data)
 	return result;

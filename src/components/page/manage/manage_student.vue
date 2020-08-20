@@ -147,12 +147,12 @@
 	</div>
 </template>
 <script>
-	import {getValue,handleSizeChange,handleCurrentChange,handleClose,getQuery,TagTypePromise} from '@/assets/js/manage.js'
+	import {getValue,handleSizeChange,handleCurrentChange,handleClose,TagTypePromise,getQuery} from '@/assets/js/manage.js'
 	import {selectTag,ApiTagSelectList,paperWithTag} from '@/api/api.js'
 	export default {
 		data() {
 			return {
-				pageSize:4,
+				pageSize:1,
 				pageNum:1,
 				total:0,
 				currentPage:1,
@@ -310,7 +310,6 @@
 				"pageSize":999,
 				"pageNum":1
 			}).then(res=>{
-				
 				this.TagType = res.data.data.list
 				var arr = []
 				for(var i=0;i<this.TagType.length;i++){
