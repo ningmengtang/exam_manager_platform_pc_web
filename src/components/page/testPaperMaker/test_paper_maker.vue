@@ -20,7 +20,7 @@
           <i class="el-icon-collection-tag"></i>重置组卷
         </div>
 
-        <div class="div_menu_item background_orange" style="margin-top:30px;" v-if="!qustionPreviewMode" @click="startTestPaperImgPreview()">
+        <div class="div_menu_item background_orange" style="margin-top:30px;" v-if="!qustionPreviewMode" @click="startTestPaperImgPreview()">>
           <i class="el-icon-collection-tag"></i>预览试题
         </div>
         
@@ -32,9 +32,10 @@
           <i class="el-icon-collection-tag"></i>预览试题图片
         </div> -->
 
-        <div class="div_menu_item background_orange" style="margin-top:30px;" @click="testFor100StudentsDownload()">
-          <i class="el-icon-collection-tag"></i>测试100个学生下载
+        <div class="div_menu_item background_orange" style="margin-top:30px;" @click="testFor100StudentsDownload">
+          <i class="el-icon-collection-tag"></i>直接下载试题
         </div>
+        
 
         <div class="div_menu_title background_dark" style="margin-top:30px;">
           <i class="el-icon-menu"></i>添加试卷部分
@@ -621,7 +622,7 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import {
 
-	apiCommonExamSelectById
+	paperWithTag
 
 } from '@/api/api.js'
 
@@ -1186,7 +1187,7 @@ export default {
         //进入批量生产模式
         this.createTestPaperInfoObj == this.$router.params.createTestPaperInfoObj
         
-        apiCommonExamSelectById(this.createTestPaperInfoObj.paperId).then(res => {
+        paperWithTag(this.createTestPaperInfoObj.paperId).then(res => {
           if(!res.data.result)
           {
             this.$message.error('获取试卷失败，无法下载！')
@@ -1197,8 +1198,6 @@ export default {
           var resResultData = res.data
 
           console.log(resResultData)
-
-          this.testPaperObj = JSON.parse(resResultData.data.elementTest)
 
           //this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
         })
@@ -1219,48 +1218,26 @@ export default {
      * 测试100个学生批量下载
      */
     testFor100StudentsDownload(){
-      //进入批量生产模式
-      
-      var testStudents = [{suid:1}]
-  
-      console.log("测试100个学生批量下载")
-      console.log(testStudents)
-      apiCommonExamSelectById(48).then(res => {
-        if(!res.data.result)
-        {
-          this.$message.error('获取试卷失败，无法下载！')
-          console.log("获取试卷失败，无法下载！")
-          return
-        }
-
-        var resResultData = res.data
-
-        //console.log(resResultData)
-
-        this.testPaperObj = JSON.parse(resResultData.data.elementTest)
-
-        //console.log(this.testPaperObj)
-        console.log("开始批量下载！")
-        
-        this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(testStudents)
-      })
+      var studentIdArr = [{suid:1}]
+      this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(studentIdArr)
     },
     /**
      * 为学生批量下载试卷，并加上防伪信息
      */
     multiDownloadTestPaperForStudent(studentIdArr){
-      
-      //直接进入预览模式
-      this.$refs.page_main_tile.scrollIntoView()
-      this.previewQuestionBigNum = 1
-      this.previewQuestionNum = 1
-      this.$options.methods.testPaperQuestionCreateAutoNo.bind(this)()
-      this.qustionPreviewMode = true
-      this.qustionPreviewImgMode = false
-      //开始批量打包
-      console.log("开始批量打包！")
-      this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdf.bind(this)(studentIdArr) 
-       
+      this.$options.methods.startTestPaperImgPreview.bind(this)()
+
+      var checkExec = setInterval(() => {
+        if(this.fullscreenLoading == false)
+        {
+          //说明预览图操作已经完成
+          console.log("预览图操作已经完成")
+          
+          //开始批量打包
+          this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdf.bind(this)(studentIdArr)
+          
+        }
+      },3000)
     },
     /**
      * 获取二维码信息用于防伪
@@ -1748,7 +1725,6 @@ export default {
      */
     testPaperQuestionsToImage() {
       this.$nextTick(() => {
-      console.log("每一个试题的富文本转img图片，并保存起来")
       //console.log(this.testPaperObj)
       if(null == this.testPaperObj.items)
       {
@@ -2630,30 +2606,21 @@ export default {
      * 批量打包下载试卷+答题卡PDF
      */
     multiDownloadTestPaperAndAnwserSheetPdf(studentIdArr){
-      console.log("studentIdArr")
-      console.log(studentIdArr)
+
       if(studentIdArr.length <=0)
       {
         this.$message.error('学生信息为空，无法下载！')
         return
       }
-      console.log("学生信息不为空，开始执行批量打包！")
+
 
       this.fullscreenLoading = true;
       const loading = this.$loading({
         lock: true,
-        text: "正在加载中，请稍候...",
+        text: "正在紧张打包中，请稍候...",
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       });
-      //以免长时间无响应，每秒检查一次后主动取消
-      /*var checkExec = setInterval(() => {
-        if(this.fullscreenLoading == false)
-        {
-          clearInterval(checkExec);
-          loading.close();
-        }
-      }, 3000);*/
 
       //延迟执行，让加载页面load出来
       setTimeout(() => {
@@ -2661,52 +2628,55 @@ export default {
         var pdfBlobForZipList = []
         var pdfBlobForZipNum = studentIdArr.length * 2
 
-        var indexOfTask = 0
-                  
-        studentIdArr.forEach(studentIdArrItem => {
+        studentIdArr.forEach(student => {
+
+          this.qrInfoObj.suid=student.suid
+
+          //生成试卷pdf内容
+          var dd_content = this.$options.methods.getTestPaperAllQuestionPreviewImg.bind(this)()
+          var docDefinition = { content: dd_content };
           
-          this.qrInfoObj.suid=studentIdArrItem.suid
+          /*const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+            pdfDocGenerator.getBlob((blob) => {
+              console.log(blob)
+            // ...
+          });*/
 
-          var suid = studentIdArrItem.suid
-          
-          //直接进入预览模式
-          this.$refs.page_main_tile.scrollIntoView()
-          this.previewQuestionBigNum = 1
-          this.previewQuestionNum = 1
-          this.$options.methods.testPaperQuestionCreateAutoNo.bind(this)()
-          this.qustionPreviewMode = true
-          this.qustionPreviewImgMode = false
-
-          //首先根据当前suid，先生成图片
-          console.log("首先根据当前suid，先生成图片")
-          this.$options.methods.testPaperQuestionsToImage.bind(this)()
-
-          //延迟一点点生成，避免出现图片未加载完毕的情况
-          setTimeout(() => {
-            //生成试卷pdf内容
-            var dd_content = this.$options.methods.getTestPaperAllQuestionPreviewImg.bind(this)()
-            var docDefinition = { content: dd_content };
+          //console.log(pdfMake.vfs);
+          const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+            pdfDocGenerator.getBlob((blob) => {
+              //console.log(blob)
             
-            /*const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-              pdfDocGenerator.getBlob((blob) => {
-                console.log(blob)
-              // ...
-            });*/
+            pdfBlobForZipList.push({name:'试卷'+student.suid+'.pdf',data:blob})
+            
+          })
 
-            //console.log(pdfMake.vfs);
-            const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-              pdfDocGenerator.getBlob((blob) => {
-                //console.log(blob)
-              
-              pdfBlobForZipList.push({name:'试卷'+suid+'.pdf',data:blob})
-              
-            })
+          //生成试卷答题卡pdf内容
+          var dd_contentOfAnwserSheet = this.$options.methods.getTestPaperAllQuestionAnwserSheetPreviewImg.bind(this)()
+          var docDefinitionOfAnwserSheet = { content: dd_contentOfAnwserSheet };
+          
+          /*const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+            pdfDocGenerator.getBlob((blob) => {
+              console.log(blob)
+            // ...
+          });*/
 
-          },3000)
+          //console.log(pdfMake.vfs);
+          const pdfDocGeneratorOfAnwserSheet = pdfMake.createPdf(docDefinitionOfAnwserSheet);
+            pdfDocGeneratorOfAnwserSheet.getBlob((blob) => {
+              //console.log(blob)
+            
+            pdfBlobForZipList.push({name:'试卷_答题卡'+ student.suid +'.pdf',data:blob})
+            
+          })
 
         });
 
-        //等待完成，不断检查情况
+        
+
+        
+
+        //以免长时间无响应，每秒检查一次后主动取消
         var zip = new JSZip();
         var checkExec = setInterval(() => {
           if(pdfBlobForZipList.length >= pdfBlobForZipNum)
@@ -2725,12 +2695,12 @@ export default {
 
               // 使用了FileSaver.js
               // console.log(content)  
-              saveAs(content, "试卷PDF与答题卡PDF_共"+ studentIdArr.length +"人.zip");
+              saveAs(content, "试卷PDF与答题卡PDF_共"+studentIdArr.length+"人.zip");
             });
 
             clearInterval(checkExec);
             loading.close();
-            this.fullscreenLoading = false;
+            
           }
         }, 10000);
         //以免长时间无响应，30秒后主动取消
