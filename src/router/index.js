@@ -4,6 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+	
     routes: [
         {
             path: '/',
@@ -165,6 +166,12 @@ export default new Router({
 				    path: '/user_control',
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/user/user_control.vue'),
 				    meta: { title: '管理员-用户管理' }
+				},
+				{
+					name: 'test_paper_maker',
+				    path: '/test_paper_maker',
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/testPaperMaker/test_paper_maker.vue'),
+				    meta: { title: '组卷工具' }
 				}
 				
 				
