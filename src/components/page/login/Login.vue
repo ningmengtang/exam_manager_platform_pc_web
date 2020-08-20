@@ -35,7 +35,7 @@
 							<img class="main_content_login_img_vcode" style="height:32px;width:100px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);"
 							 :src="vcodeimg" alt="验证码" @click="vcodeRefresh">
 						</el-form-item>
-						<el-select v-model="value" placeholder="请选择" class="select"  @change="identity">
+						<el-select v-model="value" placeholder="请选择" class="select" @change="identity">
 							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
@@ -203,7 +203,6 @@
 				this.$refs.login.validate((valid) => {
 					if (valid) {
 						let type = localStorage.getItem('loginUserType')
-						// console.log(type)
 						let form = this.param;
 						let data
 						type == 'student' ? (data = {
@@ -224,11 +223,16 @@
 									localStorage.setItem('loginToken', wd.data.token)
 									localStorage.setItem('userID', wd.data.id)
 									localStorage.setItem('userName', wd.data.name)
-                                    //判断是否是学生
-									 if(type=='student'){
-										 localStorage.setItem('userSchoolName',wd.data.schoolName)
-										 localStorage.setItem('userGrade',wd.data.grade)
-									 }
+									// console.log(res)
+									//判断是否是学生
+									if (type == 'student') {
+										localStorage.setItem('userSchoolName', wd.data.schoolName)
+										localStorage.setItem('userGrade', wd.data.grade)
+									}
+									//判断是否老师
+									if (type == 'teacher') {
+										localStorage.setItem('userSchoolName', wd.data.schoolName)
+									}
 									this.$message.success('登录成功')
 									this.$router.push(`/index_${type}`)
 									break;

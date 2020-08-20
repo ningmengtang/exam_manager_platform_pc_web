@@ -100,6 +100,7 @@
 				endVal: 100,
 				endVal1: 5000,
 				endVal2: 454,
+				total:0,	
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -195,9 +196,6 @@
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
-				// this.total  =  res.data.data.total
-				// this.disabled = res.data.data.disabled
-				// this.download = res.data.data.download
 			})
 
 		},

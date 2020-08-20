@@ -172,12 +172,6 @@
 				version:0,
 				years:0,
 				obj:[],
-				// tag2:['全部'],
-				// tag3:['全部'],
-				// tag4:['全部'],
-				// tag5:['全部'],
-				// tag6:['全部'],
-				// tag7:['全部'],
 				array_nav: [], //存储el-chckbox数组
 				array_nav_2: [],
 				array_nav_3: [],

@@ -7,7 +7,7 @@
 .left-box .username{}
 .left-box .name{font-size: 20px;}
 .left-box .user-id{font-size: 18px;color: rgba(128, 128, 128, 1);margin-top: 12px;}
-.left-box .ii{font-size: 25px;font-weight: bold;color: rgba(128, 128, 128, 1);margin-left: auto;}
+.left-box .ii{font-size: 25px;font-weight: bold;color: rgba(128, 128, 128, 1);margin-left: auto;cursor: pointer;}
 .left-box .identity{font-size: 20px;color: #FFFFFF;background-color: #19ADFB;display: inline-block;padding: 10px 46px;border-radius: 4px;margin: 12px 0;}
 .left-box .school{font-size: 20px;font-weight: bold;}
 .left-box .message{margin-left: auto;font-size: 20px;color: #333333;}
@@ -15,7 +15,7 @@
 
 
 .left-box .change-box{margin-top: 90px;display: flex;}
-.left-box .li{padding: 15px 14px;display: flex;align-items: center;flex-direction: column;justify-content: space-around;width: 100%;}
+.left-box .li{padding: 15px 14px;display: flex;align-items: center;flex-direction: column;justify-content: space-around;width: 100%;cursor: pointer;}
 .left-box .icon{font-size: 60px;color: #2bbb61;}
 .left-box .name-change{font-size: 22px;margin-top: 12px;}
 .left-box .particular-change{font-size: 16px;color: rgba(153, 153, 153, 1);margin-left: 18px;}
