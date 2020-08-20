@@ -247,6 +247,15 @@
 					if(res.data.result){
 						this.$message.success('分配成功')
 						this.dialogTableVisible = false
+						apiAdminOrderItemList({
+							"order_id":this.adminAffirmData.id
+						}).then(res=>{
+							if(res.data.data.list){
+								this.papers = res.data.data.list
+							}else{
+								this.$message.error('查询不到订单项')
+							}
+						})
 					}else{
 						this.$message.error(res.data.message)
 					}

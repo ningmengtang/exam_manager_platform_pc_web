@@ -103,7 +103,8 @@
 import user from '../../common/user';
 import {
 	selectTag,StudentSelectByTeacher,selectListByOptions,apiCommonExamAdd,apiCommonExamUpload,studentStudentExamAdd,
-	apiAdminExamBigQuestionInsert,apiAdminExamQuestionInsert,apiAdminExamQuestionAnwserInsert,apiAdminExamQuestionAnwserSheetInsert,apiAdminExamBigQuestionWithChildrenInsert
+	apiAdminExamBigQuestionInsert,apiAdminExamQuestionInsert,apiAdminExamQuestionAnwserInsert,apiAdminExamQuestionAnwserSheetInsert,apiAdminExamBigQuestionWithChildrenInsert,
+	apiAdminExamUpdate
 
 } from '@/api/api.js'
 export default {
@@ -352,6 +353,7 @@ export default {
 		}
 		console.log("插入试卷")
 		//循环输出试卷部分================================================================================================
+		this.testPaperObj.id = testPaperObjId
 		//只要上传图片一直没出错，就显示为true
 		this.uploadQuestionImgHandleExecFlag = true
 		this.testPaperObj.items.forEach((questionPartItem,questionPartItemIndex )=> {
@@ -430,6 +432,9 @@ export default {
 				questionBigItem.id = resResultData.data.id
 				questionBigItem.sn = resResultData.data.sn
 
+				questionBigItem.parent_id = questionPartItem.id
+				questionBigItem.parent_sn = questionPartItem.sn
+
 				//同步上传图片==========================================
 				/*this.$options.methods.uploadQuestionBigImg.bind(this)(questionBigItem.id,questionBigItem.imgFile).then(res =>{
 					if(!res.data.result)
@@ -462,6 +467,11 @@ export default {
 					}
 
 					var addQuestionUrl = "/api/"+this.userTypeForMethods+"/exam/question/insert"
+
+					var resResultData = res.data
+
+					questionItem.id = resResultData.data.id
+					questionItem.sn = resResultData.data.sn
 
 					apiAdminExamQuestionInsert(questionItemJson)
 					.then(res =>{
@@ -528,6 +538,14 @@ export default {
 
 						//var addQuestionAnwserUrl = "/api/"+this.userTypeForMethods+"/exam/question/answer/sheet/insert"
 
+						var resResultData = res.data
+
+						questionAnwserSheetItem.id = resResultData.data.id
+						questionAnwserSheetItem.sn = resResultData.data.sn
+
+						questionAnwserSheetItem.question_id =  questionItem.id
+						questionAnwserSheetItem.question_sn =  questionItem.sn
+
 						apiAdminExamQuestionAnwserSheetInsert(questionAnwserSheetItemJson)
 						.then(res =>{
 						if(!res.data.result)
@@ -548,6 +566,13 @@ export default {
 							}
 
 							//var addQuestionAnwserUrl = "/api/"+this.userTypeForMethods+"/exam/question/answer/insert"
+							var resResultData = res.data
+
+							questionAnwserItem.id = resResultData.data.id
+							questionAnwserItem.sn = resResultData.data.sn
+
+							questionAnwserItem.question_id =  questionItem.id
+							questionAnwserItem.question_sn =  questionItem.sn
 
 							apiAdminExamQuestionAnwserInsert(questionAnwserItemJson)
 							.then(res =>{
@@ -560,11 +585,25 @@ export default {
 							//此时已经结束，关闭屏蔽层
 							if(questionItem.items.length <= 0)
 							{
+								apiAdminExamUpdate({id:this.testPaperObj.id,elementTest:JSON.stringify(this.testPaperObj)}).then(res =>{
+									if(!res.data.result)
+									{
+										this.$message.error('同步试卷至服务器出错！更新试卷试题ID失败！停止操作！')
+										return false
+									}
+
+									console.log(this.testPaperObj)
+									//关闭屏蔽层
+									this.fullscreenLoading = false
+									this.$message.success('同步试卷至服务器完成！')
+									this.$options.methods.clearTestPaperCache.bind(this)()
+									this.$router.push('/manage_user')
+								})
 								//关闭屏蔽层
-								this.fullscreenLoading = false
-								this.$message.success('同步试卷至服务器完成！')
+								//this.fullscreenLoading = false
+								//this.$message.success('同步试卷至服务器完成！')
 								
-								this.$router.push('/manage_user')
+								//this.$router.push('/manage_user')
 							}
 
 
@@ -592,15 +631,35 @@ export default {
 									this.$message.error('同步试卷至服务器出错！添加小题选项失败！停止操作！')
 									return false
 								}
+
+								var resResultData = res.data
+
+								questionOptionItem.id = resResultData.data.id
+								questionOptionItem.sn = resResultData.data.sn
+								
 								
 								//此时已经结束，关闭屏蔽层
 								if(questionItem.items.length <= 0)
 								{
-									//关闭屏蔽层
-									this.fullscreenLoading = false
-									this.$message.success('同步试卷至服务器完成！')
+									apiAdminExamUpdate({id:this.testPaperObj.id,elementTest:JSON.stringify(this.testPaperObj)}).then(res =>{
+									if(!res.data.result)
+									{
+										this.$message.error('同步试卷至服务器出错！更新试卷试题ID失败！停止操作！')
+										return false
+									}
 
-									this.$router.push('/manage_user')
+										console.log(this.testPaperObj)
+										//关闭屏蔽层
+										this.fullscreenLoading = false
+										this.$message.success('同步试卷至服务器完成！')
+										this.$options.methods.clearTestPaperCache.bind(this)()
+										this.$router.push('/manage_user')
+									})
+									//关闭屏蔽层
+									//this.fullscreenLoading = false
+									//this.$message.success('同步试卷至服务器完成！')
+
+									//this.$router.push('/manage_user')
 								}
 								
 								})

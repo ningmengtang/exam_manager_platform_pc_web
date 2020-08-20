@@ -49,7 +49,7 @@
 					</div>
 					<div class="p-title">{{d.title}}</div>
 					<div class="p-time">{{d.modifyDate}}</div>
-					<div class="p-status" :style="d.status==1?(0):style.pStatus">{{d.status==1?'可以下载':'下载失败'}}</div>
+					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0?'可以下载':'不允许下载'}}</div>
 					<i @click="downloadFile(d)" class="p-status-icon" :class="d.status==1?'el-icon-download':'el-icon-close'">
 						
 					</i>
