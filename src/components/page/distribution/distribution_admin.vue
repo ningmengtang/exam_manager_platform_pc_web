@@ -18,41 +18,48 @@
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
-			<div class="li" v-for="(data, i) in li" :key="data.i">
-				<img src="../../../assets/img/img.jpg" class="user-img" />
-				<div class="teacher-name">{{ data.teacher }}</div>
+			<div class="li" v-for="(data, i) in orderList" :key="data.id">
+				<!-- <img src="../../../assets/img/img.jpg" class="user-img" />
+				<div class="teacher-name">{{ data.teacher }}</div> -->
 				<div class="title-box">
-					<div class="title">{{ data.title }}</div>
-					<div class="synopsis">{{ data.synopsis }}</div>
+					<div class="title">
+						{{ data.operator_name }}</div>
+					<div class="synopsis">
+						<span>
+							订购类型：{{data.style_count}}种，总份数：{{data.count}}份
+						</span>
+
+					</div>
 				</div>
-				<div class="time">{{ data.time }}</div>
-				<div class="label-box">
+				<div class="time">
+					<span>
+						{{ data.create_date }}申请订购
+					</span>
+				</div>
+				<!-- <div class="label-box">
 					<div class="label">{{ data.label }}</div>
 					<div class="label">人教版</div>
 					<div class="label">语文</div>
 					<div class="label">一年级</div>
-				</div>
+				</div> -->
 				<div class="right">
-					<div class="ii" v-if="data.o == '1'">
+					<div class="ii" >
 						<div class="status_box">
-							<i class="icon el-icon-loading"></i>
-							<span class="text i">正在分发</span>
-							<el-button type="text" class="download">立即分发</el-button></span>
+							<!-- <i class="icon el-icon-loading ii"></i> -->
+							<span class="text ii">{{data.status == 0?'待确定':data.status == 1?'等待分发':data.status == 2?'已取消':''}}</span>
+							<el-button type="primary"   v-if="data.status == 1"  @click="addOrder(data)">立即分发</el-button>
 						</div>
 					</div>
-					<span v-else-if="data.o == '2'" style="display: contents;">
-						<el-button type="text" class="download hover" @click="submit">立即分发</el-button>
-					</span>
 				</div>
 			</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div>
 		</div>
 		<!-- 提示框 -->
-		<el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
+		<!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
 		<!-- Table -->
 		<el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
@@ -123,9 +130,18 @@
 </template>
 <script>
 	import user from '../../common/user';
+	import {
+		apiAdminOrderList,
+		apiAdminOrderUpdate
+	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
+				orderList:[],  //订单数据
+				pageSize:6,
+				pageNum:1,
+				currentPage:1,
+				total:0,
 				color: '',
 				checkAll: false,
 				isIndeterminate: true,
@@ -193,14 +209,40 @@
 				console.log(this.array_nav4);
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				this.pageSize = val
+				apiAdminOrderList({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize,
+					"status":1
+				}).then(res=>{
+					// console.log(res)
+					this.orderList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+				this.pageNum = val
+				apiAdminOrderList({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize,
+					"status":1
+				}).then(res=>{
+					// console.log(res)
+					this.orderList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
-			searchO() {
+			//立即分发
+			addOrder(data){
+				sessionStorage.setItem('adminAffirmData', JSON.stringify(data))
+				// this.dialogTableVisible = true
+				this.$router.push('distribution_admin_affirm')
+			},
+			// searchO() {
 
-			},
+			// },
 			toggleSelection(rows) {
 				if (rows) {
 					rows.forEach(row => {
@@ -222,13 +264,24 @@
 					this.$refs.multipleTable.clearSelection();
 				}
 			},
+
 			submit() {
-				//go
-				this.$router.push('distribution_admin_affirm')
+				
+				// this.$router.push('distribution_admin_affirm')
 			}
 		},
 		mounted() {
 			this.color = user().color;
+			apiAdminOrderList({
+				"pageNum":this.pageNum,
+				"pageSize":this.pageSize,
+				"status":1
+			}).then(res=>{
+				// console.log(res)
+				this.orderList = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+			})
 		}
 	};
 </script>

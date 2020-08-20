@@ -6,57 +6,71 @@
 					<div class="row-group">
 						<div class="th-group">分发状态</div>
 						<div class="td-group" change>
-							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city in cities" :label="city" :key="city">{{ city }}</el-checkbox-button>
-							</el-checkbox-group>
+							<el-radio-group v-model="disStatus" @change="getQuery">
+								<el-radio-button v-for="(item,index) in DisStatusList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
 						</div>
 					</div>
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">年份</div>
 						<div class="td-group">
-							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
-							</el-checkbox-group>
+							<el-radio-group v-model="years" @change="getQuery">
+								<el-radio-button v-for="(item,index) in YearsList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
 						</div>
 					</div>
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">教材版本</div>
 						<div class="td-group">
-							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
-							</el-checkbox-group>
+							<el-radio-group v-model="version" @change="getQuery">
+								<el-radio-button v-for="(item,index) in VersionList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
 						</div>
 					</div>
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">学习科目</div>
 						<div class="td-group">
-							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
-							</el-checkbox-group>
+							<el-radio-group v-model="subject" @change="getQuery">
+								<el-radio-button v-for="(item,index) in SubjectList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
 						</div>
 					</div>
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">学习年级</div>
 						<div class="td-group">
-							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
-							</el-checkbox-group>
+							<el-radio-group v-model="grade" @change="getQuery">
+								<el-radio-button v-for="(item,index) in GradeList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
 						</div>
 					</div>
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">单元测试</div>
 						<div class="td-group">
-							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
-							</el-checkbox-group>
+							<el-radio-group v-model="elementTest" @change="getQuery">
+								<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
 						</div>
 					</div>
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">试卷用途</div>
 						<div class="td-group">
-							<el-checkbox-group v-model="array_nav" @change="getValue()">
-								<el-checkbox-button v-for="city2 in cities2" :label="city2" :key="city2">{{ city2 }}</el-checkbox-button>
-							</el-checkbox-group>
+							<el-radio-group v-model="purpose" @change="getQuery">
+								<el-radio-button v-for="(item,index) in PurposeList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
 						</div>
 					</div>
 					<div class="search">
@@ -70,61 +84,51 @@
 		</div>
 
 		<div class="particular">
-			<div class="li" v-for="(data,i) in li" :key="data.i">
+			<div class="li" v-for="(data,i) in papers" :key="data.i">
 				<img src="../../../assets/img/img.jpg" class="user-img" />
 				<div class="teacher-name">{{ data.teacher }}</div>
 				<div class="title-box">
 					<div class="title">{{ data.title }}</div>
-					<div class="synopsis">{{ data.synopsis }}</div>
+					<div class="synopsis">包含小学一年级语文2019年人教版单元作业65656566555555</div>
 				</div>
 				<div class="time">{{ data.time }}</div>
 				<div class="label-box">
-					<div class="label">{{ data.label }}</div>
-					<div class="label">人教版</div>
-					<div class="label">语文</div>
-					<div class="label">一年级</div>
+					<div class="label" v-for="i in data.tag_list">{{i.text}}</div>
 				</div>
 				<div class="right">
-					<div class="ii" v-if="data.o == '1'">
+					<div class="ii" v-if="data.status == '0'">
+						<div style="margin-bottom: 4px;" >
+							<i class="icon el-icon-check i"></i>
+							<!-- <span class="text">可以下载</span> -->
+						</div>
+					</div>
+					<div class="ii" v-else-if="data.status == '1'">
+						<div style="margin-bottom: 4px;" >
+							<i class="icon el-icon-check i"></i>
+							<!-- <span class="text">可以下载</span> -->
+						</div>
+					</div>
+					<!-- <div class="ii" v-if="data.o == '3'">
 						<div style="margin-bottom: 4px;" >
 							<i class="icon el-icon-check i"></i>
 							<span class="text">可以下载</span>
 						</div>
-					</div>
-					<div class="ii" v-else-if="data.o == '2'">
-						<div style="margin-bottom: 4px;" >
-							<i class="icon el-icon-check i"></i>
-							<span class="text">可以下载</span>
-						</div>
-					</div>
-					<div class="ii" v-if="data.o == '3'">
-						<div style="margin-bottom: 4px;" >
-							<i class="icon el-icon-check i"></i>
-							<span class="text">可以下载</span>
-						</div>
-					</div>
+					</div> -->
 					<div class="del">
-						<i class="el-icon-download"></i>
-						<i class="el-icon-delete-solid"></i>
-						<i class="el-icon-s-custom"></i>
+						<!-- <i class="el-icon-download" @click="dialogVisible = true"></i> -->
+						<i class="el-icon-delete-solid" ></i>
+						<i class="el-icon-s-custom" @click="studentDownload(data.id,data.status)" :style="data.status=='0'?{'color':color}:{'color':'#999999'}"></i>
 					</div>
 					
 				</div>
 			</div>
 			<!-- 分页 -->
 			<div class="page">
-				<el-pagination
-					background
-					layout="prev, pager, next, jumper"
-					@size-change="handleSizeChange"
-					@current-change="handleCurrentChange"
-					:current-page.sync="currentPage"
-					:page-size="100"
-					:total="1000"
-				></el-pagination>
+				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total"></el-pagination>
 			</div>
 		</div>
-		<el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+		<!-- <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button> -->
 
 		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
 			<div class="ts-box">
@@ -141,6 +145,15 @@
 </template>
 <script>
 import user from '../../common/user';
+import {
+		selectTag,
+		ApiTagSelectList,
+		paperWithTag,
+		SchoolIndex,
+		selectSchoolTag,
+		schoolStudentAllow,
+		schoolStudentUnAllow		
+	} from '@/api/api.js'
 export default {
 	data() {
 		return {
@@ -152,6 +165,28 @@ export default {
 			cities: ['全部', '上海', '北京', '广州', '深圳'],
 			cities2: ['全部', '1', '2', '3', '4'],
 			checkboxGroup2: ['上海'],
+			pageNum:1,
+			pageSize:2,
+			currentPage: 1,
+			disStatus: 0,
+			paperList:[],
+			DisStatusList:[],
+			ElementTextList:[],
+			PurposeList:[],
+			SubjectList:[],
+			GradeList:[],
+			VersionList:[],
+			YearsList:[],
+			dialogVisible: false,
+			elementTest:0,
+			purpose:0,
+			subject:0,
+			grade:0,
+			version:0,
+			years:0,
+			obj:[],
+			papers:[],
+			total:0,
 			li: [
 				{
 					teacher: '古得老师',
@@ -177,8 +212,10 @@ export default {
 					label: '2019',
 					o: '3'
 				}
-			]
+			],
+			
 		};
+		
 	},
 	methods: {
 		getValue() {
@@ -192,31 +229,177 @@ export default {
 		},
 		goAdd(){
 			this.$router.push('order_school')
+		},
+		handleCurrentChange(val) {
+			this.pageNum = val;
+			SchoolIndex({
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res=>{
+				console.log(res)
+				this.papers=res.data.data.list
+				this.total=res.data.data.total
+			})
+		},
+		handleSizeChange(val) {
+			SchoolIndex({
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res=>{
+				console.log(res)
+				this.papers=res.data.data.list
+				this.total=res.data.data.total
+			})
+		},
+		getQuery() {
+			this.obj = []
+			if (this.disStatus != 0 && this.disStatus) {
+				this.obj.push(this.disStatus)
+			}
+			if (this.elementTest != 0 && this.elementTest) {
+				this.obj.push(this.elementTest)
+			}
+			if (this.purpose != 0 && this.purpose) {
+				this.obj.push(this.purpose)
+			}
+			if (this.subject != 0 && this.subject) {
+				this.obj.push(this.subject)
+			}
+			if (this.grade != 0 && this.grade) {
+				this.obj.push(this.grade)
+			}
+			if (this.version != 0 && this.version) {
+				this.obj.push(this.version)
+			}
+			if (this.years != 0 && this.years) {
+				this.obj.push(this.years)
+			}
+			selectSchoolTag({
+				"id":this.obj,
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res=>{
+				console.log(res)
+				this.papers=res.data.data.list
+				this.total=res.data.data.total
+			})
+		},
+		TagTypePromise(tagType, index) {
+			return new Promise((resolve, reject) => {
+				ApiTagSelectList({
+					"pageSize": 999,
+					"pageNum": 1,
+					"parentId": tagType.id
+				}).then(res => {
+					let all = [{
+						"id": 0,
+						"sn": 0,
+						"text": '全部'
+					}]
+					let children = all.concat(res.data.data.list)
+					switch (tagType.text) {
+						case '分发状态':
+							this.DisStatusList = children
+							break;
+						case '年份':
+							this.YearsList = children
+							break;
+						case '教材版本':
+							this.VersionList = children
+							break;
+						case '学习科目':
+							this.SubjectList = children
+							break;
+						case '学习年级':
+							this.GradeList = children
+							break;
+						case '单元测试':
+							this.ElementTextList = children
+							break;
+						case '试卷用途':
+							this.PurposeList = children
+							break;
+					}
+					resolve(res)
+				})
+			})
+		},
+		async getTypeList(tagType, index) {
+			await this.TagTypePromise(tagType, index)
+			// return n 
+		},
+		// 学生下载权限
+		studentDownload(id,status){
+			if(status==0){
+				schoolStudentUnAllow(id)
+				SchoolIndex({
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res=>{
+					console.log(res)
+					this.papers=res.data.data.list
+					this.total=res.data.data.total
+				})
+			}else{
+				schoolStudentAllow(id)
+				SchoolIndex({
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res=>{
+				console.log(res)
+				this.papers=res.data.data.list
+				this.total=res.data.data.total
+			})
+			}
+			
 		}
 	},
 	mounted() {
 		this.color = user().color;
+		console.log(this.color)
+		this.TagTypeList = []
+		ApiTagSelectList({
+			"parentId": 0,
+			"pageSize": 999,
+			"pageNum": 1
+		}).then(res => {
+		
+			this.TagType = res.data.data.list
+			var arr = []
+			for (var i = 0; i < this.TagType.length; i++) {
+				this.getTypeList(this.TagType[i], i)
+			}
+		})
+		//试卷
+		SchoolIndex({
+			"pageSize":this.pageSize,
+			"pageNum":this.pageNum
+		}).then(res=>{
+			console.log(res)
+			this.papers=res.data.data.list
+			this.total=res.data.data.total
+		})
 	}
 };
 </script>
 
 <style scoped src="../../../assets/css/manage.css"></style>
 <style scoped>
-.group {
-	background-image: url(../../../assets/img/bg-willow.png);
-	background-position: 100% 0%;
-}
+	.group {
+		background-image: url(../../../assets/img/bg-willow.png);
+		background-position: 100% 0%;
+	}
 
-.right .download {
-	background-color: #2bbb61;
-}
+	.right .download {
+		background-color: #2bbb61;
+	}
 
-.status {
-	color: #2bbb61;
-}
+	.status {
+		color: #2bbb61;
+	}
 
-.group /deep/ .el-checkbox-button.is-checked .el-checkbox-button__inner {
-	background-color: rgb(43, 187, 97);
-	border-color: rgb(43, 187, 97);
-}
+	.group /deep/ .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+		background-color: rgb(43, 187, 97);
+		border-color: rgb(43, 187, 97);
+	}
 </style>

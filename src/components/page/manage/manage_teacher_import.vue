@@ -6,7 +6,7 @@
 				<!-- <el-select v-model="paperType" placeholder="请选择" class="ids" @change="changeType">
 					<el-option v-for="item in options"  :label="item.label" :value="item.label"></el-option>
 				</el-select> -->
-				<el-radio-group v-model="paperType" @change="changeType">
+				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px">
 					<el-radio label="图片试卷">图片试卷</el-radio>
 					<el-radio label="在线组卷">在线组卷</el-radio>
 				</el-radio-group>
@@ -99,7 +99,7 @@
 			</div>
 		</div>
 		<div class="right">
-			<div class="card-box">
+			<div class="card-box" >
 				<el-row :gutter="20">
 					<el-col :span="8" v-if="!ispaperType">
 						<div class="grid-content bg-purple">
@@ -109,13 +109,13 @@
 					</el-col>
 					<el-col :span="8" v-if="!ispaperType" :disabled="!testPaperCacheReady">
 						<div class="grid-content bg-purple">
-							<el-button class="i"  @click="parperAddPic">确认提交</el-button>
+							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
 							<div class="ii">(在线组卷)</div>
 						</div>
 					</el-col>
-					<el-col :span="8" v-if="ispaperType">
+					<el-col :span="8" v-if="ispaperType" >
 						<div class="grid-content bg-purple">
-							<el-button class="i"  @click="parperAddPic">确认提交</el-button>
+							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
 							<div class="ii">(图片试卷)</div>
 						</div>
 					</el-col>
@@ -307,7 +307,6 @@ export default {
 				"pageNum":this.pageNum,
 				"pageSize":this.pageSize
 			}).then(res=>{
-				
 				this.StudenList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
@@ -340,6 +339,7 @@ export default {
 			var file = param.file
 			this.uploadFile = new FormData()
 			this.uploadFile.append('file',file)
+			this.$message.success('导入成功')
 		},
 		// 班级信息
 		// formStatus(row,colum){
@@ -353,6 +353,9 @@ export default {
 		// 	})
 		// },
 		// 试卷图片上传
+		// parperAdd(){
+
+		// },
 		parperAddPic(){
 
 			if(this.paperType == '图片试卷'){
@@ -388,8 +391,6 @@ export default {
 								this.$message.error(res.data.message)
 							}
 						})
-						
-						
 					}else{
 						this.$message.error(res.data.message)
 					}

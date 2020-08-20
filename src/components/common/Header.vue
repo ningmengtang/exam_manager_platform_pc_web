@@ -13,12 +13,12 @@
 					<el-tooltip effect="dark" :content="fullscreen ? `取消全屏` : `全屏`" placement="bottom"><i class="el-icon-rank"></i></el-tooltip>
 				</div>
 				<!-- 消息中心 -->
-				<div class="btn-bell">
+				<!-- <div class="btn-bell">
 					<el-tooltip effect="dark" :content="message ? `有${message}条未读消息` : `消息中心`" placement="bottom">
 						<router-link to="/login"><i class="el-icon-bell"></i></router-link>
 					</el-tooltip>
 					<span class="btn-bell-badge" v-if="message"></span>
-				</div>
+				</div> -->
 				<!-- 用户信息 -->
 
 				<!-- 用户名下拉菜单 -->
@@ -27,7 +27,7 @@
 						<!-- <i class="el-icon-caret-bottom"></i> -->
 						<div class="user-message">
 							<div class="username">{{ username }}</div>
-							<div class="user-school">北京师范小学 学生</div>
+							<div class="user-school">北京师范小学 {{userType}}</div>
 						</div>
 					</span>
 					<el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu>
@@ -51,7 +51,8 @@ export default {
 			username: '',
 			message: 2,
 			bg_color: '',
-			getColor:''
+			getColor:'',
+			userType:''
 		};
 	},
 	methods: {
@@ -66,7 +67,9 @@ export default {
 					 this.$message.success('登出成功！')
 					 this.$router.push('/login');
 				}else{
-					this.$message.error('登出失败！');
+						 localStorage.clear();
+					// this.$message.error('登出失败！');
+					this.$router.push('/login');
 				}
 			})
 		},
@@ -115,8 +118,15 @@ export default {
 		if(this.loginUserType == 'student'){
 			this.getColor ='rgb(25, 174, 251)'
 		}
-		console.log(this.getColor)
+		// switch (this.loginUserType){
+		// 	case 'student':
+		// 	this.getColor ='rgb(25, 174, 251)'
+		// 	this.userType ='学生'
+		// 	break;
+			
+		// }
 		this.bg_color = user().color;
+		this.userType=user().type;
 	}
 };
 </script>
@@ -177,7 +187,7 @@ export default {
 	color: #fff;
 }
 .btn-bell .el-icon-bell {
-	color: #409eff;
+	color: #fff;
 }
 .user-message {
 	text-align: right;

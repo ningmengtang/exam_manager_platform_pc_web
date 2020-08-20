@@ -5,13 +5,13 @@
 				<div class="row-group">
 					<div class="th-group">用户类型</div>
 					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav" @change="getValue()">
-							<el-checkbox-button v-for="(d,k) in userType" :label="d" :key="city">{{ d }}</el-checkbox-button>
-						</el-checkbox-group>
+						<el-radio-group v-model="array_nav" @change="getValue">
+							<el-radio-button v-for="(d,k) in userType" :label="d" :key="city">{{ d }}</el-radio-button>
+						</el-radio-group>
 					</div>
 				</div>
 			</div>
-			<div class="group">
+			<!-- <div class="group">
 				<div class="row-group">
 					<div class="th-group">用户状态</div>
 					<div class="td-group" change>
@@ -40,11 +40,11 @@
 						</el-checkbox-group>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<div class="search">
 				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button>
-				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增教师</el-button>
+				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAddTeach"><span class="el-icon-plus"></span> 新增教师</el-button>
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增学生</el-button>
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增学校</el-button>
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增专家</el-button>
@@ -174,7 +174,7 @@
 				multipleSelection: [],
 				currentPage: 1,
 				dialogVisible: false,
-				userType: ['全部', '管理员', '题库专家', '学校','教师','学生'],
+				userType: [ '管理员', '专家', '学校','教师','学生'],
 				userState: ['全部', '正常', '冻结', '注销'],
 				grade: ['全部', '一班', '二班', '三班'],
 				classNum: ['全部', '一班', '二班', '三班'],
@@ -224,8 +224,13 @@
 		methods: {
 			//获取选择标签的内容
 			getValue() {
-				this.array_nav4 = this.array_nav2.concat(this.array_nav3)
-				console.log(this.array_nav4);
+				if(this.array_nav == '管理员'){
+
+				}
+			},
+			// 新增教师
+			goAddTeach(){
+				
 			},
 			handleSizeChange(val) {
 				console.log(`每页 ${val} 条`);

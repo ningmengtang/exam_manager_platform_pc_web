@@ -2,8 +2,8 @@
 .top{background-color: #FFFFFF;border-radius: 10px;padding: 31px 24px;}
 
 .group,.row-group{display: flex;align-items: center;}
-.group /deep/ .el-checkbox-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
-.group /deep/ .el-checkbox-button.is-checked .el-checkbox-button__inner {background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);}
+.group /deep/ .el-radio-button--small .el-radio-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
+.group /deep/ .el-radio-button__orig-radio:checked+.el-radio-button__inner {background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);}
 .group /deep/ .el-checkbox-button--small .el-checkbox-button__inner{font-size: 14px;}
 .row-group .th-group{font-size: 14px;margin-right: 14px;padding: 8px 22px;min-width: 100px;}
 .row-group .td-group{font-size: 14px;}
@@ -68,3 +68,11 @@
 .ts-box .ii{font-size: 28px;color: rgba(67, 207, 124, 1);width: 100%;text-align: center;margin-top: 28px;}
 .box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
 .box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}
+
+.box /deep/ .el-radio-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
+.box /deep/ .el-radio-button.is-checked .el-radio-button__inner {background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);}
+.box /deep/ .el-radio-button--small .el-radio-button__inner{font-size: 14px;}
+
+.box /deep/  .el-radio-button__orig-radio:checked+.el-radio-button__inner{
+    background-color:rgb(43, 187, 97);
+}

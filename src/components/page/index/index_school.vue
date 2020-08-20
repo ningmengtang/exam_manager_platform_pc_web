@@ -7,7 +7,7 @@
 						<div class="card-left">
 							<div class="card-c">全部试卷</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="total" />
 							</div>
 						</div>
 						<div class="card-right"></div>
@@ -56,15 +56,15 @@
 				<div class="p-particula">
 					<div class="top-box">
 						<div class="subject">语文</div>
-						<div class="grade">一年级</div>
+						<div class="grade">{{d.gradeClass}}</div>
 					</div>
 					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.time}}</div>
+					<div class="p-time">{{d.modifyDate}}</div>
 					<div class="p-status" >{{d.status}}</div>
-					<i class="p-status-icon el-icon-time" v-if="d.o==1"></i>
-					<i class="p-status-icon el-icon-download" v-else-if="d.o==2"></i>
-					<i class="p-status-icon el-icon-loading" v-else-if="d.o==3"></i>
-					<i class="p-status-icon el-icon-close" v-else-if="d.o==4"></i>
+					<i class="p-status-icon el-icon-time" v-if="d.status==0"></i>
+					<i class="p-status-icon el-icon-download" v-else-if="d.status==2"></i>
+					<i class="p-status-icon el-icon-loading" v-else-if="d.status==3"></i>
+					<i class="p-status-icon el-icon-close" v-else-if="d.status==4"></i>
 				</div>
 			</div>
 			
@@ -72,10 +72,10 @@
 		<!-- 分页 -->
 		<div class="page">
 			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			 :current-page.sync="currentPage" :page-size="100" :total="1000">
+			 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 			</el-pagination>
 		</div>
-		<el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+		<!-- <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button> -->
 
 		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
 			<div class="ts-box">
@@ -94,6 +94,7 @@
 	import Schart from 'vue-schart'
 	import bus from '../../common/bus'
 	import ICountUp from 'vue-countup-v2'
+	import {SchoolIndex} from  '@/api/api.js'
 
 	export default {
 		name: 'index_student',
@@ -102,6 +103,9 @@
 				endVal: 100,
 				endVal1: 5000,
 				endVal2: 454,
+				pageNum:1,
+				pageSize:3,
+				total:0,
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #41e386;',
@@ -201,16 +205,20 @@
 		},
 		mounted() {
 			SchoolIndex({
-				"pageSize":999,
-				"pageNum":1
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
 			}).then(res=>{
-				
 				console.log(res)
+				this.papers=res.data.data.list
+				this.total=res.data.data.total
 			})
 		},
 		methods: {
 			getValue() {
 				console.log(this.array_nav)
+			},
+			goImport() {
+				this.$router.push('manage_teacher_import')
 			},
 			handleSizeChange(val) {
 				console.log(`每页 ${val} 条`);

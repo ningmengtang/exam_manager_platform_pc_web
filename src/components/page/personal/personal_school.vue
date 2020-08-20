@@ -8,11 +8,10 @@
 					<div class="user-top">
 						<div class="username">
 							<div class="name">小明</div>
-							<div class="user-id">ID:6556565</div>
+							<div class="user-id">ID:{{userID}}</div>
 							<div class="identity" :style="{'background-color':color}">老师</div>
 							<div class="message">
 								<div class="school">北京师范小学</div>
-								<div class="grade">一年级</div>
 							</div>
 						</div>
 					</div>
@@ -136,6 +135,7 @@
 				endVal1: 6,
 				endVal2: 454,
 				currentPage: 1,
+				userID:localStorage.getItem('userID'),
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
