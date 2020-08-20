@@ -622,7 +622,7 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import {
 
-	paperWithTag
+	apiCommonExamSelectById
 
 } from '@/api/api.js'
 
@@ -1187,7 +1187,7 @@ export default {
         //进入批量生产模式
         this.createTestPaperInfoObj == this.$router.params.createTestPaperInfoObj
         
-        paperWithTag(this.createTestPaperInfoObj.paperId).then(res => {
+        apiCommonExamSelectById(this.createTestPaperInfoObj.paperId).then(res => {
           if(!res.data.result)
           {
             this.$message.error('获取试卷失败，无法下载！')
@@ -1199,7 +1199,9 @@ export default {
 
           console.log(resResultData)
 
-          //this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
+          this.testPaperObj = JSON.parse(resResultData.data.elementTest)
+
+          this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
         })
         
       }
