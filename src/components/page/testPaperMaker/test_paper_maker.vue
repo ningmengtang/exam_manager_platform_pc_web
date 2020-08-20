@@ -2089,7 +2089,18 @@ export default {
       console.log("已经完成组卷 ")
       if(localStorage.getItem("loginUserType").toString() == "teacher")
       {
+
         this.$router.push(`/manage_teacher_import`)
+      }
+      if(localStorage.getItem("loginUserType").toString() == "user")
+      {
+        
+        this.$router.push(`/manage_user_import`)
+      }
+      if(localStorage.getItem("loginUserType").toString() == "admin")
+      {
+        
+        this.$router.push(`/manage_admin_import`)
       }
       
     },

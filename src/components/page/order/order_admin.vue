@@ -332,11 +332,12 @@
 		},
 		mounted() {
 			this.color = user().color;
+			console.log(11)
 			apiAdminOrderList({
 				"pageNum":this.pageNum,
 				"pageSize":this.pageSize
 			}).then(res=>{
-				// console.log(res)
+				console.log(res)
 				this.orderList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum

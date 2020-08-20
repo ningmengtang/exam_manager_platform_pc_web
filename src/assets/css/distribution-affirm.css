@@ -95,3 +95,6 @@
 .row-group .td-group{font-size: 14px;}
 .box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
 .box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}
+.particular{margin-top: 10px;}
+.particular .li{display: flex;justify-content: flex-end;align-items: center;padding: 16px 25px;background-color: #FFFFFF;border-radius: 8px;}
+.particular .li+.li{margin-top: 10px;}

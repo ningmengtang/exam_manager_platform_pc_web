@@ -37,18 +37,18 @@
 				<el-form-item label="收货地址">
 					<el-input v-model="form.contact_address"></el-input>
 				</el-form-item>
-				<el-date-picker
+				<!-- <el-date-picker
 				      v-model="value1"
 				      type="daterange"
 				      range-separator="至"
 				      start-placeholder="开始日期"
 				      end-placeholder="结束日期"
 					  class="ids">
-				    </el-date-picker>
+				    </el-date-picker> -->
 			</el-form>
 			<div class="buttom-box">
-				<el-button class="buttom-true" :style="{'background-color':color}" @click="black()">确认订购</el-button>
-				<el-button class="buttom-false" @click="black()">取消订购</el-button>
+				<el-button class="buttom-true" :style="{'background-color':color}" @click="pushPerpar">确认分配</el-button>
+				<!-- <el-button class="buttom-false" @click="black()">取消订购</el-button> -->
 			</div>
 		</div>
 		<!-- 右边 -->
@@ -86,7 +86,7 @@
 							<!-- <div class="" v-if=""></div> -->
 						</div>
 					</div>
-					<el-button type="success" size="small" @click="addPaper" style="float:right" >分配试卷</el-button>
+					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" >分配试卷</el-button>
 				</div>
 			</div>
 			<!-- <div class="page">
@@ -109,69 +109,52 @@
 			</div> -->
 		</div>
 		<!-- 提示框 -->
-		<el-dialog title="" :visible.sync="dialogTableVisible">
-			<div class="ts-select">
-				<!-- <div class="t-title">请选择班级</div>
-				<div class="t-content">
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">分发状态</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav2" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">分发状态</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav3" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-				</div> -->
-				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
-				<div class="student-box">
-					<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-						<el-table-column type="selection" width="55"></el-table-column>
-						<el-table-column label="学号" width="120">
-							<template slot-scope="scope">
-								{{ scope.row.date }}
-							</template>
-						</el-table-column>
-						<el-table-column prop="name" label="名字" width="120">
-							<template slot-scope="scope">
-								<div style="display: flex;align-items: center;">
-									<img src="../../../assets/img/img.jpg" class="user-img" />
-									<div class="student-name">{{ scope.row.name }}</div>
-								</div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="class" label="班级" show-overflow-tooltip></el-table-column>
-					</el-table>
-					<div class="page">
-						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="100" :total="1000">
-						</el-pagination>
-					</div>
-					<div class="block-time">
-						<div>
-							<span style="margin-right:10px ;">选择日期</span>
-							<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-							</el-date-picker>
-						</div>
-						<div class="block-a">
-							<el-button @click="submit()" class="out">取消选择</el-button>
-							<el-button @click="submit()" class="affirm">确认</el-button>
-						</div>
-					</div>
-		
-				</div>
+		<el-dialog title="选择试卷" :visible.sync="dialogTableVisible" >
+			<div>
+				<span>
+					已选择:[
+					<span style="color:red">
+						{{ParperType.title}}
+					</span>
+					]
+					
+				</span>
+			</div>
+			 <el-table
+				:data="tableData"
+				highlight-current-row
+				@current-change="handleCurrentChangeSelect"
+				>
+				 <el-table-column
+					type="index"
+					width="50">
+				</el-table-column>
+				<el-table-column
+					prop="createDate"
+					label="上传时间"
+					>
+				</el-table-column>
+				<el-table-column
+					prop="operator_name"
+					label="上传人"
+					>
+				</el-table-column>
+				<el-table-column
+					prop="title"
+					label="试卷名称"
+					>
+				</el-table-column>
+				
+			</el-table>
+			<div class="page">
+				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+					:current-page.sync="currentPage" :page-size="pageSize" :total="total">
+				</el-pagination>
+			</div>
+
+			<div>
+				<el-button type="primary" @click="onSubmit">确定分发</el-button>
+    			<el-button @click="dialogTableVisible = false">取消</el-button>
 			</div>
 		</el-dialog>
 	
@@ -184,7 +167,8 @@
 	import {
 		apiAdminOrderItemList,
 		AdminOrderUpload,
-		selectAllUserTag
+		selectAllUserTag,
+		improtSchoolAndTeachersAndStudentsInfoByAlredyUpload
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -229,32 +213,15 @@
 					
 				},
 				papers: [],
-				tableData: [{
-					date: '1',
-					name: '王小虎',
-					grade: '一年级',
-					class: '1'
-				}, {
-					date: '2',
-					name: '王小虎',
-					grade: '二年级',
-					class: '1'
-				}, {
-					date: '3',
-					name: '王小虎',
-					grade: '三年级',
-					class: '1'
-				}, {
-					date: '4',
-					name: '王小虎',
-					grade: '四年级',
-					class: '1'
-				}],
+				tableData: [],
 				adminAffirmData:'',
 				dialogTableVisible: false,
 				dialogTableVisible2: false,
 				pageSize:6,
 				pageNum:1,
+				total:0,
+				id:[],
+				ParperType:[],
 
 			};
 		},
@@ -264,13 +231,50 @@
 		},
 		methods: {
 			getValue() {
+
 				console.log(this.array_nav)
+
+			},
+			pushPerpar(){
+
+				// improtSchoolAndTeachersAndStudentsInfoByAlredyUpload()
+			},
+			onSubmit(){
+				improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.ParperType)
+			},
+			handleCurrentChangeSelect(val){
+				// console.log(val)
+
+				this.ParperType = val
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				this.pageSize = val;
+				selectAllUserTag({
+					"id":this.id,
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res=>{
+					this.tableData = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+					// console.log(res)
+				})
 			},
-			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+			handleCurrentChange(val){
+				this.pageNum = val
+				selectAllUserTag({
+					"id":this.id,
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res=>{
+					this.tableData = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+					// console.log(res)
+				})
+			},
+			onSubmit(){
+
 			},
 			toggleSelection(rows) {
 				if (rows) {
@@ -339,20 +343,30 @@
 			},
 			// 分配试卷
 			addPaper(item){
-				this.dialogTableVisible = true
-				// 通过标签查询试卷
-				let id = []
-				for(var i=0;i<item.tag_list.length;i++){
-					id.push(item.tag_list[i].id)
+				if(item.file_path){
+					// console.log(item)
+					this.dialogTableVisible = true
+					// 通过标签查询试卷
+					this.id = []
+					this.ParperType = ''
+					for(var i=0;i<item.tag_list.length;i++){
+						this.id.push(item.tag_list[i].id)
+					}
+					// console.log(id)
+					selectAllUserTag({
+						"id":this.id,
+						"pageSize":this.pageSize,
+						"pageNum":this.pageNum
+					}).then(res=>{
+
+						this.tableData = res.data.data.list
+						this.total = res.data.data.total
+						this.currentPage = res.data.data.pageNum
+						// console.log(res)
+					})
+				}else{
+					this.$message.error('请先分配学生信息')
 				}
-				console.log(id)
-				selectAllUserTag({
-					"id":id,
-					"pageSize":this.pageSize,
-					"pageNum":this.pageNum
-				}).then(res=>{
-					console.log(res)
-				})
 				// apiPaperWithTagList
 			}
 		},
@@ -366,6 +380,7 @@
 				this.form.contact_phone = adminAffirmData.contact_phone
 				this.form.contacts = adminAffirmData.contacts
 				this.form.contact_address = adminAffirmData.contact_address
+				this.form.id = adminAffirmData.id
 				apiAdminOrderItemList({
 					"order_id":adminAffirmData.id
 				}).then(res=>{
@@ -383,3 +398,12 @@
 	};
 </script>
 <style scoped src="../../../assets/css/distribution-affirm.css"></style>
+<style scoped src="../../../assets/css/distribution.css"></style>
+<style scoped>
+	.title{
+		width: 250px;
+	}
+	.synopsis{
+		width: 250px;
+	}
+</style>

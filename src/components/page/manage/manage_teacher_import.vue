@@ -109,13 +109,14 @@
 					</el-col>
 					<el-col :span="8" v-if="!ispaperType" :disabled="!testPaperCacheReady">
 						<div class="grid-content bg-purple">
-							<el-button class="i"  @click="parperAddPic">确认提交</el-button>
+							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
 							<div class="ii">(在线组卷)</div>
 						</div>
 					</el-col>
-					<el-col :span="8" >
+					<el-col :span="8" v-if="ispaperType" >
 						<div class="grid-content bg-purple">
-							<el-button class="i" >确认提交试卷</el-button>
+							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
+							<div class="ii">(图片试卷)</div>
 						</div>
 					</el-col>
 				</el-row>
@@ -338,6 +339,7 @@ export default {
 			var file = param.file
 			this.uploadFile = new FormData()
 			this.uploadFile.append('file',file)
+			this.$message.success('导入成功')
 		},
 		// 班级信息
 		// formStatus(row,colum){
@@ -351,6 +353,9 @@ export default {
 		// 	})
 		// },
 		// 试卷图片上传
+		// parperAdd(){
+
+		// },
 		parperAddPic(){
 
 			if(this.paperType == '图片试卷'){
@@ -386,8 +391,6 @@ export default {
 								this.$message.error(res.data.message)
 							}
 						})
-						
-						
 					}else{
 						this.$message.error(res.data.message)
 					}
@@ -429,9 +432,9 @@ export default {
 									}
 								})
 							}
-							this.$message.error('操作成功')								
+							this.$message.success('操作成功')								
 						}else{
-							this.$message.error('操作成功')
+							this.$message.success('操作成功')
 							// 没有绑定学生
 						}
 
