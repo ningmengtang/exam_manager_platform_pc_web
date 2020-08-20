@@ -6,7 +6,7 @@
 					<div class="row-group">
 						<div class="th-group">分发状态</div>
 						<div class="td-group" change>
-							<el-radio-group v-model="disStatus" @change="getQuery">
+							<el-radio-group v-model="disStatus" >
 								<el-radio-button v-for="(item,index) in DisStatusList" :label="item.id">
 									{{item.text}}
 								</el-radio-button>
@@ -16,7 +16,7 @@
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">年份</div>
 						<div class="td-group">
-							<el-radio-group v-model="years" @change="getQuery">
+							<el-radio-group v-model="years" >
 								<el-radio-button v-for="(item,index) in YearsList" :label="item.id">
 									{{item.text}}
 								</el-radio-button>
@@ -26,7 +26,7 @@
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">教材版本</div>
 						<div class="td-group">
-							<el-radio-group v-model="version" @change="getQuery">
+							<el-radio-group v-model="version" >
 								<el-radio-button v-for="(item,index) in VersionList" :label="item.id">
 									{{item.text}}
 								</el-radio-button>
@@ -36,7 +36,7 @@
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">学习科目</div>
 						<div class="td-group">
-							<el-radio-group v-model="subject" @change="getQuery">
+							<el-radio-group v-model="subject" >
 								<el-radio-button v-for="(item,index) in SubjectList" :label="item.id">
 									{{item.text}}
 								</el-radio-button>
@@ -46,7 +46,7 @@
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">学习年级</div>
 						<div class="td-group">
-							<el-radio-group v-model="grade" @change="getQuery">
+							<el-radio-group v-model="grade" >
 								<el-radio-button v-for="(item,index) in GradeList" :label="item.id">
 									{{item.text}}
 								</el-radio-button>
@@ -56,7 +56,7 @@
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">单元测试</div>
 						<div class="td-group">
-							<el-radio-group v-model="elementTest" @change="getQuery">
+							<el-radio-group v-model="elementTest">
 								<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id">
 									{{item.text}}
 								</el-radio-button>
@@ -66,7 +66,7 @@
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">试卷用途</div>
 						<div class="td-group">
-							<el-radio-group v-model="purpose" @change="getQuery">
+							<el-radio-group v-model="purpose" >
 								<el-radio-button v-for="(item,index) in PurposeList" :label="item.id">
 									{{item.text}}
 								</el-radio-button>
@@ -162,6 +162,14 @@
 </template>
 <script>
 import user from '../../common/user';
+import {
+		selectTag,
+		ApiTagSelectList,
+		paperWithTag,
+		teacherIndex,
+		teacherSelectTag,
+		teacherDistributeselect
+	} from '@/api/api.js'
 export default {
 	data() {
 		return {
@@ -170,6 +178,22 @@ export default {
 			search: '',
 			currentPage: 1,
 			dialogVisible: false,
+			paperList:[],
+			DisStatusList:[],
+			ElementTextList:[],
+			PurposeList:[],
+			SubjectList:[],
+			GradeList:[],
+			VersionList:[],
+			YearsList:[],
+			TagType:[],
+			disStatus:0,
+			elementTest:0,
+				purpose:0,
+				subject:0,
+				grade:0,
+				version:0,
+				years:0,
 			cities: ['全部', '上海', '北京', '广州', '深圳'],
 			cities2: ['全部', '1', '2', '3', '4'],
 			checkboxGroup2: ['上海'],
@@ -216,10 +240,67 @@ export default {
 		},
 		goImport(){
 			this.$router.push('manage_user_import')
-		}
+		},
+
+		TagTypePromise(tagType, index) {
+				return new Promise((resolve, reject) => {
+					ApiTagSelectList({
+						"pageSize": 999,
+						"pageNum": 1,
+						"parentId": tagType.id
+					}).then(res => {
+						let all = [{
+							"id": 0,
+							"sn": 0,
+							"text": '全部'
+						}]
+						let children = all.concat(res.data.data.list)
+						switch (tagType.text) {
+							case '分发状态':
+								this.DisStatusList = children
+								break;
+							case '年份':
+								this.YearsList = children
+								break;
+							case '教材版本':
+								this.VersionList = children
+								break;
+							case '学习科目':
+								this.SubjectList = children
+								break;
+							case '学习年级':
+								this.GradeList = children
+								break;
+							case '单元测试':
+								this.ElementTextList = children
+								break;
+							case '试卷用途':
+								this.PurposeList = children
+								break;
+						}
+						resolve(res)
+					})
+				})
+			},
+			async getTypeList(tagType, index) {
+				await this.TagTypePromise(tagType, index)
+				// return n 
+			}
 	},
 	mounted() {
 		this.color = user().color;
+		// this.TagTypeList = []
+			ApiTagSelectList({
+				"parentId": 0,
+				"pageSize": 999,
+				"pageNum": 1
+			}).then(res => {
+				this.TagType = res.data.data.list
+				var arr = []
+				for (var i = 0; i < this.TagType.length; i++) {
+				this.getTypeList(this.TagType[i], i)
+			}
+		})
 	}
 };
 </script>
