@@ -285,7 +285,7 @@
                     <tr>
                       <td width="70px">
                           <p style="text-align:right;">第{{questionPartItemIndex + 1}}部分、</p>
-                          <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="'layout_question_topic_text_'+questionPartItem.uniqueId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                          <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,null,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                       </td>
                       <td>
                         <div v-html="questionPartItem.topic_text">
@@ -302,7 +302,7 @@
                       <tr>
                       <td width="70px">
                           <p style="text-align:right;">第{{questionBigItemIndex + 1}}大题、</p>
-                          <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="'layout_question_topic_text_'+questionPartItem.uniqueId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                          <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                       </td>
                       <td>
                         <div v-html="questionBigItem.topic_text">
@@ -319,7 +319,7 @@
                         <tr>
                         <td width="70px">
                             <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                            <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="'layout_question_topic_text_'+questionPartItem.uniqueId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                            <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                         </td>
                         <td>
                           <div v-html="questionItem.topic_text">
@@ -340,7 +340,7 @@
                         <tr>
                           <td width="70px">
                               <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                              <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="'layout_question_topic_text_'+questionPartItem.uniqueId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                              <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                           </td>
                           <td>
                             <div v-html="questionItem.topic_text">
@@ -891,6 +891,16 @@ export default {
 				]
 			},
       //正式用于引用的属性
+
+      /**
+       * 二维码包含的数据样板
+       */
+      qrInfoObj:{
+        school_id: null,
+        uid: null,
+        utype: null,
+        question_no:null,
+      },
       /**
        * 函数方法用户类型，根据不同用户，调用的API路径都不一样例如XX/admin/XX、XX/user/XX
        * 默认是admin
@@ -1148,6 +1158,10 @@ export default {
         this.testPaperObj.examExplain = newTestPaperInfo.form.examExplain
         this.testPaperObj.examTime = newTestPaperInfo.form.examTime
       }
+
+      this.qrInfoObj.uid = localStorage.getItem("userID").toString()
+      this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
+
     })
       //console.log(this.testPaperObj)
       //this.editor = this.$refs.myQuillEditor.quill;
@@ -1158,6 +1172,23 @@ export default {
     //delete this.editor;
   },
   methods: {
+    /**
+     * 获取二维码信息用于防伪
+     */
+    createQrInfo(paperId,qPartId,qBigId,qId) {
+      //深拷贝
+
+      let objString = JSON.stringify(this.qrInfoObj)
+      let newObj = JSON.parse(objString)
+
+      newObj.paperId = paperId
+      newObj.qPartId = qPartId
+      newObj.qBigId = qBigId
+      newObj.qId = qId
+
+      return JSON.stringify(newObj)
+      
+    },
     /**
      * uuid生成器
      */
