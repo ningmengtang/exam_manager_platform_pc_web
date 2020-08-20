@@ -4,54 +4,64 @@
 			<div class="group">
 				<div class="row-group">
 					<div class="th-group">分发状态</div>
-					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav" @change="getValue()">
-							<el-checkbox-button v-for="(city,k) in cities" :label="city" :key="city">{{ city }}</el-checkbox-button>
-						</el-checkbox-group>
+					<div class="td-group" >
+						<el-radio-group v-model="orderStatus" @change="changeOrder">
+								<el-radio-button v-for="(item,index) in orderStatusList" :label="item.id">
+									{{item.name}}
+								</el-radio-button>
+						</el-radio-group>
 					</div>
 				</div>
 			</div>
-			<div class="search">
+			<!-- <div class="search">
 				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
-				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增订单</el-button>
-			</div>
+				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button>
+			</div> -->
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
-			<div class="li" v-for="(data, i) in li" :key="data.i">
-				<img src="../../../assets/img/img.jpg" class="user-img" />
-				<div class="teacher-name">{{ data.teacher }}</div>
+			<div class="li" v-for="(data, i) in orderList" :key="data.id">
+				<!-- <img src="../../../assets/img/img.jpg" class="user-img" />
+				<div class="teacher-name">{{ data.teacher }}</div> -->
 				<div class="title-box">
-					<div class="title">{{ data.title }}</div>
-					<div class="synopsis">{{ data.synopsis }}</div>
+					<div class="title">
+						{{ data.operator_name }}</div>
+					<div class="synopsis">
+						<span>
+							订购类型：{{data.style_count}}种，总份数：{{data.count}}份
+						</span>
+
+					</div>
 				</div>
-				<div class="time">{{ data.time }}</div>
-				<div class="label-box">
+				<div class="time">
+					<span>
+						{{ data.create_date }}申请订购
+					</span>
+				</div>
+				<!-- <div class="label-box">
 					<div class="label">{{ data.label }}</div>
 					<div class="label">人教版</div>
 					<div class="label">语文</div>
 					<div class="label">一年级</div>
-				</div>
+				</div> -->
 				<div class="right">
 					<div class="ii" >
 						<div class="status_box">
-							<i class="icon el-icon-check"></i>
-							<span class="text">正在使用</span>
-						    <i class="icon i el-icon-close"></i>
+							<!-- <i class="icon el-icon-loading ii"></i> -->
+							<span class="text ii">{{data.status == 0?'待确定':data.status == 1?'等待分发':data.status == 2?'已取消':data.status == 3?'分发完成':''}}</span>
+							<el-button type="primary"   v-if="data.status == 1"  @click="addOrder(data)">立即分发</el-button>
 						</div>
 					</div>
-					
 				</div>
 			</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div>
 		</div>
 		<!-- 提示框 -->
-		<el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
+		<!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
 		<!-- Table -->
 		<el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
@@ -122,9 +132,19 @@
 </template>
 <script>
 	import user from '../../common/user';
+	import {
+		apiAdminOrderList,
+		apiAdminOrderUpdate
+	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
+				orderStatus:4,
+				orderList:[],  //订单数据
+				pageSize:6,
+				pageNum:1,
+				currentPage:1,
+				total:0,
 				color: '',
 				checkAll: false,
 				isIndeterminate: true,
@@ -138,6 +158,19 @@
 				multipleSelection: [],
 				currentPage: 1,
 				dialogVisible: false,
+				orderStatusList:[
+				{
+					id:1,
+					name:"正在分发"
+				},
+				{
+					id:3,
+					name:"分发完成"
+				},{
+					id:2,
+					name:"已取消"
+				}
+				],
 				cities: ['全部', '分发完成', '正在分发', '分发失败'],
 				class2: ['全部', '一年级', '二年级', '三年级'],
 				class1: ['全部', '一班', '二班', '三班'],
@@ -146,7 +179,7 @@
 				li: [{
 						teacher: '古得老师',
 						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '北京师范小学 教师',
+						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
 						time: '2020年10月11日上传',
 						label: '2019',
 						o: '1'
@@ -154,7 +187,7 @@
 					{
 						teacher: '古得老师',
 						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '北京师范小学 教师',
+						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
 						time: '2020年10月11日上传',
 						label: '2019',
 						o: '2'
@@ -183,6 +216,8 @@
 				}],
 				dialogTableVisible: false,
 				dialogFormVisible: false,
+				operatorId:'',
+				operatorType:''
 			};
 		},
 		methods: {
@@ -192,14 +227,59 @@
 				console.log(this.array_nav4);
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				this.pageSize = val
+				apiAdminOrderList({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize,
+					"status":this.orderStatus,
+					"operator_id": this.operatorId,
+					"operator_type":this.operatorType
+  					// "operator_name": 1,
+				}).then(res=>{
+					// console.log(res)
+					this.orderList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+				this.pageNum = val
+				apiAdminOrderList({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize,
+					"status":this.orderStatus,
+					"operator_id": this.operatorId,
+					"operator_type":this.operatorType
+				}).then(res=>{
+					// console.log(res)
+					this.orderList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
-			searchO() {
+			changeOrder(){
+				apiAdminOrderList({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize,
+					"status":this.orderStatus,
+					"operator_id": this.operatorId,
+					"operator_type":this.operatorType
+				}).then(res=>{
+					this.orderList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
+				
+			},
+			//立即分发
+			addOrder(data){
+				sessionStorage.setItem('adminAffirmData', JSON.stringify(data))
+				// this.dialogTableVisible = true
+				this.$router.push('distribution_admin_affirm')
+			},
+			// searchO() {
 
-			},
+			// },
 			toggleSelection(rows) {
 				if (rows) {
 					rows.forEach(row => {
@@ -221,18 +301,31 @@
 					this.$refs.multipleTable.clearSelection();
 				}
 			},
+
 			submit() {
-				//关闭窗口
-				this.dialogTableVisible = false;
-			},
-			goAdd(){
-				this.$router.push('order_school_add')
+				
+				// this.$router.push('distribution_admin_affirm')
 			}
 		},
 		mounted() {
+			this.operatorId = localStorage.getItem('userID')
+			this.operatorType = localStorage.getItem('loginUserType')
+			// this.operatorId = 
 			this.color = user().color;
+			apiAdminOrderList({
+				"pageNum":this.pageNum,
+				"pageSize":this.pageSize,
+				"operator_id": this.operatorId,
+				"operator_type":this.operatorType,
+				"status":1
+			}).then(res=>{
+				// console.log(res)
+				this.orderList = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+			})
 		}
 	};
 </script>
 
-<style scoped src="../../../assets/css/order.css"></style>
+<style scoped src="../../../assets/css/distribution.css"></style>

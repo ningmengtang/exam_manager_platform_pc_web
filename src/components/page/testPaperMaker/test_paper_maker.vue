@@ -2118,6 +2118,7 @@ export default {
       localStorage.setItem('testPaperCacheReady', true)
       this.$message.success('已经完成组卷！您现在可以提交试卷入库！')
       console.log("已经完成组卷 ")
+      
       if(localStorage.getItem("loginUserType").toString() == "teacher")
       {
 

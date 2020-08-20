@@ -178,6 +178,11 @@ export function improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(orderItemId
 	return result;
 }
 
+export function apiAdminOrderUpdate(data){
+	const result =post('/api/admin/order/updateById' ,data)
+	return result;
+}
+
 // /api/admin/order/item/upload/{item_id}
 
 

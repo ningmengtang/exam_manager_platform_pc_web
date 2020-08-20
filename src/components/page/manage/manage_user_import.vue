@@ -564,7 +564,7 @@ export default {
 								this.fullscreenLoading = false
 								this.$message.success('同步试卷至服务器完成！')
 								
-								this.$router.push('/manage_teacher')
+								this.$router.push('/manage_user')
 							}
 
 
@@ -600,7 +600,7 @@ export default {
 									this.fullscreenLoading = false
 									this.$message.success('同步试卷至服务器完成！')
 
-									this.$router.push('/manage_teacher')
+									this.$router.push('/manage_user')
 								}
 								
 								})
@@ -695,9 +695,11 @@ export default {
 		},
 	},
 	mounted() {
+
 		this.color = user().color;
 		selectTag().then(res=>{
 			this.tagList = res.data.data
+			console.log(this.tagList )
 		})
 		let id = localStorage.getItem('userID');
 		if(id){

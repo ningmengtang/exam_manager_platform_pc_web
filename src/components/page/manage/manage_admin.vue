@@ -68,13 +68,7 @@
 					<div class="right-son">
 						<div class="bg-purple">
 							<div class="card-other-i" @click="goImport">提交试卷</div>
-							<div class="card-other-ii">(按模板提交)</div>
-						</div>
-					</div>
-					<div class="right-son">
-						<div class="bg-purple">
-							<div class="card-other-i o">下载模板</div>
-							<div class="card-other-ii">(WORD提交模板)</div>
+							<!-- <div class="card-other-ii">(按模板提交)</div> -->
 						</div>
 					</div>
 				</div>

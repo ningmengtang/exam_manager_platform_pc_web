@@ -47,7 +47,7 @@
 				    </el-date-picker> -->
 			</el-form>
 			<div class="buttom-box">
-				<el-button class="buttom-true" :style="{'background-color':color}" @click="pushPerpar">确认分配</el-button>
+				<!-- <el-button class="buttom-true" :style="{'background-color':color}" @click="pushPerpar">确认分配</el-button> -->
 				<!-- <el-button class="buttom-false" @click="black()">取消订购</el-button> -->
 			</div>
 		</div>
@@ -86,7 +86,8 @@
 							<!-- <div class="" v-if=""></div> -->
 						</div>
 					</div>
-					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" >分配试卷</el-button>
+					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="!item.status" >分配试卷</el-button>
+					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="item.status == 1" >已分配</el-button>
 				</div>
 			</div>
 			<!-- <div class="page">
@@ -240,11 +241,18 @@
 				// improtSchoolAndTeachersAndStudentsInfoByAlredyUpload()
 			},
 			onSubmit(){
-				improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.ParperType)
+				// 分配学生
+				improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.Itemid,this.ParperType.id).then(res=>{
+					// console.log(res)
+					if(res.data.result){
+						this.$message.success('分配成功')
+						this.dialogTableVisible = false
+					}else{
+						this.$message.error(res.data.message)
+					}
+				})
 			},
 			handleCurrentChangeSelect(val){
-				// console.log(val)
-
 				this.ParperType = val
 			},
 			handleSizeChange(val) {
@@ -273,9 +281,6 @@
 					// console.log(res)
 				})
 			},
-			onSubmit(){
-
-			},
 			toggleSelection(rows) {
 				if (rows) {
 					rows.forEach(row => {
@@ -301,10 +306,10 @@
 			format(percentage) {
 				return percentage === 100 ? '满' : `${percentage}%`;
 			},
-			submit() {
-				//关闭窗口
-				this.dialogTableVisible = false;
-			},
+			// submit() {
+			// 	//关闭窗口
+			// 	this.dialogTableVisible = false;
+			// },
 			netx(){
 				this.percentage=100;
 			   this.dialogTableVisible2 = false;
@@ -344,6 +349,7 @@
 			// 分配试卷
 			addPaper(item){
 				if(item.file_path){
+					this.Itemid = item.id
 					// console.log(item)
 					this.dialogTableVisible = true
 					// 通过标签查询试卷

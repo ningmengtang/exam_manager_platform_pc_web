@@ -4,17 +4,19 @@
 			<div class="group">
 				<div class="row-group">
 					<div class="th-group">分发状态</div>
-					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav" @change="getValue()">
-							<el-checkbox-button v-for="(city,k) in cities" :label="city" :key="city">{{ city }}</el-checkbox-button>
-						</el-checkbox-group>
+					<div class="td-group" >
+						<el-radio-group v-model="orderStatus" @change="changeOrder">
+								<el-radio-button v-for="(item,index) in orderStatusList" :label="item.id">
+									{{item.name}}
+								</el-radio-button>
+						</el-radio-group>
 					</div>
 				</div>
 			</div>
-			<div class="search">
+			<!-- <div class="search">
 				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button>
-			</div>
+			</div> -->
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
@@ -46,7 +48,7 @@
 					<div class="ii" >
 						<div class="status_box">
 							<!-- <i class="icon el-icon-loading ii"></i> -->
-							<span class="text ii">{{data.status == 0?'待确定':data.status == 1?'等待分发':data.status == 2?'已取消':''}}</span>
+							<span class="text ii">{{data.status == 0?'待确定':data.status == 1?'等待分发':data.status == 2?'已取消':data.status == 3?'分发完成':''}}</span>
 							<el-button type="primary"   v-if="data.status == 1"  @click="addOrder(data)">立即分发</el-button>
 						</div>
 					</div>
@@ -137,6 +139,7 @@
 	export default {
 		data() {
 			return {
+				orderStatus:4,
 				orderList:[],  //订单数据
 				pageSize:6,
 				pageNum:1,
@@ -155,6 +158,19 @@
 				multipleSelection: [],
 				currentPage: 1,
 				dialogVisible: false,
+				orderStatusList:[
+				{
+					id:1,
+					name:"正在分发"
+				},
+				{
+					id:3,
+					name:"分发完成"
+				},{
+					id:2,
+					name:"已取消"
+				}
+				],
 				cities: ['全部', '分发完成', '正在分发', '分发失败'],
 				class2: ['全部', '一年级', '二年级', '三年级'],
 				class1: ['全部', '一班', '二班', '三班'],
@@ -213,7 +229,7 @@
 				apiAdminOrderList({
 					"pageNum":this.pageNum,
 					"pageSize":this.pageSize,
-					"status":1
+					"status":this.orderStatus
 				}).then(res=>{
 					// console.log(res)
 					this.orderList = res.data.data.list
@@ -226,13 +242,25 @@
 				apiAdminOrderList({
 					"pageNum":this.pageNum,
 					"pageSize":this.pageSize,
-					"status":1
+					"status":this.orderStatus
 				}).then(res=>{
 					// console.log(res)
 					this.orderList = res.data.data.list
 					this.total = res.data.data.total
 					this.currentPage = res.data.data.pageNum
 				})
+			},
+			changeOrder(){
+				apiAdminOrderList({
+					"pageNum":this.pageNum,
+					"pageSize":this.pageSize,
+					"status":this.orderStatus
+				}).then(res=>{
+					this.orderList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
+				
 			},
 			//立即分发
 			addOrder(data){
