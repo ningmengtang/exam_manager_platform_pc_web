@@ -49,7 +49,7 @@
 						<div class="status_box">
 							<!-- <i class="icon el-icon-loading ii"></i> -->
 							<span class="text ii">{{data.status == 0?'待确定':data.status == 1?'等待分发':data.status == 2?'已取消':data.status == 3?'分发完成':''}}</span>
-							<el-button type="primary"   v-if="data.status == 1"  @click="addOrder(data)">立即分发</el-button>
+							<!-- <el-button type="primary"   v-if="data.status == 1"  @click="addOrder(data)">立即分发</el-button> -->
 						</div>
 					</div>
 				</div>

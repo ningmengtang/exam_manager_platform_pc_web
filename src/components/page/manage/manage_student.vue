@@ -71,12 +71,12 @@
 					</el-radio-group>
 				</div>
 			</div>
-			<div class="search">
+			<!-- <div class="search">
 				<el-input placeholder="请输入内容" v-model="search">
 					<i slot="prefix" class="el-input__icon el-icon-search"></i>
 				</el-input>
 				 <el-button type="primary" @click="" class="buttom" >搜索</el-button>
-			</div>
+			</div> -->
 		</div>
 		
 		<div class="particular">

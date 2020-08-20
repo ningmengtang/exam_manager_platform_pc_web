@@ -59,7 +59,7 @@
 .p-indent{margin-bottom: 8px;color: #999999;}
 .p-status{color: #2bbb61;margin-bottom: 14px;}
 .p-status.ts{color: #FB4A1A;}
-.p-status-icon{font-size: 20px;color: #999999;font-weight: bold;}
+.p-status-icon{font-size: 20px;color: #999999;font-weight: bold; cursor: pointer;}
 
 .page{display: flex;justify-content: center;margin: 30px 0;}
 
