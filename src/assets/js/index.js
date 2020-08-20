@@ -8,11 +8,12 @@
  		"pageNum": this.pageNum,
  		"pageSize": this.pageSize
  	}).then(res => {
- 		this.papers = res.data.data.list
+		this.papers = res.data.data.list
+		
  		this.total = res.data.data.total
  		this.currentPage = res.data.data.pageNum
- 		this.download = res.data.data.download
- 		this.disabled = res.data.data.disabled
+		 this.download = res.data.data.disabled
+		 this.disabled = res.data.data.download
  	})
  }
  //条目改变时
@@ -26,8 +27,8 @@ export function handleCurrentChange(val){
 		this.papers = res.data.data.list
 		this.total = res.data.data.total
 		this.currentPage = res.data.data.pageNum
-		this.download = res.data.data.download
-		this.disabled = res.data.data.disabled
+		this.download = res.data.data.disabled
+		this.disabled = res.data.data.download
 	})
 }
 
@@ -37,11 +38,12 @@ export function studentIndexData(data){
 		"pageNum": this.pageNum,
 		"pageSize": this.pageSize
 	}).then(res => {
-		console.log(res)
+		
 		this.papers = res.data.data.list
+		console.log(this.papers)
 		this.total = res.data.data.total
 		this.currentPage = res.data.data.pageNum
-		this.download = res.data.data.download
-		this.disabled = res.data.data.disabled
+		this.download = res.data.data.disabled
+		this.disabled = res.data.data.download
 	})
 }

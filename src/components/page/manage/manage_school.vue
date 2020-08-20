@@ -228,7 +228,7 @@ export default {
 			console.log(`当前页: ${val}`);
 		},
 		goAdd(){
-			this.$router.push('order_school')
+			this.$router.push('order_school_add')
 		},
 		handleCurrentChange(val) {
 			this.pageNum = val;
