@@ -683,6 +683,7 @@
 			  this.progress=res.data.data.progress
 			  this.error=res.data.data.error
 		})
+		
 		}
 	};
 </script>
