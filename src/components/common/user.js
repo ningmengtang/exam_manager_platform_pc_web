@@ -54,11 +54,18 @@ export default function usertype() {
 				icon: 'el-icon-sell',
 				index: `order_${loginUserType}`,
 				title: '订购管理'
-			}, {
+			}, 
+			{
 				icon: 'el-icon-position',
 				index: `distribution_${loginUserType}`,
 				title: '试卷分发'
-			}, {
+			}, 
+			{
+				icon: 'el-icon-position',
+				index: `examine_${loginUserType}`,
+				title: '审核管理'
+			},
+			{
 				icon: 'el-icon-s-custom',
 				index: `user_control`,
 				title: '用户管理'

@@ -194,7 +194,7 @@
 				console.log(val)
 				this.pageSize = val
 				paperWithTag({
-					"id":this.id,
+					"id":this.obj,
 					"pageSize":this.pageSize,
 					"pageNum":this.pageNum
 				}).then(res=>{
@@ -207,6 +207,7 @@
 				console.log(val)
 				this.pageNum = val;
 				paperWithTag({
+					"id":this.obj,
 					"pageNum":this.pageNum,
 					"pageSize":this.pageSize
 				}).then(res=>{

@@ -164,6 +164,12 @@ export default new Router({
 				    meta: { title: '管理员-试卷分发-试卷确认' }
 				},
 				{
+					path: '/examine_admin',
+				
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/examine/examine_admin.vue'),
+				    meta: { title: '管理员-试卷审核' }
+				},
+				{
 				    path: '/user_control',
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/user/user_control.vue'),
 				    meta: { title: '管理员-用户管理' }

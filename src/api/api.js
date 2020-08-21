@@ -189,12 +189,37 @@ export function improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(orderItemId
 	const result =post('/api/admin/improt/excel/improtSchoolAndTeachersAndStudentsInfoByAlredyUpload/'+orderItemId+'/'+parperId ,data)
 	return result;
 }
+
 export function apiAdminOrderUpdate(data){
 	const result =post('/api/admin/order/updateById' ,data)
 	return result;
 }
 
-// /api/admin/order/item/upload/{item_id}
+
+// 试卷查询列表
+export function apiCommonExamSelectList(data){
+	const result =post('/api/common/exam/selectListByOptions' ,data)
+	return result;
+}
+
+// 试卷列表修改
+export function apiCommonExamSelectUpdate(data){
+	const result =post('/api/common/exam/update' ,data)
+	return result;
+}
+
+// 通过标签查询所有试卷
+export function ExamSelectPapersWithTagsForAllPapers(data){
+	const result =post('/api/common/exam/selectPapersWithTagsForAllPapers' ,data)
+	return result;
+}
+
+
+
+
+
+
+
 
 
 
