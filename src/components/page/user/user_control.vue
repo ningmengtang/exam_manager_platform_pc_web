@@ -54,8 +54,8 @@
 		<!-- 管理 -->
 		<div class="particular">
 			<div class="li" v-for="(data, i) in li" :key="data.i">
-				<img src="../../../assets/img/img.jpg" class="user-img" />
-				<div class="teacher-name">{{ data.teacher }}</div>
+				
+				<div class="teacher-name">{{ data.grade }}</div>
 				<div class="title-box">
 					<div class="title">{{ data.title }}</div>
 					<div class="synopsis">{{ data.synopsis }}</div>
@@ -159,7 +159,7 @@
 <script>
 	import user from '../../common/user';
 	import {
-		apiSchoolAccountSelectByOptions
+		ApiSchoolAccountSelectByOptions,ApiClassSelectListByOptions
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -280,9 +280,13 @@
 		},
 		mounted() {
 			this.color = user().color;
-			apiSchoolAccountSelectByOptions({
-				
+			ApiSchoolAccountSelectByOptions({
+				"pageNum":1,
+				"pageSize":999
 			}).then(res=>{
+				console.log(res)
+			})
+			ApiClassSelectListByOptions({}).then(res=>{
 				console.log(res)
 			})
 		}

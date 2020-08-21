@@ -8,7 +8,7 @@
 .group .bg-purple{background-color: #FFFFFF;display: flex;justify-content: center;align-items: center;flex-direction: column;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);width:288px;height:140px;border-radius: 10px;}
 .group .card-other-i{background-color: #FB4B1B;color: #FFFFFF;padding: 12px 60px;border-radius: 4px;font-size: 20px;font-weight: bold;cursor: pointer;}
 .group .card-other-i.o{background-color: #2BBB61;}
-.group .card-other-ii{olor: #000000;margin-top: 8px;font-size: 14px;letter-spacing: 2px;cursor: pointer;}
+.group .card-other-ii{color: #000000;margin-top: 8px;font-size: 14px;letter-spacing: 2px;cursor: pointer;}
 
 .search{height: 50px;background-color: #FFFFFF;border-radius: 8px;display: flex;align-items: center;padding: 0 20px ;margin-top: 25px;}
 .search /deep/ .el-input{width:auto;}
@@ -21,7 +21,7 @@
 
 
 .particular{margin-top: 10px;}
-.particular .li{display: flex;justify-content: flex-end;align-items: center;padding: 16px;background-color: #FFFFFF;border-radius: 8px;}
+.particular .li{display: flex;align-items: center;padding: 16px;background-color: #FFFFFF;border-radius: 8px;}
 .particular .li+.li{margin-top: 10px;}
 .user-img{width: 50px;height: 50px;border-radius: 50%;}
 .teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #19aefb;margin: 0 0 0 20px; }

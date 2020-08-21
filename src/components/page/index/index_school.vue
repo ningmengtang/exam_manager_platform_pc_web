@@ -61,7 +61,7 @@
 					<div class="p-time">手机：{{d.contact_phone}}</div>
 					<div class="p-particular">{{d.create_date}}</div>
 					<div class="p-status">{{d.status == 2?'取消订单':d.status == 1?'确认订单':d.status=='3'?'已经全部分发':'待审核订单'}}</div>
-					<i class="p-status-icon el-icon-download"></i>
+					<!-- <i class="p-status-icon el-icon-download"></i> -->
 				</div>
 			</div>
 

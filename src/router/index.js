@@ -113,6 +113,11 @@ export default new Router({
 				    meta: { title: '学校-教师管理' }
 				},
 				{
+				    path: 'distribution_school',
+				    component: () => import(/* webpackChunkName: "manage_school_subordinate"*/ '../components/page/distribution/distribution_school.vue'),
+				    meta: { title: '学校-分配试卷' }
+				},
+				{
 				    path: 'manage_school_add',
 				    component: () => import(/* webpackChunkName: "manage_school_add"*/ '../components/page/manage/manage_school_add.vue'),
 				    meta: { title: '学校-教师管理-新增老师' }
@@ -141,6 +146,12 @@ export default new Router({
 				    path: '/personal_admin',
 				    component: () => import(/* webpackChunkName: "personal_school" */ '../components/page/personal/personal_admin.vue'),
 				    meta: { title: '管理员-个人中心' }
+				},
+				{
+					path: '/examine_admin',
+				
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/examine/examine_admin.vue'),
+				    meta: { title: '管理员-试卷审核' }
 				},
 				{
 				    path: '/personal_user',

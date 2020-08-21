@@ -146,7 +146,7 @@
 				<div class="label-box">
 					<div class="label" v-for="i in data.tag_list">{{i.text}}</div>
 				</div>
-				<div class="right">
+				<!-- <div class="right">
 					<div class="ii" v-if="data.status == '1'">
 						<div style="margin-bottom: 4px;">
 							<i class="icon el-icon-check i"></i>
@@ -159,10 +159,10 @@
 						<div class="status">取消入库</div>
 					</span>
 					<div class="del">
-						<!-- <i class="el-icon-download" @click="dialogVisible = true"></i> -->
-						<!-- <i class="el-icon-delete-solid"></i> -->
+						<i class="el-icon-download" @click="dialogVisible = true"></i> 
+						<i class="el-icon-delete-solid"></i>
 					</div>
-				</div>
+				</div> -->
 			</div>
 			<!-- 分页 -->
 			<div class="page">
@@ -260,16 +260,42 @@
 			};
 		},
 		methods: {
-			getValue() {
-				console.log(this.array_nav);
-			},
-			handleSizeChange,
-			handleCurrentChange,
+			// getValue() {
+			// 	console.log(this.array_nav);
+			// },
+			// handleSizeChange,
+			// handleCurrentChange,
 			goSubmit() {
 				this.$router.push('manage_teacher_submit')
 			},
 			goImport() {
 				this.$router.push('manage_teacher_import')
+			},
+			handleSizeChange(val) {
+				this.pageSize = val
+				teacherSelectTag({
+					"id": this.obj,
+					"pageSize": this.pageSize,
+					"pageNum": this.pageNum
+				}).then(res => {
+					// console.log(res)
+					this.papers = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
+			},
+			handleCurrentChange(val) {
+				this.pageNum = val
+				teacherSelectTag({
+					"id": this.obj,
+					"pageSize": this.pageSize,
+					"pageNum": this.pageNum
+				}).then(res => {
+					// console.log(res)
+					this.papers = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
 			getQuery() {
 				this.obj = []
@@ -367,12 +393,12 @@
 				}
 			})
 			//试卷
-			teacherIndex({
+			teacherSelectTag({
+				"id": this.obj,
 				"pageSize": this.pageSize,
-				"pageNum": this.pageNum,
-				'operator_id': this.userID
+				"pageNum": this.pageNum
 			}).then(res => {
-				console.log(res.data.data.list)
+				console.log(res)
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum

@@ -7,7 +7,7 @@
 						<div class="card-left">
 							<div class="card-c">全部试卷</div>
 							<div class="card-cc">
-								<ICountUp :endVal="total" />
+								<ICountUp :endVal="alltotal" />
 							</div>
 						</div>
 						<div class="card-right"></div>
@@ -18,7 +18,7 @@
 						<div class="card-left">
 							<div class="card-c">正在确认</div>
 							<div class="card-cc">
-								<ICountUp :endVal="total" />
+								<ICountUp :endVal="loadtotal" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_2"></div>
@@ -29,7 +29,7 @@
 						<div class="card-left">
 							<div class="card-c">入库完成</div>
 							<div class="card-cc">
-								<ICountUp :endVal="total" />
+								<ICountUp :endVal="successtotal" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_3"></div>
@@ -40,7 +40,7 @@
 						<div class="card-left">
 							<div class="card-c">取消入库</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="errortotal" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_4"></div>
@@ -64,21 +64,19 @@
 			</el-row>
 		</div>
 		<div class="papers-box">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.putInto==1?(0):d.putInto==2?(0):d.putInto==0?style.pLi:(0)">
+			<div class="p-li" v-for="(d,i) in ExamList" :key="d.i" :style="d.putInto==1?(0):d.putInto==2?(0):d.putInto==0?style.pLi:(0)">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
 				<div class="p-particula">
-					<div class="top-box">
-						<div class="subject">语文</div>
-						<div class="grade">{{d.examExplain}}</div>
-					</div>
 					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.time}}</div>
-					<div class="p-status">{{d.status}}</div>
-					<i class="p-status-icon el-icon-time" v-if="d.putInto==1"></i>
-					<i class="p-status-icon el-icon-loading" v-else-if="d.putInto==3"></i>
-					<i class="p-status-icon el-icon-close" v-else-if="d.putInto==4"></i>
+					<div class="p-time">{{d.createDate}}</div>
+					<div class="p-status">{{d.putInto ==0?'取消入库':d.putInto == 1?'入库成功':d.putInto==2?'正在入库':''}}</div>
+					<!-- <div class="p-status">{{d.status}}</div> -->
+					<!-- <i class="p-status-icon el-icon-time" v-if="d.putInto==1"></i> -->
+					<i class="p-status-icon el-icon-download" v-if="d.putInto==1"></i>
+					
+					<i class="p-status-icon el-icon-loading" v-if="d.putInto==2"></i>
 				</div>
 			</div>
 
@@ -110,7 +108,8 @@
 	import ICountUp from 'vue-countup-v2'
 	import {
 		SchoolIndex,
-		selectListByOptions
+		selectListByOptions,
+		apiCommonExamSelectList
 	} from '@/api/api.js'
 
 	export default {
@@ -120,9 +119,7 @@
 				endVal: 100,
 				endVal1: 5000,
 				endVal2: 454,
-				total: 0,
-				pageSize: 4,
-				pageNum: 1,
+				
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #41e386;',
@@ -156,7 +153,7 @@
 					},
 					pStatus: 'color:#e2633b'
 				},
-				currentPage: 1,
+				
 
 				papers: [{
 						title: '2019年人教版第一单元测验',
@@ -217,6 +214,15 @@
 					},
 				],
 				dialogVisible: false,
+				total: 0,
+				pageSize: 6,
+				pageNum: 1,
+				currentPage: 1,
+				alltotal:0,
+				loadtotal:0,
+				successtotal:0,
+				errortotal:0,
+				ExamList:[]
 			}
 		},
 		components: {
@@ -224,18 +230,41 @@
 			ICountUp
 		},
 		mounted() {
-			//一开始查询的数据
-			selectListByOptions({
-				'operator_id': localStorage.getItem('userID'),
+			//查询专家数据
+			apiCommonExamSelectList({
+				'operator_id':Number(localStorage.getItem('userID')),
 				'operator_type': localStorage.getItem('loginUserType'),
-				'pageSize': this.pageSize
+				"pageSize":999,
+				"pageNum":1
 			}).then(res => {
-				console.log(res.data.data.list)
-				this.papers = res.data.data.list
-				this.pageSize = res.data.data.pageSize
-				this.pageNum = res.data.data.pageNum
-				this.total = res.data.data.total
+				let data = res.data.data.list
+				this.alltotal = res.data.data.total
+				this.loadtotal = 0
+				this.successtotal = 0
+				this.errortotal = 0
+				for(var i=0;i<data.length;i++){
+					if(data[i].putInto == 0){
+						this.errortotal++
+					}else if(data[i].putInto == 1){
+						this.successtotal++
+					}else if(data[i].putInto == 2){
+						this.loadtotal++
+					}
+				}
 			})
+
+			// 统计数据
+			apiCommonExamSelectList({
+				'operator_id':Number(localStorage.getItem('userID')),
+				'operator_type': localStorage.getItem('loginUserType'),
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res=>{
+				this.ExamList = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+			})
+
 		},
 		methods: {
 			getValue() {
@@ -245,11 +274,40 @@
 				this.$router.push('manage_user_import')
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				// console.log(`每页 ${val} 条`);
+				this.pageSize = val
+				// 统计数据
+				apiCommonExamSelectList({
+					'operator_id':Number(localStorage.getItem('userID')),
+					'operator_type': localStorage.getItem('loginUserType'),
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res=>{
+					this.ExamList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+				this.pageNum = val
+				// 统计数据
+				apiCommonExamSelectList({
+					'operator_id':Number(localStorage.getItem('userID')),
+					'operator_type': localStorage.getItem('loginUserType'),
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res=>{
+					this.ExamList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
+			// handleSizeChange(val) {
+			// 	console.log(`每页 ${val} 条`);
+			// },
+			// handleCurrentChange(val) {
+			// 	console.log(`当前页: ${val}`);
+			// },
 			submit() {
 				this.$router.push('manage_user_import')
 			}

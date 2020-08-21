@@ -42,6 +42,10 @@ export default function usertype() {
 				index: `manage_${loginUserType}_subordinate`,
 				title: '教师管理'
 				
+			},{
+				icon: 'el-icon-data-line',
+				index: `distribution_${loginUserType}`,
+				title: '分配试卷'
 			})
 			color = '#2BBB61'
 			type='学校负责人'
@@ -59,11 +63,18 @@ export default function usertype() {
 				icon: 'el-icon-position',
 				index: `distribution_${loginUserType}`,
 				title: '试卷分发'
-			}, {
-				icon: 'el-icon-s-custom',
-				index: `user_control`,
-				title: '用户管理'
-			})
+			}, 
+			{
+				icon: 'el-icon-position',
+				index: `examine_${loginUserType}`,
+				title: '审核管理'
+			},
+			// {
+			// 	icon: 'el-icon-s-custom',
+			// 	index: `user_control`,
+			// 	title: '用户管理'
+			// }
+			)
 			color = '#2BBB61'
 			type='平台管理员'
 			school='考试综合管理平台'

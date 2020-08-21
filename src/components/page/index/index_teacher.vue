@@ -56,7 +56,7 @@
 				</div>
 				<div class="p-particula">
 					<div class="top-box">
-						<div class="subject">语文</div>
+						<!-- <div class="subject">语文</div> -->
 						<div class="grade">{{d.gradeClass}}</div>
 					</div>
 					<div class="p-title">{{d.title}}</div>

@@ -648,6 +648,7 @@
 							this.personalInfo.mobile = this.editMobileForm.newMobile
 							this.dialogVisibleEditPersonMobile = false
 							
+							
 							userLoginOut({}).then(res=>{
 								console.log(res.data)
 								if(res.data.result){

@@ -1,49 +1,25 @@
 <template>
 	<div class="box">
-		<div class="top">
-			<div class="group">
-				<div class="row-group">
-					<div class="th-group">分发状态</div>
-					<div class="td-group" change>
-						<el-radio-group v-model="disStatus" @change="getQuery">
-							<el-radio-button v-for="(item,index) in DisStatusList" :label="item.id">
-								{{item.text}}
-							</el-radio-button>
-						</el-radio-group>
-					</div>
-				</div>
-			</div>
-			<div class="search">
-				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go" >搜索</el-button>
-			</div>
-		</div>
 		<!-- 管理 -->
 		<div class="particular">
 			<div class="li" v-for="(data, i) in papers" :key="data.i">
-				<img src="../../../assets/img/img.jpg" class="user-img" />
+				<!-- <img src="../../../assets/img/img.jpg" class="user-img" /> -->
 				<div class="teacher-name">{{ data.teacher }}</div>
 				<div class="title-box">
 					<div class="title">{{ data.title }}</div>
-					<div class="synopsis">包含小学一年级语文2019年人教版单元作业65656566555555</div>
+					<div class="synopsis">{{data.examExplain}}</div>
 				</div>
 				<div class="time">{{ data.createDate }}</div>
 				<div class="label-box">
 					<div class="label" v-for="i in data.tag_list">{{i.text}}</div>
 				</div>
 				<div class="right">
-					<div class="ii" v-if="data.putInto == '2'">
-						<div class="status_box">
-							<i class="icon el-icon-time"></i>
-							<span class="text">正在分发</span>
-							<el-button type="text" class="download">立即分发</el-button></span>
-						</div>
-					</div>
-					<span v-else  style="display: contents;">
-						<el-button type="text" class="download hover"  @click="distribution(data.id)" >立即分发</el-button>
+			
+					<span   style="display: contents;">
+						<el-button type="text" class="download hover"  @click="distribution(data.pid)" >立即分发</el-button>
 					</span>
 				</div>
-			</div>
+				</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
@@ -55,67 +31,58 @@
 		<!-- Table -->
 		<el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
-				<div class="t-title">请选择班级</div>
-				<div class="t-content">
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">分发状态</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav2" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">分发状态</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav3" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
-				<div class="student-box">
-					<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-						<el-table-column type="selection" width="55"></el-table-column>
-						<el-table-column label="学号" width="120">
-							<template slot-scope="scope">
-								{{ scope.row.code }}
-							</template>
-						</el-table-column>
-						<el-table-column prop="name" label="名字" width="120">
-							<template slot-scope="scope">
-								<div style="display: flex;align-items: center;">
-									<img src="../../../assets/img/img.jpg" class="user-img" />
-									<div class="student-name">{{ scope.row.name }}</div>
-								</div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="classes.grade" label="年级" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="classes.name" label="班级" show-overflow-tooltip></el-table-column>
-					</el-table>
-					<!-- 分页 -->
-					<div class="page">
-						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="studentPageSize" :total="studentTotal"></el-pagination>
-					</div>
-					<div class="block-time">
-						<div>
-							<span style="margin-right:10px ;">选择日期</span>
-							<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-							</el-date-picker>
-						</div>
-						<div class="block-a">
-							<el-button @click="dialogTableVisible = false" class="out">取消选择</el-button>
-							<el-button @click="submit()" class="affirm">确认</el-button>
-						</div>
-					</div>
+				<!-- <el-select v-model="typeClassStatus" placeholder="请选择班级" style="margin:20px;">
+					<el-option
+					v-for="item in options"
+					:label="item.label"
+					:value="item.value">
+					</el-option>
+				</el-select> -->
+				<el-table
+                    :data="studentList"
+                    @selection-change="handleSelectionChange">
+                    <el-table-column
+                        type="selection"
+                        width="55">
+                    </el-table-column>
 
-				</div>
+                    <el-table-column
+                        label="学号"
+                       
+                        >
+						<template slot-scope="scope">
+							{{scope.row.student.code}}
+						</template>
+                    </el-table-column>
+
+                    <el-table-column
+                        label="学生名称"
+                       
+                        >
+						<template slot-scope="scope">
+							{{scope.row.student.name}}
+						</template>
+                    </el-table-column>
+
+                    <el-table-column
+                        label="性别"
+                        >
+						<template slot-scope="scope">
+							{{scope.row.student.sex}}
+						</template>
+                    </el-table-column>
+					<el-table-column label="状态" align="center">
+						<template slot-scope="scope">
+							<el-tag>{{scope.row.paper_allot == true?'已分发':'未分发'}}</el-tag>
+						</template>
+					</el-table-column>
+
+					
+                </el-table>
+					<div style="margin:10px">
+                        <el-button type="primary" @click="onSubmit">立即分发</el-button>
+                        <el-button @click="dialogTableVisible = false">取消</el-button>
+                    </div>
 			</div>
 		</el-dialog>
 	</div>
@@ -129,12 +96,15 @@
 		paperWithTag,
 		teacherIndex,
 		teacherSelectTag,
-		teacherDistributeselect
+		teacherDistributeselect,
+		selectStudentWithPaperAllotByTeacherIdAndPaperId,
+		studentStudentExamAdd
 	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				color: '',
+				paperId:'',
 				checkAll: false,
 				isIndeterminate: true,
 				array_nav: [], //存储el-chckbox数组
@@ -142,8 +112,10 @@
 				array_nav3: [],
 				array_nav4: [],
 				array_nav5: [],
+				studentList:[],
+				options:[],
 				pageNum:1,
-				pageSize:3,
+				pageSize:8,
 				search: '',
 				value1: '',
 				disStatus:[],
@@ -151,8 +123,10 @@
 				total:0,
 				studentPageNum:0,
 				studentPageSize:0,
+				typeClassStatus:'',
 				studentTotal:0,
 				userID:localStorage.getItem('userID'),
+				tableData:[],
 				multipleSelection: [],
 				currentPage: 1,
 				dialogVisible: false,
@@ -179,43 +153,17 @@
 						o: '2'
 					}
 				],
-				tableData: [{
-					date: '1',
-					name: '王小虎',
-					grade: '一年级',
-					class: '1'
-				}, {
-					date: '2',
-					name: '王小虎',
-					grade: '二年级',
-					class: '1'
-				}, {
-					date: '3',
-					name: '王小虎',
-					grade: '三年级',
-					class: '1'
-				}, {
-					date: '4',
-					name: '王小虎',
-					grade: '四年级',
-					class: '1'
-				}],
 				dialogTableVisible: false,
 				dialogFormVisible: false,
 			};
 		},
 		methods: {
 			//获取选择标签的内容
-			getValue() {
-				this.array_nav4 = this.array_nav2.concat(this.array_nav3)
-				console.log(this.array_nav4);
-			},
-			searchO() {
-
-			},
 			handleSizeChange(val) {
+				this.pageSize = val;
 				teacherIndex({
 					'operator_id':this.userID,
+					"operator_type":localStorage.getItem('loginUserType'),
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {
@@ -229,10 +177,11 @@
 				this.pageNum = val;
 				teacherIndex({
 					'operator_id':this.userID,
+					"operator_type":localStorage.getItem('loginUserType'),
 					"pageNum": this.pageNum,
 					"pageSize": this.pageSize
 				}).then(res => {
-					console.log(res)
+					// console.log(res)
 					this.papers = res.data.data.list
 					this.total = res.data.data.total
 					this.currentPage = res.data.data.pageNum
@@ -248,8 +197,9 @@
 				}
 			},
 			handleSelectionChange(val) {
-				this.multipleSelection = val;
-				console.log(val)
+				// this.multipleSelection = val;
+				// console.log(val)
+				this.selectStudent = val
 			},
 			toggleSelection(rows) {
 				if (rows) {
@@ -264,128 +214,61 @@
 				//关闭窗口
 				this.dialogTableVisible = false;
 			},
-			getQuery() {
-				this.obj = []
-				if (this.disStatus != 0 && this.disStatus) {
-					this.obj.push(this.disStatus)
-				}
-				if (this.elementTest != 0 && this.elementTest) {
-					this.obj.push(this.elementTest)
-				}
-				if (this.purpose != 0 && this.purpose) {
-					this.obj.push(this.purpose)
-				}
-				if (this.subject != 0 && this.subject) {
-					this.obj.push(this.subject)
-				}
-				if (this.grade != 0 && this.grade) {
-					this.obj.push(this.grade)
-				}
-				if (this.version != 0 && this.version) {
-					this.obj.push(this.version)
-				}
-				if (this.years != 0 && this.years) {
-					this.obj.push(this.years)
-				}
-				teacherSelectTag({
-					"id": this.obj,
-					"pageSize": this.pageSize,
-					"pageNum": this.pageNum
-				}).then(res => {
-					console.log(res)
-					this.papers = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
-				})
-			},
-			TagTypePromise(tagType, index) {
-				return new Promise((resolve, reject) => {
-					ApiTagSelectList({
-						"pageSize": 999,
-						"pageNum": 1,
-						"parentId": tagType.id
-					}).then(res => {
-						let all = [{
-							"id": 0,
-							"sn": 0,
-							"text": '全部'
-						}]
-						let children = all.concat(res.data.data.list)
-						switch (tagType.text) {
-							case '分发状态':
-								this.DisStatusList = children
-								break;
-							case '年份':
-								this.YearsList = children
-								break;
-							case '教材版本':
-								this.VersionList = children
-								break;
-							case '学习科目':
-								this.SubjectList = children
-								break;
-							case '学习年级':
-								this.GradeList = children
-								break;
-							case '单元测试':
-								this.ElementTextList = children
-								break;
-							case '试卷用途':
-								this.PurposeList = children
-								break;
-						}
-						resolve(res)
-					})
-				})
-			},
+	
 			async getTypeList(tagType, index) {
 				await this.TagTypePromise(tagType, index)
 				// return n 
 			},
-			  setCurrent(row) {
+			setCurrent(row) {
 			        this.$refs.singleTable.setCurrentRow(row);
 			      },
 			// 查询分发试卷id
 			distribution(id){
+				console.log(id)
 				this.dialogTableVisible = true
-				teacherDistributeselect({'examId':id}).then(res=>{
-					console.log(res.data)
-					this.tableData=res.data.data.list
-					this.studentPageNum=res.data.data.pageNum
-					this.studentPageSize=res.data.data.pageSize
-					this.studentTotal=res.data.data.total
-					
+				let classId = ''
+				this.paperId = id
+				let teacherId = this.userID
+				selectStudentWithPaperAllotByTeacherIdAndPaperId(classId,this.paperId,teacherId).then(res=>{
+					this.studentList = res.data.data
+					console.log(res)
 				})
-				
+			},
+			onSubmit(){
+				for(var i=0;i<this.selectStudent.length;i++){
+					studentStudentExamAdd({
+						"studentId": this.selectStudent[i].student.id,
+						"examinationId":this.paperId
+					}).then(res=>{
+						if(res.data.result){
+							this.$message.success('分发成功')
+						}else{
+							this.$message.error('分发失败')
+						}
+					})
+				}
+
+				setTimeout(() => {
+					this.dialogTableVisible = false
+				}, 1000);
 			}
+
 		},
 		mounted() {
 			this.color = user().color;
-			//标签查询
-			this.TagTypeList = []
-			ApiTagSelectList({
-				"parentId": 0,
-				"pageSize": 999,
-				"pageNum": 1
-			}).then(res => {
-			
-				this.TagType = res.data.data.list
-				var arr = []
-				for (var i = 0; i < this.TagType.length; i++) {
-					this.getTypeList(this.TagType[i], i)
-				}
-			})
 			teacherIndex({
 				"pageSize":this.pageSize,
 				"pageNum":this.pageNum,
-				'operator_id':this.userID
+				'operator_id':this.userID,
+				"operator_type":localStorage.getItem('loginUserType')
 			}).then(res=>{
-				console.log(res)
+				// console.log(res)
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.pageSize=res.data.data.pageSize
 				this.currentPage = res.data.data.pageNum
 			})
+			// this
 		}
 	};
 </script>

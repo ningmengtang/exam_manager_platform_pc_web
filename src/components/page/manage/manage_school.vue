@@ -221,34 +221,37 @@ export default {
 		getValue() {
 			console.log(this.array_nav);
 		},
-		handleSizeChange(val) {
-			console.log(`每页 ${val} 条`);
-		},
-		handleCurrentChange(val) {
-			console.log(`当前页: ${val}`);
-		},
+		// handleSizeChange(val) {
+		// 	console.log(`每页 ${val} 条`);
+		// },
+		// handleCurrentChange(val) {
+		// 	console.log(`当前页: ${val}`);
+		// },
 		goAdd(){
 			this.$router.push('order_school_add')
 		},
 		handleCurrentChange(val) {
-			this.pageNum = val;
-			SchoolIndex({
+			this.pageSize = val
+			selectSchoolTag({
 				"pageSize":this.pageSize,
 				"pageNum":this.pageNum
 			}).then(res=>{
 				console.log(res)
 				this.papers=res.data.data.list
 				this.total=res.data.data.total
+				this.currentPage = res.data.data.pageNum
 			})
 		},
 		handleSizeChange(val) {
-			SchoolIndex({
+			this.pageNum = val
+			selectSchoolTag({
 				"pageSize":this.pageSize,
 				"pageNum":this.pageNum
 			}).then(res=>{
 				console.log(res)
 				this.papers=res.data.data.list
 				this.total=res.data.data.total
+				this.currentPage = res.data.data.pageNum
 			})
 		},
 		getQuery() {
@@ -279,9 +282,10 @@ export default {
 				"pageSize":this.pageSize,
 				"pageNum":this.pageNum
 			}).then(res=>{
-				console.log(res)
+				// console.log(res)
 				this.papers=res.data.data.list
 				this.total=res.data.data.total
+				this.currentPage = res.data.data.pageNum
 			})
 		},
 		TagTypePromise(tagType, index) {
@@ -339,6 +343,7 @@ export default {
 					console.log(res)
 					this.papers=res.data.data.list
 					this.total=res.data.data.total
+					this.currentPage = res.data.data.pageNum
 				})
 			}else{
 				// schoolStudentAllow(id)
@@ -349,6 +354,7 @@ export default {
 				console.log(res)
 				this.papers=res.data.data.list
 				this.total=res.data.data.total
+				this.currentPage = res.data.data.pageNum
 			})
 			}
 			
@@ -370,13 +376,14 @@ export default {
 			}
 		})
 		//试卷
-		SchoolIndex({
+		selectSchoolTag({
 			"pageSize":this.pageSize,
-			"pageNum":this.pageNum
+			"pageNum":this.pageNum,
 		}).then(res=>{
-			console.log(res.data.data)
-			this.papers=res.data.data
+			console.log(res.data)
+			this.papers=res.data.data.list
 			this.total=res.data.data.total
+			this.currentPage = res.data.data.pageNum
 		})
 	}
 };

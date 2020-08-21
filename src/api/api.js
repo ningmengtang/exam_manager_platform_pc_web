@@ -36,6 +36,10 @@ export function StudentAccountInfo(data) {
     return result;
 }
 
+export function teacherSelectTag(data) {
+    const result = post('/api/paperWithTag/selectTeacherTag', data)
+    return result;
+}
 
 // 标签查询
 export function ApiTagSelectList(data) {
@@ -127,6 +131,14 @@ export function studentStudentExamAdd(data) {
     const result = post('/api/student/studentExam/add', data)
     return result;
 }
+
+
+// 试卷列表修改
+export function apiCommonExamSelectUpdate(data){
+	const result =post('/api/common/exam/update' ,data)
+	return result;
+}
+
 //新增试卷
 export function apiCommonExamAdd(data) {
     const result = post('/api/common/exam/insert', data)
@@ -414,4 +426,42 @@ export function apiSchoolAccountSelectByOptions(data){
 export function apiSchoolAccountUpdateMobile(data) {
     const result = post('/api/school/account/updateMobile', data)
     return result;
+}
+
+
+// 试卷查询列表
+export function apiCommonExamSelectList(data){
+	const result =post('/api/common/exam/selectListByOptions' ,data)
+	return result;
+}
+
+
+// 通过标签查询所有试卷
+export function ExamSelectPapersWithTagsForAllPapers(data){
+	const result =post('/api/common/exam/selectPapersWithTagsForAllPapers' ,data)
+	return result;
+}
+
+
+// 多条件查询学生信息
+export function selectBySchoolIdAndPaperIdAndClassId(pageNum,pageSize,id,data){
+	const result =get('/api/student/home/selectBySchoolIdAndPaperIdAndClassId?pageNum='+pageNum+'&pageSize='+pageSize+'&paper_id='+id+'&d=' + new Date() * 1,data)
+	return result;
+}
+
+// 学校列表
+export function ApiSchoolAccountSelectByOptions(data){
+	const result =post('/api/school/account/selectByOptions' ,data)
+	return result;
+}
+
+// 班级列表
+export function ApiClassSelectListByOptions(data){
+	const result =post('/api/classes/selectListByOptions' ,data)
+	return result;
+}
+// 通过教师id与试卷ID查询固定或不固定班级的学生信息
+export function selectStudentWithPaperAllotByTeacherIdAndPaperId(classId,paperId,teacherId,data){
+	const result =get('/api/teacher/manager/selectStudentWithPaperAllotByTeacherIdAndPaperId?class_id='+classId+'&paper_id='+paperId+'&teacher_id='+teacherId+'&d='+new Date() * 1 ,data)
+	return result;
 }

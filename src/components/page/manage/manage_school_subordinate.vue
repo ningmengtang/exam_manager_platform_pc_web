@@ -1,29 +1,29 @@
 <template>
 	<div class="box">
-		<div class="top">
+		<!-- <div class="top">
 			<div class="group">
 				<div class="row-group">
-					<!-- <div class="th-group">用户状态</div>
+					<div class="th-group">用户状态</div>
 					<div class="td-group" change>
 						<el-radio-group v-model="disStatus" @change="getValue1">
 							<el-radio-button v-for="(item,index) in DisStatusList" :label="item.id">
 								{{item}}
 							</el-radio-button>
 						</el-radio-group>
-					</div> -->
+					</div>
 				</div>
 			</div>
 			<div class="search">
-				<!-- <el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button> -->
+				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span
 					 class="el-icon-plus"></span> 新增教师</el-button>
 			</div>
-		</div>
+		</div> -->
 		<!-- 管理 -->
 		<div class="particular">
 			<div class="li" v-for="(data, i) in li" :key="data.i">
-				<img src="../../../assets/img/img.jpg" class="user-img" />
+				<!-- <img src="../../../assets/img/img.jpg" class="user-img" /> -->
 				<div class="teacher-name">{{ data.name }}</div>
 				<div class="title-box">
 					<!-- <div class="title">{{ data.mobile }}</div> -->
