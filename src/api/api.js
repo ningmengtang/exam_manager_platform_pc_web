@@ -221,16 +221,199 @@ export function ExamSelectPapersWithTagsForAllPapers(data){
 
 
 
+//根据条件查询试卷列表
+export function apiCommonExamSelectListByOptions(data){
+	const result =post('/api/common/exam/selectListByOptions/' ,data)
+	return result;
+}
+
+/**
+ * 通过id查询教师信息
+ * @param {*} id 
+ */
+export function apiTeacherAccountSelectByPrimaryKey(id){
+	const result =get('/api/teacher/account/selectByPrimaryKey/'+id)
+	return result;
+}
+
+/**
+ * 更新教师信息
+ */
+export function apiTeacherAccountUpdate(data){
+	const result =post('/api/teacher/account/update',data)
+	return result;
+}
+
+/**
+ * 获取手机验证码
+ */
+export function apiSendSmsCode(phone){
+	const result =get('/api/send/smsCode?sendNum='+phone)
+	return result;
+}
 
 
+ /**
+  * 修改教师密码
+  */
+ export function apiTeacherAccountUpdatePwd(data){
+	const result =post('/api/teacher/account/updatePwd',data)
+	return result;
+}
+
+ /**
+  * 修改教师手机
+  */
+ export function apiTeacherAccountUpdateMobile(data){
+	const result =post('/api/teacher/account/updateMobile',data)
+	return result;
+}
+
+/**
+ * 更新管理员信息
+ */
+export function apiAdminAccountUpdate(data){
+	const result =post('/api/admin/account/update',data)
+	return result;
+}
+
+/**
+ * 通过id查询管理员信息
+ * @param {*} id 
+ */
+export function apiAdminAccountSelect(id){
+	const result =post('/api/admin/account/select/'+id)
+	return result;
+}
+
+/**
+  * 修改管理员密码
+  */
+ export function apiAdminAccountUpdatePwd(data){
+	const result =post('/api/admin/account/updatePwd',data)
+	return result;
+}
+
+ /**
+  * 修改管理员手机
+  */
+ export function apiAdminAccountUpdateMobile(data){
+	const result =post('/api/admin/account/updateMobile',data)
+	return result;
+}
+
+//-------------------------------------------------------------
+
+/**
+ * 更新用户信息
+ */
+export function apiUserAccountUpdate(data){
+	const result =post('/api/user/account/update',data)
+	return result;
+}
+
+/**
+ * 通过id查询用户信息
+ * @param {*} id 
+ */
+export function apiUserAccountSelectById(id){
+	const result =post('/api/user/account/selectById/'+id)
+	return result;
+}
+
+/**
+  * 修改用户密码
+  */
+ export function apiUserAccountUpdatePwd(data){
+	const result =post('/api/user/account/updatePwd',data)
+	return result;
+}
+
+ /**
+  * 修改用户手机
+  */
+ export function apiUserAccountUpdateMobile(data){
+	const result =post('/api/user/account/updateMobile',data)
+	return result;
+}
+
+//--------------------------------------------------------------
+
+/**
+ * 更新学生信息
+ */
+export function apiStudentAccountUpdate(data){
+	const result =post('/api/student/account/update',data)
+	return result;
+}
+
+/**
+ * 通过id查询学生信息
+ * @param {*} id 
+ */
+export function apiStudentAccountSelectById(id){
+	const result =get('/api/student/account/selectById/'+id)
+	return result;
+}
+
+/**
+  * 修改学生密码
+  */
+ export function apiStudentAccountUpdatePwd(data){
+	const result =post('/api/student/account/updatePwd',data)
+	return result;
+}
+
+ /**
+  * 修改学生手机
+  */
+ export function apiStudentAccountUpdateMobile(data){
+	const result =post('/api/student/account/updateMobile',data)
+	return result;
+}
+
+/**
+ * 绑定学生手机
+ * @param {*} data 
+ */
+export function apiStudentAccountBindMobile(data){
+	const result =post('/api/student/account/bindMobile',data)
+	return result;
+}
 
 
+//----------------------------------------------------------------
 
+/**
+ * 更新学校信息
+ */
+export function apiSchoolAccountUpdate(data){
+	const result =post('/api/school/account/update',data)
+	return result;
+}
 
+/**
+ * 通过id查询学校信息
+ * @param {*} id 
+ */
+export function apiSchoolAccountSelectByPrimaryKey(id){
+	const result =get('/api/school/account/selectByPrimaryKey/'+id)
+	return result;
+}
 
+/**
+  * 修改学校密码
+  */
+ export function apiSchoolAccountUpdatePwd(data){
+	const result =post('/api/school/account/updatePwd',data)
+	return result;
+}
 
-
-
-
-
+ /**
+  * 修改学校手机
+  */
+ export function apiSchoolAccountUpdateMobile(data){
+	const result =post('/api/school/account/updateMobile',data)
+	return result;
+}
 
