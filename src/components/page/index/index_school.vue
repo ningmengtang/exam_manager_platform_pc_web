@@ -5,9 +5,9 @@
 				<el-col :span="5">
 					<div class="grid-content bg-purple">
 						<div class="card-left">
-							<div class="card-c">全部试卷</div>
+							<div class="card-c">全部订单</div>
 							<div class="card-cc">
-								<ICountUp :endVal="total" />
+								<ICountUp :endVal="AlltotalOrder" />
 							</div>
 						</div>
 						<div class="card-right"></div>
@@ -18,7 +18,7 @@
 						<div class="card-left">
 							<div class="card-c">正在确认</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="LoadtotalOrder" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_2"></div>
@@ -27,9 +27,9 @@
 				<el-col :span="5">
 					<div class="grid-content bg-purple" :style="style.card_3">
 						<div class="card-left">
-							<div class="card-c">预定完成</div>
+							<div class="card-c">订单完成</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="SuccesstotalOrder" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_3"></div>
@@ -38,9 +38,9 @@
 				<el-col :span="5">
 					<div class="grid-content bg-purple" :style="style.card_4">
 						<div class="card-left">
-							<div class="card-c">预定取消</div>
+							<div class="card-c">订单取消</div>
 							<div class="card-cc">
-								<ICountUp :endVal="endVal2" />
+								<ICountUp :endVal="ErrortotalOredrL" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_4"></div>
@@ -49,30 +49,27 @@
 			</el-row>
 		</div>
 		<div class="papers-box">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i"  :style="d.o==1?(0):d.o==2?style.pLi3:d.o==3?style.pLi2:style.pLi4">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.o==1?(0):d.o==2?style.pLi3:d.o==3?style.pLi2:style.pLi4">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
 				<div class="p-particula">
 					<div class="top-box">
-						<div class="subject">语文</div>
-						<div class="grade">{{d.gradeClass}}</div>
+						<div class="subject" style="width: auto;">收货人:{{d.contacts}}</div>
 					</div>
-					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.modifyDate}}</div>
-					<div class="p-status" >{{d.status}}</div>
-					<i class="p-status-icon el-icon-time" v-if="d.status==0"></i>
-					<i class="p-status-icon el-icon-download" v-else-if="d.status==2"></i>
-					<i class="p-status-icon el-icon-loading" v-else-if="d.status==3"></i>
-					<i class="p-status-icon el-icon-close" v-else-if="d.status==4"></i>
+					<div class="p-title">地址：{{d.contact_address}}</div>
+					<div class="p-time">手机：{{d.contact_phone}}</div>
+					<div class="p-particular">{{d.create_date}}</div>
+					<div class="p-status">{{d.status == 2?'取消订单':d.status == 1?'确认订单':d.status=='3'?'已经全部分发':'待审核订单'}}</div>
+					<i class="p-status-icon el-icon-download"></i>
 				</div>
 			</div>
-			
+
 		</div>
 		<!-- 分页 -->
 		<div class="page">
 			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
+			 :current-page.sync="currentPage" :page-size="pageSize" :total="AlltotalOrder">
 			</el-pagination>
 		</div>
 		<!-- <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button> -->
@@ -94,18 +91,19 @@
 	import Schart from 'vue-schart'
 	import bus from '../../common/bus'
 	import ICountUp from 'vue-countup-v2'
-	import {SchoolIndex} from  '@/api/api.js'
+	import {
+		SchoolIndex,
+		apiAdminOrderList
+	} from '@/api/api.js'
 
 	export default {
 		name: 'index_student',
 		data() {
 			return {
 				endVal: 100,
-				endVal1: 5000,
-				endVal2: 454,
-				pageNum:1,
-				pageSize:3,
-				total:0,
+				pageNum: 1,
+				pageSize: 9,
+				total: 0,
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #41e386;',
@@ -128,75 +126,51 @@
 					pLi2: {
 						backgroundImage: 'url(' + require('../../../assets/img/index-loading.png') + ')'
 					},
-					pLi3:{
+					pLi3: {
 						backgroundImage: 'url(' + require('../../../assets/img/already_dowload.png') + ')'
 					},
-					pLi4:{
+					pLi4: {
 						backgroundImage: 'url(' + require('../../../assets/img/succes-dowload.png') + ')'
 					},
 					pStatus: 'color:#e2633b'
 				},
 				currentPage: 1,
-
-				papers: [{
-						title: '2019年人教版第一单元测验',
-						synopsis: '565656565',
-						time: '2020年10月11日',
-						status: '未到时间下载',
-						o: 1
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '已下载10次',
-						o: 2
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '正在确认',
-						o: 3
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '下载已结束',
-						o: 4
-					},
-				],
-				download: [{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '10',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '10',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '1',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '1',
-						o: false
-					},
-				],
+				papers: '',
+				// papers: [{
+				// 		title: '2019年人教版第一单元测验',
+				// 		synopsis: '565656565',
+				// 		time: '2020年10月11日',
+				// 		status: '未到时间下载',
+				// 		o: 1
+				// 	},
+				// 	{
+				// 		title: '2019年人教版第一单元测验',
+				// 		synopsis: '包含小学一年级语文2019年人教版单元测试',
+				// 		time: '2020年10月11日',
+				// 		status: '已下载10次',
+				// 		o: 2
+				// 	},
+				// 	{
+				// 		title: '2019年人教版第一单元测验',
+				// 		synopsis: '包含小学一年级语文2019年人教版单元测试',
+				// 		time: '2020年10月11日',
+				// 		status: '正在确认',
+				// 		o: 3
+				// 	},
+				// 	{
+				// 		title: '2019年人教版第一单元测验',
+				// 		synopsis: '包含小学一年级语文2019年人教版单元测试',
+				// 		time: '2020年10月11日',
+				// 		status: '下载已结束',
+				// 		o: 4
+				// 	},
+				// ],
 				dialogVisible: false,
+				AlltotalOrder:0,
+				LoadtotalOrder:0,
+				ErrortotalOredrL:0,
+				SuccesstotalOrder:0,
+				
 			}
 		},
 		components: {
@@ -204,14 +178,7 @@
 			ICountUp
 		},
 		mounted() {
-			SchoolIndex({
-				"pageSize":this.pageSize,
-				"pageNum":this.pageNum
-			}).then(res=>{
-				console.log(res)
-				this.papers=res.data.data.list
-				this.total=res.data.data.total
-			})
+			this.getStatisticsOrder()
 		},
 		methods: {
 			getValue() {
@@ -221,12 +188,60 @@
 				this.$router.push('manage_teacher_import')
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				this.pageSize = val
+				apiAdminOrderList({
+					"pageNum": this.pageNum,
+					"pageSize": this.pageSize,
+					"operator_id":localStorage.getItem('userID'),
+					"operator_type":localStorage.getItem('loginUserType'),
+				}).then(res => {
+					this.papers = res.data.data.list
+					this.AlltotalOrder= res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+				this.pageNum = val
+				apiAdminOrderList({
+					"pageNum": this.pageNum,
+					"pageSize": this.pageSize,
+					"operator_id":localStorage.getItem('userID'),
+					"operator_type":localStorage.getItem('loginUserType'),
+				}).then(res => {
+					this.papers = res.data.data.list
+					this.AlltotalOrder = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
 			},
-			
+			// 统计数据（订购）
+			getStatisticsOrder() {
+				this.SuccesstotalOrder = 0
+				this.LoadtotalOrder = 0
+				this.ErrortotalOredr = 0
+				this.AlltotalOrder = 0
+				// 统计数据（订购）
+				apiAdminOrderList({
+					"operator_id":localStorage.getItem('userID'),
+					"operator_type":localStorage.getItem('loginUserType'),
+					"pageSize": this.pageSize,
+					"pageNum": this.pageNum
+				}).then(res => {
+					let list = res.data.data.list
+					this.papers=list
+					console.log(list)
+					this.AlltotalOrder = Number(res.data.data.total)
+					for (var k = 0; k < list.length; k++) {
+						if (list[k].status == 0) {
+							this.LoadtotalOrder++
+						} else if (list[k].status == 1 || list[k].status == 3) {
+							this.SuccesstotalOrder++
+						} else if (list[k].status == 2) {
+							this.ErrortotalOredr++
+						}
+
+					}
+				})
+			},
 
 		}
 	};

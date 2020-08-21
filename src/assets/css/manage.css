@@ -21,7 +21,7 @@
 
 
 .particular{margin-top: 10px;}
-.particular .li{display: flex;align-items: center;padding: 16px;background-color: #FFFFFF;border-radius: 8px;}
+.particular .li{display: flex;justify-content: flex-end;align-items: center;padding: 16px;background-color: #FFFFFF;border-radius: 8px;}
 .particular .li+.li{margin-top: 10px;}
 .user-img{width: 50px;height: 50px;border-radius: 50%;}
 .teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #19aefb;margin: 0 0 0 20px; }

@@ -9,7 +9,7 @@
 								<div class="card-box">
 									<div class="card-t">全部试卷</div>
 									<div class="num">
-										<ICountUp :endVal="Alltotal" />
+										<ICountUp :endVal="endVal2" />
 									</div>
 								</div>
 							</div>
@@ -17,7 +17,7 @@
 								<div class="card-box">
 									<div class="card-t">入库完成</div>
 									<div class="num">
-										<ICountUp :endVal="Successtotal" />
+										<ICountUp :endVal="endVal2" />
 									</div>
 								</div>
 							</div>
@@ -25,7 +25,7 @@
 								<div class="card-box">
 									<div class="card-t">正在入库</div>
 									<div class="num">
-										<ICountUp :endVal="Loadtotal" />
+										<ICountUp :endVal="endVal2" />
 									</div>
 								</div>
 							</div>
@@ -33,7 +33,7 @@
 								<div class="card-box">
 									<div class="card-t">入库失败</div>
 									<div class="num">
-										<ICountUp :endVal="Errortotal" />
+										<ICountUp :endVal="endVal2" />
 									</div>
 								</div>
 							</div>
@@ -47,7 +47,7 @@
 								<div class="card-box">
 									<div class="card-t">全部订购</div>
 									<div class="num">
-										<ICountUp :endVal="AlltotalOrder" />
+										<ICountUp :endVal="endVal2" />
 									</div>
 								</div>
 							</div>
@@ -55,7 +55,7 @@
 								<div class="card-box">
 									<div class="card-t">订购完成</div>
 									<div class="num">
-										<ICountUp :endVal="SuccesstotalOrder" />
+										<ICountUp :endVal="endVal2" />
 									</div>
 								</div>
 							</div>
@@ -63,7 +63,7 @@
 								<div class="card-box">
 									<div class="card-t">订购申请</div>
 									<div class="num">
-										<ICountUp :endVal="LoadtotalOrder" />
+										<ICountUp :endVal="endVal2" />
 									</div>
 								</div>
 							</div>
@@ -71,7 +71,7 @@
 								<div class="card-box">
 									<div class="card-t">订购失败</div>
 									<div class="num">
-										<ICountUp :endVal="ErrortotalOredr" />
+										<ICountUp :endVal="endVal2" />
 									</div>
 								</div>
 							</div>
@@ -81,31 +81,36 @@
 			</el-row>
 		</div>
 		<div class="papers-box">
-			<div class="p-li" v-for="(d,i) in ExamList" :key="d.i" :style="d.putInto==2?(style.pLi2):style.pLi1" >
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.o==1?(style.pLi2):style.pLi1" >
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
 				<div class="p-particula">
-					<div class="p-title"  >{{d.title}}</div>
-					<div class="p-time" >{{d.createDate}}</div>
-					<div class="p-status">{{d.putInto ==0?'取消入库':d.putInto == 1?'入库成功':d.putInto==2?'正在入库':''}}</div>
-					<!-- <i class="p-status-icon el-icon-time" v-if="d.o==1"></i>
+					<div class="top-box">
+						<div class="subject">语文</div>
+						<div class="grade">一年级</div>
+					</div>
+					<div class="p-title" v-if="d.o==1" >{{d.title}}</div>
+					<div class="p-time" v-if="d.o==1">{{d.time}}</div>
+					<div class="p-indent" v-if="d.o==2">{{d.time}}</div>
+					<div class="p-indent" v-if="d.o==2">{{d.time}}</div>
+					<div class="p-indent" v-if="d.o==2">{{d.time}}</div>
+					<div class="p-status  ts" v-if="d.o==1">{{d.status}}</div>
+					<div class="p-status" v-else>{{d.status}}</div>
+					<i class="p-status-icon el-icon-time" v-if="d.o==1"></i>
 					<i class="p-status-icon el-icon-shopping-cart-2" v-else-if="d.o==2"></i>
 					<i class="p-status-icon el-icon-loading" v-else-if="d.o==3"></i>
-					<i class="p-status-icon el-icon-close" v-else-if="d.o==4"></i> -->
-					<i class="p-status-icon el-icon-download" v-if="d.putInto==1"></i>
-					
-					<i class="p-status-icon el-icon-loading" v-if="d.putInto==2"></i>
+					<i class="p-status-icon el-icon-close" v-else-if="d.o==4"></i>
 				</div>
 			</div>
 		</div>
 		<!-- 分页 -->
 		<div class="page">
 			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
+			 :current-page.sync="currentPage" :page-size="100" :total="1000">
 			</el-pagination>
 		</div>
-		<!-- <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button> -->
+		<el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
 
 		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
 			<div class="ts-box">
@@ -124,15 +129,14 @@
 	import Schart from 'vue-schart'
 	import bus from '../../common/bus'
 	import ICountUp from 'vue-countup-v2'
-	import {
-		apiCommonExamSelectList,
-		apiCommonExamSelectUpdate,
-		apiAdminOrderList
-	} from '@/api/api.js'
+
 	export default {
 		name: 'index_student',
 		data() {
 			return {
+				endVal: 100,
+				endVal1: 5000,
+				endVal2: 454,
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #41e386;',
@@ -168,114 +172,85 @@
 					},
 					pStatus: 'color:#e2633b'
 				},
-				
+				currentPage: 1,
+
+				papers: [{
+						title: '2019年人教版第一单元测验',
+						synopsis: '565656565',
+						time: '2020年10月11日',
+						status: '入库申请，请及时处理',
+						o: 1
+					},
+					{
+						title: '2019年人教版第一单元测验',
+						synopsis: '包含小学一年级语文2019年人教版单元测试',
+						time: '2020年10月11日',
+						status: '已下载10次',
+						o: 2
+					},
+					{
+						title: '2019年人教版第一单元测验',
+						synopsis: '包含小学一年级语文2019年人教版单元测试',
+						time: '2020年10月11日',
+						status: '正在确认',
+						o: 3
+					},
+					{
+						title: '2019年人教版第一单元测验',
+						synopsis: '包含小学一年级语文2019年人教版单元测试',
+						time: '2020年10月11日',
+						status: '下载已结束',
+						o: 4
+					},
+				],
+				download: [{
+						title: '2019年人教版第一单元测验',
+						synopsis: '包含小学一年级语文2019年人教版单元测试',
+						time: '2020年10月11日',
+						status: '10',
+						o: true
+					},
+					{
+						title: '2019年人教版第一单元测验',
+						synopsis: '包含小学一年级语文2019年人教版单元测试',
+						time: '2020年10月11日',
+						status: '10',
+						o: true
+					},
+					{
+						title: '2019年人教版第一单元测验',
+						synopsis: '包含小学一年级语文2019年人教版单元测试',
+						time: '2020年10月11日',
+						status: '1',
+						o: true
+					},
+					{
+						title: '2019年人教版第一单元测验',
+						synopsis: '包含小学一年级语文2019年人教版单元测试',
+						time: '2020年10月11日',
+						status: '1',
+						o: false
+					},
+				],
 				dialogVisible: false,
-
-				// 试卷统计
-				currentPage:1,
-				pageSize:9,
-				pageNum:1,
-				total:0,
-				Alltotal:0,
-				Successtotal:0,
-				Loadtotal:0,
-				Errortotal:0,
-				ExamList:[],
-
-				// 订单统计
-				OredrList:[],
-				SuccesstotalOrder:0,
-				LoadtotalOrder:0,
-				ErrortotalOredr:0,
-				AlltotalOrder:0
-
-
 			}
 		},
 		components: {
 			Schart,
 			ICountUp
 		},
-		mounted() {
-			// 获取首页数据
-			this.getStatisticsOrder()
-			this.getStatisticsExam()
-			this.getStatisticsExamPage()
-		},
+		mounted() {},
 		methods: {
-			// 统计数据（订购）
-			getStatisticsOrder(){
-				this.SuccesstotalOrder = 0
-				this.LoadtotalOrder = 0
-				this.ErrortotalOredr = 0
-				this.AlltotalOrder = 0
-				// 统计数据（订购）
-				apiAdminOrderList({
-					"pageSize":999,
-					"pageNum":1
-				}).then(res=>{
-					let list = res.data.data.list
-					this.AlltotalOrder = res.data.data.total
-					for(var k=0;k<list.length;k++){
-						if(list[k].status == 0){
-							this.LoadtotalOrder++
-						}else if(list[k].status == 1 ||list[k].status == 3){
-							this.SuccesstotalOrder++
-						}else if(list[k].status == 2){
-							this.ErrortotalOredr++
-						}
-						
-					}
-				})
-			},
-			// 统计数据（试卷）
-			getStatisticsExam(){
-				this.Successtotal = 0
-				this.Loadtotal = 0
-				this.Errortotal = 0
-				this.Alltotal = 0
-				apiCommonExamSelectList({
-					"pageSize":999,
-					"pageNum":1
-				}).then(res=>{
-					let list = res.data.data.list
-					this.Alltotal = res.data.data.total
-					// this.currentPage = res.data.data.pageNum
-					for(var i=0;i<list.length;i++){
-						if(list[i].putInto == 0){
-							this.Errortotal++
-						}else if(list[i].putInto == 1){
-							this.Successtotal++
-						}else if(list[i].putInto == 2){
-							this.Loadtotal++
-						}
-						
-					}
-				})
-			},
-			// 统计数据（试卷分页）
-			getStatisticsExamPage(){
-				apiCommonExamSelectList({
-					"pageSize":this.pageSize,
-					"pageNum":this.pageNum
-				}).then(res=>{
-					this.ExamList = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
-				})
+			getValue() {
+				console.log(this.array_nav)
 			},
 			handleSizeChange(val) {
-				// console.log(`每页 ${val} 条`);
-				this.pageSize = val
-				this.getStatisticsExamPage()
+				console.log(`每页 ${val} 条`);
 			},
 			handleCurrentChange(val) {
-				this.pageNum = val
-				this.getStatisticsExamPage()
+				console.log(`当前页: ${val}`);
 			},
 
-
-			
 		}
 	};
 </script>

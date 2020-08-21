@@ -269,7 +269,6 @@
 						"pageSize":this.pageSize,
 						"status":this.orderStatus
 					}).then(res=>{
-						console.log(res)
 						this.orderList = res.data.data.list
 						this.total = res.data.data.total
 						this.currentPage = res.data.data.pageNum
@@ -284,7 +283,7 @@
 					"status":1
 				}).then(res=>{
 					if(res.data.result){
-						this.$message.success('确定订单成功，请前往分配')
+						this.$message.success('操作成功')
 						apiAdminOrderList({
 							"pageNum":this.pageNum,
 							"pageSize":this.pageSize
@@ -294,7 +293,6 @@
 							this.total = res.data.data.total
 							this.currentPage = res.data.data.pageNum
 						})
-						this.$router.push('/distribution_admin')
 					}else{
 						this.$message.error(res.data.message)
 					}
