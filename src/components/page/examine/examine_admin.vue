@@ -30,11 +30,13 @@
                             @click="openFile(scope.$index, scope.row)"
                         >预览</el-button>
                         <el-button
+                            v-if="scope.row.putInto == 2"
                             type="text"
                             icon="el-icon-edit"
                             @click="handleEdit(scope.$index, scope.row)"
                         >入库成功</el-button>
                         <el-button
+                            v-if="scope.row.putInto == 2"
                             type="text"
                             icon="el-icon-delete"
                             class="red"

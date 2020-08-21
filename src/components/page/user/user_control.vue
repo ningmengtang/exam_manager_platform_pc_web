@@ -5,8 +5,8 @@
 				<div class="row-group">
 					<div class="th-group">用户类型</div>
 					<div class="td-group" change>
-						<el-radio-group v-model="array_nav" @change="getValue">
-							<el-radio-button v-for="(d,k) in userType" :label="d" :key="city">{{ d }}</el-radio-button>
+						<el-radio-group v-model="typeStatus" @change="getValue">
+							<el-radio-button v-for="(d,k) in userType" :label="d" >{{ d }}</el-radio-button>
 						</el-radio-group>
 					</div>
 				</div>
@@ -42,8 +42,8 @@
 				</div>
 			</div> -->
 			<div class="search">
-				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button>
+				<!-- <el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button> -->
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAddTeach"><span class="el-icon-plus"></span> 新增教师</el-button>
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增学生</el-button>
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增学校</el-button>
@@ -87,9 +87,9 @@
 			</div>
 		</div>
 		<!-- 提示框 -->
-		<el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
+		<!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
 		<!-- Table -->
-		<el-dialog title="" :visible.sync="dialogTableVisible">
+		<!-- <el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
 				<div class="t-title">请选择班级</div>
 				<div class="t-content">
@@ -153,11 +153,14 @@
 
 				</div>
 			</div>
-		</el-dialog>
+		</el-dialog> -->
 	</div>
 </template>
 <script>
 	import user from '../../common/user';
+	import {
+		apiSchoolAccountSelectByOptions
+	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
@@ -174,7 +177,8 @@
 				multipleSelection: [],
 				currentPage: 1,
 				dialogVisible: false,
-				userType: [ '管理员', '专家', '学校','教师','学生'],
+				typeStatus:'专家',
+				userType: [ '专家','教师','学生'],
 				userState: ['全部', '正常', '冻结', '注销'],
 				grade: ['全部', '一班', '二班', '三班'],
 				classNum: ['全部', '一班', '二班', '三班'],
@@ -224,9 +228,15 @@
 		methods: {
 			//获取选择标签的内容
 			getValue() {
-				if(this.array_nav == '管理员'){
+				// if(this.typeStatus == '专家'){
+					
+				// }else if(this.typeStatus == '教师'){
+				// 	TeachAccoundList({}).then(res=>{
+				// 		console.log(res)
+				// 	})
+				// }else if(this.typeStatus == '学生'){
 
-				}
+				// }
 			},
 			// 新增教师
 			goAddTeach(){
@@ -266,9 +276,15 @@
 				//go
 				this.$router.push('distribution_admin_affirm')
 			}
+			
 		},
 		mounted() {
 			this.color = user().color;
+			apiSchoolAccountSelectByOptions({
+				
+			}).then(res=>{
+				console.log(res)
+			})
 		}
 	};
 </script>

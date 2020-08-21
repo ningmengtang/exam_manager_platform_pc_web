@@ -38,18 +38,10 @@
 						{{ data.create_date }}申请订购
 					</span>
 				</div>
-				<!-- <div class="label-box">
-					<div class="label">{{ data.label }}</div>
-					<div class="label">人教版</div>
-					<div class="label">语文</div>
-					<div class="label">一年级</div>
-				</div> -->
 				<div class="right">
 					<div class="ii" >
 						<div class="status_box">
-							<!-- <i class="icon el-icon-loading ii"></i> -->
 							<span class="text ii">{{data.status == 0?'待确定':data.status == 1?'等待分发':data.status == 2?'已取消':data.status == 3?'分发完成':''}}</span>
-							<!-- <el-button type="primary"   v-if="data.status == 1"  @click="addOrder(data)">立即分发</el-button> -->
 						</div>
 					</div>
 				</div>
@@ -60,9 +52,6 @@
 				</el-pagination>
 			</div>
 		</div>
-		<!-- 提示框 -->
-		<!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
-		<!-- Table -->
 		<el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
 				<div class="t-title">请选择班级</div>

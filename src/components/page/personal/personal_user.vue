@@ -40,44 +40,44 @@
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">我的上传</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="alltotal" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">入库完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="successtotal" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">正在入库</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="loadtotal" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
-							<div class="card-t">入库完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="card-t">入库失败</div>
+							<div class="num"><ICountUp :endVal=" errortotal" /></div>
 						</div>
 					</el-col>
 				</el-row>
 			</div>
 			<!-- 上次的试卷列表 -->
 			<div class="upload-papers">
-				<div class="li-box" v-for="item in papers ">
-					<div class="label"><img src="../../../assets/img/img.jpg" class="label" /></div>
-					<div class="teacher" :style="{'color':color}">{{item.label}}</div>
+				<div class="li-box" v-for="item in paperList ">
+					<!-- <div class="label"><img src="../../../assets/img/img.jpg" class="label" /></div> -->
+					<div class="teacher" :style="{'color':color}">{{item.operator_name}}</div>
 					<div class="papers-box">
 						<div class="p-title">{{item.title}}</div>
-						<div class="p-particular">{{item.particular}}</div>
+						<div class="p-particular">{{item.examExplain}}</div>
 					</div>
-					<div class="time">{{item.time}}</div>
+					<div class="time">{{item.createDate}}</div>
 				</div>
 			</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div>
 		</div>
@@ -195,6 +195,7 @@
 		ApiTagSelectList,
 		apiSendSmsCode,
 		userLoginOut,
+		apiCommonExamSelectList,
 		apiUserAccountUpdate,apiUserAccountSelectById,apiUserAccountUpdatePwd,apiUserAccountUpdateMobile
 	} from '@/api/api.js'
 	export default {
@@ -304,7 +305,7 @@
 				color: '',
 				endVal1: 6,
 				endVal2: 454,
-				currentPage: 1,
+			
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -319,12 +320,8 @@
 					},
 					pStatus: 'color:#e2633b'
 				},
-				papers: [{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
+				paperList:[],
+				papers: [
 					{
 						label: '好老师',
 						title: '2019年人教版一年级第一单元测验',
@@ -355,7 +352,24 @@
 						particular: '包含小学一年级语文2019年人教版单元测试',
 						time: '2020年10月11日上传'
 					},
-				]
+					{
+						label: '好老师',
+						title: '2019年人教版一年级第一单元测验',
+						particular: '包含小学一年级语文2019年人教版单元测试',
+						time: '2020年10月11日上传'
+					},
+				],
+
+
+				pageSize:6,
+				pageNum:1,
+				currentPage: 1,
+				alltotal:0,
+				loadtotal: 0,
+				successtotal : 0,
+				errortotal:0,
+				total:0
+
 			};
 		},
 		components: {
@@ -363,6 +377,34 @@
 			ICountUp
 		},
 		methods: {
+			handleSizeChange(val) {
+				// console.log(val)
+				this.pageSize = val
+				apiCommonExamSelectList({
+					'operator_id':Number(localStorage.getItem('userID')),
+					'operator_type': localStorage.getItem('loginUserType'),
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res => {
+					this.paperList = res.data.data.list
+					this.total= res.data.data.total
+					this.currentPage= res.data.data.pageNum
+				})
+			},
+			handleCurrentChange(val) {
+				// console.log(val)
+				this.pageNum = val;
+				apiCommonExamSelectList({
+					'operator_id':Number(localStorage.getItem('userID')),
+					'operator_type': localStorage.getItem('loginUserType'),
+					"pageSize":this.pageSize,
+					"pageNum":this.pageNum
+				}).then(res => {
+					this.paperList = res.data.data.list
+					this.total= res.data.data.total
+					this.currentPage= res.data.data.pageNum
+				})
+			},
 			/**
 			 * 获取手机验证码
 			 */
@@ -400,32 +442,32 @@
 			getValue() {
 				console.log(this.array_nav)
 			},
-			handleSizeChange(val) {
-			this.pageSize = val
-			teacherIndex({
-				"id":this.id,
-				"pageSize":this.pageSize,
-				"pageNum":this.pageNum,
-				'operator_id':this.userID
-			}).then(res=>{
-				this.papers = res.data.data.list
-				this.total= res.data.data.total
-				this.currentPage= res.data.data.pageNum
-			})
-			},
-			handleCurrentChange(val) {
-				console.log(val)
-				this.pageNum = val;
-				teacherIndex({
-					"pageNum":this.pageNum,
-					"pageSize":this.pageSize,
-					'operator_id':this.userID
-				}).then(res=>{
-					this.papers = res.data.data.list
-					this.total= res.data.data.total
-					this.currentPage= res.data.data.pageNum
-				})
-			},
+			// handleSizeChange(val) {
+			// this.pageSize = val
+			// 	teacherIndex({
+			// 		"id":this.id,
+			// 		"pageSize":this.pageSize,
+			// 		"pageNum":this.pageNum,
+			// 		'operator_id':this.userID
+			// 	}).then(res=>{
+			// 		this.papers = res.data.data.list
+			// 		this.total= res.data.data.total
+			// 		this.currentPage= res.data.data.pageNum
+			// 	})
+			// },
+			// handleCurrentChange(val) {
+			// 	console.log(val)
+			// 	this.pageNum = val;
+			// 	teacherIndex({
+			// 		"pageNum":this.pageNum,
+			// 		"pageSize":this.pageSize,
+			// 		'operator_id':this.userID
+			// 	}).then(res=>{
+			// 		this.papers = res.data.data.list
+			// 		this.total= res.data.data.total
+			// 		this.currentPage= res.data.data.pageNum
+			// 	})
+			// },
 			/**
 			 * 显示修改个人信息框
 			 */
@@ -616,12 +658,12 @@
 			getValue() {
 				console.log(this.array_nav)
 			},
-			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
-			},
+			// handleSizeChange(val) {
+			// 	console.log(`每页 ${val} 条`);
+			// },
+			// handleCurrentChange(val) {
+			// 	console.log(`当前页: ${val}`);
+			// },
 		},
 		mounted() {
 			this.color = user().color;
@@ -645,6 +687,48 @@
 					this.personalInfo.sex = resResultData.sex
 				})
 			})
+
+
+			//查询专家数据
+			apiCommonExamSelectList({
+				'operator_id':Number(localStorage.getItem('userID')),
+				'operator_type': localStorage.getItem('loginUserType'),
+				"pageSize":999,
+				"pageNum":1
+			}).then(res => {
+				let data = res.data.data.list
+				// this.
+				
+				this.alltotal = res.data.data.total
+				this.loadtotal = 0
+				this.successtotal = 0
+				this.errortotal = 0
+				for(var i=0;i<data.length;i++){
+					if(data[i].putInto == 0){
+						this.errortotal++
+					}else if(data[i].putInto == 1){
+						this.successtotal++
+					}else if(data[i].putInto == 2){
+						this.loadtotal++
+					}
+				}
+			})
+
+			//查询专家数据
+			apiCommonExamSelectList({
+				'operator_id':Number(localStorage.getItem('userID')),
+				'operator_type': localStorage.getItem('loginUserType'),
+				"pageSize":this.pageSize,
+				"pageNum":this.pageNum
+			}).then(res => {
+				this.paperList = res.data.data.list
+				this.total= res.data.data.total
+				this.currentPage= res.data.data.pageNum
+			})
+
+
+
+
 		}
 	};
 </script>

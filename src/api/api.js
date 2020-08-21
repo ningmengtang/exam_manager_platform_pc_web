@@ -417,3 +417,8 @@ export function apiSchoolAccountSelectByPrimaryKey(id){
 	return result;
 }
 
+// 学校账号
+export function apiSchoolAccountSelectByOptions(data){
+	const result =post('/api/school/account/selectByOptions',data)
+	return result;
+}

@@ -41,25 +41,25 @@
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">全部试卷</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="Alltotal" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">入库完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="Successtotal" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">正在入库</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="Loadtotal" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
-							<div class="card-t">入库完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="card-t">入库失败</div>
+							<div class="num"><ICountUp :endVal="Errortotal" /></div>
 						</div>
 					</el-col>
 				</el-row>
@@ -70,30 +70,30 @@
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">全部订购</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="AlltotalOrder" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">订购完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="SuccesstotalOrder" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">订购申请</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="LoadtotalOrder" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">订购失败</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="ErrortotalOredr" /></div>
 						</div>
 					</el-col>
 				</el-row>
 			</div>
-			<div class="message-row i">
+			<!-- <div class="message-row i">
 				<div class="message-top i" :style="{'border-color':color}">用户管理</div>
 				<el-row :gutter="20" type="flex" class="el-row-box" style="background-color: #3B66E2;">
 					<el-col :span="6">
@@ -121,7 +121,7 @@
 						</div>
 					</el-col>
 				</el-row>
-			</div>
+			</div> -->
 		</div>
 
 		<el-dialog
@@ -235,7 +235,7 @@
 	import md5 from 'js-md5';
 	import {
 		apiAdminAccountUpdate,apiAdminAccountSelect,apiAdminAccountUpdatePwd,apiAdminAccountUpdateMobile,
-		apiSendSmsCode,userLoginOut
+		apiSendSmsCode,userLoginOut,apiCommonExamSelectList,apiAdminOrderList
 
 	} from '@/api/api.js'
 	
@@ -399,7 +399,15 @@
 						particular: '包含小学一年级语文2019年人教版单元测试',
 						time: '2020年10月11日上传'
 					},
-				]
+				],
+				Alltotal:0,
+				Successtotal:0,
+				Loadtotal:0,
+				Errortotal:0,
+				AlltotalOrder:0,
+				LoadtotalOrder:0,
+				SuccesstotalOrder:0,
+				ErrortotalOredr:0
 			};
 		},
 		components: {
@@ -660,6 +668,47 @@
 
 				})
 			})
+
+
+			// 查询管理员试卷
+			apiCommonExamSelectList({
+				"pageSize":999,
+				"pageNum":1
+			}).then(res=>{
+				console.log(res)
+				this.Alltotal  = res.data.data.total
+				let list = res.data.data.list
+				for(var i=0;i<list.length;i++){
+					if(list[i].putInto == 0){
+						this.Errortotal++
+					}else if(list[i].putInto == 1){
+						this.Successtotal++
+					}else if(list[i].putInto == 2){
+						this.Loadtotal++
+					}
+				}
+			})
+
+			// 查询订购单
+			apiAdminOrderList({
+				"pageSize":999,
+				"pageNum":1
+			}).then(res=>{
+				let list = res.data.data.list
+				this.AlltotalOrder = res.data.data.total
+				for(var k=0;k<list.length;k++){
+					if(list[k].status == 0){
+						this.LoadtotalOrder++
+					}else if(list[k].status == 1 ||list[k].status == 3){
+						this.SuccesstotalOrder++
+					}else if(list[k].status == 2){
+						this.ErrortotalOredr++
+					}
+						
+				}
+			})
+
+
 		}
 	};
 </script>

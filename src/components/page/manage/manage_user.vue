@@ -86,25 +86,16 @@
 					<div class="synopsis">{{ data.examExplain }}</div>
 				</div>
 				<div class="time">{{ data.createDate }}</div>
-				<div class="label-box" v-for="card in data.tag_list">
-					<div class="label">{{ card.text }}</div>
-					
-				</div>
-				<div class="right">
+				<div class="label-box" >
+					<div class="label" v-for="card in data.tag_list">{{ card.text }}</div>
 					
 				</div>
 			</div>
 			<!-- 分页 -->
 			<div class="page">
-				<el-pagination
-					background
-					layout="prev, pager, next, jumper"
-					@size-change="handleSizeChange"
-					@current-change="handleCurrentChange"
-					:current-page.sync="currentPage"
-					:page-size="100"
-					:total="1000"
-				></el-pagination>
+				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
+				</el-pagination>
 			</div>
 		</div>
 	</div>
