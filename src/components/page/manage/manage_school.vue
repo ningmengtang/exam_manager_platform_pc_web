@@ -375,7 +375,7 @@ export default {
 			"pageNum":this.pageNum
 		}).then(res=>{
 			console.log(res.data.data)
-			this.papers=res.data.data.list
+			this.papers=res.data.data
 			this.total=res.data.data.total
 		})
 	}

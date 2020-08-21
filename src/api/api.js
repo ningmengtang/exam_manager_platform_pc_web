@@ -53,6 +53,11 @@ export function teacherIndex(data) {
     const result = post('/api/teacher/distribute/selectMySelf', data)
     return result;
 }
+//教师统计
+export function teacherSelectCount(data){
+	const result =post('/api/teacher/distribute/selectCount',data)
+	return result;
+}
 //教师个人查询
 export function teacherPersonal() {
     const result = get('/api/teacher/distribute/downloadExam', data)

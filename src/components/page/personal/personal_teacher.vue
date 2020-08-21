@@ -676,7 +676,9 @@
 			this.currentPage = res.data.data.pageNum
 		})
 		//统计
+	    
 		teacherSelectCount().then(res=>{
+			console.log(res)
 			  this.success= res.data.data.success
 			  this.progress=res.data.data.progress
 			  this.error=res.data.data.error

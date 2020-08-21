@@ -234,7 +234,7 @@
 	import md5 from 'js-md5'
 	import {
 		apiSchoolAccountUpdate,apiSchoolAccountSelectByPrimaryKey,apiSchoolAccountUpdatePwd,apiSchoolAccountUpdateMobile,
-		apiSendSmsCode,userLoginOut
+		apiSendSmsCode,userLoginOut,teacherSelectCount
 
 	} from '@/api/api.js'
 	
@@ -642,7 +642,7 @@
 		},
 		mounted() {
 			this.color = user().color;
-
+             
 			this.$nextTick(() => {
 				apiSchoolAccountSelectByPrimaryKey(localStorage.getItem("userID")).then(res => {
 					if(!res.data.result)
