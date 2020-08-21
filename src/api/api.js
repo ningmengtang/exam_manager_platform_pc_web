@@ -196,9 +196,53 @@ export function apiAdminOrderUpdate(data){
 
 // /api/admin/order/item/upload/{item_id}
 
+//根据条件查询试卷列表
+export function apiCommonExamSelectListByOptions(data){
+	const result =post('/api/common/exam/selectListByOptions/' ,data)
+	return result;
+}
+
+/**
+ * 通过id查询教师信息
+ * @param {*} id 
+ */
+export function apiTeacherAccountSelectByPrimaryKey(id){
+	const result =get('/api/teacher/account/selectByPrimaryKey/'+id)
+	return result;
+}
+
+/**
+ * 更新教师信息
+ */
+export function apiTeacherAccountUpdate(data){
+	const result =post('/api/teacher/account/update',data)
+	return result;
+}
+
+/**
+ * 获取手机验证码
+ */
+export function apiSendSmsCode(phone){
+	const result =get('/api/send/smsCode?sendNum='+phone)
+	return result;
+}
 
 
+ /**
+  * 修改教师密码
+  */
+ export function apiTeacherAccountUpdatePwd(data){
+	const result =post('/api/teacher/account/updatePwd',data)
+	return result;
+}
 
+ /**
+  * 修改教师手机
+  */
+ export function apiTeacherAccountUpdateMobile(data){
+	const result =post('/api/teacher/account/updateMobile',data)
+	return result;
+}
 
 
 

@@ -66,7 +66,7 @@
         <el-header class="layout_header">
           
           <div ref="page_main_tile" class="text_header_title">
-            考试综合管理平台-组卷工具
+            考试综合管理平台-组卷工具(简化版)
           </div>
 
         </el-header>
@@ -1181,7 +1181,7 @@ export default {
 
       this.qrInfoObj.uid = localStorage.getItem("userID").toString()
       this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
-      console.log(this.$route.query.createTestPaperInfoObj)
+      //console.log(this.$route.query.createTestPaperInfoObj)
       // console.log(this.$router.params.createTestPaperInfoObj)
       if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)
       {
@@ -2715,7 +2715,10 @@ export default {
 
             clearInterval(checkExec);
             loading.close();
-            this.$router.push('/')
+            
+            //this.$router.push('/')
+            let routeData = this.$router.resolve({ path: '/', query: {  id: 1 } });
+            window.open(routeData.href);
           }
         }, 3000);
         //以免长时间无响应，30秒后主动取消
