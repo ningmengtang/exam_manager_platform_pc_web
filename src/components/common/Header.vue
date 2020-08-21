@@ -27,7 +27,7 @@
 						<!-- <i class="el-icon-caret-bottom"></i> -->
 						<div class="user-message">
 							<div class="username">{{ username }}</div>
-							<div class="user-school">{{school}}{{userType}}</div>
+							<div class="user-school">{{school}} {{userType}}</div>
 						</div>
 					</span>
 					<el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu>
@@ -53,7 +53,7 @@ export default {
 			bg_color: '',
 			getColor:'',
 			userType:'',
-			school:''
+			school:'',
 		};
 	},
 	methods: {

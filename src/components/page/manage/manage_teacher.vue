@@ -73,10 +73,10 @@
 							</el-radio-group>
 						</div>
 					</div>
-					<div class="search">
+					<!-- <div class="search">
 						<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 						<el-button type="primary" @click="" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
-					</div>
+					</div> -->
 				</div>
 				<div class="right">
 					<div class="right-son">
@@ -96,7 +96,7 @@
 		</div>
 
 		<div class="particular">
-<!-- 			<div class="li" v-for="(data,i) in li" :key="data.i">
+			<!-- 			<div class="li" v-for="(data,i) in li" :key="data.i">
 				<img src="../../../assets/img/img.jpg" class="user-img" />
 				<div class="teacher-name">{{ data.teacher }}</div>
 				<div class="title-box">
@@ -136,14 +136,14 @@
 				</div>
 			</div> -->
 			<div class="li" v-for="(data,i) in papers" :key="data.i">
-				<img src="../../../assets/img/img.jpg" class="user-img" />
+				<!-- <img src="../../../assets/img/img.jpg" class="user-img" /> -->
 				<div class="teacher-name">{{ data.teacher }}</div>
 				<div class="title-box">
 					<div class="title">{{ data.title }}</div>
-					<div class="synopsis">包含小学一年级语文2019年人教版单元作业65656566555555</div>
+					<div class="synopsis">{{data.examExplain}}</div>
 				</div>
 				<div class="time">{{ data.time }}</div>
-				<div class="label-box" >
+				<div class="label-box">
 					<div class="label" v-for="i in data.tag_list">{{i.text}}</div>
 				</div>
 				<div class="right">
@@ -160,7 +160,7 @@
 					</span>
 					<div class="del">
 						<!-- <i class="el-icon-download" @click="dialogVisible = true"></i> -->
-						<i class="el-icon-delete-solid"></i>
+						<!-- <i class="el-icon-delete-solid"></i> -->
 					</div>
 				</div>
 			</div>
@@ -187,8 +187,12 @@
 </template>
 <script>
 	import user from '../../common/user';
-	import {handleSizeChange,handleCurrentChange,handleClose,TagTypePromise} from '@/assets/js/manage.js'
- 	import {
+	import {
+		handleSizeChange,
+		handleCurrentChange,
+		handleClose,
+	} from '@/assets/js/manage.js'
+	import {
 		selectTag,
 		ApiTagSelectList,
 		paperWithTag,
@@ -202,29 +206,29 @@
 				color: '',
 				array_nav: [], //存储el-chckbox数组
 				search: '',
-				pageNum:1,
-				pageSize:2,
+				pageNum: 1,
+				pageSize: 4,
 				currentPage: 1,
 				disStatus: 0,
-				paperList:[],
-				DisStatusList:[],
-				ElementTextList:[],
-				PurposeList:[],
-				SubjectList:[],
-				GradeList:[],
-				VersionList:[],
-				YearsList:[],
+				paperList: [],
+				DisStatusList: [],
+				ElementTextList: [],
+				PurposeList: [],
+				SubjectList: [],
+				GradeList: [],
+				VersionList: [],
+				YearsList: [],
 				dialogVisible: false,
-				elementTest:0,
-				purpose:0,
-				subject:0,
-				grade:0,
-				version:0,
-				years:0,
-				obj:[],
-				papers:[],
-				total:0,
-				userID:localStorage.getItem('userID'),
+				elementTest: 0,
+				purpose: 0,
+				subject: 0,
+				grade: 0,
+				version: 0,
+				years: 0,
+				obj: [],
+				papers: [],
+				total: 0,
+				userID: localStorage.getItem('userID'),
 				cities: ['全部', '上海', '北京', '广州', '深圳'],
 				cities2: ['全部', '1', '2', '3', '4'],
 				checkboxGroup2: ['上海'],
@@ -258,20 +262,9 @@
 		methods: {
 			getValue() {
 				console.log(this.array_nav);
-			},handleSizeChange,handleCurrentChange,
-			// handleSizeChange(val) {
-			// this.pageSize = val
-			// teacherIndex({
-			// 	"id":this.id,
-			// 	"pageSize":this.pageSize,
-			// 	"pageNum":this.pageNum
-			// }).then(res=>{
-			// 	this.papers = res.data.data.list
-			// 	this.total= res.data.data.total
-			// 	this.currentPage= res.data.data.pageNum
-			// })
-			// },
-			
+			},
+			handleSizeChange,
+			handleCurrentChange,
 			goSubmit() {
 				this.$router.push('manage_teacher_submit')
 			},
@@ -375,16 +368,16 @@
 			})
 			//试卷
 			teacherIndex({
-				"pageSize":this.pageSize,
-				"pageNum":this.pageNum,
-				'operator_id':this.userID
-			}).then(res=>{
+				"pageSize": this.pageSize,
+				"pageNum": this.pageNum,
+				'operator_id': this.userID
+			}).then(res => {
 				console.log(res.data.data.list)
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
 			})
-			
+
 		}
 	};
 </script>
