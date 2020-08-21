@@ -41,7 +41,6 @@
 						    <i class="icon i el-icon-close"></i>
 						</div>
 					</div>
-					
 				</div>
 			</div>
 			<div class="page">
