@@ -7,7 +7,7 @@
 						<div class="card-left">
 							<div class="card-c">全部试卷</div>
 							<div class="card-cc">
-								<ICountUp :endVal="alltotal" />
+								<ICountUp :endVal="all" />
 							</div>
 						</div>
 						<div class="card-right"></div>
@@ -18,7 +18,7 @@
 						<div class="card-left">
 							<div class="card-c">已入库</div>
 							<div class="card-cc">
-								<ICountUp :endVal="download" />
+								<ICountUp :endVal="already" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_2"></div>
@@ -29,14 +29,14 @@
 						<div class="card-left">
 							<div class="card-c">取消入库</div>
 							<div class="card-cc">
-								<ICountUp :endVal="disabled" />
+								<ICountUp :endVal="cancel" />
 							</div>
 						</div>
 						<div class="card-right" :style="style.cardRight_3"></div>
 					</div>
 				</el-col>
 				<el-col :span="5">
-					<div class="grid-content bg-purple other" >
+					<div class="grid-content bg-purple other">
 						<el-button class="card-other-i" @click="submit">提交试卷</el-button>
 						<!-- <div class="card-other-ii">(按模板提交)</div> -->
 					</div>
@@ -50,7 +50,7 @@
 			</el-row>
 		</div>
 		<div class="papers-box">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.putInto == 0?style.pLi:d.putInto == 1?style.pLi5:style.pLi1">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
@@ -60,9 +60,9 @@
 						<div class="grade">{{d.gradeClass}}</div>
 					</div>
 					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.modifyDate}}</div>
-					<div class="p-status">{{d.status == 0?'取消入库':d.status == 1?'已入库':''}}</div>
-					<!-- <i class="p-status-icon el-icon-download"></i> -->
+					<div class="p-time">{{d.createDate}}</div>
+					<div class="p-particular">{{d.examExplain}}</div>
+					<div class="p-status">{{d.putInto == 0?'入库失败':d.putInto == 1?'入库完成':'正在入库'}}</div>
 					<i class="p-status-icon el-icon-download"></i>
 				</div>
 			</div>
@@ -92,7 +92,11 @@
 	import Schart from 'vue-schart'
 	import bus from '../../common/bus'
 	import ICountUp from 'vue-countup-v2'
-	import {ApiTeacherMangerList,teacherIndex} from '@/api/api.js'
+	import {
+		ApiTeacherMangerList,
+		teacherIndex,
+		teacherIndexStatus
+	} from '@/api/api.js'
 	export default {
 		name: 'index_student',
 		data() {
@@ -100,64 +104,53 @@
 				endVal: 100,
 				endVal1: 5000,
 				endVal2: 454,
-				total:0,
-				userID:localStorage.getItem('userID'),
+				total: 0,
+				userID: localStorage.getItem('userID'),
 				style: {
 					card_2: 'background-color: #41dde3;',
-					card_3: 'background-color: #e35841;',
+					card_3: 'background-color: #41e386;',
+					card_4: 'background-color: #e35841;',
 					cardRight_2: {
-						backgroundImage: 'url(' + require('../../../assets/img/bg-2.png') + ')'
+						backgroundImage: 'url(' + require('../../../assets/img/bg-4.png') + ')'
 					},
 					cardRight_3: {
-						backgroundImage: 'url(' + require('../../../assets/img/bg-3.png') + ')'
+						backgroundImage: 'url(' + require('../../../assets/img/bg-5.png') + ')'
 					},
 					cardRight_4: {
-						backgroundImage: 'none'
+						backgroundImage: 'url(' + require('../../../assets/img/bg-3.png') + ')'
+					},
+					cardRight_5: {
+						backgroundImage: 'url(' + require('../../../assets/img/bg-3.png') + ')'
 					},
 					pLi: {
 						backgroundImage: 'url(' + require('../../../assets/img/fail-download.png') + ')'
 					},
+					pLi2: {
+						backgroundImage: 'url(' + require('../../../assets/img/index-loading.png') + ')'
+					},
+					pLi3: {
+						backgroundImage: 'url(' + require('../../../assets/img/already_dowload.png') + ')'
+					},
+					pLi4: {
+						backgroundImage: 'url(' + require('../../../assets/img/succes-dowload.png') + ')'
+					},
+					pLi5: {
+						backgroundImage: 'url(' + require('../../../assets/img/go_bank.png') + ')'
+					},
 					pStatus: 'color:#e2633b'
 				},
-				
 
-				papers: [
-				],
-				download: [{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '10',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '10',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '1',
-						o: true
-					},
-					{
-						title: '2019年人教版第一单元测验',
-						synopsis: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日',
-						status: '1',
-						o: false
-					},
-				],
+				papers: [],
+				//状态
+				all:0,
+				cancel:0,
+				already:0,
 				dialogVisible: false,
-				alltotal:0,
-				disabled:0,
-				download:0,
-				pageNum:1,
-				pageSize:3,
+				alltotal: 0,
+				disabled: 0,
+				download: 0,
+				pageNum: 1,
+				pageSize: 6,
 				currentPage: 1,
 
 			}
@@ -166,54 +159,18 @@
 			Schart,
 			ICountUp
 		},
-		mounted() {
-			teacherIndex({
-				"pageSize":999,
-				"pageNum":1,
-				'operator_id':this.userID
-			}).then(res=>{
-				this.alltotal = 0
-				this.disabled = 0
-				this.download = 0
-				// console.log(res)
-				let data  = res.data.data.list
-				for(var i=0;i<data.length;i++){
-					if(data[i].status == 0){
-						this.disabled++
-					}else if(data[i].status == 1){
-						this.download++
-					}
-				}
-
-				this.alltotal  =  res.data.data.total
-				// this.disabled = res.data.data.disabled
-				// this.download = res.data.data.download
-			})
-
-			teacherIndex({
-				"pageSize":this.pageSize,
-				"pageNum":this.pageNum,
-				'operator_id':this.userID
-			}).then(res=>{
-				console.log(res.data.data.list)
-				this.papers = res.data.data.list
-				this.total = res.data.data.total
-				this.currentPage = res.data.data.pageNum
-			})
-		},
 		methods: {
 			getValue() {
 				console.log(this.array_nav)
 			},
-			 //改变时
+			//改变时
 			handleSizeChange(val) {
 				this.pageSize = val
-				
 				teacherIndex({
-					"pageNum":this.pageNum,
-					"pageSize":this.pageSize,
-					'operator_id':this.userID
-				}).then(res=>{
+					"pageNum": this.pageNum,
+					"pageSize": this.pageSize,
+					'operator_id': this.userID
+				}).then(res => {
 					this.papers = res.data.data.list
 					this.total = res.data.data.total
 					this.currentPage = res.data.data.pageNum
@@ -223,21 +180,40 @@
 			handleCurrentChange(val) {
 				this.pageNum = val
 				teacherIndex({
-					"pageNum":this.pageNum,
-					"pageSize":this.pageSize,
-					'operator_id':this.userID
-				}).then(res=>{
+					"pageNum": this.pageNum,
+					"pageSize": this.pageSize,
+					'operator_id': this.userID
+				}).then(res => {
 					this.papers = res.data.data.list
-					this.total= res.data.data.total
-					this.currentPage= res.data.data.pageNum
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
 				})
 			},
 			//提交试卷
-			submit(){
-				
+			submit() {
+
 				this.$router.push('manage_teacher_import')
 			}
-			    
+		},
+		mounted() {
+		//查询状态
+		teacherIndexStatus({}).then(res=>{
+			console.log(res.data)
+			this.all=res.data.data.all
+			this.already=res.data.data.already
+			this.cancel=res.data.data.cancel
+		})
+         //查询试卷
+			teacherIndex({
+				"pageSize": this.pageSize,
+				"pageNum": this.pageNum,
+				'operator_id': this.userID
+			}).then(res => {
+				// console.log(res.data.data)
+				this.papers = res.data.data.list
+				this.total = res.data.data.total
+				this.currentPage = res.data.data.pageNum
+			})
 		}
 	};
 </script>

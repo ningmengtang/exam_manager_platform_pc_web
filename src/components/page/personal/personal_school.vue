@@ -40,25 +40,25 @@
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">全部试卷</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="userAll" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">入库完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="userLoding" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">正在入库</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="userLoding" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">入库完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="userFinish" /></div>
 						</div>
 					</el-col>
 				</el-row>
@@ -69,30 +69,30 @@
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">全部订购</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="AlltotalOrder" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">订购完成</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="SuccesstotalOrder" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">订购申请</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="LoadtotalOrder" /></div>
 						</div>
 					</el-col>
 					<el-col :span="6">
 						<div class="card-box">
 							<div class="card-t">订购失败</div>
-							<div class="num"><ICountUp :endVal="endVal2" /></div>
+							<div class="num"><ICountUp :endVal="ErrortotalOredr" /></div>
 						</div>
 					</el-col>
 				</el-row>
 			</div>
-			<div class="message-row i">
+			<!-- <div class="message-row i">
 				<div class="message-top i" :style="{'border-color':color}">用户管理</div>
 				<el-row :gutter="20" type="flex" class="el-row-box" style="background-color: #3B66E2;">
 					<el-col :span="6">
@@ -120,7 +120,7 @@
 						</div>
 					</el-col>
 				</el-row>
-			</div>
+			</div> -->
 		</div>
 
 		<el-dialog
@@ -234,7 +234,11 @@
 	import md5 from 'js-md5'
 	import {
 		apiSchoolAccountUpdate,apiSchoolAccountSelectByPrimaryKey,apiSchoolAccountUpdatePwd,apiSchoolAccountUpdateMobile,
-		apiSendSmsCode,userLoginOut
+		apiSendSmsCode,userLoginOut,teacherSelectCount,selectSchoolTag,
+		schoolStudentAllow,
+		schoolStudentUnAllow,
+		apiAdminOrderList,
+		SchoolIndex
 
 	} from '@/api/api.js'
 	
@@ -345,11 +349,21 @@
 				userID: localStorage.getItem('userID'),
 				userSchoolName: localStorage.getItem('userSchoolName'),
 				userGrade: localStorage.getItem('userGrade'),
+				SuccesstotalOrder: 0,
+				LoadtotalOrder : 0,
+				ErrortotalOredr: 0,
+				AlltotalOrder :0,
 				color: '',
 				endVal1: 6,
 				endVal2: 454,
 				currentPage: 1,
+				pageNum:1,
+				pageSize:6,
 				userID:localStorage.getItem('userID'),
+				userAll:0,
+			    userLoding:0,
+                usererror:0,
+				userFinish:0,
 				style: {
 					card_2: 'background-color: #41dde3;',
 					card_3: 'background-color: #e35841;',
@@ -639,10 +653,55 @@
 			handleCurrentChange(val) {
 				console.log(`当前页: ${val}`);
 			},
+			getStatisticsOrder() {
+				this.SuccesstotalOrder = 0
+				this.LoadtotalOrder = 0
+				this.ErrortotalOredr = 0
+				this.AlltotalOrder = 0
+				// 统计数据（订购）
+				apiAdminOrderList({
+					"operator_id":localStorage.getItem('userID'),
+					"operator_type":localStorage.getItem('loginUserType'),
+					"pageSize": this.pageSize,
+					"pageNum": this.pageNum
+				}).then(res => {
+					let list = res.data.data.list
+					this.papers=list
+					this.AlltotalOrder = Number(res.data.data.total)
+					for (var k = 0; k < list.length; k++) {
+						if (list[k].status == 0) {
+							this.LoadtotalOrder++
+						} else if (list[k].status == 1 || list[k].status == 3) {
+							this.SuccesstotalOrder++
+						} else if (list[k].status == 2) {
+							this.ErrortotalOredr++
+						}
+			
+					}
+				})
+			}
 		},
 		mounted() {
 			this.color = user().color;
-
+			this.getStatisticsOrder()
+             //试卷
+             SchoolIndex({
+             	"pageSize":this.pageSize,
+             	"pageNum":this.pageNum
+             }).then(res=>{
+             	this.userAll=res.data.data.length
+				res.data.data.map(x=>{
+					if(x.putInto==1){
+						this.userFinish++
+					}else if(x.putInto==2){
+						this.userLoding++
+					}else if(x.putInto==0){
+						this.usererror++
+					}
+				})
+             	this.papers=res.data.data
+             	this.total=res.data.data.total
+             })
 			this.$nextTick(() => {
 				apiSchoolAccountSelectByPrimaryKey(localStorage.getItem("userID")).then(res => {
 					if(!res.data.result)

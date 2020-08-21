@@ -3,54 +3,58 @@
 		<div class="top">
 			<div class="group">
 				<div class="row-group">
-					<div class="th-group">分发状态</div>
+					<!-- <div class="th-group">用户状态</div>
 					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav" @change="getValue()">
-							<el-checkbox-button v-for="(city,k) in cities" :label="city" :key="city">{{ city }}</el-checkbox-button>
-						</el-checkbox-group>
-					</div>
+						<el-radio-group v-model="disStatus" @change="getValue1">
+							<el-radio-button v-for="(item,index) in DisStatusList" :label="item.id">
+								{{item}}
+							</el-radio-button>
+						</el-radio-group>
+					</div> -->
 				</div>
 			</div>
 			<div class="search">
-				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
-				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增教师</el-button>
+				<!-- <el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button> -->
+				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span
+					 class="el-icon-plus"></span> 新增教师</el-button>
 			</div>
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
 			<div class="li" v-for="(data, i) in li" :key="data.i">
 				<img src="../../../assets/img/img.jpg" class="user-img" />
-				<div class="teacher-name">{{ data.teacher }}</div>
+				<div class="teacher-name">{{ data.name }}</div>
 				<div class="title-box">
-					<div class="title">{{ data.title }}</div>
-					<div class="synopsis">{{ data.synopsis }}</div>
+					<!-- <div class="title">{{ data.mobile }}</div> -->
+					<div class="synopsis">手机号码：{{ data.mobile }}</div>
 				</div>
-				<div class="time">{{ data.time }}</div>
-				<div class="label-box">
+				<div class="time">{{ data.createDate }}</div>
+				<!-- <div class="label-box">
 					<div class="label">{{ data.label }}</div>
 					<div class="label">人教版</div>
 					<div class="label">语文</div>
 					<div class="label">一年级</div>
-				</div>
+				</div> -->
 				<div class="right">
-					<div class="ii" >
+					<div class="ii">
 						<div class="status_box">
 							<i class="icon el-icon-check"></i>
 							<span class="text">正在使用</span>
-						    <i class="icon i el-icon-close"></i>
+							<i class="icon i el-icon-close"></i>
 						</div>
 					</div>
+
 				</div>
 			</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
+				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div>
 		</div>
 		<!-- 提示框 -->
-		<el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
+	<!-- 	<el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
 		<!-- Table -->
 		<el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
@@ -99,7 +103,7 @@
 					</el-table>
 					<div class="page">
 						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="100" :total="1000">
+						 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 						</el-pagination>
 					</div>
 					<div class="block-time">
@@ -121,17 +125,17 @@
 </template>
 <script>
 	import user from '../../common/user';
+	import {
+		schoolSelectTeacher
+	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				color: '',
 				checkAll: false,
 				isIndeterminate: true,
-				array_nav: [], //存储el-chckbox数组
-				array_nav2: [], //存储el-chckbox数组
-				array_nav3: [],
-				array_nav4: [],
-				array_nav5: [],
+				disStatus: '',
+				DisStatusList: ['正常', '冻结', '注销'],
 				search: '',
 				value1: '',
 				multipleSelection: [],
@@ -142,23 +146,30 @@
 				class1: ['全部', '一班', '二班', '三班'],
 				student: [1, 2, 3, 4, 5],
 				checkboxGroup2: ['上海'],
-				li: [{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '北京师范小学 教师',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '1'
-					},
-					{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '北京师范小学 教师',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '2'
-					}
-				],
+				pageNum: 0,
+				pageSize: 8,
+				array_nav2:[],
+				array_nav3:[],
+				array_nav4:{},
+				total:0,
+				// li: [{
+				// 		teacher: '古得老师',
+				// 		title: '2019年人教版一年级第一单元作业5656565656',
+				// 		synopsis: '北京师范小学 教师',
+				// 		time: '2020年10月11日上传',
+				// 		label: '2019',
+				// 		o: '1'
+				// 	},
+				// 	{
+				// 		teacher: '古得老师',
+				// 		title: '2019年人教版一年级第一单元作业5656565656',
+				// 		synopsis: '北京师范小学 教师',
+				// 		time: '2020年10月11日上传',
+				// 		label: '2019',
+				// 		o: '2'
+				// 	}
+				// ],
+				li: '',
 				tableData: [{
 					date: '1',
 					name: '王小虎',
@@ -187,14 +198,32 @@
 		methods: {
 			//获取选择标签的内容
 			getValue() {
-				this.array_nav4 = this.array_nav2.concat(this.array_nav3)
-				console.log(this.array_nav4);
+
+			},
+			getValue1() {
+
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				this.pageNum=val
+				schoolSelectTeacher({
+					'pageNum':this.pageNum,
+					'pageSize':this.pageSize,
+					'schoolId': localStorage.getItem('userID')
+				}).then(res => {
+					console.log(res.data.data)
+					this.li = res.data.data.list
+				})
 			},
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+				this.pageNum=val
+				schoolSelectTeacher({
+					'pageNum':this.pageNum,
+					'pageSize':this.pageSize,
+					'schoolId': localStorage.getItem('userID')
+				}).then(res => {
+					console.log(res.data.data)
+					this.li = res.data.data.list
+				})
 			},
 			searchO() {
 
@@ -224,12 +253,21 @@
 				//关闭窗口
 				this.dialogTableVisible = false;
 			},
-			goAdd(){
+			goAdd() {
 				this.$router.push('manage_school_add')
 			}
 		},
 		mounted() {
 			this.color = user().color;
+			schoolSelectTeacher({
+				'pageNum':this.pageNum,
+				'pageSize':this.pageSize,
+				'schoolId': localStorage.getItem('userID')
+			}).then(res => {
+				console.log(res.data.data)
+				this.li = res.data.data.list
+				this.total=res.data.data.total
+			})
 		}
 	};
 </script>

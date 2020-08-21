@@ -27,7 +27,7 @@
 						<!-- <i class="el-icon-caret-bottom"></i> -->
 						<div class="user-message">
 							<div class="username">{{ username }}</div>
-							<div class="user-school">北京师范小学 {{userType}}</div>
+							<div class="user-school">{{school}} {{userType}}</div>
 						</div>
 					</span>
 					<el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu>
@@ -52,7 +52,8 @@ export default {
 			message: 2,
 			bg_color: '',
 			getColor:'',
-			userType:''
+			userType:'',
+			school:'',
 		};
 	},
 	methods: {
@@ -127,6 +128,7 @@ export default {
 		// }
 		this.bg_color = user().color;
 		this.userType=user().type;
+		this.school=user().school;
 	}
 };
 </script>

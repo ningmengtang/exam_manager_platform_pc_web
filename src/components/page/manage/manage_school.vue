@@ -74,8 +74,8 @@
 						</div>
 					</div>
 					<div class="search">
-						<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-						<el-button type="primary" @click="" class="buttom" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
+						<!-- <el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+						<el-button type="primary" @click="" class="buttom" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button> -->
 						<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd"><span class="el-icon-plus"></span> 新增订购单</el-button>
 					</div>
 				</div>
@@ -85,29 +85,29 @@
 
 		<div class="particular">
 			<div class="li" v-for="(data,i) in papers" :key="data.i">
-				<img src="../../../assets/img/img.jpg" class="user-img" />
+				<!-- <img src="../../../assets/img/img.jpg" class="user-img" /> -->
 				<div class="teacher-name">{{ data.teacher }}</div>
 				<div class="title-box">
 					<div class="title">{{ data.title }}</div>
-					<div class="synopsis">包含小学一年级语文2019年人教版单元作业65656566555555</div>
+					<div class="synopsis">{{data.examExplain}}</div>
 				</div>
 				<div class="time">{{ data.time }}</div>
 				<div class="label-box">
 					<div class="label" v-for="i in data.tag_list">{{i.text}}</div>
 				</div>
 				<div class="right">
-					<div class="ii" v-if="data.status == '0'">
+					<!-- <div class="ii" v-if="data.status == '0'">
 						<div style="margin-bottom: 4px;" >
 							<i class="icon el-icon-check i"></i>
-							<!-- <span class="text">可以下载</span> -->
+							<span class="text">可以下载</span>
 						</div>
 					</div>
 					<div class="ii" v-else-if="data.status == '1'">
 						<div style="margin-bottom: 4px;" >
 							<i class="icon el-icon-check i"></i>
-							<!-- <span class="text">可以下载</span> -->
+							<span class="text">可以下载</span>
 						</div>
-					</div>
+					</div> -->
 					<!-- <div class="ii" v-if="data.o == '3'">
 						<div style="margin-bottom: 4px;" >
 							<i class="icon el-icon-check i"></i>
@@ -116,8 +116,8 @@
 					</div> -->
 					<div class="del">
 						<!-- <i class="el-icon-download" @click="dialogVisible = true"></i> -->
-						<i class="el-icon-delete-solid" ></i>
-						<i class="el-icon-s-custom" @click="studentDownload(data.id,data.status)" :style="data.status=='0'?{'color':color}:{'color':'#999999'}"></i>
+						<!-- <i class="el-icon-delete-solid" ></i>
+						<i class="el-icon-s-custom" @click="studentDownload(data.id,data.status)" :style="data.status=='0'?{'color':color}:{'color':'#999999'}"></i> -->
 					</div>
 					
 				</div>
@@ -166,7 +166,7 @@ export default {
 			cities2: ['全部', '1', '2', '3', '4'],
 			checkboxGroup2: ['上海'],
 			pageNum:1,
-			pageSize:2,
+			pageSize:6,
 			currentPage: 1,
 			disStatus: 0,
 			paperList:[],
@@ -331,7 +331,7 @@ export default {
 		// 学生下载权限
 		studentDownload(id,status){
 			if(status==0){
-				schoolStudentUnAllow(id)
+				// schoolStudentUnAllow(id)
 				SchoolIndex({
 					"pageSize":this.pageSize,
 					"pageNum":this.pageNum
@@ -341,7 +341,7 @@ export default {
 					this.total=res.data.data.total
 				})
 			}else{
-				schoolStudentAllow(id)
+				// schoolStudentAllow(id)
 				SchoolIndex({
 				"pageSize":this.pageSize,
 				"pageNum":this.pageNum
@@ -363,7 +363,6 @@ export default {
 			"pageSize": 999,
 			"pageNum": 1
 		}).then(res => {
-		
 			this.TagType = res.data.data.list
 			var arr = []
 			for (var i = 0; i < this.TagType.length; i++) {
@@ -375,8 +374,8 @@ export default {
 			"pageSize":this.pageSize,
 			"pageNum":this.pageNum
 		}).then(res=>{
-			console.log(res)
-			this.papers=res.data.data.list
+			console.log(res.data.data)
+			this.papers=res.data.data
 			this.total=res.data.data.total
 		})
 	}
