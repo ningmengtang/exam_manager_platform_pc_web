@@ -89,6 +89,7 @@
 				</el-pagination>
 			</div>
 		</div>
+		
 		<el-dialog
 		title="修改个人信息"
 		:visible.sync="dialogVisibleEditPersonInfo"
@@ -492,7 +493,7 @@
 					console.log(resResultData)
 
 					this.$message.success('更新用户信息成功')
-					this.localStorage.setItem("userName",this.personalInfo.name)
+					localStorage.setItem("userName",this.personalInfo.name)
 					this.dialogVisibleEditPersonInfo = false
 				})
 			},
