@@ -1,5 +1,5 @@
 <template>
-	<div class="header" :style="{ 'background-color':  bg_color }">
+	<div class="header" >
 		<!-- 折叠按钮 -->
 		<!-- <div class="collapse-btn" @click="collapseChage">
             <i v-if="!collapse" class="el-icon-s-fold"></i>
@@ -201,7 +201,7 @@ export default {
 }
 .user-school {
 	font-size: 14px;
-	/* color: rgba(166, 166, 166, 1); */
+	color: rgba(166, 166, 166, 1);
 }
 
 .user-name {
@@ -217,7 +217,7 @@ export default {
 	border-radius: 50%;
 }
 .el-dropdown-link {
-	color: #fff;
+/* 	color: #fff; */
 	cursor: pointer;
 }
 .el-dropdown-menu__item {

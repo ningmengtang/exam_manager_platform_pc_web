@@ -69,11 +69,11 @@ export default function usertype() {
 				index: `examine_${loginUserType}`,
 				title: '审核管理'
 			},
-			// {
-			// 	icon: 'el-icon-s-custom',
-			// 	index: `user_control`,
-			// 	title: '用户管理'
-			// }
+			{
+				icon: 'el-icon-s-custom',
+				index: `user_control`,
+				title: '用户管理'
+			}
 			)
 			color = '#2BBB61'
 			type='平台管理员'

@@ -1,0 +1,12 @@
+.box{height: 100%;}
+.card-box{display: flex;height: 100%;background-image: url(../img/login.png);background-size: cover;border-radius: 10px;justify-content: center;}
+.title{font-size: 20px;width: 100%;display: flex;justify-content: center;font-weight: bold;margin-bottom: 120px;align-items: center;}
+.card-box-i{padding: 80px;}
+.card-box-a{width: 30%;border-radius: 10px;background-color: #FFFFFF;height: 100%;display: flex;justify-content: center;padding: 24px;flex-direction: column;align-items: center;}
+.card-box-a .user-face{width: 100%;display: flex;justify-content: center;}
+.card-box-a .user-face img{width: 100px;height: 100px;border-radius: 50%;margin-top: 20px;}
+.card-box-a .from{}
+
+
+
+.card-box-b{width: 70%;border-radius: 10px;margin-left: 20px;height: 100%;}
