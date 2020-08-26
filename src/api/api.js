@@ -214,11 +214,35 @@ export function adminSelectRoleSchoolId(data){
 	const result = get(`/api/admin/user/manage/selectSchoolById/${data}`)
 	return result;
 }
+// -----------------------管理员新增账号------------------------------------
 //管理员新增学生账号
 export function adminAddStuednt(data){
 	const result =post('/api/admin/user/manage/addStudent',data)
 	return result;
 }
+//管理员新增老师账号
+export function adminAddTeacher(data){
+	const result =post('/api/admin/user/manage/addTeacher',data)
+	return result;
+}
+//管理员新增学校账号
+export function adminAddSchool(data){
+	const result =post('/api/admin/user/manage/insertSchool',data)
+	return result;
+}
+//管理员新增专家账号
+export function adminAddUser(data){
+	const result =post('/api/admin/user/manage/addUser',data)
+	return result;
+}
+//管理员新增管理员账号
+export function adminAddAdmin(data){
+	const result =post('/api/admin/user/manage/addAdmin',data)
+	return result;
+}
+//-------------------------------------------------------
+// -----------------------管理员删除账号------------------------------------
+//-------------------------------------------------------
 
 // 查询专家
 export function apiPaperWithTagList(data) {

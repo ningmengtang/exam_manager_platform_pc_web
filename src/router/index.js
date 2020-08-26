@@ -9,12 +9,11 @@ export default new Router({
         {
             path: '/',
             redirect: '/login',
-			 meta: { title: '自述文件' }
         },
         {
             path: '/',
             component: () => import(/* webpackChunkName: "home" */ '../components/common/Home.vue'),
-            meta: { title: '自述文件' },
+            meta: { title: '' },
             children: [
 				{
 				    path: '/index_student',
@@ -207,10 +206,19 @@ export default new Router({
             meta: { title: '学生-登录' }
         },
         {
-            path: '*',
-            redirect: '/404',
-			meta: { title: '' }
+                   path: '/404',
+                   component: resolve => require(['../components/page/404.vue'], resolve)
+        },
+        {
+                   path: '/403',
+                   component: resolve => require(['../components/page/403.vue'], resolve)
+        },
+        {
+                   path: '*',
+                   redirect: '/404'
         }
-    ]
+    ],
+	
 });
+
 

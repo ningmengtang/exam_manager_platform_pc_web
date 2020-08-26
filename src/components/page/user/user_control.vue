@@ -240,7 +240,7 @@
 				dialogFormVisible: false,
 				page: {
 					pageNum: 1,
-					pageSize: 2
+					pageSize: 10
 				},
 				//总条数
 				total: 0
@@ -292,7 +292,7 @@
 						break;
 					case 'user':
 						adminSelectRoleUser(this.page).then(res => {
-							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total,console.log(res)) : this.$message.error(
 								'查询超时,请刷新重新查询！')
 						})
 						break;
@@ -311,9 +311,12 @@
 			},
 			handleSizeChange(val) {
 				// console.log(`每页 ${val} 条`);
+				
 			},
 			handleCurrentChange(val) {
 				// console.log(`当前页: ${val}`);
+				this.page.pageNum=val;
+				this.getValue();
 			},
 			searchO() {
 
@@ -344,7 +347,7 @@
 				this.$router.push('distribution_admin_affirm')
 			},
 			goAdd(data){
-				this.$router.push({path:'user_control_add',params:{'typeStatus':this.typeStatus}})
+				this.$router.push({path:'user_control_add',query: { typeStatus: data }})
 			},
 			deleteLi(data){
 				console.log(data)
@@ -353,15 +356,6 @@
 		},
 		mounted() {
 			this.color = user().color;
-			// ApiSchoolAccountSelectByOptions({
-			// 	"pageNum": 1,
-			// 	"pageSize": 999
-			// }).then(res => {
-			// 	console.log(res)
-			// })
-			// ApiClassSelectListByOptions({}).then(res => {
-			// 	console.log(res)
-			// })
 			StudentAccountInfo(this.page).then(res => {
 				res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
 					'查询超时,请刷新重新查询！')
