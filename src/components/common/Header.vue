@@ -22,7 +22,7 @@
 				<!-- 用户信息 -->
 
 				<!-- 用户名下拉菜单 -->
-				<el-dropdown class="user-name" trigger="click" @command="handleCommand">
+				<!-- <el-dropdown class="user-name" trigger="click" @command="handleCommand"> -->
 					<span class="el-dropdown-link">
 						<!-- <i class="el-icon-caret-bottom"></i> -->
 						<div class="user-message">
@@ -31,7 +31,7 @@
 						</div>
 					</span>
 					<!-- <el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu> -->
-				</el-dropdown>
+				<!-- </el-dropdown> -->
 				<!-- 用户头像 -->
 				<div class="user-avator"><img src="../../assets/img/img.jpg" /></div>
 				<el-button class="loginout" :style="{ 'color': bg_color,'border-color':bg_color }" @click="handleCommand">

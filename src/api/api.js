@@ -209,11 +209,34 @@ export function adminSelectRoleAdmin(data){
 	const result = post('/api/admin/account/selectSelective',data)
     return result;	
 }
+
+// -----------------------管理员通过id查询账号------------------------------------
+//查询管理员管理通过学生id查询
+export function adminSelectRoleStudentId(data){
+	const result = get(`/api/admin/user/manage/selectStudentById/${data}`)
+	return result;
+}
+//查询管理员管理通过老师id查询
+export function adminSelectRoleTeacherId(data){
+	const result = get(`/api/admin/user/manage/selectTeacherById/${data}`)
+	return result;
+}
 //查询管理员管理通过学校id查询学校名称
 export function adminSelectRoleSchoolId(data){
 	const result = get(`/api/admin/user/manage/selectSchoolById/${data}`)
 	return result;
 }
+//查询管理员管理通过专家id
+export function adminSelectRoleUserId(data){
+	const result = get(`/api/admin/user/manage/selectUserById/${data}`)
+	return result;
+}
+//查询管理员管理通过管理员id
+export function adminSelectRoleAdminId(data){
+	const result = get(`/api/admin/user/manage/selectAdminById/${data}`)
+	return result;
+}
+//-------------------------------------------------------
 // -----------------------管理员新增账号------------------------------------
 //管理员新增学生账号
 export function adminAddStuednt(data){
@@ -242,8 +265,59 @@ export function adminAddAdmin(data){
 }
 //-------------------------------------------------------
 // -----------------------管理员删除账号------------------------------------
+//管理员删除学生账号
+export function adminDeleteStuednt(data){
+	const result =get(`/api/admin/user/manage/deleteStudent/${data}`)
+	return result;
+}
+//管理员删除老师账号
+export function adminDeleteTeacher(data){
+	const result =get(`/api/admin/user/manage/deleteTeacher/${data}`)
+	return result;
+}
+//管理员删除学校账号
+export function adminDeleteSchool(data){
+	const result =get(`/api/admin/user/manage/deleteSchool/${data}`)
+	return result;
+}
+//管理员删除专家账号
+export function adminDeleteUser(data){
+	const result =get(`/api/admin/user/manage/deleteUser/${data}`)
+	return result;
+}
+//管理员删除管理员账号
+export function adminDeleteAdmin(data){
+	const result =get(`/api/admin/user/manage/deleteAdmin/${data}`)
+	return result;
+}
 //-------------------------------------------------------
-
+// -----------------------管理员通过id查询账号------------------------------------
+//管理员更新学生账号
+export function adminUpdatestudent(data){
+	const result=post('/api/admin/user/manage/updateStudent',data)
+	return result;
+}
+//管理员更新老师账号
+export function adminUpdateTeacher(data){
+	const result=post('/api/admin/user/manage/updateTeacher',data)
+	return result;
+}
+//管理员更新学校账号
+export function adminUpdateSchool(data){
+	const result=post('/api/admin/user/manage/updateSchool',data)
+	return result;
+}
+//管理员更新专家账号
+export function adminUpdateUser(data){
+	const result=post('/api/admin/user/manage/updateUser',data)
+	return result;
+}
+//管理员更新管理员账号
+export function adminUpdateAdmin(data){
+	const result=post('/api/admin/user/manage/updateAdmin',data)
+	return result;
+}
+//-------------------------------------------------------
 // 查询专家
 export function apiPaperWithTagList(data) {
 	const result = post('/api/paperWithTag/selectUserTag', data)
