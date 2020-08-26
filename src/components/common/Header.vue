@@ -203,7 +203,7 @@ export default {
 }
 .user-school {
 	font-size: 14px;
-	color: rgb(166, 166, 166);
+	color: rgba(166, 166, 166,1);
 }
 
 .user-name {
@@ -219,7 +219,7 @@ export default {
 	border-radius: 50%;
 }
 .el-dropdown-link {
-	color: #fff;
+/* 	color: #fff; */
 	cursor: pointer;
 }
 .el-dropdown-menu__item {

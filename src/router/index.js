@@ -181,8 +181,13 @@ export default new Router({
 				},
 				{
 				    path: '/user_control',
-				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/user/user_control.vue'),
+				    component: () => import(/* webpackChunkName: "user_control" */ '../components/page/user/user_control.vue'),
 				    meta: { title: '管理员-用户管理' }
+				},
+				{
+				    path: '/user_control_add',
+				    component: () => import(/* webpackChunkName: "user_control_add" */ '../components/page/user/user_control_add.vue'),
+				    meta: { title: '管理员-用户管理-用户添加' }
 				},
 				{
 					name: 'test_paper_maker',
