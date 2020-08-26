@@ -228,7 +228,6 @@
 				}).then(res => {
 					let list = res.data.data.list
 					this.papers=list
-					console.log(list)
 					this.AlltotalOrder = Number(res.data.data.total)
 					for (var k = 0; k < list.length; k++) {
 						if (list[k].status == 0) {

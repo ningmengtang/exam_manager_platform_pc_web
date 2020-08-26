@@ -514,3 +514,8 @@ export function selectStudentWithPaperAllotByTeacherIdAndPaperId(classId, paperI
 		'&paper_id=' + paperId + '&teacher_id=' + teacherId + '&d=' + new Date() * 1, data)
 	return result;
 }
+// 管理员订购-数量管理接口
+export function AdminOrderPriceSelect(data){
+    const result =post('/api/admin/order/price/selectSelective' ,data)
+	return result;
+}

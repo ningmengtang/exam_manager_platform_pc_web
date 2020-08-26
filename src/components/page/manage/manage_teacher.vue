@@ -325,7 +325,7 @@
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {
-					console.log(res)
+
 					this.papers = res.data.data.list
 					this.total = res.data.data.total
 					this.currentPage = res.data.data.pageNum
@@ -398,7 +398,7 @@
 				"pageSize": this.pageSize,
 				"pageNum": this.pageNum
 			}).then(res => {
-				console.log(res)
+				// console.log(res)
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum

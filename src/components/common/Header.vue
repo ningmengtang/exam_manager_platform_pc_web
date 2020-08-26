@@ -9,9 +9,9 @@
 		<div class="header-right">
 			<div class="header-user-con">
 				<!-- 全屏显示 -->
-				<div class="btn-fullscreen" @click="handleFullScreen">
+				<!-- <div class="btn-fullscreen" @click="handleFullScreen">
 					<el-tooltip effect="dark" :content="fullscreen ? `取消全屏` : `全屏`" placement="bottom"><i class="el-icon-rank"></i></el-tooltip>
-				</div>
+				</div> -->
 				<!-- 消息中心 -->
 				<!-- <div class="btn-bell">
 					<el-tooltip effect="dark" :content="message ? `有${message}条未读消息` : `消息中心`" placement="bottom">
@@ -30,10 +30,13 @@
 							<div class="user-school">{{school}} {{userType}}</div>
 						</div>
 					</span>
-					<el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu>
+					<!-- <el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu> -->
 				</el-dropdown>
 				<!-- 用户头像 -->
 				<div class="user-avator"><img src="../../assets/img/img.jpg" /></div>
+				<el-button class="loginout" :style="{ 'color': bg_color,'border-color':bg_color }" @click="handleCommand">
+					退出
+				</el-button>
 			</div>
 		</div>
 	</div>
@@ -58,17 +61,17 @@ export default {
 	},
 	methods: {
 		// 用户名下拉菜单选择事件
-		handleCommand(command) {
+		handleCommand() {
 
 			var token = localStorage.getItem('loginToken');
 			userLoginOut({}).then(res=>{
 				console.log(res.data)
 				if(res.data.result){
-					 localStorage.clear();
-					 this.$message.success('登出成功！')
-					 this.$router.push('/login');
+					localStorage.clear();
+					this.$message.success('登出成功！')
+					this.$router.push('/login');
 				}else{
-						 localStorage.clear();
+					localStorage.clear();
 					// this.$message.error('登出失败！');
 					this.$router.push('/login');
 				}
@@ -119,13 +122,6 @@ export default {
 		if(this.loginUserType == 'student'){
 			this.getColor ='rgb(25, 174, 251)'
 		}
-		// switch (this.loginUserType){
-		// 	case 'student':
-		// 	this.getColor ='rgb(25, 174, 251)'
-		// 	this.userType ='学生'
-		// 	break;
-			
-		// }
 		this.bg_color = user().color;
 		this.userType=user().type;
 		this.school=user().school;
@@ -133,6 +129,12 @@ export default {
 };
 </script>
 <style scoped>
+.loginout{
+	margin-left: 20px;
+
+	/* border-color: rgb(43, 187, 97);
+	color: rgb(43, 187, 97); */
+}
 .header {
 	position: relative;
 	box-sizing: border-box;
@@ -150,7 +152,7 @@ export default {
 }
 .header .logo {
 	float: left;
-	width: 250px;
+	width: 249px;
 	line-height: 70px;
 	text-align: center;
 }
@@ -197,11 +199,11 @@ export default {
 }
 .username {
 	font-size: 18px;
-	/* color: #333333; */
+	color: #333333;
 }
 .user-school {
 	font-size: 14px;
-	color: rgba(166, 166, 166, 1);
+	color: rgba(166, 166, 166,1);
 }
 
 .user-name {
@@ -222,5 +224,10 @@ export default {
 }
 .el-dropdown-menu__item {
 	text-align: center;
+}
+</style>
+<style>
+.header-user-con .el-button:hover{
+	background-color: #fff;
 }
 </style>
