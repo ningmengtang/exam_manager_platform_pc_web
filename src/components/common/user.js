@@ -1,6 +1,7 @@
 export default function usertype() {
 	let loginUserType = localStorage.getItem('loginUserType');
 	let school=localStorage.getItem('userSchoolName');
+	let loginUserRoleList = JSON.parse(localStorage.getItem('roleList')) 
 	let color, items,type;
 	items = [{
 			icon: 'el-icon-lx-home',
@@ -37,7 +38,8 @@ export default function usertype() {
 				icon: 'el-icon-sell',
 				index: `order_${loginUserType}`,
 				title: '订购管理'
-			}, {
+			}, 
+			{
 				icon: 'el-icon-s-custom',
 				index: `manage_${loginUserType}_subordinate`,
 				title: '教师管理'
@@ -55,32 +57,62 @@ export default function usertype() {
 			type = '题库专家'
 			break;
 		case 'admin':
-			items.splice(2, 0, {
-				icon: 'el-icon-sell',
-				index: `order_${loginUserType}`,
-				title: '订购管理'
-			}, {
-				icon: 'el-icon-position',
-				index: `distribution_${loginUserType}`,
-				title: '试卷分发'
-			}, 
-			{
-				icon: 'el-icon-position',
-				index: `examine_${loginUserType}`,
-				title: '审核管理'
-			},
+			// items.splice(2, 0, {
+			// 	icon: 'el-icon-sell',
+			// 	index: `order_${loginUserType}`,
+			// 	title: '订购管理'
+			// }, {
+			// 	icon: 'el-icon-position',
+			// 	index: `distribution_${loginUserType}`,
+			// 	title: '试卷分发'
+			// }, 
+			// {
+			// 	icon: 'el-icon-position',
+			// 	index: `examine_${loginUserType}`,
+			// 	title: '审核管理'
+			// },
 			// {
 			// 	icon: 'el-icon-s-custom',
 			// 	index: `user_control`,
 			// 	title: '用户管理'
 			// }
-			)
+			// )
 			color = '#2BBB61'
 			type='平台管理员'
 			school='考试综合管理平台'
-
 			break;
 	}
+	if(loginUserRoleList){
+		for(var i=0;i<loginUserRoleList.length;i++){
+			if(loginUserRoleList[i].roleName == '试卷订购管理员'){
+				items.splice(2,0,{
+					icon: 'el-icon-sell',
+					index: `order_${loginUserType}`,
+					title: '订购管理'
+				})
+			}else if(loginUserRoleList[i].roleName == '试卷题库管理员'){
+				items.splice(2,0,{
+					icon: 'el-icon-position',
+					index: `examine_${loginUserType}`,
+					title: '审核管理'
+				})
+			}else if(loginUserRoleList[i].roleName == '学习资源管理员'){
+				items.splice(2,0,{
+					icon: 'el-icon-position',
+					index: `distribution_${loginUserType}`,
+					title: '试卷分发'
+				})
+			}else if(loginUserRoleList[i].roleName == '超级管理员'){
+				items.splice(2,0,{
+					icon: 'el-icon-s-custom',
+					index: `user_control`,
+					title: '用户管理'
+				})
+			}
+		}
+	}
+	
+	
 
 	return {
 		color,

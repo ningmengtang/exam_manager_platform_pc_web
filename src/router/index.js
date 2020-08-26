@@ -98,6 +98,11 @@ export default new Router({
 				    meta: { title: '学校-订购管理-新增订购' }
 				},
 				{
+				    path: '/order_school_add2',
+				    component: () => import(/* webpackChunkName: "order_school_add" */ '../components/page/order/order_school_add2.vue'),
+				    meta: { title: '学校-订购管理-新增订购' }
+				},
+				{
 				    path: '/order_admin',
 				    component: () => import(/* webpackChunkName: "order_admin" */ '../components/page/order/order_admin.vue'),
 				    meta: { title: '管理员-订购管理' }

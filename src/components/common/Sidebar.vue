@@ -3,7 +3,7 @@
         <el-menu
             class="sidebar-el-menu"
             :default-active="onRoutes"
-            :collapse="collapse"
+           
             :background-color="bg_color"
             text-color="#fffff"
             active-text-color="#fffff"
@@ -87,10 +87,10 @@ export default {
     },
     created() {
         // 通过 Event Bus 进行组件间通信，来折叠侧边栏
-        bus.$on('collapse', msg => {
-            this.collapse = msg;
-            bus.$emit('collapse-content', msg);
-        });
+        // bus.$on('collapse', msg => {
+        //     this.collapse = msg;
+        //     bus.$emit('collapse-content', msg);
+        // });
     }
 };
 </script>
