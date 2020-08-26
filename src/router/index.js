@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-	
+	mode: 'history',
     routes: [
         {
             path: '/',
@@ -157,6 +157,12 @@ export default new Router({
 				
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/examine/examine_admin.vue'),
 				    meta: { title: '管理员-试卷审核' }
+				},
+				{
+					path: '/examine_user',
+				
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/examine/examine_user.vue'),
+				    meta: { title: '专家-试卷审核' }
 				},
 				{
 				    path: '/personal_user',

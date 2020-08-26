@@ -279,6 +279,11 @@
 			},
 			// 确认订单
 			addOrder(data){
+				this.$confirm('是否已缴费?', '提示', {
+        		  confirmButtonText: '确定',
+        		  cancelButtonText: '取消',
+        		  type: 'warning'
+        		}).then(() => {
 				apiAdminOrderUpdate({
 					"id":data.id,
 					"status":1
@@ -299,6 +304,10 @@
 						this.$message.error(res.data.message)
 					}
 				})
+        		}).catch(() => {
+        		          
+        		});
+				
 			},
 			// searchO() {
 

@@ -2,7 +2,8 @@ import axios from 'axios';
 import {
 	get,
 	post,
-	getCode
+	getCode,
+	uploadget
 } from './http.js'
 //登录验证码
 export function userCode(data) {
@@ -495,3 +496,17 @@ export function AdminOrderPriceSelect(data){
     const result =post('/api/admin/order/price/selectSelective' ,data)
 	return result;
 }
+
+// 下载合同
+export function AdminOrderGetFile(id,data){
+    const result =uploadget('/api/admin/order/getFile/' +id +'?d=' + new Date() * 1 ,data)
+	return result;
+}
+
+// 删除订单
+export function AdminOrderDel(id,data){
+    const result =get('/api/admin/order/delete/' +id +'?d=' + new Date() * 1 ,data)
+	return result;
+}
+
+

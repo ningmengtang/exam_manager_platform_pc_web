@@ -3,7 +3,7 @@
 		<div class="group">
 			<div style="display: flex;">
 				<div>
-					<div class="row-group">
+					<!-- <div class="row-group">
 						<div class="th-group">分发状态</div>
 						<div class="td-group" change>
 							<el-radio-group v-model="disStatus" @change="getQuery">
@@ -12,7 +12,7 @@
 								</el-radio-button>
 							</el-radio-group>
 						</div>
-					</div>
+					</div> -->
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">年份</div>
 						<div class="td-group">
@@ -256,9 +256,9 @@ export default {
 		},
 		getQuery() {
 			this.obj = []
-			if (this.disStatus != 0 && this.disStatus) {
-				this.obj.push(this.disStatus)
-			}
+			// if (this.disStatus != 0 && this.disStatus) {
+			// 	this.obj.push(this.disStatus)
+			// }
 			if (this.elementTest != 0 && this.elementTest) {
 				this.obj.push(this.elementTest)
 			}
@@ -302,9 +302,9 @@ export default {
 					}]
 					let children = all.concat(res.data.data.list)
 					switch (tagType.text) {
-						case '分发状态':
-							this.DisStatusList = children
-							break;
+						// case '分发状态':
+						// 	this.DisStatusList = children
+						// 	break;
 						case '年份':
 							this.YearsList = children
 							break;

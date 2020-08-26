@@ -3,7 +3,7 @@
 		<div class="group">
 			<div style="display: flex;">
 				<div>
-					<div class="row-group">
+					<!-- <div class="row-group">
 						<div class="th-group">分发状态</div>
 						<div class="td-group" >
 							<el-radio-group v-model="disStatus" @change="getQuery">
@@ -12,7 +12,7 @@
 								</el-radio-button>
 							</el-radio-group>
 						</div>
-					</div>
+					</div> -->
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">年份</div>
 						<div class="td-group">
@@ -88,8 +88,9 @@
 				<div class="time">{{ data.createDate }}</div>
 				<div class="label-box" >
 					<div class="label" v-for="card in data.tag_list">{{ card.text }}</div>
-					
+
 				</div>
+				<div class="time">{{data.putInto == 0?'入库失败':data.putInto == 1?'入库成功':data.putInto==2?'正在入库':''}}</div>
 			</div>
 			<!-- 分页 -->
 			<div class="page">
@@ -140,39 +141,6 @@ export default {
 			pageNum:1,
 			pageSize:4,
 			currentPage: 1,
-
-
-
-
-			cities: ['全部', '上海', '北京', '广州', '深圳'],
-			cities2: ['全部', '1', '2', '3', '4'],
-			checkboxGroup2: ['上海'],
-			li: [
-				{
-					teacher: '古得老师',
-					title: '2019年人教版一年级第一单元作业5656565656',
-					synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-					time: '2020年10月11日上传',
-					label: '2019',
-					o: '1'
-				},
-				{
-					teacher: '古得老师',
-					title: '2019年人教版一年级第一单元作业5656565656',
-					synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-					time: '2020年10月11日上传',
-					label: '2019',
-					o: '2'
-				},
-				{
-					teacher: '古得老师',
-					title: '2019年人教版一年级第一单元作业5656565656',
-					synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-					time: '2020年10月11日上传',
-					label: '2019',
-					o: '3'
-				}
-			]
 		};
 	},
 	methods: {
@@ -205,9 +173,6 @@ export default {
 		// 查询
 		getQuery(){
 			this.obj = []
-			if(this.disStatus != 0 && this.disStatus){
-				this.obj.push(this.disStatus)
-			}
 			if(this.elementTest !=0 && this.elementTest){
 				this.obj.push(this.elementTest)
 			}
@@ -251,9 +216,9 @@ export default {
 						}]
 						let children = all.concat(res.data.data.list)
 						switch (tagType.text) {
-							case '分发状态':
-								this.DisStatusList = children
-								break;
+							// case '分发状态':
+							// 	this.DisStatusList = children
+							// 	break;
 							case '年份':
 								this.YearsList = children
 								break;

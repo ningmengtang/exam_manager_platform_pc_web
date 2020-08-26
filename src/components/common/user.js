@@ -53,6 +53,11 @@ export default function usertype() {
 			type='学校负责人'
 			break;
 		case 'user':
+			items.splice(2,0,{
+				icon: 'el-icon-position',
+				index: `examine_${loginUserType}`,
+				title: '审核管理'
+			})
 			color = '#2BBB61'
 			type = '题库专家'
 			break;

@@ -7,12 +7,10 @@
 					<img src="../../../assets/img/img.jpg" class="user-img" />
 					<div class="user-top">
 						<div class="username">
-							<div class="name">小明</div>
-							<div class="user-id">ID:6556565</div>
-							<div class="identity" :style="{'background-color':color}">老师</div>
-							<div class="message">
-								<div class="school">北京师范小学</div>
-							</div>
+							<div class="name">{{userName}}</div>
+							<div class="user-id">ID:{{userID}}</div>
+							<div class="identity" :style="{'background-color':color}">学校负责人</div>
+						
 						</div>
 					</div>
 				</div>
@@ -67,7 +65,7 @@
 							<div>数量{{item.updateNum}}份</div>
 							<!-- <div>单价{{item.price}}元</div>
 							<div>总价{{item.total_price }}元</div> -->
-							<div class="fault" @click="upload(i)"  v-if="!item.uploadFile">学生信息未导入，点击重导</div>
+							<!-- <div class="fault" @click="upload(i)"  v-if="!item.uploadFile">学生信息未导入，点击重导</div> -->
 						</div>
 					</div>
 					<i class="close el-icon-close" :style="{'color':color}"></i>
@@ -101,11 +99,11 @@
                     </el-option>
                 </el-select>
                 <span style="margin-left:8px">
-                    单元：
+                    学期：
                 </span>
                 <el-select v-model="paper.test" placeholder="请选择单元" @change="changeTest">
                     <el-option
-                        v-for="item in tagList.element_test"
+                        v-for="item in tagList.semester"
                         :label="item.text"
                         :value="item.id">
                     </el-option>
@@ -176,7 +174,8 @@
                         <el-input
                             style="width:180px"
                             v-model="Allmoney[index]"
-                            :disabled="true">
+                            :disabled="true"
+                            >
                         </el-input>
                     </td> 
                 </tr>
@@ -199,6 +198,8 @@ import { forEach } from 'jszip'
 	export default {
 		data() {
 			return {
+                userName:localStorage.getItem('userName'),
+                userID:localStorage.getItem('userID'),
                 color: '',
                 tagList:[],
                 selectiveList:[],
@@ -229,7 +230,10 @@ import { forEach } from 'jszip'
                 subjectName:[],
                 orderItemList:[],
                 Allsubscriptions:0,
-                Alltotalmoney:0
+                Alltotalmoney:0,
+                chinesemMinCount:'',
+                englishMinCount:'',
+                mathMinCount:''
 			};
 		},
 		components: {
@@ -260,10 +264,6 @@ import { forEach } from 'jszip'
                 }
                 // console.log(this.subject)
             },
-            // 确认订购
-            placeOrder(){
-
-            },
             // 改变年份
             changeYear(){
                 let yearName = ''
@@ -283,7 +283,7 @@ import { forEach } from 'jszip'
             // 改变单元
             changeTest(){
                 let testName = ''
-                this.tagList.element_test.forEach(element=>{
+                this.tagList.semester.forEach(element=>{
                     if(element.id == this.paper.test){
                         testName = element.text
                     }
@@ -310,8 +310,6 @@ import { forEach } from 'jszip'
                     this.orderItemList[index].childrenName.push(this.subject[index][i])
                     
                 }
-              
-                
                 for(var a=0;a<this.orderItemList[index].childrenName.length;a++){
                     let item = this.orderItemList[index].childrenName[a]
 
@@ -321,7 +319,7 @@ import { forEach } from 'jszip'
                         }
                     });
                 }
-
+                
                 this.getMoney(index)
 
                 console.log(this.orderItemList[index])
@@ -367,117 +365,147 @@ import { forEach } from 'jszip'
                         let item = this.orderItemList[i]
                         for(var a=0;a<item.childrenName.length;a++){
                             if(item.childrenName[a] == '语文'){
-                                this.orderList.push({
-                                    "name":item.yearName + item.className + item.testName + item.childrenName[a],
-                                    "children":[item.year,item.classId,item.test,item.children[a],this.chineseId],
-                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName],
-                                    "updateNum":item.updateNum,
-                                    "total_price":item.total,
-                                    "uploadFile":''
-                                    
-                                })
+                                for(let k=0;k<this.chinesemMinCount;k++){
+                                    this.orderList.push({
+                                        "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[k].text,
+                                        "children":[item.year,item.classId,item.test,item.children[a],this.chineseId,this.tagList.element_test[k].id],
+                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName,this.tagList.element_test[k].text],
+                                        "updateNum":item.updateNum,
+                                        "total_price":item.total,
+                                        
+                                    })
+                                }
+                                
+
                             }else if(item.childrenName[a] == '数学'){
-                                this.orderList.push({
-                                    "name":item.yearName + item.className +item.testName + item.childrenName[a],
-                                    "children":[item.year,item.classId,item.test,item.children[a],this.mathId],
-                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName],
-                                    "updateNum":item.updateNum,
-                                    "total_price":item.total,
-                                    "uploadFile":''
-                                    
-                                })
+                                for(let j=0;j<this.mathMinCount;j++){
+                                    this.orderList.push({
+                                        "name":item.yearName + item.className +item.testName + item.childrenName[a] + this.tagList.element_test[j].text,
+                                        "children":[item.year,item.classId,item.test,item.children[a],this.mathId,this.tagList.element_test[j].id],
+                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName,this.tagList.element_test[j].text],
+                                        "updateNum":item.updateNum,
+                                        "total_price":item.total,
+                                        "uploadFile":''
+                                        
+                                    })
+                                }
+                                
 
                             }else if(item.childrenName[a] == '英语'){
-                                this.orderList.push({
-                                    "name":item.yearName + item.className + item.testName + item.childrenName[a],
-                                    "children":[item.year,item.classId,item.test,item.children[a],this.englishId],
-                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName],
-                                    "updateNum":item.updateNum,
-                                    "total_price":item.total,
-                                    "uploadFile":''
-                                })
-
+                                for(let l=0;l<this.englishMinCount;l++){
+                                    this.orderList.push({
+                                        "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[l].text,
+                                        "children":[item.year,item.classId,item.test,item.children[a],this.englishId,this.tagList.element_test[l].id],
+                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName,this.tagList.element_test[l].text],
+                                        "updateNum":item.updateNum,
+                                        "total_price":item.total,
+                                        "uploadFile":''
+                                    })
+                                }
                             } 
                         }
                         this.Allsubscriptions =this.Allsubscriptions +  this.orderItemList[i].updateNum
                         this.Alltotalmoney = this.Alltotalmoney +  this.orderItemList[i].total 
+                        this.dialogTableVisible = false
                     }
-                    console.log(this.orderList)
-                    console.log(this.Allsubscriptions)
-                    console.log(this.Alltotalmoney)
                 }
             },
             // 新建订单项
-            getOrderItem(id,sn,orderItem){
-                AdminOrderItemAdd({
-                    "count":orderItem.updateNum,
-                    "title":orderItem.name,
-                    "order_sn":sn,
-                    "order_id":id
-                }).then(res=>{
-                    if(res.data.result){
-                        let itemId = res.data.data.id
-                        if(orderItem.uploadFile){
-                            AdminOrderUpload(itemId,orderItem.uploadFile).then(res=>{
-								if(res.data.result){
-									for(var i=0;i<orderItem.children.length;i++){
-										let item = orderItem.children[i]
-										AdminOrderTagAdd({
-											"item_id":itemId,
-											"tag_id":item
-										}).then(res=>{
-											if(res.data.result){
+            // getOrderItem(id,sn,orderItem){
+            //     AdminOrderItemAdd({
+            //         "count":orderItem.updateNum,
+            //         "title":orderItem.name,
+            //         "order_sn":sn,
+            //         "order_id":id
+            //     }).then(res=>{
+            //         if(res.data.result){
+            //             let itemId = res.data.data.id
+            //             if(orderItem.uploadFile){
+            //                 AdminOrderUpload(itemId,orderItem.uploadFile).then(res=>{
+			// 					if(res.data.result){
+			// 						for(var i=0;i<orderItem.children.length;i++){
+			// 							let item = orderItem.children[i]
+			// 							AdminOrderTagAdd({
+			// 								"item_id":itemId,
+			// 								"tag_id":item
+			// 							}).then(res=>{
+			// 								if(res.data.result){
 
-											}else{
-												this.$message.error(res.data.message)
-											}
-										})
-									}
-									this.$message.success('新增成功')
+			// 								}else{
+			// 									this.$message.error(res.data.message)
+			// 								}
+			// 							})
+			// 						}
+			// 						// this.$message.success('新增成功')
 								
-								}else{
-									this.$message.error(res.data.message)
-								}
-							})
-                        }else{
-                            for(var i=0;i<orderItem.children.length;i++){
-								let item = orderItem.children[i]
-								AdminOrderTagAdd({
-									"item_id":itemId,
-									"tag_id":item
-								}).then(res=>{
-									if(res.data.result){
+			// 					}else{
+			// 						this.$message.error(res.data.message)
+			// 					}
+			// 				})
+            //             }else{
+            //                 for(var i=0;i<orderItem.children.length;i++){
+			// 					let item = orderItem.children[i]
+			// 					AdminOrderTagAdd({
+			// 						"item_id":itemId,
+			// 						"tag_id":item
+			// 					}).then(res=>{
+			// 						if(res.data.result){
 
-									}else{
-										this.$message.error(res.data.message)
-									}
-								})
-							}
-							this.$message.success('新增成功')
-							
-                        }
-                    }
-                })
-            },
+			// 						}else{
+			// 							this.$message.error(res.data.message)
+            //                         }
+
+
+			// 					})
+			// 				}
+            //             }
+            //         }
+            //     })
+            // },
             // 确认订单
             placeOrder(){
+                const loading = this.$loading({
+                    lock: true,
+                    text: '正在提交订单',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                let orderItems = []
+                
+                for(var i=0;i<this.orderList.length;i++){
+                    let item = this.orderList[i].children
+                    let tag_list = []
+                    for(var j=0;j<item.length;j++){
+                        tag_list.push({
+                            "id":item[j]
+                        })
+                    }
+                    orderItems.push({
+                        "count":this.orderList[i].updateNum,
+                        "title":this.orderList[i].name,
+                        "tag_list":tag_list      
+                    })
+                }
+                
+               
                 AdminOrderAdd({
                     "count":this.Allsubscriptions,
                     "style_count":this.orderList.length,
                     "contact_phone":this.form.contact_phone,
                     "contacts":this.form.contacts,
                     "contact_address":this.form.contact_address,
-                    "total_price":this.Alltotalmoney
+                    "total_price":this.Alltotalmoney,
+                    "orderItems":orderItems
                 }).then(res=>{
+                    loading.close();
                     if(res.data.result){
-                        let id = res.data.data.id
-                        let sn = res.data.data.sn
-                        for(var i=0;i<this.orderList.length;i++){
-                            this.getOrderItem(id,sn,this.orderList[i])
-                        }
+                        this.$message.success('提交成功')
+                        this.$router.push('/order_school');
                     }else{
                         this.$message.error(res.data.message)
                     }
+                }).catch(()=>{
+                     loading.close();
                 })
             }
 		},
@@ -486,13 +514,27 @@ import { forEach } from 'jszip'
 			// 获取各个标签
 			selectTag().then(res=>{
                 this.tagList = res.data.data
-                console.log(this.tagList)
+                // console.log(this.tagList)
             })
 
             // 获取订购数量管理
             AdminOrderPriceSelect({}).then(res=>{
                 this.selectiveList = res.data.data.list
-                console.log(res)
+                for(var i=0;i<this.selectiveList.length;i++){
+                    if(this.selectiveList[i].subNameCh == '语文'){
+                        console.log(this.selectiveList[i])
+                        this.chinesemMinCount = this.selectiveList[i].minCount
+                        console.log(this.chinesemMinCount)
+                    }else if(this.selectiveList[i].subNameCh == '英语'){
+                         console.log(this.selectiveList[i])
+                        this.englishMinCount = this.selectiveList[i].minCount
+                        console.log(this.englishMinCount)
+                    }else if(this.selectiveList[i].subNameCh == '数学'){
+                         console.log(this.selectiveList[i])
+                        this.mathMinCount = this.selectiveList[i].minCount
+                        console.log(this.mathMinCount)
+                    }
+                }
             })
             
             // 获取语文、数学、英语版本
@@ -503,6 +545,7 @@ import { forEach } from 'jszip'
             }).then(res=>{
                 this.chineseId = res.data.data.list[0].id
                 this.chineseName = res.data.data.list[0].text
+
             })
             ApiTagSelectList({
                 "pageNum": 1,
@@ -520,6 +563,7 @@ import { forEach } from 'jszip'
                 this.englishId = res.data.data.list[0].id
                 this.englishName = res.data.data.list[0].text
             })
+
 		},
 		watch:{
 		}

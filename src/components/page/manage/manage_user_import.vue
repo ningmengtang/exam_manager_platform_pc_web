@@ -18,6 +18,22 @@
 				</el-input>
 			</div>
 			<div class="l-box-1">
+				<div class="l-title">开始下载时间</div>
+				<el-date-picker
+					v-model="value1"
+					type="datetime"
+					placeholder="选择日期时间">
+				</el-date-picker>
+			</div>
+			<div class="l-box-1">
+				<div class="l-title">结束下载时间</div>
+				<el-date-picker
+					v-model="value1"
+					type="datetime"
+					placeholder="选择日期时间">
+				</el-date-picker>
+			</div>
+			<div class="l-box-1">
 				<div class="l-title">试卷标签</div>
 				<div class="t-content">
 					<div class="group">
@@ -86,6 +102,7 @@
 					<el-col :span="8">
 						<div class="grid-content bg-purple">
 							<el-button class="i" @click="parperAddPic" >确认提交</el-button>
+							<div class="ii">(在线组卷)</div>
 						</div>
 					</el-col>
 				</el-row>
