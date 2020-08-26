@@ -1,11 +1,14 @@
 .box{height: 100%;}
 .card-box{display: flex;height: 100%;background-image: url(../img/login.png);background-size: cover;border-radius: 10px;justify-content: center;}
-.title{font-size: 20px;width: 100%;display: flex;justify-content: center;font-weight: bold;margin-bottom: 120px;align-items: center;}
+.title{font-size: 24px;width: 100%;display: flex;justify-content: center;font-weight: bold;margin-bottom: 120px;align-items: center;color:rgb(43, 187, 97); }
 .card-box-i{padding: 80px;}
-.card-box-a{width: 30%;border-radius: 10px;background-color: #FFFFFF;height: 100%;display: flex;justify-content: center;padding: 24px;flex-direction: column;align-items: center;}
+.card-box-a{width: 30%;border-radius: 10px;height: auto;background-color: #FFFFFF;display: flex;justify-content: center;padding: 24px;flex-direction: column;align-items: center;}
 .card-box-a .user-face{width: 100%;display: flex;justify-content: center;}
 .card-box-a .user-face img{width: 100px;height: 100px;border-radius: 50%;margin-top: 20px;}
 .card-box-a .from{}
+.card-box-a .input-ts{font-size: 14px;color: #606266;margin: 10px 0 10px 100px;}
+.card-box-a .top{border-left: 4px solid rgb(43, 187, 97);padding-left: 8px;}
+.card-box-a .i{margin-top: 8px;}
 
 
 

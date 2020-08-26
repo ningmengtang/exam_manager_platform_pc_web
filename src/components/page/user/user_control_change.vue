@@ -2,7 +2,7 @@
 	<div class="box">
 		<div class="card-box">
 			<div class="card-box-a">
-				<div class="title"><i class="el-icon-plus"></i>&nbsp;&nbsp;新增{{form.roleDefault}}账号</div>
+				<div class="title"><i class="el-icon-plus"></i>&nbsp;&nbsp;修改{{form.roleDefault}}账号</div>
 				<el-form class="form" :model="form" :rules="rules" ref="form" label-width="100px" label-position="right">
 					<el-form-item :label="form.roleDefault+'名称:'" prop="userName">
 						<el-input v-model="form.userName" maxlength="20" show-word-limit>
@@ -16,12 +16,17 @@
 						<el-input v-model="form.mobile" maxlength="11" show-word-limit>
 						</el-input>
 					</el-form-item>
+					<div class="input-ts">
+						<div class="top">重置密码</div>
+						<el-switch v-model="passwordChange" active-text="是" inactive-text="否" class="i">
+						</el-switch>
+					</div>
 					<el-form-item label="密码:" prop="password">
-						<el-input v-model="form.password" show-password>
+						<el-input v-model="form.password" show-password disabled>
 						</el-input>
 					</el-form-item>
 					<el-form-item label="学校编号:" prop="schoolCode" v-if="typeStatus=='school'">
-						<el-input v-model="form.schoolCode"  >
+						<el-input v-model="form.schoolCode">
 						</el-input>
 					</el-form-item>
 					<el-form-item label="学号:" prop="stuedntNum" v-if="typeStatus=='student'">
@@ -40,7 +45,7 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student'">
+					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student1'">
 						<el-select v-model="form.classDefault" placeholder="请选择" @visible-change="classList">
 							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 							</el-option>
@@ -52,14 +57,14 @@
 						</el-input>
 					</el-form-item>
 					<el-form-item style="margin-top: 40px;">
-						<el-button type="primary" :style="{'background-color':'#2CBC62'}" @click="submitForm()">立即创建</el-button>
+						<el-button type="primary" :style="{'background-color':'#2CBC62'}" @click="submitForm()">立即修改</el-button>
 						<el-button @click="black">取消</el-button>
 					</el-form-item>
-
 				</el-form>
 
+
 			</div>
-			
+
 		</div>
 	</div>
 </template>
@@ -68,11 +73,18 @@
 	import {
 		ApiSchoolAccountSelectByOptions,
 		ApiClassSelectListByOptions,
-		adminAddStuednt,
-		adminAddTeacher,
-		adminAddSchool,
-		adminAddUser,
-		adminAddAdmin
+		adminSelectRoleStudentId,
+		adminSelectRoleTeacherId,
+		adminSelectRoleSchoolId,
+		adminSelectRoleUserId,
+		adminSelectRoleAdminId,
+		adminUpdateStudent,
+		adminUpdateTeacher,
+		adminUpdateSchool,
+		adminUpdateUser,
+		adminUpdateAdmin,
+		apiPaperWithTagList
+
 	} from '@/api/api.js';
 	import md5 from 'js-md5';
 	export default {
@@ -85,6 +97,7 @@
 				currentPage: 1,
 				dialogVisible: false,
 				typeStatus: 'student',
+				passwordChange: false,
 				page: {
 					pageNum: 1,
 					pageSize: 999,
@@ -122,7 +135,7 @@
 						trigger: 'blur'
 					}],
 					password: [{
-						required: true,
+						required: false,
 						message: '请输入密码',
 						trigger: 'blur'
 					}],
@@ -146,7 +159,7 @@
 						message: '请选择班级',
 						trigger: 'blur'
 					}],
-					schoolCode:[{
+					schoolCode: [{
 						required: true,
 						message: '请输入学校编号',
 						trigger: 'blur'
@@ -184,7 +197,7 @@
 					school: '',
 					stuedntNum: '',
 					mobile: '',
-					schoolCode:''
+					schoolCode: ''
 
 				},
 				dialogTableVisible: false,
@@ -195,7 +208,8 @@
 				},
 				//总条数
 				total: 0,
-				typeStatus: this.$route.query.typeStatus
+				typeStatus: this.$route.params.typeStatus,
+				userChangId: this.$route.params.id
 			};
 		},
 		methods: {
@@ -234,23 +248,12 @@
 				this.$refs.form.validate((valid) => {
 					if (valid) {
 						let form = this.form
-						// let json = {
-						// 	name: form.userName,
-						// 	id_card: form.idCard,
-						// 	password: md5(form.password),
-						// 	sex: form.sexDefault,
-						// 	schoolName: form.schoolDefault[0].schoolName,
-						// 	schoolId: form.schoolDefault[0].id,
-						// 	schoolSn: form.schoolDefault[0].sn,
-						// 	classesId: form.classDefault,
-						// 	code: form.stuedntNum
-						// }
-						switch (this.$route.query.typeStatus) {
+						switch (this.typeStatus) {
 							case 'student':
-								adminAddStuednt({
+								adminUpdateStudent({
+									id: this.userChangId,
 									name: form.userName,
 									idCard: form.idCard,
-									password: md5(form.password),
 									sex: form.sexDefault,
 									schoolName: form.schoolDefault[0].schoolName,
 									schoolId: form.schoolDefault[0].id,
@@ -258,56 +261,63 @@
 									classesId: form.classDefault,
 									code: form.stuedntNum
 								}).then(res => {
-									// this.$message.success('添加学生账号成功')
 									console.log(res)
-									// this.black()
+									this.$message.success('修改成功');
+									this.black();
 								})
 								break;
 							case 'teacher':
-								adminAddTeacher({
+								adminUpdateTeacher({
+									id: this.userChangId,
 									name: form.userName,
-									mobile: form.mobile,
-									password: md5(form.password),
 									sex: form.sexDefault,
-									schoolId: form.schoolDefault[0].id
+									schoolName: form.schoolDefault[0].schoolName,
+									schoolId: form.schoolDefault[0].id,
+									schoolSn: form.schoolDefault[0].sn,
 								}).then(res => {
-									this.$message.success('添加教师账号成功')
-									this.black()
+									console.log(res)
+									this.$message.success('修改成功');
+									this.black();
 								})
+
 								break;
 							case 'school':
-								adminAddSchool({
+								adminUpdateSchool({
+									id: this.userChangId,
 									name: form.userName,
-									mobile: form.mobile,
-									password: md5(form.password),
-									code:form.schoolCode
-								}).then(res => {
-									this.$message.success('添加教师账号成功')
-									this.black()
-								})
-								break;
-							case 'user':
-								adminAddUser({
-									mobilePhone: form.mobile,
-									name: form.userName,
-									password: md5(form.password),
 									sex: form.sexDefault,
 								}).then(res => {
-									this.$message.success('添加教师账号成功')
-									this.black()
+									console.log(res)
+									this.$message.success('修改成功');
+									this.black();
 								})
+
+								break;
+							case 'user':
+								adminUpdateUser({
+									id: this.userChangId,
+									name: form.userName,
+									sex: form.sexDefault,
+									mobilePhone: form.mobile
+								}).then(res => {
+									console.log(res)
+									this.$message.success('修改成功');
+									this.black();
+								})
+
 								break;
 							case 'admin':
-							adminAddAdmin({
-								mobilePhone: form.mobile,
-								name: form.userName,
-								password: md5(form.password),
-								sex: form.sexDefault,
-								type:'admin'
-							}).then(res => {
-								this.$message.success('添加管理员账号成功')
-								this.black()
-							})
+								adminUpdateAdmin({
+									id: this.userChangId,
+									name: form.userName,
+									sex: form.sexDefault,
+									mobilePhone: form.mobile
+								}).then(res => {
+									console.log(res)
+									this.$message.success('修改成功');
+									this.black();
+								})
+
 								break;
 						}
 					} else {
@@ -322,31 +332,67 @@
 
 		},
 		mounted() {
-
-			switch (this.$route.query.typeStatus) {
+			let form = this.form
+			switch (this.typeStatus) {
 				case 'student':
 					this.form.roleDefault = '学生'
+					adminSelectRoleStudentId(this.userChangId).then(res => {
+						form.userName = res.data.data.name;
+						form.idCard = res.data.data.idCard;
+						form.stuedntNum = res.data.data.code;
+						form.sex = res.data.data.sex;
+						form.schoolDefault = res.data.data.schoolName
+					})
 					break;
 				case 'teacher':
 					this.form.roleDefault = '教师'
+					adminSelectRoleTeacherId(this.userChangId).then(res => {
+						console.log(res);
+						form.userName = res.data.data.name;
+						form.sex = res.data.data.sex;
+						form.mobile = res.data.data.mobile
+						form.schoolDefault = res.data.data.schoolName
+					})
 					break;
 				case 'school':
 					this.form.roleDefault = '学校'
+					adminSelectRoleSchoolId(this.userChangId).then(res => {
+						console.log(res);
+						form.userName = res.data.data.name;
+						form.sex = res.data.data.sex;
+						form.mobile = res.data.data.mobile
+						form.schoolCode = res.data.data.code
+						form.schoolDefault = res.data.data.schoolName
+					})
 					break;
 				case 'user':
 					this.form.roleDefault = '专家'
+					adminSelectRoleUserId(this.userChangId).then(res => {
+						console.log(res);
+						form.userName = res.data.data.name;
+						form.sex = res.data.data.sex;
+						form.mobile = res.data.data.mobilePhone
+						form.schoolCode = res.data.data.code
+						form.schoolDefault = res.data.data.schoolName
+					})
 					break;
 				case 'admin':
 					this.form.roleDefault = '管理员'
+					adminSelectRoleAdminId(this.userChangId).then(res => {
+						console.log(res);
+						form.userName = res.data.data.name;
+						form.sex = res.data.data.sex;
+						form.mobile = res.data.data.mobilePhone
+					})
 					break;
 
 			}
-
 			//查询学校
 			ApiSchoolAccountSelectByOptions(this.page).then(res => {
 				res.data ? (this.form.school = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
 					'查询超时,请刷新重新查询！')
 			})
+			console.log(this.$route.params.id)
 		}
 	};
 </script>

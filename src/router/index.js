@@ -9,12 +9,11 @@ export default new Router({
         {
             path: '/',
             redirect: '/login',
-			 meta: { title: '自述文件' }
         },
         {
             path: '/',
             component: () => import(/* webpackChunkName: "home" */ '../components/common/Home.vue'),
-            meta: { title: '自述文件' },
+            meta: { title: '' },
             children: [
 				{
 				    path: '/index_student',
@@ -196,6 +195,13 @@ export default new Router({
 				    meta: { title: '管理员-用户管理-用户添加' }
 				},
 				{
+					name:'user_control_change',
+					path:'/user_control_change',
+					component: () => import(/* webpackChunkName: "user_control_changed" */ '../components/page/user/user_control_change.vue'),
+					meta: { title: '管理员-用户管理-用户修改' }
+					
+				},
+				{
 					name: 'test_paper_maker',
 				    path: '/test_paper_maker',
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/testPaperMaker/test_paper_maker.vue'),
@@ -218,10 +224,19 @@ export default new Router({
             meta: { title: '学生-登录' }
         },
         {
-            path: '*',
-            redirect: '/404',
-			meta: { title: '' }
+                   path: '/404',
+                   component: resolve => require(['../components/page/404.vue'], resolve)
+        },
+        {
+                   path: '/403',
+                   component: resolve => require(['../components/page/403.vue'], resolve)
+        },
+        {
+                   path: '*',
+                   redirect: '/404'
         }
-    ]
+    ],
+	
 });
+
 

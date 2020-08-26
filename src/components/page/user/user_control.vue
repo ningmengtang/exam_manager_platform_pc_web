@@ -70,18 +70,13 @@
 				<div class="other" v-else>{{data.mobile}}</div>
 				<div class="other">{{data.schoolName}}</div>
 				<div class="time">{{ data.createDate }}</div>
-				<!-- <div class="label-box">
-					<div class="label">{{ data.label }}</div>
-					<div class="label">人教版</div>
-					<div class="label">语文</div>
-					<div class="label">一年级</div>
-				</div> -->
 				<div class="right">
 					<div class="ii">
 						<div class="status_box">
 							<i class="icon el-icon-check ii"></i>
 							<span class="text ii">正常使用</span>
-							<i class="icon i el-icon-close  ii" style="cursor: pointer;" @click="deleteLi(typeStatus)"></i>
+							<i class="icon i el-icon-edit-outline ii" style="cursor: pointer;" @click="adminChange(data.id)"></i>
+							<i class="icon i el-icon-close  ii" style="cursor: pointer;" @click="deleteLi(data.id);dialogVisible=true"></i>
 						</div>
 					</div>
 					<!-- <span v-else-if="data.o == '2'" style="display: contents;">
@@ -89,80 +84,21 @@
 					</span> -->
 				</div>
 			</div>
+			<!-- 分页 -->
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="page.pageSize" :total="total">
 				</el-pagination>
 			</div>
 		</div>
-		<!-- 提示框 -->
-		<!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
-		<!-- Table -->
-		<!-- <el-dialog title="" :visible.sync="dialogTableVisible">
-			<div class="ts-select">
-				<div class="t-title">请选择班级</div>
-				<div class="t-content">
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">分发状态</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav2" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">分发状态</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav3" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
-				<div class="student-box">
-					<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-						<el-table-column type="selection" width="55"></el-table-column>
-						<el-table-column label="学号" width="120">
-							<template slot-scope="scope">
-								{{ scope.row.date }}
-							</template>
-						</el-table-column>
-						<el-table-column prop="name" label="名字" width="120">
-							<template slot-scope="scope">
-								<div style="display: flex;align-items: center;">
-									<img src="../../../assets/img/img.jpg" class="user-img" />
-									<div class="student-name">{{ scope.row.name }}</div>
-								</div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="class" label="班级" show-overflow-tooltip></el-table-column>
-					</el-table>
-					<div class="page">
-						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="100" :total="1000">
-						</el-pagination>
-					</div>
-					<div class="block-time">
-						<div>
-							<span style="margin-right:10px ;">选择日期</span>
-							<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-							</el-date-picker>
-						</div>
-						<div class="block-a">
-							<el-button @click="toggleSelection()" class="out">取消选择</el-button>
-							<el-button @click="submit()" class="affirm">确认</el-button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</el-dialog> -->
+		<!-- 删除提示框 -->
+		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+			<span>确认删除？</span>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="dialogVisible = false">取 消</el-button>
+				<el-button type="primary" @click="dialogVisible = false;deleteAffirm=true;deleteLi()">确 定</el-button>
+			</span>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -173,7 +109,16 @@
 		schoolSelectTeacher,
 		adminSelectRoleUser,
 		adminSelectRoleAdmin,
-		adminSelectRoleSchoolId
+		adminDeleteStuednt,
+		adminDeleteTeacher,
+		adminDeleteSchool,
+		adminDeleteUser,
+		adminDeleteAdmin,
+		adminSelectRoleStudentId,
+		adminSelectRoleTeacherId,
+		adminSelectRoleSchoolId,
+		adminSelectRoleUserId,
+		adminSelectRoleAdminId
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -188,6 +133,8 @@
 				array_nav5: [],
 				search: '',
 				value1: '',
+				deleteID: '',
+				deleteAffirm: false,
 				multipleSelection: [],
 				currentPage: 1,
 				dialogVisible: false,
@@ -240,7 +187,7 @@
 				dialogFormVisible: false,
 				page: {
 					pageNum: 1,
-					pageSize: 2
+					pageSize: 10
 				},
 				//总条数
 				total: 0
@@ -249,15 +196,6 @@
 		methods: {
 			//获取选择标签的内容
 			getValue() {
-				// if(this.typeStatus == '专家'){
-
-				// }else if(this.typeStatus == '教师'){
-				// 	TeachAccoundList({}).then(res=>{
-				// 		console.log(res)
-				// 	})
-				// }else if(this.typeStatus == '学生'){
-
-				// }
 				switch (this.typeStatus) {
 					case 'student':
 						StudentAccountInfo(this.page).then(res => {
@@ -270,13 +208,6 @@
 							if (res.data) {
 								this.li = res.data.data.list
 								this.total = res.data.data.total
-								// 获取遍历每个老师的学校id
-								// this.li.forEach((x, i) => {
-								// 	//通过学校id查询学校名称
-								// 	adminSelectRoleSchoolId(x.schoolId).then(res => {
-								// 		this.$set(x, 'schoolName', res.data.data.name)
-								// 	})
-								// })
 							} else {
 								this.$message.error(
 									'查询超时,请刷新重新查询！')
@@ -286,13 +217,13 @@
 						break;
 					case 'school':
 						ApiSchoolAccountSelectByOptions(this.page).then(res => {
-							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total): this.$message.error(
+							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
 								'查询超时,请刷新重新查询！')
 						})
 						break;
 					case 'user':
 						adminSelectRoleUser(this.page).then(res => {
-							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
 								'查询超时,请刷新重新查询！')
 						})
 						break;
@@ -311,12 +242,12 @@
 			},
 			handleSizeChange(val) {
 				// console.log(`每页 ${val} 条`);
+
 			},
 			handleCurrentChange(val) {
 				// console.log(`当前页: ${val}`);
-			},
-			searchO() {
-
+				this.page.pageNum = val;
+				this.getValue();
 			},
 			toggleSelection(rows) {
 				if (rows) {
@@ -343,25 +274,95 @@
 				//go
 				this.$router.push('distribution_admin_affirm')
 			},
-			goAdd(data){
-				this.$router.push({path:'user_control_add',params:{'typeStatus':this.typeStatus}})
+			goAdd(data) {
+				this.$router.push({
+					path: 'user_control_add',
+					query: {
+						typeStatus: data
+					}
+				})
 			},
-			deleteLi(data){
-				console.log(data)
+			//删除
+			deleteLi(id) {
+
+				if (this.deleteAffirm) {
+					this.deleteAffirm = false;
+					switch (this.typeStatus) {
+						case 'student':
+							adminDeleteStuednt(this.deleteID).then(res => {
+								this.$message.success('删除成功')
+							})
+							StudentAccountInfo(this.page).then(res => {
+								res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+									'查询超时,请刷新重新查询！')
+							})
+							break;
+						case 'teacher':
+							adminDeleteTeacher(this.deleteID).then(res => {
+								this.$message.success('删除成功')
+							})
+							schoolSelectTeacher(this.page).then(res => {
+								if (res.data) {
+									this.li = res.data.data.list
+									this.total = res.data.data.total
+								} else {
+									this.$message.error(
+										'查询超时,请刷新重新查询！')
+								}
+							})
+							break;
+						case 'school':
+							adminDeleteSchool(this.deleteID).then(res => {
+								this.$message.success('删除成功')
+							})
+							ApiSchoolAccountSelectByOptions(this.page).then(res => {
+								res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+									'查询超时,请刷新重新查询！')
+							})
+							break;
+						case 'user':
+							adminDeleteUser(this.deleteID).then(res => {
+								this.$message.success('删除成功')
+							})
+							adminSelectRoleUser(this.page).then(res => {
+								res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message
+									.error(
+										'查询超时,请刷新重新查询！')
+							})
+							break;
+						case 'admin':
+							adminDeleteAdmin(this.deleteID).then(res => {
+								this.$message.success('删除成功')
+							})
+							adminSelectRoleAdmin(this.page).then(res => {
+								res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message
+									.error(
+										'查询超时,请刷新重新查询！')
+							})
+							break;
+					}
+				} else {
+					this.deleteID = id;
+
+				}
+
+
+			},
+			//修改
+			adminChange(data) {
+				this.$router.push({
+					name: 'user_control_change',
+					params: {
+						id: data,
+						typeStatus:this.typeStatus
+					}
+
+				})
 			}
 
 		},
 		mounted() {
 			this.color = user().color;
-			// ApiSchoolAccountSelectByOptions({
-			// 	"pageNum": 1,
-			// 	"pageSize": 999
-			// }).then(res => {
-			// 	console.log(res)
-			// })
-			// ApiClassSelectListByOptions({}).then(res => {
-			// 	console.log(res)
-			// })
 			StudentAccountInfo(this.page).then(res => {
 				res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
 					'查询超时,请刷新重新查询！')
