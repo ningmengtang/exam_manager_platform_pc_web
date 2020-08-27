@@ -41,9 +41,9 @@
 						</el-select>
 						<el-button type="primary" @click="submitForm()" class="submit">登录</el-button>
 					</el-form>
-					<div class="forget">
+					<!-- <div class="forget">
 						<router-link to="/index_student" class="i">忘记了密码</router-link>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<!-- <div class="right-nav">

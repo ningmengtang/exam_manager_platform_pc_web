@@ -57,10 +57,6 @@
 						<div class="card-other-ii"></div>
 					</div>
 				</el-col>
-				<div class="grid-content bg-purple other">
-					<el-button class="card-other-i oo">修改密码</el-button>
-					<div class="card-other-ii"></div>
-				</div>
 			</el-row>
 		</div>
 		<div class="papers-box">

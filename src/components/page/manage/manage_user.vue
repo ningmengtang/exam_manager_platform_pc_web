@@ -54,6 +54,16 @@
 						</div>
 					</div>
 					<div class="row-group" style="margin-top: 20px;">
+						<div class="th-group">学期</div>
+						<div class="td-group">
+							<el-radio-group v-model="semester" @change="getQuery">
+								<el-radio-button v-for="(item,index) in SemesterList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
+						</div>
+					</div>
+					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">单元测试</div>
 						<div class="td-group">
 							<el-radio-group v-model="elementTest"  @change="getQuery">
@@ -129,6 +139,7 @@ export default {
 			VersionList:[],
 			YearsList:[],
 			TagType:[],
+			SemesterList:[],
 			disStatus:0,
 			elementTest:0,
 			purpose:0,
@@ -136,6 +147,7 @@ export default {
 			grade:0,
 			version:0,
 			years:0,
+			semester:0,
 
 			total:0,
 			pageNum:1,
@@ -173,6 +185,9 @@ export default {
 		// 查询
 		getQuery(){
 			this.obj = []
+			if(this.semester != 0 && this.semester){
+				this.obj.push(this.semester)
+			}
 			if(this.elementTest !=0 && this.elementTest){
 				this.obj.push(this.elementTest)
 			}
@@ -216,9 +231,9 @@ export default {
 						}]
 						let children = all.concat(res.data.data.list)
 						switch (tagType.text) {
-							// case '分发状态':
-							// 	this.DisStatusList = children
-							// 	break;
+							case '学期':
+								this.SemesterList = children
+							break;
 							case '年份':
 								this.YearsList = children
 								break;
@@ -299,4 +314,5 @@ export default {
 .group /deep/  .el-radio-button__orig-radio:checked+.el-radio-button__inner{
 	background-color: rgb(43, 187, 97);
 }
+
 </style>

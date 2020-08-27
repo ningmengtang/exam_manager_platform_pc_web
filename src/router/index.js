@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-	mode: 'history',
+	// mode: 'history',
     routes: [
         {
             path: '/',
@@ -183,6 +183,12 @@ export default new Router({
 				
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_affirm.vue'),
 				    meta: { title: '管理员-试卷分发-试卷确认' }
+				},
+				{
+					path: '/distribution_school_affirm',
+				
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_school_affirm.vue'),
+				    meta: { title: '学校-试卷分发-试卷确认' }
 				},
 				{
 				    path: '/user_control',

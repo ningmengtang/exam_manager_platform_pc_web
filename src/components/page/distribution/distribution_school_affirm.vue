@@ -10,42 +10,36 @@
 							<div class="name">{{useName}}</div>
 							<div class="user-id">ID：{{useId}}</div>
 							<div class="identity" :style="{'background-color':color}">学校</div>
+							<!-- <div class="message">
+								<div class="school">北京师范小学</div>
+							</div> -->
 						</div>
 					</div>
 				</div>
 			</div>
 			<el-form ref="form" :model="form" label-width="80px" class="form" style="margin-bottom: 20px;">
 				<el-form-item label="订购总数">
-					<el-input v-model="form.count" >
+					<el-input v-model="form.count" readonly>
 						<template slot="append">份</template>
 					</el-input>
 				</el-form-item>
 				<el-form-item label="订购类型">
-					<el-input v-model="form.style_count">
+					<el-input v-model="form.style_count" readonly>
 						<template slot="append">种</template>
 					</el-input>
 				</el-form-item>
-				<el-form-item label="联系电话">
+				<el-form-item label="联系电话" readonly>
 					<el-input v-model="form.contact_phone"></el-input>
 				</el-form-item>
-				<el-form-item label="收货人员">
+				<el-form-item label="收货人员" readonly>
 					<el-input v-model="form.contacts"></el-input>
 				</el-form-item>
-				<el-form-item label="收货地址">
+				<el-form-item label="收货地址" readonly>
 					<el-input v-model="form.contact_address"></el-input>
 				</el-form-item>
-				<!-- <el-date-picker
-				      v-model="value1"
-				      type="daterange"
-				      range-separator="至"
-				      start-placeholder="开始日期"
-				      end-placeholder="结束日期"
-					  class="ids">
-				    </el-date-picker> -->
 			</el-form>
 			<div class="buttom-box">
-				<!-- <el-button class="buttom-true" :style="{'background-color':color}" @click="pushPerpar">确认分配</el-button> -->
-				<!-- <el-button class="buttom-false" @click="black()">取消订购</el-button> -->
+				
 			</div>
 		</div>
 		<!-- 右边 -->
@@ -71,32 +65,13 @@
 			
 							
 							<div class="fault" v-if="!item.file_path"  @click="uploadFile(item)">学生信息未导入，点击导入</div>
-							<div class="success" v-if="item.file_path"  @click="uploadFile(item)">学生信息已导入，点击重新导入</div>
+							<div  v-if="item.file_path"  >已导入学生信息</div>
 							<!-- <div class="" v-if=""></div> -->
 						</div>
 					</div>
-					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="!item.status" >分配试卷</el-button>
-					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="item.status == 1" >已分配</el-button>
+					<el-button type="success" size="small" style="float:right" v-if="item.status == 1" >已分配</el-button>
 				</div>
 			</div>
-			<!-- <div class="page">
-				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="100" :total="1000">
-				</el-pagination>
-			</div>
-			<div class="bottom-box">
-				<div class="discount">
-					<div class="i">折扣：</div>
-					<div class="ii">￥666,666.00</div>
-				</div>
-				<div class="last">
-					<div class="remind">不同年级、不同科目价格不同，购买的数量越多，价格越优惠</div>
-					<div class="discount">
-						<div class="i">折扣：</div>
-						<div class="ii">￥666,666.00</div>
-					</div>
-				</div>
-			</div> -->
 		</div>
 		<!-- 提示框 -->
 		<el-dialog title="选择试卷" :visible.sync="dialogTableVisible" >
@@ -164,7 +139,7 @@
 		data() {
 			return {
 				adminAffirmData:[],
-				useId:localStorage.getItem('userID'),
+                useId:localStorage.getItem('userID'),
                 useName:localStorage.getItem('userName'),
 				color: '',
 				endVal1: 6,
@@ -369,8 +344,9 @@
 		},
 		mounted() {
 			this.color = user().color;
-			let adminAffirmData = JSON.parse(sessionStorage.getItem("adminAffirmData")) 
+			let adminAffirmData = JSON.parse(sessionStorage.getItem("schoolAffirmData")) 
 			if(adminAffirmData){
+                console.log(adminAffirmData)
 				this.adminAffirmData = adminAffirmData
 				this.form.count = adminAffirmData.count
 				this.form.style_count =adminAffirmData.style_count

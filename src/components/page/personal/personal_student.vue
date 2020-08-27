@@ -461,7 +461,8 @@
 				"id":this.id,
 				"pageSize":this.pageSize,
 				"pageNum":this.pageNum,
-				'operator_id':this.userID
+				'operator_id':this.userID,
+				'operator_type':localStorage.getItem('loginUserType')
 			}).then(res=>{
 				this.papers = res.data.data.list
 				this.total= res.data.data.total
@@ -474,7 +475,8 @@
 				teacherIndex({
 					"pageNum":this.pageNum,
 					"pageSize":this.pageSize,
-					'operator_id':this.userID
+					'operator_id':this.userID,
+					'operator_type':localStorage.getItem('loginUserType')
 				}).then(res=>{
 					this.papers = res.data.data.list
 					this.total= res.data.data.total

@@ -23,7 +23,7 @@ export function handleCurrentChange(val){
 		"pageNum":this.pageNum,
 		"pageSize":this.pageSize
 	}).then(res=>{
-		console.log(res)
+		// console.log(res)
 		this.papers = res.data.data.list
 		this.total = res.data.data.total
 		this.currentPage = res.data.data.pageNum
@@ -40,7 +40,7 @@ export function studentIndexData(data){
 	}).then(res => {
 		
 		this.papers = res.data.data.list
-		console.log(this.papers)
+		
 		this.total = res.data.data.total
 		this.currentPage = res.data.data.pageNum
 		this.download = res.data.data.disabled

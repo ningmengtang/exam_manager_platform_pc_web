@@ -39,9 +39,11 @@
 						 {{scope.row.status ===0?'待确认':scope.row.status ===1?'已确认等待分发':scope.row.status ===2?'已取消':scope.row.status == 3?'已分发':''}}
                     </template>
 				</el-table-column>
-				<el-table-column label="操作" width="250" align="center">
+				<el-table-column label="操作" width="480" align="center">
                     <template slot-scope="scope">
+						<el-button type="primary" size="small"  @click="loadFile(scope.$index, scope.row)">上传合同</el-button>
 						<el-button type="success" size="small"  @click="uploadFile(scope.$index, scope.row)">导出合同</el-button>
+						<el-button type="success" size="small"  @click="openFile(scope.$index, scope.row)">查看详情</el-button>
 						<el-button type="danger" size="small"  @click="DelFile(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -61,13 +63,15 @@
 		apiAdminOrderList,
 		apiAdminOrderUpdate,
 		AdminOrderGetFile,
-		AdminOrderDel
+		AdminOrderDel,
+		AdminOrderUpload,
+		AdminOrderUploadFile
 	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				currentPage:1,
-				pageSize:4,
+				pageSize:6,
 				pageNum:1,
 				total:0,
 				orderList:[],  //订单数据
@@ -111,7 +115,6 @@
 						"pageSize":this.pageSize,
 						"operator_id": this.operatorId,
 						"operator_type":this.operatorType
-						// "status":this.orderStatus
 					}).then(res=>{
 						this.orderList = res.data.data.list
 						this.total = res.data.data.total
@@ -134,31 +137,13 @@
 			handleSizeChange(val) {
 				this.pageSize = val
 				this.getItemTable()
-				// apiAdminOrderList({
-				// 	"pageNum":this.pageNum,
-				// 	"pageSize":this.pageSize,
-				// 	"operator_id": this.operatorId,
-				// 	"operator_type":this.operatorType
-				// }).then(res=>{
-				// 	this.orderList = res.data.data.list
-				// 	this.total = res.data.data.total
-				// 	this.currentPage = res.data.data.pageNum
-				// })
+
 			},
 			handleCurrentChange(val) {
 				this.pageNum = val
 				console.log(this.orderStatus)
 				this.getItemTable()
-				// apiAdminOrderList({
-				// 	"pageNum":this.pageNum,
-				// 	"pageSize":this.pageSize,
-				// 	"operator_id": this.operatorId,
-				// 	"operator_type":this.operatorType
-				// }).then(res=>{
-				// 	this.orderList = res.data.data.list
-				// 	this.total = res.data.data.total
-				// 	this.currentPage = res.data.data.pageNum
-				// })
+
 			},
 			// 下载合同
 			uploadFile(index,row){
@@ -173,6 +158,37 @@
 					//释放内存
 					window.URL.revokeObjectURL(link.href)
 				})
+			},
+			// 上传合同
+			loadFile(index,row){
+				var input =  document.createElement('input')
+				input.type = 'file'
+				input.accept = '.docx'
+				input.addEventListener('change',(event)=>{
+					let file = event.target.files[0]
+					var data = new FormData()
+					data.append('file',file)
+					AdminOrderUploadFile(row.id,data).then(res=>{
+						if(res.data.result){
+							this.$message.success('上传成功')
+							apiAdminOrderList({
+								"pageNum":this.pageNum,
+								"pageSize":this.pageSize,
+								"operator_id": this.operatorId,
+								"operator_type":this.operatorType
+							}).then(res=>{
+								this.orderList = res.data.data.list
+								this.total = res.data.data.total
+								this.currentPage = res.data.data.pageNum
+							})
+						}else{
+							this.$message.error(res.data.message)
+						}
+					})
+				})
+				input.click()
+				input.remove()
+				// AdminOrderUpload(row.id,)
 			},
 			// 删除订单
 			DelFile(index,row){
@@ -192,6 +208,11 @@
         		}).catch(() => {
         		         
         		});
+			},
+			openFile(index,row){
+				console.log(row)
+				sessionStorage.setItem('schoolAffirmData', JSON.stringify(row))
+				this.$router.push('/distribution_school_affirm')
 			}
 		},
 		mounted() {
@@ -205,7 +226,6 @@
 				"operator_id": this.operatorId,
 				"operator_type":this.operatorType
 			}).then(res=>{
-				// console.log(res)
 				this.orderList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum

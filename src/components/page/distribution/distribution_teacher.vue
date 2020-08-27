@@ -16,7 +16,7 @@
 				<div class="right">
 			
 					<span   style="display: contents;">
-						<el-button type="text" class="download hover"  @click="distribution(data.pid)" >立即分发</el-button>
+						<el-button type="text" class="download hover"  @click="distribution(data.id)" >立即分发</el-button>
 					</span>
 				</div>
 				</div>
@@ -31,13 +31,13 @@
 		<!-- Table -->
 		<el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
-				<!-- <el-select v-model="typeClassStatus" placeholder="请选择班级" style="margin:20px;">
+				<el-select v-model="classId" placeholder="请选择班级" @change="changeClass" style="margin:10px">
 					<el-option
-					v-for="item in options"
-					:label="item.label"
-					:value="item.value">
+					v-for="item in classList"
+					:label="item.name"
+					:value="item.id">
 					</el-option>
-				</el-select> -->
+				</el-select>
 				<el-table
                     :data="studentList"
                     @selection-change="handleSelectionChange">
@@ -45,7 +45,14 @@
                         type="selection"
                         width="55">
                     </el-table-column>
-
+					<el-table-column
+                        label="学校"
+                       
+                        >
+						<template slot-scope="scope">
+							{{scope.row.student.schoolName}}
+						</template>
+                    </el-table-column>
                     <el-table-column
                         label="学号"
                        
@@ -98,7 +105,10 @@
 		teacherSelectTag,
 		teacherDistributeselect,
 		selectStudentWithPaperAllotByTeacherIdAndPaperId,
-		studentStudentExamAdd
+		studentStudentExamAdd,
+		schoolSelectTeacher,
+		ApiClassSelectListByOptions,
+		apiCommonExamSelectList
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -136,32 +146,19 @@
 				student: [1, 2, 3, 4, 5],
 				checkboxGroup2: ['上海'],
 				papers:'',
-				li: [{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '1'
-					},
-					{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '2'
-					}
-				],
 				dialogTableVisible: false,
 				dialogFormVisible: false,
+
+
+				classId:'',
+				classList:[]
 			};
 		},
 		methods: {
 			//获取选择标签的内容
 			handleSizeChange(val) {
 				this.pageSize = val;
-				teacherIndex({
+				apiCommonExamSelectList({
 					'operator_id':this.userID,
 					"operator_type":localStorage.getItem('loginUserType'),
 					"pageSize": this.pageSize,
@@ -175,7 +172,7 @@
 			},
 			handleCurrentChange(val) {
 				this.pageNum = val;
-				teacherIndex({
+				apiCommonExamSelectList({
 					'operator_id':this.userID,
 					"operator_type":localStorage.getItem('loginUserType'),
 					"pageNum": this.pageNum,
@@ -210,53 +207,61 @@
 					this.$refs.multipleTable.clearSelection();
 				}
 			},
-			submit() {
-				//关闭窗口
-				this.dialogTableVisible = false;
-			},
+			// submit() {
+			// 	//关闭窗口
+			// 	this.dialogTableVisible = false;
+			// },
 	
 			async getTypeList(tagType, index) {
 				await this.TagTypePromise(tagType, index)
 				// return n 
 			},
 			setCurrent(row) {
-			        this.$refs.singleTable.setCurrentRow(row);
-			      },
+			    this.$refs.singleTable.setCurrentRow(row);
+			},
 			// 查询分发试卷id
 			distribution(id){
-				console.log(id)
 				this.dialogTableVisible = true
-				let classId = ''
+				this.classId = ''
 				this.paperId = id
-				let teacherId = this.userID
-				selectStudentWithPaperAllotByTeacherIdAndPaperId(classId,this.paperId,teacherId).then(res=>{
-					this.studentList = res.data.data
+				// let teacherId = this.userID
+				selectStudentWithPaperAllotByTeacherIdAndPaperId(this.classId,this.paperId,this.userID).then(res=>{
 					console.log(res)
+					this.studentList = res.data.data
 				})
+			},
+			changeClass(){
+				selectStudentWithPaperAllotByTeacherIdAndPaperId(this.classId,this.paperId,this.userID).then(res=>{
+					this.studentList = res.data.data
+				})
+			},
+			async getStudentExamAdd(id){
+				await this.examPromise(id)
+			},
+			examPromise(id){
+				return new Promise((resolve, reject)=>{
+					studentStudentExamAdd({
+						"studentId": id,
+						"examinationId":this.paperId
+					}).then(res=>{
+						
+						resolve(res)
+					})
+				})
+				
 			},
 			onSubmit(){
 				for(var i=0;i<this.selectStudent.length;i++){
-					studentStudentExamAdd({
-						"studentId": this.selectStudent[i].student.id,
-						"examinationId":this.paperId
-					}).then(res=>{
-						if(res.data.result){
-							this.$message.success('分发成功')
-						}else{
-							this.$message.error('分发失败')
-						}
-					})
+					this.getStudentExamAdd(this.selectStudent[i].student.id)
 				}
-
-				setTimeout(() => {
-					this.dialogTableVisible = false
-				}, 1000);
+				this.dialogTableVisible = false
+				this.$message.success('操作成功')
 			}
 
 		},
 		mounted() {
 			this.color = user().color;
-			teacherIndex({
+			apiCommonExamSelectList({
 				"pageSize":this.pageSize,
 				"pageNum":this.pageNum,
 				'operator_id':this.userID,
@@ -268,7 +273,16 @@
 				this.pageSize=res.data.data.pageSize
 				this.currentPage = res.data.data.pageNum
 			})
-			// this
+			schoolSelectTeacher({
+				"id":this.userID
+			}).then(res=>{
+				let id = res.data.data.list[0].schoolId
+				ApiClassSelectListByOptions({
+					"schoolId": id
+				}).then(res=>{
+					this.classList = res.data.data.list
+				})
+			})
 		}
 	};
 </script>
