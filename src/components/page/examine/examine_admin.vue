@@ -2,6 +2,7 @@
     <div>
         <div class="container">
             <el-table
+                v-loading="loading"
                 :data="tableData"
                 border
                 class="table"
@@ -66,7 +67,8 @@ export default {
             currentPage:1,
             pageSize:6,
             pageNum:1,
-            total:0
+            total:0,
+            loading:false
         }
     },
     mounted(){
@@ -74,11 +76,13 @@ export default {
     },
     methods:{
         init(){
+            this.loading = true
             apiCommonExamSelectList({
                 "operator_type":'user',
                 "pageSize":this.pageSize,
                 "pageNum":this.pageNum
             }).then(res=>{
+                this.loading = false
                 this.tableData = res.data.data.list
                 this.total = res.data.data.total
                 this.currentPage = res.data.data.pageNum

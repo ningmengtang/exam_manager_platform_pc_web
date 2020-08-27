@@ -70,9 +70,9 @@
 					<div class="p-status">{{d.putInto ==0?'取消入库':d.putInto == 1?'入库成功':d.putInto==2?'正在入库':''}}</div>
 					<!-- <div class="p-status">{{d.status}}</div> -->
 					<!-- <i class="p-status-icon el-icon-time" v-if="d.putInto==1"></i> -->
-					<i class="p-status-icon el-icon-download" v-if="d.putInto==1"></i>
+					<!-- <i class="p-status-icon el-icon-download" v-if="d.putInto==1"></i>
 					
-					<i class="p-status-icon el-icon-loading" v-if="d.putInto==2"></i>
+					<i class="p-status-icon el-icon-loading" v-if="d.putInto==2"></i> -->
 				</div>
 			</div>
 
