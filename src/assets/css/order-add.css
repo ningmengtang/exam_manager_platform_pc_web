@@ -1,6 +1,6 @@
 .box{color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;height: 100%;padding: 36px;display: flex;}
 
-.left-box{width: 40%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;}
+.left-box{width: 40%;min-height:720px;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;}
 .left-box .user-img{width: 90px;height: 90px;border-radius: 50%;}
 .left-box .card-top{display: flex;align-items: center;justify-content: center;flex-direction: column;}
 .left-box .user-top{width: 100%;margin-top: 30px;}

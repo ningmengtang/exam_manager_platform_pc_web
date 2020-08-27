@@ -96,7 +96,7 @@ export default {
                          }
                        ]
             }
-            this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+            this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
         }
     }
 }

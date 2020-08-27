@@ -147,18 +147,19 @@
                 this.testPaperId = id
             },
             onSubmit(){
-                for(var i=0;i<this.papaerType.length;i++){
-                    let  createTestPaperInfoObj = {
-                 		testPaperId:this.testPaperId,
-                        students:[
-                          {
-                            suid:this.papaerType[i].id
-                          }
-                        ]
-                      }
-                    // console.log( createTestPaperInfoObj)
-                    this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
-                }
+                this.dialogTableVisible = false
+				let  createTestPaperInfoObj = {
+					 	testPaperId:this.testPaperId,
+					    students:[]
+					}
+				for(var i=0;i<this.papaerType.length;i++){
+					createTestPaperInfoObj.students.push({
+						"suid":this.papaerType[i].id,
+						"utype":"student",
+						"items":[]
+					})
+				}
+				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
                 
             },
 			handleSizeChange(val) {

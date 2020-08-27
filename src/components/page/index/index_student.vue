@@ -38,7 +38,7 @@
 			</el-row>
 		</div>
 		<div class="papers-box" v-loading="loading">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi" @click="downloadFile(d)" style="cursor: pointer;">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
@@ -56,7 +56,7 @@
 						结束下载时间：{{d.overTime}}
 					</div>
 					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0?'可以下载':'不允许下载'}}</div>
-					<i @click="downloadFile(d)" class="p-status-icon el-icon-download" v-if="d.status == 0">
+					<i  class="p-status-icon el-icon-download" v-if="d.status == 0">
 						
 					</i>
 					<i  class="p-status-icon el-icon-close"  v-if="d.status == 1">
@@ -128,13 +128,16 @@
 			handleSizeChange,handleCurrentChange,studentIndexData
 			,
 			downloadFile(item){
-				if(item.startTime && item.overTime){
+				if(item.status == 0){
+					if(item.startTime && item.overTime){
 					let arr = this.isDuringDate(item.startTime,item.overTime)
 					if(arr){
 						if(item.affix){
 							apicommonExamGetFile(item.id).then(res=>{
+								// console.log(res)
 								var headers = res.headers['content-disposition']
-								headers = headers.substr(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
+								// console.log(headers)
+								headers = headers.substring(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
 								const blob = new Blob([res.data],{type:''})
 								let link = document.createElement('a');
 								let objectUrl = URL.createObjectURL(blob);
@@ -153,25 +156,24 @@
 						          }
 						        ]
 						      }
-							this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+							this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
 						}
 						
 					}else{
 						this.$message.warning('未到下载时间，不允许下载')
 					}
-				}else{
-					let  createTestPaperInfoObj = {
-					 		testPaperId:item.id,
-					        students:[
-					          {
-					            suid:localStorage.getItem('userID')
-					          }
-					        ]
-					      }
-					this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+					}else{
+						let  createTestPaperInfoObj = {
+						 		testPaperId:item.id,
+						        students:[
+						          {
+						            suid:localStorage.getItem('userID')
+						          }
+						        ]
+						      }
+						this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+					}
 				}
-				
-		
 			},
 			isDuringDate(beginDateStr,endDateStr){
 				var curDate = new Date()
