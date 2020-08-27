@@ -5,7 +5,7 @@ import ElementUI from 'element-ui';
 import VueI18n from 'vue-i18n';
 import VCharts from 'v-charts'
 import { messages } from './components/common/i18n';
-import  global  from'./components/common/globalVariable';
+import global from './components/common/globalVariable';
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 // import './assets/css/theme-green/index.css'; // 浅绿色主题
 import './assets/css/icon.css';
@@ -36,26 +36,26 @@ const i18n = new VueI18n({
     messages
 });
 //全局变量
-Vue.prototype.global = {  
-      loginUserType:localStorage.getItem('loginUserType'),  
-      loginToken: localStorage.getItem('loginToken'),  
-      userID:localStorage.getItem('userID'),  
-	  userName:localStorage.getItem('userName')
-    };  
+Vue.prototype.global = {
+    loginUserType: localStorage.getItem('loginUserType'),
+    loginToken: localStorage.getItem('loginToken'),
+    userID: localStorage.getItem('userID'),
+    userName: localStorage.getItem('userName')
+};
 router.beforeEach((to, from, next) => {
-  /* 路由发生变化修改页面title */
-  if (to.meta.title) {
-    document.title = to.meta.title
-  }
-  const role  = localStorage.getItem('loginUserType');
-  const token  = localStorage.getItem('loginToken');
-  if(!role && !token && to.path !== '/login'){
+    /* 路由发生变化修改页面title */
+    if (to.meta.title) {
+        document.title = to.meta.title
+    }
+    const role = localStorage.getItem('loginUserType');
+    const token = localStorage.getItem('loginToken');
+    if (!role && !token && to.path !== '/login') {
         next('/login');
-  }else if(role && token && to.path == '/login'){
+    } else if (role && token && to.path == '/login') {
         next(`/index_${role}`)
-  }else{
-      next()
-  }
+    } else {
+        next()
+    }
 });
 
 // router.beforeEach((to, from, next) => {
