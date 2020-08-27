@@ -1,6 +1,14 @@
 <template>
-    <div>
+    <div style="padding: 24px 38px;">
         <div class="container">
+            <el-select v-model="examineStatus" placeholder="请选择"  @change="changeStatus" style="margin:10px">
+                <el-option
+                v-for="item in options"
+               
+                :label="item.label"
+                :value="item.id">
+                </el-option>
+            </el-select>
             <el-table
                 v-loading="loading"
                 :data="tableData"
@@ -52,7 +60,20 @@ export default {
             pageSize:6,
             pageNum:1,
             total:0,
-            loading:false
+            loading:false,
+            examineStatus:'',
+            options:[{
+                id:0,
+                label:'入库失败'
+            },
+            {
+                id:1,
+                label:'入库成功'
+            },
+            {
+                id:2,
+                label:'正在入库'
+            }]
         }
     },
     mounted(){
@@ -64,15 +85,18 @@ export default {
             apiCommonExamSelectList({
                 "operator_type":'user',
                 "operator_id":Number(localStorage.getItem('userID')),
+                "putInto":this.examineStatus,
                 "pageSize":this.pageSize,
                 "pageNum":this.pageNum
             }).then(res=>{
                 this.loading = false
-                console.log(res)
                 this.tableData = res.data.data.list
                 this.total = res.data.data.total
                 this.currentPage = res.data.data.pageNum
             })
+        },
+        changeStatus(){
+            this.init()
         },
         //改变时
         handleSizeChange(val) {
@@ -83,7 +107,6 @@ export default {
         //条目改变时
         handleCurrentChange(val) {
             this.pageNum = val
-            // console.log(val)
             this.init()
         },
         // 预览试卷

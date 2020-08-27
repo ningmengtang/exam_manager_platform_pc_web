@@ -124,20 +124,25 @@
 					</div>
 				</div>
 			</div>
-			
-
+			<!-- <div   v-if="uploadFile">已上传文件</div> -->
 			<div class="l-box-2" v-if="ispaperType">
+				
 				<el-upload 
 				class="upload-demo" 
 				drag action=""  
 				:show-file-list="false"
                 :http-request="uploadFild">
 					<i class="el-icon-upload"></i>
-					<div class="el-upload__text">
+					<div class="el-upload__text"  v-if="!uploadFile">
 						将文件拖到此处，或
 						<em>点击上传</em>
 					</div>
+					<div class="el-upload__text" v-if="uploadFile">
+							已上传文件
+						<!-- <em>点击上传</em> -->
+					</div>
 				</el-upload>
+				
 			</div>
 		</div>
 		<div class="right">
@@ -371,6 +376,7 @@ export default {
 											"examinationId":examId,
 											"studentId":this.selectStudentList[i].id
 										}).then(res=>{
+											
 											if(res.data.result){
 											}else{
 												this.$message.error(res.data.message)
@@ -380,7 +386,7 @@ export default {
 									this.$message.success('操作成功')								
 								}else{
 									this.$message.success('操作完成，未绑定学生')
-									// 没有绑定学生
+									this.$router.push('/manage_teacher')
 								}
 							}else{
 								this.$message.error(res.data.message)
