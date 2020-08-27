@@ -132,7 +132,8 @@
 	import {
 		schoolSelectTeacher,
 		adminDeleteTeacher,
-		StudentAccountInfo
+		StudentAccountInfo,
+		adminDeleteStuednt
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -273,16 +274,30 @@
 			},
 			// 删除
 			deleteLi(id) {
-				adminDeleteTeacher(id).then(res => {
-					this.$message.success('删除成功')
-				})
-				schoolSelectTeacher({
-					'schoolId': localStorage.getItem('userID')
-				}).then(res => {
-					console.log(res.data.data)
-					this.li = res.data.data.list
-					this.total = res.data.data.total
-				})
+				switch (this.typeStatus) {
+					case 'student':
+					adminDeleteStuednt(id).then(res => {
+							this.$message.success('删除成功')
+						})
+						StudentAccountInfo(this.page).then(res => {
+							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+								'查询超时,请刷新重新查询！')
+						})
+						break;
+					case 'teacher':
+						adminDeleteTeacher(id).then(res => {
+							this.$message.success('删除成功')
+						})
+						schoolSelectTeacher({
+							'schoolId': localStorage.getItem('userID')
+						}).then(res => {
+							console.log(res.data.data)
+							this.li = res.data.data.list
+							this.total = res.data.data.total
+						})
+						break;
+				}
+				
 			},
 			//修改
 			teacherChange(data) {

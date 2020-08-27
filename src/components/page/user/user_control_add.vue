@@ -84,7 +84,8 @@
 		adminAddTeacher,
 		adminAddSchool,
 		adminAddUser,
-		adminAddAdmin
+		adminAddAdmin,
+		adminSelectRoleadminPower
 	} from '@/api/api.js';
 	import md5 from 'js-md5';
 	export default {
@@ -197,7 +198,8 @@
 					stuedntNum: '',
 					mobile: '',
 					schoolCode:'',
-					adminRoleDefault: []
+					adminRoleDefault: [],
+					adminRole: '',
 
 				},
 				dialogTableVisible: false,
@@ -342,7 +344,7 @@
 
 		},
 		mounted() {
-
+           let form = this.form
 			switch (this.$route.query.typeStatus) {
 				case 'student':
 					this.form.roleDefault = '学生'
@@ -357,6 +359,12 @@
 					this.form.roleDefault = '专家'
 					break;
 				case 'admin':
+				//查询全部角色
+				adminSelectRoleadminPower({
+					"isAdmin": true
+				}).then(res => {
+					form.adminRole = res.data.data.list;
+				})
 					this.form.roleDefault = '管理员'
 					break;
 
