@@ -65,11 +65,11 @@
 			
 							
 							<div class="fault" v-if="!item.file_path"  @click="uploadFile(item)">学生信息未导入，点击导入</div>
-							<div  v-if="item.file_path"  >已导入学生信息</div>
+							<div class="success" v-if="item.file_path"  @click="uploadFile(item)">学生信息已导入，点击重新导入</div>
 							<!-- <div class="" v-if=""></div> -->
 						</div>
 					</div>
-					<el-button type="success" size="small" style="float:right" v-if="item.status == 1" >已分配</el-button>
+					<el-button type="success" size="small" style="float:right" v-if="item.status == 1" disabled >已分配</el-button>
 				</div>
 			</div>
 		</div>

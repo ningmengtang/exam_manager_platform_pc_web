@@ -46,11 +46,13 @@ export default function usertype() {
                 icon: 'el-icon-s-custom',
                 index: `manage_${loginUserType}_subordinate`,
                 title: '用户管理'
-            }, {
-                icon: 'el-icon-data-line',
-                index: `distribution_${loginUserType}`,
-                title: '分配试卷'
-            })
+			}, 
+			// {
+            //     icon: 'el-icon-data-line',
+            //     index: `distribution_${loginUserType}`,
+            //     title: '分配试卷'
+			// }
+			)
             color = '#2BBB61'
             type = '学校负责人'
             break;
