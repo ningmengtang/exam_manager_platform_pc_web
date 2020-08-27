@@ -16,24 +16,20 @@
 				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button> -->
 				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd('student')"><span
 					 class="el-icon-plus"></span> 新增学生</el-button>
-				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd('teacher')"><span
-					 class="el-icon-plus"></span> 新增教师</el-button>
 			</div>
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
 			<div class="li" v-for="(data, i) in li" :key="data.i">
 				<!-- <img src="../../../assets/img/img.jpg" class="user-img" /> -->
-				<div class="teacher-name">ID:{{data.id}}</div>
+				<div class="teacher-name">ID:{{data.student.id}}</div>
 				<div class="title-box">
-					<div class="synopsis">{{ data.name }}</div>
+					<div class="synopsis">{{ data.student.name }}</div>
 				</div>
 				<div class="title-box">
-					<!-- <div class="title">{{ data.mobile }}</div> -->
-					<div class="other" v-if="typeStatus=='student'">身份证:{{data.idCard}}</div>
-					<div class="other" v-else>手机号码：{{ data.mobile }}</div>
+					<div class="other">身份证:{{data.student.idCard}}</div>
 				</div>
-				<div class="time">{{ data.createDate }}</div>
+				<div class="time">{{ data.student.createDate }}</div>
 				<!-- <div class="label-box">
 					<div class="label">{{ data.label }}</div>
 					<div class="label">人教版</div>
@@ -45,8 +41,8 @@
 						<div class="status_box">
 							<i class="icon el-icon-check ii"></i>
 							<span class="text ii">正常使用</span>
-							<i class="icon i el-icon-edit-outline ii" style="cursor: pointer;" @click="teacherChange(data.id)"></i>
-							<i class="icon i el-icon-close ii" style="cursor: pointer;"  @click="deleteLi(data.id);dialogVisible=true"></i>
+							<i class="icon i el-icon-edit-outline ii" style="cursor: pointer;" @click="teacherChange(data.student.id)"></i>
+							<i class="icon i el-icon-close ii" style="cursor: pointer;" @click="deleteLi(data.student.id);dialogVisible=true"></i>
 						</div>
 					</div>
 				</div>
@@ -131,14 +127,17 @@
 	import user from '../../common/user';
 	import {
 		schoolSelectTeacher,
-		adminDeleteTeacher,
-		StudentAccountInfo
+		adminDeleteStuednt,
+		StudentAccountInfo,
+		adminSelectRoleTeacherId,
+		PaperAllotByTeacherIdAndPaperId
 	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				color: '',
-				schoolId: localStorage.getItem('userID'),
+				teacherId: localStorage.getItem('userID'),
+				schoolId: '',
 				checkAll: false,
 				isIndeterminate: true,
 				disStatus: '',
@@ -166,9 +165,6 @@
 				userType: [{
 					name: '学生',
 					type: 'student'
-				}, {
-					name: '教师',
-					type: 'teacher'
 				}],
 				tableData: [{
 					date: '1',
@@ -264,7 +260,7 @@
 			},
 			goAdd(data) {
 				this.$router.push({
-					path: 'manage_school_add',
+					path: 'manage_teacher_add',
 					query: {
 						typeStatus: data
 					}
@@ -273,21 +269,21 @@
 			},
 			// 删除
 			deleteLi(id) {
-				adminDeleteTeacher(id).then(res => {
+				adminDeleteStuednt(id).then(res => {
+					console.log(res)
 					this.$message.success('删除成功')
 				})
-				schoolSelectTeacher({
-					'schoolId': localStorage.getItem('userID')
-				}).then(res => {
-					console.log(res.data.data)
-					this.li = res.data.data.list
-					this.total = res.data.data.total
+				PaperAllotByTeacherIdAndPaperId(
+					this.teacherId
+				).then(res => {
+					res.data ? (this.li = res.data.data, console.log(res.data.data)) : this.$message.error(
+						'查询超时,请刷新重新查询！')
 				})
 			},
 			//修改
 			teacherChange(data) {
 				this.$router.push({
-					name: 'manage_school_change',
+					name: 'manage_teacher_change',
 					params: {
 						id: data,
 						typeStatus: this.typeStatus
@@ -298,12 +294,13 @@
 		},
 		mounted() {
 			this.color = user().color;
-			StudentAccountInfo({
-				pageNum: this.page.pageNum,
-				pageSize: this.page.pageSize,
-				schoolId: this.schoolId
-			}).then(res => {
-				res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+			// adminSelectRoleTeacherId(this.teacherId).then(res=>{
+			// 	this.schoolId=res.data.data.schoolId
+			// })
+			PaperAllotByTeacherIdAndPaperId(
+				this.teacherId
+			).then(res => {
+				res.data ? (this.li = res.data.data, console.log(res.data.data)) : this.$message.error(
 					'查询超时,请刷新重新查询！')
 			})
 

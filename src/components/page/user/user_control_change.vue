@@ -22,7 +22,7 @@
 						</el-switch>
 					</div>
 					<el-form-item label="密码:" prop="password">
-						<el-input v-model="form.password" show-password disabled>
+						<el-input v-model="form.password" disabled>
 						</el-input>
 					</el-form-item>
 					<el-form-item label="学校编号:" prop="schoolCode" v-if="typeStatus=='school'">
@@ -45,19 +45,24 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student1'">
-						<el-select v-model="form.classDefault" placeholder="请选择" @visible-change="classList">
+					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student'||typeStatus=='teacher'">
+						<el-select v-model="form.classDefault" multiple placeholder="请选择" @visible-change="classList">
 							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 							</el-option>
 						</el-select>
 					</el-form-item>
+					<el-form-item label="管理员角色:" prop="sex" v-if="typeStatus=='admin'">
+						<el-select v-model="form.adminRoleDefault" multiple placeholder="请选择">
+							<el-option v-for="(item,i) in form.adminRole" :key="item.i" :label="item.name" :value="item.id">
+							</el-option>
+						</el-select>
+					</el-form-item>
 					<el-form-item label="角色:" prop="roleDefault">
-
 						<el-input v-model="form.roleDefault" disabled>
 						</el-input>
 					</el-form-item>
 					<el-form-item style="margin-top: 40px;">
-						<el-button type="primary" :style="{'background-color':'#2CBC62'}" @click="submitForm()">立即修改</el-button>
+						<el-button type="primary" :style="{'background-color':'#2CBC62'}" @click="submitForm">立即修改</el-button>
 						<el-button @click="black">取消</el-button>
 					</el-form-item>
 				</el-form>
@@ -83,8 +88,13 @@
 		adminUpdateSchool,
 		adminUpdateUser,
 		adminUpdateAdmin,
-		apiPaperWithTagList
-
+		apiPaperWithTagList,
+		adminSelectRoleadminPower,
+		adminResetPasswordStudent,
+		adminResetPasswordTeacher,
+		adminResetPasswordSchool,
+		adminResetPasswordUser,
+		adminResetPasswordAdmin
 	} from '@/api/api.js';
 	import md5 from 'js-md5';
 	export default {
@@ -163,15 +173,17 @@
 						required: true,
 						message: '请输入学校编号',
 						trigger: 'blur'
-					}]
-
-
-
+					}],
+					adminRole: [{
+						required: true,
+						message: '请输选择管理员权限',
+						trigger: 'blur'
+					}],
 				},
 				form: {
 					userName: '',
 					idCard: '',
-					password: '',
+					password: '重置密码默认为123456',
 					sexDefault: '男',
 					sex: ['男', '女'],
 					classDefault: '',
@@ -197,7 +209,10 @@
 					school: '',
 					stuedntNum: '',
 					mobile: '',
-					schoolCode: ''
+					schoolCode: '',
+					adminRoleDefault: [],
+					adminRole: '',
+					sn: ''
 
 				},
 				dialogTableVisible: false,
@@ -225,6 +240,7 @@
 			// 选择学校事件
 			schoolList(val) {
 				let schoolId = this.form.schoolDefault[0].id;
+				console.log(schoolId)
 				this.form.classDefault = '';
 				//查询班级
 				ApiClassSelectListByOptions({
@@ -265,6 +281,12 @@
 									this.$message.success('修改成功');
 									this.black();
 								})
+								//判断重置密码修改
+								if (this.passwordChange) {
+									adminResetPasswordStudent(this.userChangId).then(res => {
+										console.log(res)
+									})
+								}
 								break;
 							case 'teacher':
 								adminUpdateTeacher({
@@ -274,11 +296,18 @@
 									schoolName: form.schoolDefault[0].schoolName,
 									schoolId: form.schoolDefault[0].id,
 									schoolSn: form.schoolDefault[0].sn,
+									classesId: form.classDefault
 								}).then(res => {
 									console.log(res)
 									this.$message.success('修改成功');
 									this.black();
 								})
+								//判断重置密码修改
+								if (this.passwordChange) {
+									adminResetPasswordTeacher(this.userChangId).then(res => {
+										console.log(res)
+									})
+								}
 
 								break;
 							case 'school':
@@ -291,6 +320,12 @@
 									this.$message.success('修改成功');
 									this.black();
 								})
+								//判断重置密码修改
+								if (this.passwordChange) {
+									adminResetPasswordSchool(this.userChangId).then(res => {
+										console.log(res)
+									})
+								}
 
 								break;
 							case 'user':
@@ -304,20 +339,39 @@
 									this.$message.success('修改成功');
 									this.black();
 								})
-
+								//判断重置密码修改
+								if (this.passwordChange) {
+									adminResetPasswordUser(this.userChangId).then(res => {
+										console.log(res)
+									})
+								}
 								break;
 							case 'admin':
+								var a = this.form.adminRoleDefault;
+								let arr = []
+								a.map((x, i) => {
+									let json = {};
+									json['roleId'] = a[i]
+									arr.push(json)
+								})
 								adminUpdateAdmin({
 									id: this.userChangId,
 									name: form.userName,
 									sex: form.sexDefault,
-									mobilePhone: form.mobile
+									mobilePhone: form.mobile,
+									sn: form.sn,
+									adminRoles: arr
 								}).then(res => {
 									console.log(res)
 									this.$message.success('修改成功');
 									this.black();
 								})
-
+								//判断重置密码修改
+								if (this.passwordChange) {
+									adminResetPasswordAdmin(this.userChangId).then(res => {
+										console.log(res)
+									})
+								}
 								break;
 						}
 					} else {
@@ -328,7 +382,8 @@
 			},
 			black() {
 				this.$router.push('user_control')
-			}
+			},
+
 
 		},
 		mounted() {
@@ -346,12 +401,25 @@
 					break;
 				case 'teacher':
 					this.form.roleDefault = '教师'
+					
 					adminSelectRoleTeacherId(this.userChangId).then(res => {
-						console.log(res);
+						
 						form.userName = res.data.data.name;
 						form.sex = res.data.data.sex;
 						form.mobile = res.data.data.mobile
 						form.schoolDefault = res.data.data.schoolName
+						console.log(res)
+						//查询班级
+						let schoolId = res.data.data.schoolId;
+						this.form.classDefault = '';
+						//查询班级
+						ApiClassSelectListByOptions({
+							schoolId: schoolId
+						}).then(res => {
+							res.data ? (this.form.class = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+								'查询超时,请刷新重新查询！')
+						})
+						
 					})
 					break;
 				case 'school':
@@ -382,7 +450,20 @@
 						console.log(res);
 						form.userName = res.data.data.name;
 						form.sex = res.data.data.sex;
-						form.mobile = res.data.data.mobilePhone
+						form.mobile = res.data.data.mobilePhone;
+						form.sn = res.data.data.sn;
+						//遍历管理员角色id
+						res.data.data.adminRoles.map(x => {
+							this.form.adminRoleDefault.push(x.roleId)
+						})
+						//查询全部角色
+						adminSelectRoleadminPower({
+							"isAdmin": true
+						}).then(res => {
+							form.adminRole = res.data.data.list;
+							// console.log(res)
+						})
+
 					})
 					break;
 
@@ -392,7 +473,9 @@
 				res.data ? (this.form.school = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
 					'查询超时,请刷新重新查询！')
 			})
-			console.log(this.$route.params.id)
+			// console.log(this.$route.params.id)
+
+
 		}
 	};
 </script>

@@ -67,6 +67,16 @@ export function teacherPersonal() {
 	const result = get('/api/teacher/distribute/downloadExam', data)
 	return result;
 }
+//教师查询学生
+export function PaperAllotByTeacherIdAndPaperId(data){
+	const result =get(`/api/teacher/manager/selectStudentWithPaperAllotByTeacherIdAndPaperId?teacher_id=${data}`)
+	return result;
+}
+//教师新增学生
+export function teacherAddStudent(data){
+	const result =post('/api/student/account/insert',data)
+	return result;
+}
 
 // 试卷查询
 export function paperWithTag(data) {
@@ -114,6 +124,11 @@ export function AdminOrderAdd(data) {
 
 export function AdminOrderUpload(id, data) {
 	const result = post('/api/admin/order/item/upload/' + id, data)
+	return result;
+}
+//学校新增老师
+export function schoolAddTeacher(data){
+	const result =post('/api/school/teacher/insertAndupdate',data)
 	return result;
 }
 // 通过老师id查询的所有学生
@@ -209,6 +224,11 @@ export function adminSelectRoleAdmin(data){
 	const result = post('/api/admin/account/selectSelective',data)
     return result;	
 }
+//查询管理员管理的角色全部权限
+export function adminSelectRoleadminPower(data){
+	const result =post('/api/role/selectListByOptions',data)
+	return result;
+}
 
 // -----------------------管理员通过id查询账号------------------------------------
 //查询管理员管理通过学生id查询
@@ -264,6 +284,34 @@ export function adminAddAdmin(data){
 	return result;
 }
 //-------------------------------------------------------
+// -----------------------管理员重置账号密码------------------------------------
+//重置学生密码
+export function adminResetPasswordStudent(data){
+	const result =get(`/api/pwd/reset/resetStudent/${data}`)
+	return result;
+}
+//重置教师密码
+export function adminResetPasswordTeacher(data){
+	const result =get(`/api/pwd/reset/resetTeacher/${data}`)
+	return result;
+}
+//重置学校密码
+export function adminResetPasswordSchool(data){
+	const result =get(`/api/pwd/reset/resetSchool/${data}`)
+	return result;
+}
+//重置专家密码
+export function adminResetPasswordUser(data){
+	const result =get(`/api/pwd/reset/resetUser/${data}`)
+	return result;
+}
+//重置管理员密码
+export function adminResetPasswordAdmin(data){
+	const result =get(`/api/pwd/reset/resetAdmin/${data}`)
+	return result;
+}
+//-------------------------------------------------------
+
 // -----------------------管理员删除账号------------------------------------
 //管理员删除学生账号
 export function adminDeleteStuednt(data){
@@ -293,7 +341,7 @@ export function adminDeleteAdmin(data){
 //-------------------------------------------------------
 // -----------------------管理员通过id查询账号------------------------------------
 //管理员更新学生账号
-export function adminUpdatestudent(data){
+export function adminUpdateStudent(data){
 	const result=post('/api/admin/user/manage/updateStudent',data)
 	return result;
 }
@@ -568,6 +616,11 @@ export function ExamSelectPapersWithTagsForAllPapers(data) {
 export function selectBySchoolIdAndPaperIdAndClassId(pageNum, pageSize, id, data) {
 	const result = get('/api/student/home/selectBySchoolIdAndPaperIdAndClassId?pageNum=' + pageNum + '&pageSize=' +
 		pageSize + '&paper_id=' + id + '&d=' + new Date() * 1, data)
+	return result;
+}
+//查询教师查询班级
+export function teacherSelectListByOptions(data){
+	const result = post('/api/teacher/teacherClasses/selectListByOptions',data)
 	return result;
 }
 

@@ -114,8 +114,9 @@ export default new Router({
 				{
 				    path: 'manage_school_subordinate',
 				    component: () => import(/* webpackChunkName: "manage_school_subordinate"*/ '../components/page/manage/manage_school_subordinate.vue'),
-				    meta: { title: '学校-教师管理' }
+				    meta: { title: '学校-用户管理' }
 				},
+
 				{
 				    path: 'distribution_school',
 				    component: () => import(/* webpackChunkName: "manage_school_subordinate"*/ '../components/page/distribution/distribution_school.vue'),
@@ -124,7 +125,13 @@ export default new Router({
 				{
 				    path: 'manage_school_add',
 				    component: () => import(/* webpackChunkName: "manage_school_add"*/ '../components/page/manage/manage_school_add.vue'),
-				    meta: { title: '学校-教师管理-新增老师' }
+				    meta: { title: '学校-用户管理-新增用户' }
+				},
+				{
+				    path: 'manage_school_change',
+					name:'manage_school_change',
+				    component: () => import(/* webpackChunkName: "mmanage_school_change"*/ '../components/page/manage/manage_school_change.vue'),
+				    meta: { title: '学校-用户管理-用户修改' }
 				},
 				{
 				    path: 'manage_school_class',
@@ -166,6 +173,22 @@ export default new Router({
 				    path: '/distribution_teacher',
 				    component: () => import(/* webpackChunkName: "distribution_teacher" */'../components/page/distribution/distribution_teacher.vue'),
 				    meta: { title: '教师-试卷分发' }
+				},
+		        {
+		            path: '/manage_teacher_subordinate',
+		            component: () => import(/* webpackChunkName: "manage_teacher_subordinate" */ '../components/page/manage/manage_teacher_subordinate.vue'),
+		             meta: { title: '教师-学生管理' }
+		        },
+				{
+				    path: '/manage_teacher_add',
+				    component: () => import(/* webpackChunkName: "manage_teacher_add" */ '../components/page/manage/manage_teacher_add.vue'),
+				     meta: { title: '教师-学生管理-学生新增' }
+				},
+				{
+				    path: '/manage_teacher_change',
+					name:'manage_teacher_change',
+				    component: () => import(/* webpackChunkName: "manage_teacher_add" */ '../components/page/manage/manage_teacher_change.vue'),
+				     meta: { title: '教师-学生管理-学生修改' }
 				},
 				{
 				    path: '/distribution_admin',

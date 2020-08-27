@@ -68,7 +68,8 @@
 				<div class="other" v-if="typeStatus=='student'">{{data.idCard}}</div>
 				<div class="other" v-else-if="typeStatus=='user'||typeStatus=='admin'">{{data.mobilePhone}}</div>
 				<div class="other" v-else>{{data.mobile}}</div>
-				<div class="other">{{data.schoolName}}</div>
+				<div class="other"><span v-for="(role,i) in data.adminRoles" :key="role.i" class="teacher-name" style="width: 140px;">角色：{{role.roleName}}</span></div>
+				<div class="other" v-if="typeStatus=='admin'">{{data.schoolName}}</div>
 				<div class="time">{{ data.createDate }}</div>
 				<div class="right">
 					<div class="ii">

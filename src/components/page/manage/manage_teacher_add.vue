@@ -10,7 +10,7 @@
 						<div class="username">
 							<!-- <div class="name">小明</div>
 							<div class="user-id">ID:6556565</div> -->
-							<div class="identity" :style="{'background-color':color}">{{form.roleDefault}}</div>
+							<!-- <div class="identity" :style="{'background-color':color}">{{form.roleDefault}}</div> -->
 							<div class="message">
 								<div class="school">{{school}}</div>
 							</div>
@@ -46,9 +46,9 @@
 					<el-input v-model="form.password" show-password>
 					</el-input>
 				</el-form-item>
-				<el-form-item label="班级:" prop="class" >
-					<el-select v-model="form.classDefault" multiple placeholder="请选择" @visible-change="classList">
-						<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
+				<el-form-item label="班级:" prop="class">
+					<el-select v-model="form.classDefault" placeholder="请选择" @visible-change="classList">
+						<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.classesName" :value="item.classesId">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -110,7 +110,9 @@
 		schoolAddTeacher,
 		adminAddStuednt,
 		ApiClassSelectListByOptions,
-		adminSelectRoleSchoolId
+		adminSelectRoleSchoolId,
+		teacherSelectListByOptions,
+		adminSelectRoleTeacherId
 	} from '@/api/api.js';
 	import md5 from 'js-md5';
 	export default {
@@ -119,9 +121,11 @@
 				color: '',
 				currentPage: 1,
 				school: localStorage.getItem('userName'),
-				schoolId: localStorage.getItem('userID'),
-				schoolSn:'',
-				schoolName:'',
+				schoolList: '',
+				schoolId: '',
+				teacherId: localStorage.getItem('userID'),
+				schoolSn: '',
+				schoolName: '',
 				typeStatus: this.$route.query.typeStatus,
 				value2: true,
 				value3: true,
@@ -188,6 +192,11 @@
 						message: '请选择性别',
 						trigger: 'blur'
 					}],
+					stuedntNum: [{
+						required: true,
+						message: '请输入学号',
+						trigger: 'blur'
+					}]
 				},
 				form: {
 					username: '',
@@ -202,7 +211,7 @@
 					site: '',
 					roleDefault: '',
 					classDefault: '',
-					class: '',
+					class: [],
 				},
 				dialogTableVisible: false,
 				dialogTableVisible2: false,
@@ -218,43 +227,25 @@
 			},
 			// 提交表单
 			submitForm() {
+				
 				this.$refs.form.validate((valid) => {
 					if (valid) {
-						let form = this.form
-						switch (this.$route.query.typeStatus) {
-							case 'student':
-								adminAddStuednt({
-									name: form.userName,
-									idCard: form.idCard,
-									password: md5(form.password),
-									sex: form.sexDefault,
-									schoolName: this.schoolName,
-									schoolId: this.schoolId,
-									schoolSn: this.schoolSn,
-									classesId: form.classDefault,
-
-									code: form.stuedntNum
-								}).then(res => {
-									this.$message.success('添加学生账号成功')
-									this.black()
-								})
-
-								break;
-							case 'teacher':
-								let json = {
-									name: form.userName,
-									sex: form.sexDefault,
-									passsword: md5(form.password),
-									schoolId: this.schoolId,
-									mobile: form.mobile
-								}
-
-								schoolAddTeacher(json).then(res => {
-									this.$message.success('添加教师账号成功')
-									this.black();
-								})
-								break;
-						}
+						let form=this.form
+						adminAddStuednt({
+							name: form.userName,
+							idCard: form.idCard,
+							password: md5(form.password),
+							sex: form.sexDefault,
+							schoolName: this.schoolList.schoolName,
+							schoolId: this.schoolList.schoolId,
+							schoolSn: this.schoolList.schoolSn,
+							classesId: this.form.classDefault,
+							code: form.stuedntNum
+						}).then(res => {
+							console.log(res)
+							this.$message.success('添加学生账号成功')
+							this.black()
+						})
 
 
 					} else {
@@ -267,7 +258,7 @@
 
 			},
 			black() {
-				this.$router.push(`/manage_school_subordinate`)
+				this.$router.push(`/manage_teacher_subordinate`)
 			},
 			goClass() {
 				this.$router.push(`/manage_school_class`)
@@ -291,25 +282,21 @@
 		},
 		mounted() {
 			this.color = user().color;
-			ApiClassSelectListByOptions({
-				schoolId: this.schoolId
+
+			teacherSelectListByOptions({
+				"teacherId": this.teacherId
 			}).then(res => {
-				res.data ? (this.form.class = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
-					'查询超时,请刷新重新查询！')
+				this.form.class = res.data.data.list
 			})
-			adminSelectRoleSchoolId(this.schoolId
-			).then(res => {
-				console.log(res.data.data.id)
-                 this.schoolSn=res.data.data.sn
-				 this.schoolName=res.data.data.name
+			//查询学校id
+			adminSelectRoleTeacherId(this.teacherId).then(res => {
+				this.schoolList = res.data.data
 			})
-			
+
+
 			switch (this.typeStatus) {
 				case 'student':
 					this.form.roleDefault = '学生'
-					break;
-				case 'teacher':
-					this.form.roleDefault = '教师'
 					break;
 
 			}
