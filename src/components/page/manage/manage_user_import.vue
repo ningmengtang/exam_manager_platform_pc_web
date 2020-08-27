@@ -9,6 +9,10 @@
 				<div class="l-title">试卷说明</div>
 				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" maxlength="30" show-word-limit></el-input>
 			</div>
+			<!-- <div class="l-box-1">
+				<div class="l-title">试卷类型</div>
+				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" maxlength="30" show-word-limit></el-input>
+			</div> -->
 			<div class="l-box-1">
 				<div class="l-title">试卷作答时间</div>
 				<el-input v-model="form.examTime" :min="1" :max="9999"   type="number" show-word-limit class="ids">
@@ -16,6 +20,28 @@
 						分钟
 					</template>
 				</el-input>
+			</div>
+			<div class="l-box-1">
+				<div class="l-title">开始下载时间</div>
+				<el-date-picker
+					style="margin-top:20px"
+					class="selectTime"
+					v-model="form.startTime"
+					type="datetime"
+					value-format="yyyy-MM-dd HH:mm:ss"
+					placeholder="选择日期时间">
+				</el-date-picker>
+			</div>
+			<div class="l-box-1">
+				<div class="l-title">结束下载时间</div>
+				<el-date-picker
+				style="margin-top:20px"
+					class="selectTime"
+					v-model="form.overTime"
+					type="datetime"
+					value-format="yyyy-MM-dd HH:mm:ss"
+					placeholder="选择日期时间">
+				</el-date-picker>
 			</div>
 			<div class="l-box-1">
 				<div class="l-title">试卷标签</div>
@@ -51,10 +77,20 @@
 							</div>
 					</div>
 					<div class="group">
+							<div class="row-group">
+								<div class="th-group">学期</div>
+								<div class="td-group" >
+									<el-radio-group v-model="form.tag_list[3].id" >
+										<el-radio-button v-for="(d,i) in tagList.semester" :label="d.id">{{d.text}}</el-radio-button>
+									</el-radio-group>
+								</div>
+							</div>
+					</div>
+					<div class="group">
 						<div class="row-group">
 							<div class="th-group">学习年级</div>
 							<div class="td-group" >
-								<el-radio-group v-model="form.tag_list[3].id">
+								<el-radio-group v-model="form.tag_list[4].id">
 										<el-radio-button v-for="(d,i) in tagList.grade" :label="d.id" >{{d.text}}</el-radio-button>
 								</el-radio-group>
 							</div>
@@ -64,8 +100,18 @@
 						<div class="row-group">
 							<div class="th-group">单元</div>
 							<div class="td-group" >
-								<el-radio-group v-model="form.tag_list[4].id" >
+								<el-radio-group v-model="form.tag_list[5].id" >
 									<el-radio-button v-for="(d,i) in tagList.element_test" :label="d.id" >{{d.text}}</el-radio-button>
+								</el-radio-group>
+							</div>
+						</div>
+					</div>
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">试卷类型</div>
+							<div class="td-group" >
+								<el-radio-group v-model="form.tag_list[6].id" disabled>
+									<el-radio-button v-for="(d,i) in tagList.purpose" :label="d.id" >{{d.text}}</el-radio-button>
 								</el-radio-group>
 							</div>
 						</div>
@@ -86,6 +132,7 @@
 					<el-col :span="8">
 						<div class="grid-content bg-purple">
 							<el-button class="i" @click="parperAddPic" >确认提交</el-button>
+							<div class="ii">(在线组卷)</div>
 						</div>
 					</el-col>
 				</el-row>
@@ -130,6 +177,8 @@ export default {
 			dialogVisible: false,
 			ispaperType:true,
 			paperType:'图片试卷',
+			// startTime:'',
+			// endTime:'',
 			tagList:[],
 			AllTagList:[],
 			StudenList:[],
@@ -140,7 +189,12 @@ export default {
 				examExplain:'',
 				examTime:1,
 				elementTest:'',
+				startTime:'',
+				overTime:'',
 				tag_list:[
+				{
+					id:''
+				},
 				{
 					id:''
 				},
@@ -154,13 +208,13 @@ export default {
 				},
 				{
 					id:''
+				},
+				{
+					id:6
 				}
 				]
 			},
 			array:[],
-			cities: ['全部', '上海', '北京', '广州', '深圳'],
-			cities2: ['全部', '1', '2', '3', '4'],
-			checkboxGroup2: ['上海'],
 			options: [
 				{
 					label: '图片试卷',
@@ -783,6 +837,8 @@ export default {
 				this.form.examExplain = newTestPaperInfoForm.examExplain
 				this.form.examTime = newTestPaperInfoForm.examTime
 				this.form.elementTest = newTestPaperInfoForm.elementTest
+				this.form.overTime = newTestPaperInfoForm.overTime
+				this.form.startTime = newTestPaperInfoForm.startTime
 				if(newTestPaperInfoForm.tag_list.length > 0)
 				{
 					this.form.tag_list = newTestPaperInfoForm.tag_list
@@ -814,3 +870,13 @@ export default {
 </script>
 
 <style scoped src="../../../assets/css/manage-import.css"></style>
+<style>
+	.box .left .el-input__inner{
+		border: 1px solid #DCDFE6;
+		padding: 0 15px;
+	}
+	.box .left .selectTime .el-input__inner{
+		 /* margin-top: 20px; */
+		padding: 0 30px; 
+	}
+</style>

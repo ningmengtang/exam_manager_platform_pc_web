@@ -3,7 +3,7 @@
 		<div class="group">
 			<div style="display: flex;">
 				<div>
-					<div class="row-group">
+					<!-- <div class="row-group">
 						<div class="th-group">分发状态</div>
 						<div class="td-group" change>
 							<el-radio-group v-model="disStatus" @change="getQuery">
@@ -12,7 +12,7 @@
 								</el-radio-button>
 							</el-radio-group>
 						</div>
-					</div>
+					</div> -->
 					<div class="row-group" style="margin-top: 20px;">
 						<div class="th-group">年份</div>
 						<div class="td-group">
@@ -48,6 +48,16 @@
 						<div class="td-group">
 							<el-radio-group v-model="grade" @change="getQuery">
 								<el-radio-button v-for="(item,index) in GradeList" :label="item.id">
+									{{item.text}}
+								</el-radio-button>
+							</el-radio-group>
+						</div>
+					</div>
+					<div class="row-group" style="margin-top: 20px;">
+						<div class="th-group">学期</div>
+						<div class="td-group">
+							<el-radio-group v-model="semester" @change="getQuery">
+								<el-radio-button v-for="(item,index) in SemesterList" :label="item.id">
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
@@ -146,6 +156,12 @@
 				<div class="label-box">
 					<div class="label" v-for="i in data.tag_list">{{i.text}}</div>
 				</div>
+				<div class="right">
+					<i class="icon el-icon-time"></i>
+					<div class="status" >{{data.putInto == '0'?'入库失败':data.putInto == '1'?'入库成功':data.putInto == '2'?'正在入库':''}}</div>
+					<!-- <el-button type="text" class="download" v-if="data.putInto == 1" >立即下载</el-button> -->
+					<el-button type="text" class="download"  v-if="data.putInto == 1" @click="teachDownloadList(data)">立即下载</el-button>
+				</div>
 				<!-- <div class="right">
 					<div class="ii" v-if="data.status == '1'">
 						<div style="margin-bottom: 4px;">
@@ -169,19 +185,66 @@
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="pageSize" :total="total"></el-pagination>
 			</div>
-		</div>
-		<!-- <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button> -->
-
-		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
-			<div class="ts-box">
-				<div class="big-icon  el-icon-success"></div>
-				<div class="ii">自行下载试卷完成</div>
 			</div>
+				<el-dialog title="批量下载" :visible.sync="dialogTableVisible">
+			<div class="ts-select">
+				<el-select v-model="classId" placeholder="请选择班级" @change="changeClass" style="margin:10px">
+					<el-option
+					v-for="item in classList"
+				
+					:label="item.name"
+					:value="item.id">
+					</el-option>
+				</el-select>
+				<div class="student-box">
+                    <el-table
+                        :data="tableData"
+                        @selection-change="handleSelectionChange">
+                        <el-table-column
+                            type="selection"
+                            width="55">
+                        </el-table-column>
+                        <el-table-column
+                            label="学号"
+                            >
+							<template slot-scope="scope">
+								{{scope.row.student.code}}
+							</template>
+                        </el-table-column>
+                        <el-table-column
+                            label="学校"
+                            >
+							<template slot-scope="scope">
+								{{scope.row.student.schoolName}}
+							</template>
 
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="dialogVisible = false">取 消</el-button>
-				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-			</span>
+                        </el-table-column>
+						<el-table-column
+                            label="姓名"
+                            
+                            >
+							<template slot-scope="scope">
+								{{scope.row.student.name}}
+							</template>
+                        </el-table-column>
+                        <el-table-column
+                            label="性别"
+                            >
+							<template slot-scope="scope">
+								{{scope.row.student.sex}}
+							</template>
+                        </el-table-column>
+                    </el-table>
+						<!-- <div class="page">
+							<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange1" @current-change="handleCurrentChange1"
+							:current-page.sync="currentPage1" :page-size="pageSize1" :total="total1"></el-pagination>
+						</div> -->
+                    <div style="margin:10px">
+                        <el-button type="primary" @click="onSubmit">立即分发</el-button>
+                        <el-button @click="dialogTableVisible = false">取消</el-button>
+                    </div>
+				</div>
+			</div>
 		</el-dialog>
 	</div>
 </template>
@@ -198,7 +261,11 @@
 		paperWithTag,
 		teacherIndex,
 		teacherSelectTag,
-		teacherDistributeselect
+		teacherDistributeselect,
+		selectStudentWithPaperAllotByTeacherIdAndPaperId,
+		schoolSelectTeacher,
+		ApiClassSelectListByOptions,
+		apicommonExamGetFile
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -218,6 +285,7 @@
 				GradeList: [],
 				VersionList: [],
 				YearsList: [],
+				SemesterList:[],
 				dialogVisible: false,
 				elementTest: 0,
 				purpose: 0,
@@ -225,46 +293,26 @@
 				grade: 0,
 				version: 0,
 				years: 0,
+				semester:0,
 				obj: [],
 				papers: [],
 				total: 0,
 				userID: localStorage.getItem('userID'),
-				cities: ['全部', '上海', '北京', '广州', '深圳'],
-				cities2: ['全部', '1', '2', '3', '4'],
-				checkboxGroup2: ['上海'],
-				li: [{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '1'
-					},
-					{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '2'
-					},
-					{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '3'
-					}
-				]
+
+				classList:[],
+				pageNum1:1,
+				pageSize1:8,
+				currentPage1:1,
+				total1:'',
+				classId:'',
+				testPaperId:'',
+				dialogTableVisible:false,
+				papaerType:[],
+				tableData:[]
+
 			};
 		},
 		methods: {
-			// getValue() {
-			// 	console.log(this.array_nav);
-			// },
-			// handleSizeChange,
-			// handleCurrentChange,
 			goSubmit() {
 				this.$router.push('manage_teacher_submit')
 			},
@@ -299,8 +347,8 @@
 			},
 			getQuery() {
 				this.obj = []
-				if (this.disStatus != 0 && this.disStatus) {
-					this.obj.push(this.disStatus)
+				if(this.semester != 0 && this.semester){
+					this.obj.push(this.semester)
 				}
 				if (this.elementTest != 0 && this.elementTest) {
 					this.obj.push(this.elementTest)
@@ -345,8 +393,8 @@
 						}]
 						let children = all.concat(res.data.data.list)
 						switch (tagType.text) {
-							case '分发状态':
-								this.DisStatusList = children
+							case '学期':
+								this.SemesterList = children
 								break;
 							case '年份':
 								this.YearsList = children
@@ -374,6 +422,56 @@
 			async getTypeList(tagType, index) {
 				await this.TagTypePromise(tagType, index)
 				// return n 
+			},
+			teachDownloadList(data){
+				this.classId = ''
+				this.testPaperId = data.id
+				if(data.affix){
+					apicommonExamGetFile(data.id).then(res=>{
+						var headers = res.headers['content-disposition']
+						headers = headers.substr(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
+						const blob = new Blob([res.data],{type:''})
+						let link = document.createElement('a');
+						let objectUrl = URL.createObjectURL(blob);
+						link.setAttribute("href",objectUrl);
+						link.setAttribute("download",headers); 
+						link.click();
+						//释放内存
+						window.URL.revokeObjectURL(link.href)
+					})
+				}else{
+					this.dialogTableVisible =  true
+					selectStudentWithPaperAllotByTeacherIdAndPaperId(this.classId,this.testPaperId,this.userID).then(res=>{
+						this.tableData = res.data.data
+					})
+				}
+				
+			},
+			// 选择人员
+			handleSelectionChange(val){
+				this.papaerType = val
+				
+			},
+			changeClass(){
+				selectStudentWithPaperAllotByTeacherIdAndPaperId(this.classId,this.testPaperId,this.userID).then(res=>{
+					this.tableData = res.data.data
+					
+				})
+			},
+			onSubmit(){
+				this.dialogTableVisible = false
+				
+				for(var i=0;i<this.papaerType.length;i++){
+					let  createTestPaperInfoObj = {
+					 	testPaperId:this.testPaperId,
+					       students:[
+					         {
+					           suid:this.papaerType[i].student.id
+					          }
+					        ]
+					      }
+					this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				}
 			}
 		},
 		mounted() {
@@ -403,7 +501,18 @@
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
 			})
-
+			
+			schoolSelectTeacher({
+				"id":this.userID
+			}).then(res=>{
+				console.log(res)
+				let id = res.data.data.list[0].schoolId
+				ApiClassSelectListByOptions({
+					"schoolId": id
+				}).then(res=>{
+					this.classList = res.data.data.list
+				})
+			})
 		}
 	};
 </script>

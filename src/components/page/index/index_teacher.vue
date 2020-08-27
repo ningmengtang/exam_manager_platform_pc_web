@@ -49,7 +49,7 @@
 				</el-col> -->
 			</el-row>
 		</div>
-		<div class="papers-box">
+		<div class="papers-box" v-loading="loading">
 			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.putInto == 0?style.pLi:d.putInto == 1?style.pLi5:style.pLi1">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
@@ -63,7 +63,9 @@
 					<div class="p-time">{{d.createDate}}</div>
 					<div class="p-particular">{{d.examExplain}}</div>
 					<div class="p-status">{{d.putInto == 0?'入库失败':d.putInto == 1?'入库完成':'正在入库'}}</div>
-					<i class="p-status-icon el-icon-download"></i>
+					<i @click="downloadFile(d)" class="p-status-icon el-icon-download" v-if="d.putInto == 1">
+						
+					</i>
 				</div>
 			</div>
 		</div>
@@ -105,6 +107,7 @@
 				endVal1: 5000,
 				endVal2: 454,
 				total: 0,
+				loading:false,
 				userID: localStorage.getItem('userID'),
 				style: {
 					card_2: 'background-color: #41dde3;',
@@ -152,7 +155,6 @@
 				pageNum: 1,
 				pageSize: 6,
 				currentPage: 1,
-
 			}
 		},
 		components: {
@@ -168,8 +170,8 @@
 				this.pageSize = val
 				teacherIndex({
 					"pageNum": this.pageNum,
-					"pageSize": this.pageSize,
-					'operator_id': this.userID
+					"pageSize": this.pageSize
+					// 'operator_id': this.userID
 				}).then(res => {
 					this.papers = res.data.data.list
 					this.total = res.data.data.total
@@ -181,8 +183,8 @@
 				this.pageNum = val
 				teacherIndex({
 					"pageNum": this.pageNum,
-					"pageSize": this.pageSize,
-					'operator_id': this.userID
+					"pageSize": this.pageSize
+					// 'operator_id': this.userID
 				}).then(res => {
 					this.papers = res.data.data.list
 					this.total = res.data.data.total
@@ -193,12 +195,24 @@
 			submit() {
 
 				this.$router.push('manage_teacher_import')
+			},
+			downloadFile(item){
+				let  createTestPaperInfoObj = {
+					 		testPaperId:item.id,
+					        students:[
+					          {
+					            suid:localStorage.getItem('userID')
+					          }
+					        ]
+					      }
+				this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
 			}
 		},
 		mounted() {
 		//查询状态
+		this.loading = true
 		teacherIndexStatus({}).then(res=>{
-			console.log(res.data)
+			
 			this.all=res.data.data.all
 			this.already=res.data.data.already
 			this.cancel=res.data.data.cancel
@@ -206,14 +220,15 @@
          //查询试卷
 			teacherIndex({
 				"pageSize": this.pageSize,
-				"pageNum": this.pageNum,
-				'operator_id': this.userID
+				"pageNum": this.pageNum
+				// 'operator_id': this.userID
 			}).then(res => {
-				// console.log(res.data.data)
+				console.log(res)
 				this.papers = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
 			})
+			this.loading = false
 		}
 	};
 </script>

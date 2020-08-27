@@ -1,6 +1,6 @@
 // const local = 'http://10.0.0.13:8085'
 import axios from 'axios'
-
+import {Message} from 'element-ui'
 export function get(url, params) {
 	var Base64 = require('js-base64').Base64
 	var loginToken = localStorage.getItem('loginToken');
@@ -13,6 +13,36 @@ export function get(url, params) {
 			data: params,
 			contentType: "application/json; charset=utf-8",
 			headers:{
+				"uniqueKey":getUniqueKey(),
+				"Authorization": loginToken == null ? undefined : authStr_hex }
+		}).then(res => {
+			
+			// if(res.data.stateCode == 300033){
+			// 	localStorage.clear()
+			// 	window.location.href = '/login'
+				
+			// }
+			resolve(res)
+		}).catch(err => {
+			reject(err)
+			
+		})
+	})
+}
+export function uploadget(url, params) {
+	var Base64 = require('js-base64').Base64
+	var loginToken = localStorage.getItem('loginToken');
+	var authStr = ":" + loginToken;
+	var authStr_hex = 'Basic ' + Base64.encode(authStr);
+	return new Promise((resolve, reject) => {
+		axios({
+			url: url,
+			method: 'GET',
+			data: params,
+			responseType:'blob',
+			contentType: "application/json; charset=utf-8",
+			headers:{
+				'Content-Type': 'application/x-www-form-urlencoded ',
 				"uniqueKey":getUniqueKey(),
 				"Authorization": loginToken == null ? undefined : authStr_hex }
 		}).then(res => {
@@ -38,7 +68,10 @@ export function post(url, data) {
 				"uniqueKey":getUniqueKey(),
 				"Authorization": loginToken == null ? undefined : authStr_hex }
 		}).then(res => {
-			
+			// if(res.data.stateCode == 300033){
+			// 	localStorage.clear()
+			// 	window.location.href = '/login'
+			// }
 			resolve(res)
 		}).catch(err => {
 			console.log(err)

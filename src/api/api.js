@@ -2,7 +2,8 @@ import axios from 'axios';
 import {
 	get,
 	post,
-	getCode
+	getCode,
+	uploadget
 } from './http.js'
 //登录验证码
 export function userCode(data) {
@@ -121,7 +122,7 @@ export function AdminOrderAdd(data) {
 	const result = post('/api/admin/order/insert', data)
 	return result;
 }
-
+// 上传订单项文件
 export function AdminOrderUpload(id, data) {
 	const result = post('/api/admin/order/item/upload/' + id, data)
 	return result;
@@ -613,9 +614,9 @@ export function ExamSelectPapersWithTagsForAllPapers(data) {
 
 
 // 多条件查询学生信息
-export function selectBySchoolIdAndPaperIdAndClassId(pageNum, pageSize, id, data) {
+export function selectBySchoolIdAndPaperIdAndClassId(pageNum, pageSize, paper_id,class_id,school_id,data) {
 	const result = get('/api/student/home/selectBySchoolIdAndPaperIdAndClassId?pageNum=' + pageNum + '&pageSize=' +
-		pageSize + '&paper_id=' + id + '&d=' + new Date() * 1, data)
+		pageSize + '&paper_id=' + paper_id + '&class_id=' +class_id+'&school_id=' +school_id+'&d=' + new Date() * 1, data)
 	return result;
 }
 //查询教师查询班级
@@ -644,5 +645,40 @@ export function selectStudentWithPaperAllotByTeacherIdAndPaperId(classId, paperI
 // 管理员订购-数量管理接口
 export function AdminOrderPriceSelect(data){
     const result =post('/api/admin/order/price/selectSelective' ,data)
+	return result;
+}
+
+// 下载合同
+export function AdminOrderGetFile(id,data){
+    const result =uploadget('/api/admin/order/getFile/' +id +'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 上传合同
+
+export function AdminOrderUploadFile(id,data){
+    const result =post('/api/admin/order/upload/'+id ,data)
+	return result;
+}
+
+// 删除订单
+export function AdminOrderDel(id,data){
+    const result =get('/api/admin/order/delete/' +id +'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 允许学生下载
+export function schoolStudentAllow(id,data){
+    const result =get('/api/school/student/allow/' +id +'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 不允许学生下载
+export function schoolStudentUnAllow(id,data){
+    const result =get('/api/school/student/un_allow/' +id +'?d=' + new Date() * 1 ,data)
+	return result;
+}
+
+
+// 试卷附件下载
+export function apicommonExamGetFile(id,data){
+    const result =uploadget('/api/common/exam/getFile/' +id +'?d=' + new Date() * 1 ,data)
 	return result;
 }

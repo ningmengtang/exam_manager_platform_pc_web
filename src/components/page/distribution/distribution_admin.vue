@@ -266,7 +266,7 @@
 			addOrder(data){
 				sessionStorage.setItem('adminAffirmData', JSON.stringify(data))
 				// this.dialogTableVisible = true
-				this.$router.push('distribution_admin_affirm')
+				this.$router.push('/distribution_admin_affirm')
 			},
 			// searchO() {
 
@@ -305,7 +305,7 @@
 				"pageSize":this.pageSize,
 				"status":1
 			}).then(res=>{
-				// console.log(res)
+				console.log(res)
 				this.orderList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum

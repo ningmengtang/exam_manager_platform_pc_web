@@ -66,8 +66,8 @@
 .ts-box{display: flex;flex-wrap: wrap;}
 .big-icon{font-size: 100px;color: rgba(67, 207, 124, 1);width: 100%;text-align: center;}
 .ts-box .ii{font-size: 28px;color: rgba(67, 207, 124, 1);width: 100%;text-align: center;margin-top: 28px;}
-.box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
-.box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}
+/* .box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
+.box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;} */
 
 .box /deep/ .el-radio-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px}
 .box /deep/ .el-radio-button.is-checked .el-radio-button__inner {background-color: rgb(43, 187, 97);border-color: rgb(43, 187, 97);}

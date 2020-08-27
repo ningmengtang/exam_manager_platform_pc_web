@@ -27,19 +27,6 @@
                             icon="el-icon-folder-checked"
                             @click="openFile(scope.$index, scope.row)"
                         >预览</el-button>
-                        <el-button
-                            v-if="scope.row.putInto == 2"
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
-                        >入库成功</el-button>
-                        <el-button
-                            v-if="scope.row.putInto == 2"
-                            type="text"
-                            icon="el-icon-delete"
-                            class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
-                        >入库失败</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -76,10 +63,12 @@ export default {
             this.loading = true
             apiCommonExamSelectList({
                 "operator_type":'user',
+                "operator_id":Number(localStorage.getItem('userID')),
                 "pageSize":this.pageSize,
                 "pageNum":this.pageNum
             }).then(res=>{
                 this.loading = false
+                console.log(res)
                 this.tableData = res.data.data.list
                 this.total = res.data.data.total
                 this.currentPage = res.data.data.pageNum
@@ -96,52 +85,6 @@ export default {
             this.pageNum = val
             // console.log(val)
             this.init()
-        },
-        // 入库成功
-        handleEdit(index,row){
-            this.$confirm('是否入库成功?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                apiCommonExamSelectUpdate({
-                    "putInto":1,
-                    "id":row.id
-                }).then(res=>{
-                    if(res.data.result){
-                        this.$message.success('操作成功')
-                        this.init()
-                    }else{
-                        this.$message.error(res.data.message)
-                    }
-                    
-                })
-            }).catch(() => {
-
-            });
-        },
-        // 入库失败
-        handleDelete(index,row){
-            this.$confirm('是否取消入库?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                apiCommonExamSelectUpdate({
-                    "putInto":0,
-                    "id":row.id
-                }).then(res=>{
-                    if(res.data.result){
-                        this.$message.success('操作成功')
-                        this.init()
-                    }else{
-                        this.$message.error(res.data.message)
-                    }
-                   
-                })
-            }).catch(() => {
-
-            });
         },
         // 预览试卷
         openFile(index,row){

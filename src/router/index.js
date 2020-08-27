@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-	
+	// mode: 'history',
     routes: [
         {
             path: '/',
@@ -165,6 +165,12 @@ export default new Router({
 				    meta: { title: '管理员-试卷审核' }
 				},
 				{
+					path: '/examine_user',
+				
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/examine/examine_user.vue'),
+				    meta: { title: '专家-试卷审核' }
+				},
+				{
 				    path: '/personal_user',
 				    component: () => import(/* webpackChunkName: "personal_user" */ '../components/page/personal/personal_user.vue'),
 				    meta: { title: '专家-个人中心' }
@@ -200,6 +206,12 @@ export default new Router({
 				
 				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_affirm.vue'),
 				    meta: { title: '管理员-试卷分发-试卷确认' }
+				},
+				{
+					path: '/distribution_school_affirm',
+				
+				    component: () => import(/* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_school_affirm.vue'),
+				    meta: { title: '学校-试卷分发-试卷确认' }
 				},
 				{
 				    path: '/user_control',

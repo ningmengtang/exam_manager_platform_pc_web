@@ -17,7 +17,7 @@
 .row-group .th-group{font-size: 14px;margin-right: 14px;padding: 8px 22px;}
 .row-group .td-group{font-size: 14px;}
 
-.search{height: 50px;background-color: #FFFFFF;border-radius: 8px;display: flex;align-items: center;padding: 0 20px ;margin-top: 25px;margin-bottom: ;}
+.search{height: 50px;background-color: #FFFFFF;border-radius: 8px;display: flex;align-items: center;padding: 0 20px ;margin-top: 25px;}
 .search /deep/ .el-input{width:auto;}
 .search /deep/ .el-input__inner{width: 400px;height: 36px;line-height: 36px;}
 .search /deep/ .el-input--small .el-input__icon{line-height: 36px;}
@@ -30,8 +30,8 @@
 .user-img{width: 50px;height: 50px;border-radius: 50%;}
 .teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #2BBB61;margin: 0 0 0 20px; }
 .title-box{margin-left: 20px;}
-.title{font-size: 14px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 220px;}
-.synopsis{font-size: 14px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 220px;}
+.title{font-size: 14px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 280px;}
+.synopsis{font-size: 14px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 280px;}
 .time{font-size: 14px;color: rgba(166, 166, 166, 1);margin-left: 10px;width: 200px;overflow: hidden;}
 .label-box{display: flex;margin:  0 12px 0 0;flex-wrap: wrap;}
 .label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}

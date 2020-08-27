@@ -30,8 +30,8 @@
 							<div class="user-school">{{school}} {{userType}}</div>
 						</div>
 					</span>
-					<!-- <el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu> -->
-				<!-- </el-dropdown> -->
+					<!-- <el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu>
+				</el-dropdown> -->
 				<!-- 用户头像 -->
 				<div class="user-avator"><img src="../../assets/img/img.jpg" /></div>
 				<el-button class="loginout" :style="{ 'color': bg_color,'border-color':bg_color }" @click="handleCommand">

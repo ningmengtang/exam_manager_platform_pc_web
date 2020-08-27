@@ -1,7 +1,7 @@
 <template>
 	<div class="box">
 		<div class="group">
-			<div class="row-group">
+			<!-- <div class="row-group">
 				<div class="th-group">分发状态</div>
 				<div class="td-group" change>
 					<el-radio-group v-model="disStatus" @change="getQuery">
@@ -10,7 +10,7 @@
 						</el-radio-button>
 					</el-radio-group>
 				</div>
-			</div>
+			</div> -->
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">年份</div>
 				<div class="td-group">
@@ -46,6 +46,16 @@
 				<div class="td-group">
 					<el-radio-group v-model="grade" @change="getQuery">
 						<el-radio-button v-for="(item,index) in GradeList" :label="item.id">
+							{{item.text}}
+						</el-radio-button>
+					</el-radio-group>
+				</div>
+			</div>
+			<div class="row-group" style="margin-top: 20px;">
+				<div class="th-group">学期</div>
+				<div class="td-group">
+					<el-radio-group v-model="semester" @change="getQuery">
+						<el-radio-button v-for="(item,index) in SemesterList" :label="item.id">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -101,11 +111,11 @@
 				</div>
 			</div> -->
 			<div class="li" v-for="item in paperList">
-				<!-- <img src="../../../assets/img/img.jpg" class="user-img" />
-				<div class="teacher-name">古得教师</div> -->
+				<!-- <img src="../../../assets/img/img.jpg" class="user-img" /> -->
+				<div class="teacher-name">{{item.operator_name}}</div>
 				<div class="title-box">
 					<div class="title">{{item.title}}</div>
-					<div class="synopsis">包含小学一年级语文2019年人教版单元作业65656566555555</div>
+					<div class="synopsis">{{item.examExplain}}</div>
 				</div>
 				<div class="time">{{item.createDate}}
 				
@@ -120,8 +130,9 @@
 				</div>
 				<div class="right">
 					<i class="icon el-icon-time"></i>
-					<div class="status">正在分发</div>
-					<el-button type="text" class="download" @click="dialogVisible = true">立即下载</el-button>
+					<div class="status" >{{item.putInto == '0'?'入库失败':item.putInto == '1'?'入库成功':item.putInto == '2'?'正在入库':''}}</div>
+					<el-button  type="primary" disabled v-if="item.status == 1" >立即下载</el-button>
+					<el-button type="primary"   v-if="item.status == 0" @click="downloadFile(item)">立即下载</el-button>
 				</div>
 			</div>
 			<div class="page">
@@ -148,14 +159,15 @@
 </template>
 <script>
 	import {getValue,handleSizeChange,handleCurrentChange,handleClose,TagTypePromise,getQuery} from '@/assets/js/manage.js'
-	import {selectTag,ApiTagSelectList,paperWithTag} from '@/api/api.js'
+	import {selectTag,ApiTagSelectList,paperWithTag,apicommonExamGetFile} from '@/api/api.js'
 	export default {
 		data() {
 			return {
-				pageSize:1,
+				pageSize:4,
 				pageNum:1,
 				total:0,
 				currentPage:1,
+				SemesterList:[],
 				paperList:[],
 				DisStatusList:[],
 				ElementTextList:[],
@@ -171,6 +183,7 @@
 				grade:0,
 				version:0,
 				years:0,
+				semester:0,
 				obj:[],
 				array_nav: [], //存储el-chckbox数组
 				array_nav_2: [],
@@ -224,8 +237,8 @@
 			},
 			getQuery(){
 				this.obj = []
-				if(this.disStatus != 0 && this.disStatus){
-					this.obj.push(this.disStatus)
+				if(this.semester != 0 && this.semester){
+					this.obj.push(this.semester)
 				}
 				if(this.elementTest !=0 && this.elementTest){
 					this.obj.push(this.elementTest)
@@ -269,8 +282,8 @@
 						}]
 						let children = all.concat(res.data.data.list)
 						switch(tagType.text){
-							case '分发状态':
-								this.DisStatusList = children
+							case '学期':
+								this.SemesterList = children
 							break;
 							case '年份':
 								this.YearsList = children
@@ -300,6 +313,62 @@
 			async getTypeList(tagType,index){
 				await this.TagTypePromise(tagType,index)
 				// return n 
+			},
+			downloadFile(item){
+				if(item.startTime && item.overTime){
+					let arr = this.isDuringDate(item.startTime,item.overTime)
+					if(arr){
+						if(item.affix){
+							apicommonExamGetFile(item.id).then(res=>{
+								var headers = res.headers['content-disposition']
+								headers = headers.substr(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
+								const blob = new Blob([res.data],{type:''})
+								let link = document.createElement('a');
+								let objectUrl = URL.createObjectURL(blob);
+								link.setAttribute("href",objectUrl);
+								link.setAttribute("download",headers); 
+								link.click();
+								//释放内存
+								window.URL.revokeObjectURL(link.href)
+							})
+						}else{
+							let  createTestPaperInfoObj = {
+						 		testPaperId:item.id,
+						        students:[
+						          {
+						            suid:localStorage.getItem('userID')
+						          }
+						        ]
+						      }
+							this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+						}
+						
+					}else{
+						this.$message.warning('未到下载时间，不允许下载')
+					}
+				}else{
+					let  createTestPaperInfoObj = {
+					 		testPaperId:item.id,
+					        students:[
+					          {
+					            suid:localStorage.getItem('userID')
+					          }
+					        ]
+					      }
+					this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				}
+				
+		
+			},
+			isDuringDate(beginDateStr,endDateStr){
+				var curDate = new Date()
+				var	beginDate = new Date(beginDateStr)
+				var endDate = new Date(endDateStr)
+				
+				if(curDate >= beginDate && curDate <=endDate){
+					return true
+				}
+				return false
 			}
 
 		},
@@ -311,6 +380,7 @@
 				"pageNum":1
 			}).then(res=>{
 				this.TagType = res.data.data.list
+				console.log(this.TagType)
 				var arr = []
 				for(var i=0;i<this.TagType.length;i++){
 					this.getTypeList(this.TagType[i],i)

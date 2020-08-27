@@ -80,7 +80,7 @@
 				</el-col>
 			</el-row>
 		</div>
-		<div class="papers-box">
+		<div class="papers-box"  v-loading="loading">
 			<div class="p-li" v-for="(d,i) in ExamList" :key="d.i" :style="d.putInto==2?(style.pLi2):style.pLi1" >
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
@@ -88,13 +88,14 @@
 				<div class="p-particula">
 					<div class="p-title"  >{{d.title}}</div>
 					<div class="p-time" >{{d.createDate}}</div>
+					
 					<div class="p-status">{{d.putInto ==0?'取消入库':d.putInto == 1?'入库成功':d.putInto==2?'正在入库':''}}</div>
 					<!-- <i class="p-status-icon el-icon-time" v-if="d.o==1"></i>
 					<i class="p-status-icon el-icon-shopping-cart-2" v-else-if="d.o==2"></i>
 					<i class="p-status-icon el-icon-loading" v-else-if="d.o==3"></i>
 					<i class="p-status-icon el-icon-close" v-else-if="d.o==4"></i> -->
-					<i class="p-status-icon el-icon-download" v-if="d.putInto==1"></i>
-					
+					<i class="p-status-icon el-icon-download" v-if="d.putInto==1" @click="downloadFile(d)"></i>
+					<i class="p-status-icon el-icon-close" v-if="d.putInto==0"></i> 
 					<i class="p-status-icon el-icon-loading" v-if="d.putInto==2"></i>
 				</div>
 			</div>
@@ -127,7 +128,8 @@
 	import {
 		apiCommonExamSelectList,
 		apiCommonExamSelectUpdate,
-		apiAdminOrderList
+		apiAdminOrderList,
+		apicommonExamGetFile
 	} from '@/api/api.js'
 	export default {
 		name: 'index_student',
@@ -181,7 +183,7 @@
 				Loadtotal:0,
 				Errortotal:0,
 				ExamList:[],
-
+				loading:false,
 				// 订单统计
 				OredrList:[],
 				SuccesstotalOrder:0,
@@ -198,9 +200,16 @@
 		},
 		mounted() {
 			// 获取首页数据
+			this.loading = true
+			// const loading = this.$loading({
+			// 	lock: true,
+			// 	spinner: 'el-icon-loading',
+			// });
 			this.getStatisticsOrder()
 			this.getStatisticsExam()
 			this.getStatisticsExamPage()
+			
+			
 		},
 		methods: {
 			// 统计数据（订购）
@@ -240,7 +249,7 @@
 				}).then(res=>{
 					let list = res.data.data.list
 					this.Alltotal = res.data.data.total
-					// this.currentPage = res.data.data.pageNum
+					
 					for(var i=0;i<list.length;i++){
 						if(list[i].putInto == 0){
 							this.Errortotal++
@@ -259,6 +268,7 @@
 					"pageSize":this.pageSize,
 					"pageNum":this.pageNum
 				}).then(res=>{
+					this.loading = false
 					this.ExamList = res.data.data.list
 					this.total = res.data.data.total
 					this.currentPage = res.data.data.pageNum
@@ -273,6 +283,33 @@
 				this.pageNum = val
 				this.getStatisticsExamPage()
 			},
+			// 首页下载试卷
+			downloadFile(item){
+				if(item.affix){
+					apicommonExamGetFile(item.id).then(res=>{
+						var headers = res.headers['content-disposition']
+						headers = headers.substr(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
+						const blob = new Blob([res.data],{type:''})
+						let link = document.createElement('a');
+						let objectUrl = URL.createObjectURL(blob);
+						link.setAttribute("href",objectUrl);
+						link.setAttribute("download",headers); 
+						link.click();
+						//释放内存
+						window.URL.revokeObjectURL(link.href)
+					})
+				}else{
+					let  createTestPaperInfoObj = {
+				 		testPaperId:item.id,
+				        students:[
+				          {
+				            suid:localStorage.getItem('userID')
+				          }
+				        ]
+				      }
+					this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				}
+			}
 
 
 			
