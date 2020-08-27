@@ -336,7 +336,9 @@
 						 		testPaperId:item.id,
 						        students:[
 						          {
-						            suid:localStorage.getItem('userID')
+						            uid:localStorage.getItem('userID'),
+						 			utype:"student",
+          							items:[]
 						          }
 						        ]
 						      }
@@ -351,7 +353,9 @@
 					 		testPaperId:item.id,
 					        students:[
 					          {
-					            suid:localStorage.getItem('userID')
+					            uid:localStorage.getItem('userID'),
+					 			utype:"student",
+          						items:[]
 					          }
 					        ]
 					      }
