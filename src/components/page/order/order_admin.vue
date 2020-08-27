@@ -29,6 +29,12 @@
 						{{ data.operator_name }}</div>
 					<div class="synopsis">
 						<span>
+							订单号：{{data.sn}}
+						</span>
+
+					</div>
+					<div class="synopsis">
+						<span>
 							订购类型：{{data.style_count}}种，总份数：{{data.count}}份
 						</span>
 
