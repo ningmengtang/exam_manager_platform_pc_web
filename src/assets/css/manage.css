@@ -26,8 +26,8 @@
 .user-img{width: 50px;height: 50px;border-radius: 50%;}
 .teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #19aefb;margin: 0 0 0 20px; }
 .title-box{margin-left: 20px;}
-.title{font-size: 20px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 350px;}
-.synopsis{font-size: 18px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 350px;}
+.title{font-size: 20px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 480px;}
+.synopsis{font-size: 18px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 480px;}
 .time{font-size: 20px;;color: rgba(166, 166, 166, 1);margin-left: 10px;width: 200px;overflow: hidden;}
 .label-box{display: flex;margin:  0 12px 0 0;flex-wrap: wrap;}
 .label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}
@@ -56,8 +56,8 @@
 .ts-box{display: flex;flex-wrap: wrap;}
 .big-icon{font-size: 100px;color: rgba(67, 207, 124, 1);width: 100%;text-align: center;}
 .ts-box .ii{font-size: 28px;color: rgba(67, 207, 124, 1);width: 100%;text-align: center;margin-top: 28px;}
-.box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
-.box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}
+/* .box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
+.box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;} */
 
 /* 管理员端 */
 .flex-box{display: flex;height: 100%;justify-content: space-between;min-height: 826px;}

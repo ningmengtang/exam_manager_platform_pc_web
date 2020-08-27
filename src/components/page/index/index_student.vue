@@ -37,7 +37,7 @@
 				</el-col>
 			</el-row>
 		</div>
-		<div class="papers-box">
+		<div class="papers-box" v-loading="loading">
 			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
@@ -49,8 +49,17 @@
 					</div>
 					<div class="p-title">{{d.title}}</div>
 					<div class="p-time">{{d.modifyDate}}</div>
+					<div class="p-time">
+						开始下载时间：{{d.startTime}}
+					</div>
+					<div class="p-time">
+						结束下载时间：{{d.overTime}}
+					</div>
 					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0?'可以下载':'不允许下载'}}</div>
-					<i @click="downloadFile(d)" class="p-status-icon" :class="d.status==0?'el-icon-download':'el-icon-close'">
+					<i @click="downloadFile(d)" class="p-status-icon el-icon-download" v-if="d.status == 0">
+						
+					</i>
+					<i  class="p-status-icon el-icon-close"  v-if="d.status == 1">
 						
 					</i>
 
@@ -73,10 +82,12 @@
 	import {
 		handleSizeChange,
 		handleCurrentChange,
-		studentIndexData
+		studentIndexData,
+		
 	} from '@/assets/js/index.js'
 	import {
-		studentIndex
+		studentIndex,
+		apicommonExamGetFile
 	} from '@/api/api.js'
 	export default {
 		name: 'index_student',
@@ -89,6 +100,7 @@
 				currentPage: 1,
 				download: 0,
 				disabled: 0,
+				loading:false,
 				status: '',
 				style: {
 					card_2: 'background-color: #41dde3;',
@@ -116,25 +128,68 @@
 			handleSizeChange,handleCurrentChange,studentIndexData
 			,
 			downloadFile(item){
-				console.log(item)
-				let  createTestPaperInfoObj = {
-			 		testPaperId:item.id,
-			        students:[
-			          {
-			            suid:localStorage.getItem('userID')
-			          }
-			        ]
-			      }
-				console.log( createTestPaperInfoObj)
-				this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				if(item.startTime && item.overTime){
+					let arr = this.isDuringDate(item.startTime,item.overTime)
+					if(arr){
+						if(item.affix){
+							apicommonExamGetFile(item.id).then(res=>{
+								var headers = res.headers['content-disposition']
+								headers = headers.substr(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
+								const blob = new Blob([res.data],{type:''})
+								let link = document.createElement('a');
+								let objectUrl = URL.createObjectURL(blob);
+								link.setAttribute("href",objectUrl);
+								link.setAttribute("download",headers); 
+								link.click();
+								//释放内存
+								window.URL.revokeObjectURL(link.href)
+							})
+						}else{
+							let  createTestPaperInfoObj = {
+						 		testPaperId:item.id,
+						        students:[
+						          {
+						            suid:localStorage.getItem('userID')
+						          }
+						        ]
+						      }
+							this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+						}
+						
+					}else{
+						this.$message.warning('未到下载时间，不允许下载')
+					}
+				}else{
+					let  createTestPaperInfoObj = {
+					 		testPaperId:item.id,
+					        students:[
+					          {
+					            suid:localStorage.getItem('userID')
+					          }
+					        ]
+					      }
+					this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				}
+				
+		
+			},
+			isDuringDate(beginDateStr,endDateStr){
+				var curDate = new Date()
+				var	beginDate = new Date(beginDateStr)
+				var endDate = new Date(endDateStr)
+				
+				if(curDate >= beginDate && curDate <=endDate){
+					return true
+				}
+				return false
 			}
 		},
 		mounted() {
-			
+			this.loading = true
 			let that =this;
 			// 统计数据全部数据
 			that.studentIndexData()
-
+			this.loading = false
 		},
 	};
 </script>

@@ -1140,7 +1140,7 @@ export default {
         },
         ]
 
-        for(var i=3;i<= 5;i++)
+        for(var i=3;i<= 3;i++)
         {
           studentIdArr.push({
             uid:i,

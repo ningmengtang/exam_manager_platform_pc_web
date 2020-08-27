@@ -1,10 +1,10 @@
 .box{padding: 20px;border-radius: 8px;width: auto;height: 100%;overflow-y: scroll;-webkit-box-sizing: border-box;box-sizing: border-box;color: #333333;font-size: 14px;display: flex;}
 
-.left{margin-right: 48px;background: #FFFFFF;height: 1200px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);border-radius:10px;padding: 24px;width: 410px;}
+.left{margin-right: 48px;background: #FFFFFF;height: 1300px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);border-radius:10px;padding: 24px;width: 410px;}
 .l-box-1{width: 100%;}
 .ids{margin-top: 20px;width: 100%;}
 .l-title{font-size: 20px;font-weight: bold;color: #333333;border-left: 8px solid #2BBB61;padding-left: 16px;display: flex;align-items: center;}
-.l-box-1+.l-box-1{margin-top: 50px;}
+.l-box-1+.l-box-1{margin-top: 20px;}
 .box /deep/.el-input__inner{border-left: none ;border-right: noe;border-top: none;padding: 0 10px ;}
 .box /deep/ .el-textarea__inner{margin-top: 20px;padding:20px;}
 .l-box-2{margin-top: 20px;display: flex;width: 100%;justify-content: center;}

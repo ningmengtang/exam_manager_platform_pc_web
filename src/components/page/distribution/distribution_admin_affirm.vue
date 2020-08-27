@@ -7,12 +7,9 @@
 					<img src="../../../assets/img/img.jpg" class="user-img" />
 					<div class="user-top">
 						<div class="username">
-							<div class="name">小明</div>
-							<div class="user-id">ID:6556565</div>
-							<div class="identity" :style="{'background-color':color}">老师</div>
-							<div class="message">
-								<div class="school">北京师范小学</div>
-							</div>
+							<div class="name">{{useName}}</div>
+							<div class="user-id">ID：{{useId}}</div>
+							<div class="identity" :style="{'background-color':color}">学校</div>
 						</div>
 					</div>
 				</div>
@@ -71,18 +68,10 @@
 						</div>
 						<div class="p-particular">
 							<div><span>数量{{item.count}} 份</span></div>
-							<div>
-								<span>
-									单价{{item.price}}元
-								</span>
-								</div>
-							<div>
-								<span>
-									总价{{item.total_price}}元
-								</span></div>
+			
 							
 							<div class="fault" v-if="!item.file_path"  @click="uploadFile(item)">学生信息未导入，点击导入</div>
-							<div  v-if="item.file_path"  >已导入学生信息</div>
+							<div class="success" v-if="item.file_path"  @click="uploadFile(item)">学生信息已导入，点击重新导入</div>
 							<!-- <div class="" v-if=""></div> -->
 						</div>
 					</div>
@@ -145,6 +134,16 @@
 					label="试卷名称"
 					>
 				</el-table-column>
+				<el-table-column
+					prop="title"
+					label="试卷状态"
+					>
+					<template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.putInto==1?'success':(scope.row.putInto==0?'danger ':'warning')"
+                        >{{scope.row.putInto ===0?'入库失败':scope.row.putInto ===1?'入库成功':scope.row.putInto ===2?'正在入库':''}}</el-tag>
+                    </template>
+				</el-table-column>
 				
 			</el-table>
 			<div class="page">
@@ -175,7 +174,8 @@
 		data() {
 			return {
 				adminAffirmData:[],
-				
+				useId:localStorage.getItem('userID'),
+                useName:localStorage.getItem('userName'),
 				color: '',
 				endVal1: 6,
 				endVal2: 454,
@@ -186,10 +186,6 @@
 				array_nav5: [],
 				array_nav9: [],
 				percentage:50,
-				cities: ['全部', '分发完成', '正在分发', '分发失败'],
-				class2: ['全部', '一年级', '二年级', '三年级'],
-				class1: ['全部', '一班', '二班', '三班'],
-				student: [1, 2, 3, 4, 5],
 				value1: '',
 				style: {
 					card_2: 'background-color: #41dde3;',
@@ -359,7 +355,6 @@
 			addPaper(item){
 				if(item.file_path){
 					this.Itemid = item.id
-					// console.log(item)
 					this.dialogTableVisible = true
 					// 通过标签查询试卷
 					this.id = []
@@ -367,7 +362,6 @@
 					for(var i=0;i<item.tag_list.length;i++){
 						this.id.push(item.tag_list[i].id)
 					}
-					// console.log(id)
 					selectAllUserTag({
 						"id":this.id,
 						"pageSize":this.pageSize,
@@ -377,12 +371,10 @@
 						this.tableData = res.data.data.list
 						this.total = res.data.data.total
 						this.currentPage = res.data.data.pageNum
-						// console.log(res)
 					})
 				}else{
 					this.$message.error('请先分配学生信息')
 				}
-				// apiPaperWithTagList
 			}
 		},
 		mounted() {

@@ -2,6 +2,7 @@
     <div>
         <div class="container">
             <el-table
+                v-loading="loading"
                 :data="tableData"
                 border
                 class="table"
@@ -14,9 +15,6 @@
                 <el-table-column prop="examExplain" label="试卷说明"></el-table-column>
                 <el-table-column label="试卷状态" align="center">
                     <template slot-scope="scope">
-                        <!-- <el-tag type="warning">
-                            {{scope.row.putInto ===0?'入库失败':scope.row.putInto ===1?'入库成功':scope.row.putInto ===2?'正在入库':''}}
-                        </el-tag> -->
                         <el-tag
                             :type="scope.row.putInto===1?'success':(scope.row.putInto===0?' danger ':'warning')"
                         >{{scope.row.putInto ===0?'入库失败':scope.row.putInto ===1?'入库成功':scope.row.putInto ===2?'正在入库':''}}</el-tag>
@@ -65,7 +63,9 @@ export default {
             tableData:[],
             currentPage:1,
             pageSize:6,
-            total:0
+            pageNum:1,
+            total:0,
+            loading:false
         }
     },
     mounted(){
@@ -73,11 +73,13 @@ export default {
     },
     methods:{
         init(){
+            this.loading = true
             apiCommonExamSelectList({
                 "operator_type":'user',
                 "pageSize":this.pageSize,
                 "pageNum":this.pageNum
             }).then(res=>{
+                this.loading = false
                 this.tableData = res.data.data.list
                 this.total = res.data.data.total
                 this.currentPage = res.data.data.pageNum

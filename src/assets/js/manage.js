@@ -10,7 +10,6 @@ import {
 	}
 	export function handleSizeChange(val) {
 		teacherIndex({
-			'operator_id':this.userID,
 			"pageSize": this.pageSize,
 			"pageNum": this.pageNum
 		}).then(res => {
@@ -22,7 +21,7 @@ import {
 	export function handleCurrentChange(val) {
 		this.pageNum = val;
 		teacherIndex({
-			'operator_id':this.userID,
+
 			"pageNum": this.pageNum,
 			"pageSize": this.pageSize
 		}).then(res => {

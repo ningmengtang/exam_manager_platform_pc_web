@@ -48,8 +48,8 @@
 				</el-col>
 			</el-row>
 		</div>
-		<div class="papers-box">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.o==1?(0):d.o==2?style.pLi3:d.o==3?style.pLi2:style.pLi4">
+		<div class="papers-box" v-loading="loading">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==1?style.pLi4:d.status==2?(0):d.status==3?style.pLi3:style.pLi2">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
@@ -60,7 +60,7 @@
 					<div class="p-title">地址：{{d.contact_address}}</div>
 					<div class="p-time">手机：{{d.contact_phone}}</div>
 					<div class="p-particular">{{d.create_date}}</div>
-					<div class="p-status">{{d.status == 2?'取消订单':d.status == 1?'确认订单':d.status=='3'?'已经全部分发':'待审核订单'}}</div>
+					<div class="p-status">{{d.status == 2?'已取消订单':d.status == 1?'已确认订单':d.status=='3'?'已经全部分发':'待审核订单'}}</div>
 					<!-- <i class="p-status-icon el-icon-download"></i> -->
 				</div>
 			</div>
@@ -134,6 +134,7 @@
 					},
 					pStatus: 'color:#e2633b'
 				},
+				loading:false,
 				currentPage: 1,
 				papers: '',
 				// papers: [{
@@ -178,6 +179,7 @@
 			ICountUp
 		},
 		mounted() {
+			this.loading = true
 			this.getStatisticsOrder()
 		},
 		methods: {
@@ -228,8 +230,8 @@
 				}).then(res => {
 					let list = res.data.data.list
 					this.papers=list
-					console.log(list)
 					this.AlltotalOrder = Number(res.data.data.total)
+					this.loading = false
 					for (var k = 0; k < list.length; k++) {
 						if (list[k].status == 0) {
 							this.LoadtotalOrder++

@@ -28,7 +28,7 @@
 .message-top {margin-bottom: 24px;border-left: 8px solid #19ADFB;display: flex;align-items: center;padding-left: 10px;font-weight: bold;font-size: 20px;padding-top: 2px;padding-bottom: 2px;}
 
 
-.right-box .upload-papers{margin-top: 22px;}
+.right-box .upload-papers{margin-top: 22px;height: 720px; overflow: auto;}
 .right-box .buttom{margin-left: 20px;}
 .right-box .ranking{margin-right: 12px;color: #2BBB61;font-size: 18px;}
 .right-box .li-box{display: flex;padding: 10px 25px;background-color: #FFFFFF;align-items: center;border-radius: 4px;}
@@ -60,8 +60,7 @@
 .last .remind{display: flex;align-items: flex-end;font-size: 18px;}
 
 /* 弹窗 */
-.ts-select{}
-.ts-select .t-title{border-left: 8px solid #2BBB61;padding-left: 8px;font-size: 18px;font-weight: bold;color: #333333;display: flex;justify-content: space-between;align-items: center;}
+.ts-select .t-title{display: inline-block; border-left: 8px solid #2BBB61;padding-left: 8px;font-size: 18px;font-weight: bold;color: #333333;display: flex;justify-content: space-between;align-items: center;}
 .ts-select .t-box{display: flex;margin-top: 10px;}
 .ts-select .t-left{width: 50%;}
 .ts-select .upload-demo{margin: 20px 0;}
@@ -102,5 +101,41 @@
 .ts-select /deep/ .el-progress{width: 200px;}
 .row-group .th-group{font-size: 14px;margin-right: 14px;padding: 8px 22px;min-width: 100px;}
 .row-group .td-group{font-size: 14px;}
-.box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
-.box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}
+/* .box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
+.box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;} */
+
+
+.title .t-title{
+    display: inline-block;
+    font-size: 16px;
+    padding: 5px;
+    margin: 8px;
+    /* margin: 10px; */
+    font-weight: bold;
+    border-left: 3px solid #ccc;
+    border-color:rgb(43, 187, 97) ;
+    
+}
+.title{
+    float: left;
+}
+table tr td{
+    border:1px solid #ccc;
+}
+table{
+    border-collapse: collapse;
+}
+/* table{
+    width: 180px;
+    border-collapse: collapse;
+} */
+table tr td {
+    height: 100px;
+    line-height: 30px;
+    border:1px solid #ccc;
+    width: 250px;
+    text-align: center;
+}
+.dialogTop{
+    margin: 10px;
+}

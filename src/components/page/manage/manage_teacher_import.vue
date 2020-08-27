@@ -28,6 +28,28 @@
 				</el-input>
 			</div>
 			<div class="l-box-1">
+				<div class="l-title">开始下载时间</div>
+				<el-date-picker
+					style="margin-top:20px"
+					class="selectTime"
+					v-model="form.startTime"
+					type="datetime"
+					value-format="yyyy-MM-dd HH:mm:ss"
+					placeholder="选择日期时间">
+				</el-date-picker>
+			</div>
+			<div class="l-box-1">
+				<div class="l-title">结束下载时间</div>
+				<el-date-picker
+				style="margin-top:20px"
+					class="selectTime"
+					v-model="form.overTime"
+					type="datetime"
+					value-format="yyyy-MM-dd HH:mm:ss"
+					placeholder="选择日期时间">
+				</el-date-picker>
+			</div>
+			<div class="l-box-1">
 				<div class="l-title">试卷标签</div>
 				<div class="t-content">
 					<div class="group">
@@ -61,10 +83,20 @@
 							</div>
 					</div>
 					<div class="group">
+							<div class="row-group">
+								<div class="th-group">学期</div>
+								<div class="td-group" >
+									<el-radio-group v-model="form.tag_list[3].id" >
+										<el-radio-button v-for="(d,i) in tagList.semester" :label="d.id">{{d.text}}</el-radio-button>
+									</el-radio-group>
+								</div>
+							</div>
+					</div>
+					<div class="group">
 						<div class="row-group">
 							<div class="th-group">学习年级</div>
 							<div class="td-group" >
-								<el-radio-group v-model="form.tag_list[3].id">
+								<el-radio-group v-model="form.tag_list[4].id">
 										<el-radio-button v-for="(d,i) in tagList.grade" :label="d.id" >{{d.text}}</el-radio-button>
 								</el-radio-group>
 							</div>
@@ -74,8 +106,18 @@
 						<div class="row-group">
 							<div class="th-group">单元</div>
 							<div class="td-group" >
-								<el-radio-group v-model="form.tag_list[4].id" >
+								<el-radio-group v-model="form.tag_list[5].id" >
 									<el-radio-button v-for="(d,i) in tagList.element_test" :label="d.id" >{{d.text}}</el-radio-button>
+								</el-radio-group>
+							</div>
+						</div>
+					</div>
+					<div class="group">
+						<div class="row-group">
+							<div class="th-group">试卷类型</div>
+							<div class="td-group" >
+								<el-radio-group v-model="form.tag_list[6].id">
+									<el-radio-button v-for="(d,i) in tagList.purpose" :label="d.id" >{{d.text}}</el-radio-button>
 								</el-radio-group>
 							</div>
 						</div>
@@ -146,14 +188,6 @@
 					    label="学校"
 						>
 					  </el-table-column>
-
-
-					  <!-- <el-table-column
-					    prop="classesId"
-					    label="班级"
-						:formatter="formStatus"
-						>
-					  </el-table-column> -->
 				    </el-table>
 			</div>
 			<div class="page">
@@ -197,13 +231,14 @@ export default {
 			total:0,
 			currentPage: 1,
 			pageNum:1,
-			pageSize:6,
+			pageSize:16,
 			dialogVisible: false,
 			ispaperType:true,
 			paperType:'图片试卷',
 			tagList:[],
 			AllTagList:[],
 			StudenList:[],
+			userID:localStorage.getItem('userID'),
 			selectStudentList:[],
 			uploadFile:'',
 			form:{
@@ -211,6 +246,8 @@ export default {
 				examExplain:'',
 				examTime:1,
 				elementTest:'',
+				startTime:'',
+				overTime:'',
 				tag_list:[
 				{
 					id:''
@@ -220,7 +257,13 @@ export default {
 				},
 				{
 					id:''
+				},
+				{
+					id:''
 				},{
+					id:''
+				},
+				{
 					id:''
 				},
 				{
@@ -242,71 +285,23 @@ export default {
 					value:'在线组卷'
 				}
 			],
-			li: [
-				{
-					teacher: '古得老师',
-					title: '2019年人教版一年级第一单元作业5656565656',
-					synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-					time: '2020年10月11日上传',
-					label: '2019',
-					o: '1'
-				},
-				{
-					teacher: '古得老师',
-					title: '2019年人教版一年级第一单元作业5656565656',
-					synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-					time: '2020年10月11日上传',
-					label: '2019',
-					o: '2'
-				},
-				{
-					teacher: '古得老师',
-					title: '2019年人教版一年级第一单元作业5656565656',
-					synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-					time: '2020年10月11日上传',
-					label: '2019',
-					o: '3'
-				}
-			],
-			tableData: [{
-			            date: '2016-05-02',
-			            name: '王小虎',
-			            address: '上海市普陀区金沙江路 1518 弄'
-			          }, {
-			            date: '2016-05-04',
-			            name: '王小虎',
-			            address: '上海市普陀区金沙江路 1517 弄'
-			          }, {
-			            date: '2016-05-01',
-			            name: '王小虎',
-			            address: '上海市普陀区金沙江路 1519 弄'
-			          }, {
-			            date: '2016-05-03',
-			            name: '王小虎',
-			            address: '上海市普陀区金沙江路 1516 弄'
-			          }]
 		};
 	},
 	methods: {
 		 //改变时
 		handleSizeChange(val) {
 			this.pageSize = val;
-			StudentSelectByTeacher({
-				"pageNum":this.pageNum,
-				"pageSize":this.pageSize
-			}).then(res=>{
+			StudentSelectByTeacher(this.userID,this.pageNum,this.pageSize).then(res=>{
 				this.StudenList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
 			})
+			
 		},
 		//条目改变时
 		handleCurrentChange(val) {
 			this.pageNum = val;
-			StudentSelectByTeacher({
-				"pageNum":this.pageNum,
-				"pageSize":this.pageSize
-			}).then(res=>{
+			StudentSelectByTeacher(this.userID,this.pageNum,this.pageSize).then(res=>{
 				this.StudenList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
@@ -398,7 +393,6 @@ export default {
 				}else{
 					this.$message.error('请先上传附件')
 				}
-				
 			}
 			// 在线组卷
 
@@ -901,19 +895,15 @@ export default {
 		this.color = user().color;
 		selectTag().then(res=>{
 			this.tagList = res.data.data
+			
 		})
-		let id = localStorage.getItem('userID');
-		if(id){
-			this.teacherId = localStorage.getItem('userID')
-			StudentSelectByTeacher(this.teacherId,this.pageNum,this.pageSize).then(res=>{
-				this.StudenList = res.data.data.list
-				this.total = res.data.data.total
-				this.currentPage = res.data.data.pageNum
-			})
-		}else{
-			this.teacherId = ''
-			this.$message.error(res.data.message)
-		}
+		StudentSelectByTeacher(this.userID,this.pageNum,this.pageSize).then(res=>{
+			this.StudenList = res.data.data.list
+			this.total = res.data.data.total
+			this.currentPage = res.data.data.pageNum
+		})
+		
+
 		this.$nextTick(() => {
 			if(null != localStorage.getItem('newTestPaperInfo'))
 			{
@@ -925,6 +915,8 @@ export default {
 				this.form.examExplain = newTestPaperInfoForm.examExplain
 				this.form.examTime = newTestPaperInfoForm.examTime
 				this.form.elementTest = newTestPaperInfoForm.elementTest
+				this.form.overTime = newTestPaperInfoForm.overTime
+				this.form.startTime = newTestPaperInfoForm.startTime
 				if(newTestPaperInfoForm.tag_list.length > 0)
 				{
 					this.form.tag_list = newTestPaperInfoForm.tag_list
@@ -966,3 +958,18 @@ export default {
 </script>
 
 <style scoped src="../../../assets/css/manage-import.css"></style>
+<style scoped>
+.box .left{
+	height: 1500px;
+}
+</style>
+<style>
+	.box .left .el-input__inner{
+		border: 1px solid #DCDFE6;
+		padding: 0 15px;
+	}
+	.box .left .selectTime .el-input__inner{
+		 /* margin-top: 20px; */
+		padding: 0 30px; 
+	}
+</style>

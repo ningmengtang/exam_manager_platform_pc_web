@@ -50,8 +50,10 @@
 						<div class="status_box">
 							<!-- <i class="icon el-icon-loading ii"></i> -->
 							<span class="text ii">{{data.status == 0?'待确定':data.status == 1?'已确认':data.status == 2?'已取消':''}}</span>
-							 <el-button type="primary"   v-if="data.status == 0"  @click="addOrder(data)">立即确定</el-button>
-						    <el-button   v-if="data.status == 0" type="danger"  >取消</el-button>
+							<el-button type="primary"   v-if="data.status == 0"  @click="addOrder(data)">缴费</el-button>
+							<el-button type="success" size="small"  @click="loadFile(data)">上传合同</el-button>
+							<el-button type="success" size="small"  @click="uploadFile(data)">导出合同</el-button>
+						    <el-button   v-if="data.status == 0" type="danger" @click="DelFile(data)" >取消</el-button>
 						</div>
 					</div>
 				</div>
@@ -136,7 +138,9 @@
 	import user from '../../common/user';
 	import {
 		apiAdminOrderList,
-		apiAdminOrderUpdate
+		apiAdminOrderUpdate,
+		AdminOrderUploadFile,
+		AdminOrderGetFile
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -176,51 +180,6 @@
 					id:2,
 					name:"已取消"
 				}],
-				cities: ['全部', '待确定', '已确定', '已取消'],
-				class2: ['全部', '一年级', '二年级', '三年级'],
-				class1: ['全部', '一班', '二班', '三班'],
-				student: [1, 2, 3, 4, 5],
-				checkboxGroup2: ['上海'],
-				li: [{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '北京师范小学 教师',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '1'
-					},
-					{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '北京师范小学 教师',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '2'
-					}
-				],
-				tableData: [{
-					date: '1',
-					name: '王小虎',
-					grade: '一年级',
-					class: '1'
-				}, {
-					date: '2',
-					name: '王小虎',
-					grade: '二年级',
-					class: '1'
-				}, {
-					date: '3',
-					name: '王小虎',
-					grade: '三年级',
-					class: '1'
-				}, {
-					date: '4',
-					name: '王小虎',
-					grade: '四年级',
-					class: '1'
-				}],
-				dialogTableVisible: false,
-				dialogFormVisible: false,
 			};
 		},
 		methods: {
@@ -279,6 +238,11 @@
 			},
 			// 确认订单
 			addOrder(data){
+				this.$confirm('是否已缴费?', '提示', {
+        		  confirmButtonText: '确定',
+        		  cancelButtonText: '取消',
+        		  type: 'warning'
+        		}).then(() => {
 				apiAdminOrderUpdate({
 					"id":data.id,
 					"status":1
@@ -294,52 +258,95 @@
 							this.total = res.data.data.total
 							this.currentPage = res.data.data.pageNum
 						})
-						this.$router.push('/distribution_admin')
 					}else{
 						this.$message.error(res.data.message)
 					}
 				})
+        		}).catch(() => {
+        		          
+        		});
+				
 			},
-			// searchO() {
-
-			// },
-			// toggleSelection(rows) {
-			// 	if (rows) {
-			// 		rows.forEach(row => {
-			// 			this.$refs.multipleTable.toggleRowSelection(row);
-			// 		});
-			// 	} else {
-			// 		this.$refs.multipleTable.clearSelection();
-			// 	}
-			// },
-			// handleSelectionChange(val) {
-			// 	this.multipleSelection = val;
-			// },
-			// toggleSelection(rows) {
-			// 	if (rows) {
-			// 		rows.forEach(row => {
-			// 			this.$refs.multipleTable.toggleRowSelection(row);
-			// 		});
-			// 	} else {
-			// 		this.$refs.multipleTable.clearSelection();
-			// 	}
-			// },
-			// submit() {
-			// 	//关闭窗口
-			// 	this.dialogTableVisible = false;
-			// },
+			// 删除该订单
+			DelFile(data){
+				this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
+        		  confirmButtonText: '确定',
+        		  cancelButtonText: '取消',
+        		  type: 'warning'
+        		}).then(() => {
+					AdminOrderDel(data.id).then(res=>{
+						if(res.data.result){
+							this.$message.success('删除成功')
+							apiAdminOrderList({
+								"pageNum":this.pageNum,
+								"pageSize":this.pageSize
+							}).then(res=>{
+								this.orderList = res.data.data.list
+								this.total = res.data.data.total
+								this.currentPage = res.data.data.pageNum
+							})
+						}else{
+							this.$message.error(res.data.message)
+						}
+					})
+        		}).catch(() => {
+        		         
+        		});
+			},
+			// 下载合同
+			uploadFile(row){
+				console.log(row)
+				AdminOrderGetFile(row.id).then(res=>{
+					// console.log(res)
+					const blob = new Blob([res.data],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8'})
+					let link = document.createElement('a');
+				 	let objectUrl = URL.createObjectURL(blob);
+					link.setAttribute("href",objectUrl);
+					link.setAttribute("download",'订购合同.docx'); 
+					link.click();
+					//释放内存
+					window.URL.revokeObjectURL(link.href)
+				})
+			},
+			// 上传合同
+			loadFile(row){
+				console.log(row)
+				var input =  document.createElement('input')
+				input.type = 'file'
+				input.accept = '.docx'
+				input.addEventListener('change',(event)=>{
+					let file = event.target.files[0]
+					var data = new FormData()
+					data.append('file',file)
+					AdminOrderUploadFile(row.id,data).then(res=>{
+						if(res.data.result){
+							this.$message.success('上传成功')
+							apiAdminOrderList({
+								"pageNum":this.pageNum,
+								"pageSize":this.pageSize
+							}).then(res=>{
+								this.orderList = res.data.data.list
+								this.total = res.data.data.total
+								this.currentPage = res.data.data.pageNum
+							})
+						}else{
+							this.$message.error(res.data.message)
+						}
+					})
+				})
+				input.click()
+				input.remove()
+			},
 			goAdd(){
 				this.$router.push('order_admin_add')
 			}
 		},
 		mounted() {
 			this.color = user().color;
-			console.log(11)
 			apiAdminOrderList({
 				"pageNum":this.pageNum,
 				"pageSize":this.pageSize
 			}).then(res=>{
-				console.log(res)
 				this.orderList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
