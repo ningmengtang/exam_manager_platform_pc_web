@@ -49,7 +49,7 @@
 			</el-row>
 		</div>
 		<div class="papers-box" v-loading="loading">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.o==1?(0):d.o==2?style.pLi3:d.o==3?style.pLi2:style.pLi4">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==1?style.pLi4:d.status==2?(0):d.status==3?style.pLi3:style.pLi2">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>

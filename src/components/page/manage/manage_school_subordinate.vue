@@ -46,7 +46,7 @@
 							<i class="icon el-icon-check ii"></i>
 							<span class="text ii">正常使用</span>
 							<i class="icon i el-icon-edit-outline ii" style="cursor: pointer;" @click="teacherChange(data.id)"></i>
-							<i class="icon i el-icon-close ii" style="cursor: pointer;"  @click="deleteLi(data.id);dialogVisible=true"></i>
+							<i class="icon i el-icon-close ii" style="cursor: pointer;" @click="deleteLi(data.id);dialogVisible=true"></i>
 						</div>
 					</div>
 				</div>
@@ -201,13 +201,21 @@
 			getValue() {
 				switch (this.typeStatus) {
 					case 'student':
-						StudentAccountInfo(this.page).then(res => {
+						StudentAccountInfo({
+							pageNum: this.page.pageNum,
+							pageSize: this.page.pageSize,
+							schoolId: this.schoolId
+						}).then(res => {
 							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
 								'查询超时,请刷新重新查询！')
 						})
 						break;
 					case 'teacher':
-						schoolSelectTeacher(this.page).then(res => {
+						schoolSelectTeacher({
+							pageNum: this.page.pageNum,
+							pageSize: this.page.pageSize,
+							schoolId: this.schoolId
+						}).then(res => {
 							if (res.data) {
 								this.li = res.data.data.list
 								this.total = res.data.data.total
@@ -276,7 +284,7 @@
 			deleteLi(id) {
 				switch (this.typeStatus) {
 					case 'student':
-					adminDeleteStuednt(id).then(res => {
+						adminDeleteStuednt(id).then(res => {
 							this.$message.success('删除成功')
 						})
 						StudentAccountInfo(this.page).then(res => {
@@ -297,7 +305,7 @@
 						})
 						break;
 				}
-				
+
 			},
 			//修改
 			teacherChange(data) {
@@ -318,7 +326,7 @@
 				pageSize: this.page.pageSize,
 				schoolId: this.schoolId
 			}).then(res => {
-				res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+				res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
 					'查询超时,请刷新重新查询！')
 			})
 
