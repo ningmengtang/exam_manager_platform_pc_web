@@ -6,7 +6,7 @@
 				<!-- <el-select v-model="paperType" placeholder="请选择" class="ids" @change="changeType">
 					<el-option v-for="item in options"  :label="item.label" :value="item.label"></el-option>
 				</el-select> -->
-				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px">
+				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px;">
 					<el-radio label="图片试卷">图片试卷</el-radio>
 					<el-radio label="在线组卷">在线组卷</el-radio>
 				</el-radio-group>
@@ -168,7 +168,7 @@
 					</el-col>
 				</el-row>
 			</div>
-			<div class="group" style="margin-top:30px;">
+			<div class="group" style="margin-top:30px;max-height: 500px;overflow: auto;">
 				<el-table
 				      :data="StudenList"
 				      style="width: 100%"
@@ -195,11 +195,11 @@
 					  </el-table-column>
 				    </el-table>
 			</div>
-			<div class="page">
+			<!-- <div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
-			</div>
+			</div> -->
 			
 			<div class="hint">
 				<div>温馨提示：</div>
@@ -236,7 +236,7 @@ export default {
 			total:0,
 			currentPage: 1,
 			pageNum:1,
-			pageSize:16,
+			pageSize:999,
 			dialogVisible: false,
 			ispaperType:true,
 			paperType:'图片试卷',
