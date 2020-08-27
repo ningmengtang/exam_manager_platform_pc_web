@@ -479,7 +479,7 @@ export default {
 					}
 				for(var i=0;i<this.papaerType.length;i++){
 					createTestPaperInfoObj.students.push({
-						"suid":this.papaerType[i].id,
+						"uid":this.papaerType[i].id,
 						"utype":"student",
 						"items":[]
 					})

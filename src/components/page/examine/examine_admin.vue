@@ -173,7 +173,9 @@ export default {
                  testPaperId:row.id,
                     students:[
                          {
-                           suid:localStorage.getItem('userID')
+                            uid:localStorage.getItem('userID'),
+                            utype:"student",
+                            items:[]
                          }
                        ]
             }
