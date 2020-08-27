@@ -343,6 +343,7 @@
 				form.stuedntNum = res.data.data.code;
 				form.sex = res.data.data.sex;
 				form.schoolDefault = res.data.data.schoolName
+				form.classDefault=res.data.data.classesId
 			})
 
        console.log( this.$route.params)

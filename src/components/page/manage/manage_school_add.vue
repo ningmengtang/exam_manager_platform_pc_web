@@ -238,13 +238,12 @@
 									schoolId: this.schoolId,
 									schoolSn: this.schoolSn,
 									classesId: form.classDefault,
-
 									code: form.stuedntNum
 								}).then(res => {
+									// console.log(form.classDefault)
 									this.$message.success('添加学生账号成功')
 									this.black()
 								})
-
 								break;
 							case 'teacher':
 								let json = {
