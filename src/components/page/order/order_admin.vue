@@ -258,7 +258,6 @@
 							this.total = res.data.data.total
 							this.currentPage = res.data.data.pageNum
 						})
-						this.$router.push('/distribution_admin')
 					}else{
 						this.$message.error(res.data.message)
 					}

@@ -130,8 +130,8 @@
 				</div>
 				<div class="right">
 					<i class="icon el-icon-time"></i>
-					<div class="status" >{{item.putInto == '0'?'入库失败':item.putInto == '1'?'入库成功':itme.putInto == '2'?'正在入库':''}}</div>
-					<el-button type="text" class="download" v-if="item.status == 1" >立即下载</el-button>
+					<div class="status" >{{item.putInto == '0'?'入库失败':item.putInto == '1'?'入库成功':item.putInto == '2'?'正在入库':''}}</div>
+					<el-button  type="primary" disabled v-if="item.status == 1" >立即下载</el-button>
 					<el-button type="primary"   v-if="item.status == 0" @click="downloadFile(item)">立即下载</el-button>
 				</div>
 			</div>

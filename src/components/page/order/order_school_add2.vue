@@ -46,7 +46,7 @@
 			<div class="message-top" :style="{'border-color':color}">订单详细
 				<el-button type="success" class="buttom" @click="addOrderItem " :style="{'background-color': color, 'border-color': color }"><span
 					 class="el-icon-plus"></span>
-					新增订购单</el-button>
+					编辑订购单</el-button>
 			</div>
 
 			<!--订单列表 -->
@@ -68,7 +68,7 @@
 							<!-- <div class="fault" @click="upload(i)"  v-if="!item.uploadFile">学生信息未导入，点击重导</div> -->
 						</div>
 					</div>
-					<i class="close el-icon-close" :style="{'color':color}"></i>
+					<!-- <i class="close el-icon-close" :style="{'color':color}"></i> -->
 				</div>
 			</div>
 
@@ -85,6 +85,9 @@
 						<div class="ii">{{Alltotalmoney}}</div>
 					</div>
 				</div>
+                <!-- <div class="last">
+
+                </div> -->
 			</div>
 		</div>
 		<!-- 操作1 -->
@@ -322,7 +325,7 @@ import { forEach } from 'jszip'
                 
                 this.getMoney(index)
 
-                console.log(this.orderItemList[index])
+                // console.log(this.orderItemList[index])
             },
             // 征订人数
             changeNum(index){
@@ -405,7 +408,9 @@ import { forEach } from 'jszip'
                             } 
                         }
                         this.Allsubscriptions =this.Allsubscriptions +  this.orderItemList[i].updateNum
-                        this.Alltotalmoney = this.Alltotalmoney +  this.orderItemList[i].total 
+                        this.Alltotalmoney = this.Alltotalmoney +  this.orderItemList[i].total
+
+                        this.Alltotalmoney = this.Alltotalmoney.toFixed(2)
                         this.dialogTableVisible = false
                     }
                 }
@@ -522,17 +527,17 @@ import { forEach } from 'jszip'
                 this.selectiveList = res.data.data.list
                 for(var i=0;i<this.selectiveList.length;i++){
                     if(this.selectiveList[i].subNameCh == '语文'){
-                        console.log(this.selectiveList[i])
+                      
                         this.chinesemMinCount = this.selectiveList[i].minCount
-                        console.log(this.chinesemMinCount)
+                     
                     }else if(this.selectiveList[i].subNameCh == '英语'){
-                         console.log(this.selectiveList[i])
+                        
                         this.englishMinCount = this.selectiveList[i].minCount
-                        console.log(this.englishMinCount)
+                     
                     }else if(this.selectiveList[i].subNameCh == '数学'){
-                         console.log(this.selectiveList[i])
+                        
                         this.mathMinCount = this.selectiveList[i].minCount
-                        console.log(this.mathMinCount)
+                      
                     }
                 }
             })
