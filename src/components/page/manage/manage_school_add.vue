@@ -46,7 +46,13 @@
 					<el-input v-model="form.password" show-password>
 					</el-input>
 				</el-form-item>
-				<el-form-item label="班级:" prop="class" >
+				<el-form-item label="班级:" prop="class" v-if="typeStatus=='student'">
+					<el-select v-model="form.classDefault"  placeholder="请选择" @visible-change="classList">
+						<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="班级:" prop="class" v-else>
 					<el-select v-model="form.classDefault" multiple placeholder="请选择" @visible-change="classList">
 						<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 						</el-option>
