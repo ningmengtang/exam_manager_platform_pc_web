@@ -94,7 +94,7 @@
 					<i class="p-status-icon el-icon-shopping-cart-2" v-else-if="d.o==2"></i>
 					<i class="p-status-icon el-icon-loading" v-else-if="d.o==3"></i>
 					<i class="p-status-icon el-icon-close" v-else-if="d.o==4"></i> -->
-					<i class="p-status-icon el-icon-download" v-if="d.putInto==1" @click="downloadFile(d)"></i>
+					<!-- <i class="p-status-icon el-icon-download" v-if="d.putInto==1" @click="downloadFile(d)"></i> -->
 					<i class="p-status-icon el-icon-close" v-if="d.putInto==0"></i> 
 					<i class="p-status-icon el-icon-loading" v-if="d.putInto==2"></i>
 				</div>

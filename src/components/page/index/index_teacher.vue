@@ -197,12 +197,13 @@
 				this.$router.push('manage_teacher_import')
 			},
 			downloadFile(item){
+				console.log(item)
 				let  createTestPaperInfoObj = {
-					 		testPaperId:item.id,
+					 		testPaperId:item.pid,
 					        students:[
 					          {
 					            uid:localStorage.getItem('userID'),
-								utype:"student",
+								utype:"teacher",
 			          			items:[]
 					          }
 					        ]

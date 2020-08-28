@@ -90,6 +90,8 @@
 				<el-table :data="classList" height="480" style="width: 100%">
 					<el-table-column prop="id" label="ID" width="180">
 					</el-table-column>
+					<el-table-column prop="schoolName" label="ID" width="180">
+					</el-table-column>
 					<el-table-column prop="grade" label="年级" width="180">
 					</el-table-column>
 					<el-table-column prop="name" label="班级">
@@ -243,43 +245,7 @@
 					},
 					pStatus: 'color:#e2633b'
 				},
-				classList: [{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-					{
-						label: '好老师',
-						title: '2019年人教版一年级第一单元测验',
-						particular: '包含小学一年级语文2019年人教版单元测试',
-						time: '2020年10月11日上传'
-					},
-				]
+				classList: []
 			};
 		},
 		components: {
@@ -449,7 +415,7 @@
 				pageSize: this.page.pageSize,
 				pageNum: this.page.pageNum
 			}).then(res => {
-				// console.log(res)
+				console.log(res)
 				this.page.pageNum = res.data.data.pageNum;
 				this.page.pageSize = res.data.data.pageSize;
 				this.total = res.data.data.total;

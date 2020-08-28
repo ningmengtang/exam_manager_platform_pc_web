@@ -322,6 +322,7 @@
 								})
 								//判断重置密码修改
 								if (this.passwordChange) {
+									
 									adminResetPasswordSchool(this.userChangId).then(res => {
 										console.log(res)
 									})
