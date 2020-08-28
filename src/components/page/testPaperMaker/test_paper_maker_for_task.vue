@@ -2,7 +2,7 @@
   <div class="appMain">
     <el-backtop></el-backtop>
     <el-container>
-      <el-aside class="layout_aside" width="200px" style="text-align:center;position:fixed;" ref="page_main_tile">
+      <el-aside class="layout_aside" width="200px" style="text-align:center;position:fixed;">
         
         <!-- <div class="div_menu_item background_blue">
           <i class="el-icon-video-play"></i>选择快捷操作对象
@@ -65,7 +65,7 @@
       <el-container>
         <el-header class="layout_header">
           
-          <div style="width:800px;margin-left:auto;margin-right:auto;">
+          <div style="width:800px;margin-left:auto;margin-right:auto;" ref="page_main_tile">
             <div style="width:100%;text-align:center;font-size:24pt;font-weight:bold;">{{downloadTips.title}}</div>
             <div style="width:100%;text-align:center;font-size:18pt;">{{downloadTips.content}}</div>
           </div>
@@ -74,9 +74,9 @@
         <el-main>
           
           <!-- 下载按钮 -->
-          <div style="width:800px;margin-left:auto;margin-right:auto;background-color:white;">
+          <div v-if="!qustionPreviewMode" style="width:800px;margin-left:auto;margin-right:auto;background-color:white;">
             <div style="clear:both;height:50px;"></div>
-            <div v-if="downloadGroup.length > 0" v-for="(downloadItem,downloadItemIndex) in downloadGroup" style="width:300px;float:left;margin-left:50px;">
+            <div v-if="downloadGroup.length > 0" v-for="(downloadItem,downloadItemIndex) in downloadGroup" style="width:300px;float:left;margin-left:50px;margin-top:30px;">
               <el-button type="success" @click="downloadItem.isDownload = true;studentsDownload(downloadItem.groupID)"style="font-size:20pt;" round>下载分包&nbsp;{{downloadItem.groupID+""}}<span v-if="downloadItem.isDownload"><i class="el-icon-check"></i></span></el-button>
               
             </div>
@@ -1117,7 +1117,8 @@ export default {
 
       this.qrInfoObj.uid = localStorage.getItem("userID").toString()
       this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
-      //console.log(this.$route.query.createTestPaperInfoObj)
+      console.log(this.$route.query.createTestPaperInfoObj)
+      
       // console.log(this.$router.params.createTestPaperInfoObj)
       if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)
       {
@@ -1149,20 +1150,29 @@ export default {
           this.createTestPaperInfoObj.students.forEach((studentArrItem,studentItemIndex) => {
             if((studentItemIndex) % 3 == 0)
             {
+              console.log("downloadGroupId + 1")
               this.downloadGroup.push({
-                groupID:downloadGroupId++,
+                groupID:downloadGroupId,
                 isDownload:false,
                 students:[studentArrItem],
               })
+             
             }
             else{
-              this.downloadGroup[downloadGroupId].students.push({
-                studentArrItem
-              })
+              console.log("push students")
+              console.log(this.downloadGroup[downloadGroupId])
+              
+              this.downloadGroup[downloadGroupId].students.push(studentArrItem)
+
+              if(studentItemIndex !=0 && (studentItemIndex+1) % 3 == 0)
+              {
+                downloadGroupId+=1
+              }
             }
             
           });
-
+          console.log("downloadGroup分组完成")
+          console.log(this.downloadGroup)
           //this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
         })
         
@@ -1264,35 +1274,36 @@ export default {
 
       this.$options.methods.startFullscreenLoading.bind(this)()
 
-      if(this.zipContentBlob != null && this.zipContentBlob != '')
-      {
-        this.$message.success('开始下载')
-        saveAs(this.zipContentBlob, "试卷PDF与答题卡PDF_共"+studentIdArr.length+"人.zip");
+      // if(this.zipContentBlob != null && this.zipContentBlob != '')
+      // {
+      //   this.$message.success('开始下载')
+      //   saveAs(this.zipContentBlob, "试卷PDF与答题卡PDF_共"+studentIdArr.length+"人.zip");
 
-        //关闭加载
-        this.fullscreenLoading = false;
-        return
-      }
+      //   //关闭加载
+      //   this.fullscreenLoading = false;
+      //   return
+      // }
+      setTimeout(() => {
+        this.$options.methods.startTestPaperImgPreview.bind(this)(studentIdArr).then(res => {
+          
+          //权宜之计使用一个定时器，规避生成pdf时
+          setTimeout(() => {
 
-      this.$options.methods.startTestPaperImgPreview.bind(this)(studentIdArr).then(res => {
-        
-        //权宜之计使用一个定时器，规避生成pdf时
-        setTimeout(() => {
+            // let newStudentIdArrObj = JSON.parse(JSON.stringify(studentIdArr))
+            // console.log(newStudentIdArrObj)
+            //开始批量打包
+            this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdfPromise.bind(this)(studentIdArr).then(res =>{
+              //resolve(true)
 
-          // let newStudentIdArrObj = JSON.parse(JSON.stringify(studentIdArr))
-          // console.log(newStudentIdArrObj)
-          //开始批量打包
-          this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdfPromise.bind(this)(studentIdArr).then(res =>{
-            //resolve(true)
+              //关闭加载
+              this.fullscreenLoading = false;
+              this.qustionPreviewMode = false;
+            })
 
-            //关闭加载
-            this.fullscreenLoading = false;
-          })
+          },5000)
 
-        },5000)
-
-      })
-
+        })
+      },300)
       /*setTimeout(() => {
         if(this.fullscreenLoading == false)
         {

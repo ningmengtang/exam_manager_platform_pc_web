@@ -255,7 +255,7 @@ export default {
 			console.log(this.array_nav);
 		},
 		goAdd(){
-			this.$router.push('order_school_add')
+			this.$router.push('order_school_add2')
 		},
 		handleCurrentChange(val) {
 			this.pageNum = val
