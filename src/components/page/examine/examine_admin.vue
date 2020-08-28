@@ -47,6 +47,13 @@
                             class="red"
                             @click="handleDelete(scope.$index, scope.row)"
                         >入库失败</el-button>
+                        <el-button
+                            v-if="scope.row.putInto == 1"
+                            type="text"
+                            icon="el-icon-delete"
+                            class="red"
+                            @click="handleDelete(scope.$index, scope.row)"
+                        >取消入库</el-button>
                     </template>
                 </el-table-column>
             </el-table>

@@ -150,7 +150,7 @@
 
 .right-box .upload-papers {
     margin-top: 22px;
-    height: 720px;
+    height: 600px;
     overflow: auto;
 }
 
@@ -544,9 +544,10 @@ table tr td {
 .dialogTop {
     margin: 10px;
 }
-/* .detailsListP{
+.detailsListP{
     margin: 10px;
-} */
+    font-size: 18px;
+}
 .detailsListP p{
     padding: 8px;
 }

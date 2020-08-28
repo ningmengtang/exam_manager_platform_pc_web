@@ -183,16 +183,22 @@
                     </td> 
                 </tr>
                </table>
-               <!-- <div class="detailsListP">
+               <div class="detailsListP">
                     <p v-for="(item,index) in tagList.grade">
                         <span>
-                            {{item.text}}
+                            {{item.text}}：
+                        </span>
+                        <span v-if="subject[index]">
+                            已选：{{subject[index]}}
+                        </span>
+                        <span v-if="Allmoney[index]">
+                            合计：{{Allmoney[index]}}元
                         </span>
                     </p>   
-               </div> -->
+               </div>
                <div style="float:right;margin: 10px;" >
                     <el-button type="primary" @click="onSubmit">立即创建</el-button>
-                    <el-button>取消</el-button>
+                    <el-button @click="dialogTableVisible = false">取消</el-button>
                </div>
             </el-row>
 		</el-dialog>
@@ -257,6 +263,7 @@ import { forEach } from 'jszip'
                 for(var i=0;i<this.tagList.grade.length;i++){
                     this.subject.push([])
                 }
+
                 for(var a=0;a<this.tagList.grade.length;a++){
                     this.orderItemList.push({
                         "children":[],
@@ -307,8 +314,7 @@ import { forEach } from 'jszip'
             },
             // 年级
             changeSub(index,id){
-                // console.log(id)
-                // console.log(this.subject[index])
+
                 this.orderItemList[index].classId = id
                 let className = ''
                 this.tagList.grade.forEach(element=>{
@@ -334,12 +340,6 @@ import { forEach } from 'jszip'
                     });
                 }
                 this.getMoney(index)
-
-
-
-
-
-
             },
             // 征订人数
             changeNum(index){
@@ -376,56 +376,84 @@ import { forEach } from 'jszip'
                 this.Alltotalmoney = 0
                 for(var i=0;i<this.orderItemList.length;i++){
 
-                    if(this.orderItemList[i].children.length == 0 && this.orderItemList[i].updateNum !='' && this.orderItemList[i].total !=''){
+                    if(this.orderItemList[i].children.length == 0 && this.orderItemList[i].updateNum =='' && this.orderItemList[i].total ==''){
                         continue
                     }else{
                         let item = this.orderItemList[i]
                         for(var a=0;a<item.childrenName.length;a++){
                             if(item.childrenName[a] == '语文'){
-                                for(let k=0;k<this.chinesemMinCount;k++){
-                                    this.orderList.push({
-                                        "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[k].text,
-                                        "children":[item.year,item.classId,item.test,item.children[a],this.chineseId,this.tagList.element_test[k].id],
-                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName,this.tagList.element_test[k].text],
-                                        "updateNum":item.updateNum,
-                                        "total_price":item.total,
-                                        
-                                    })
-                                }
-                                
-
+                                this.orderList.push({
+                                    "name":item.yearName + item.className + item.testName + item.childrenName[a] ,
+                                    "children":[item.year,item.classId,item.test,item.children[a],this.chineseId],
+                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName],
+                                    "updateNum":item.updateNum,
+                                    "total_price":item.total   
+                                })
                             }else if(item.childrenName[a] == '数学'){
-                                for(let j=0;j<this.mathMinCount;j++){
-                                    this.orderList.push({
-                                        "name":item.yearName + item.className +item.testName + item.childrenName[a] + this.tagList.element_test[j].text,
-                                        "children":[item.year,item.classId,item.test,item.children[a],this.mathId,this.tagList.element_test[j].id],
-                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName,this.tagList.element_test[j].text],
-                                        "updateNum":item.updateNum,
-                                        "total_price":item.total,
-                                        "uploadFile":''
-                                        
-                                    })
-                                }
-                                
-
+                                this.orderList.push({
+                                    "name":item.yearName + item.className +item.testName + item.childrenName[a] ,
+                                    "children":[item.year,item.classId,item.test,item.children[a],this.mathId],
+                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName],
+                                    "updateNum":item.updateNum,
+                                    "total_price":item.total,
+                                    "uploadFile":''  
+                                })
                             }else if(item.childrenName[a] == '英语'){
-                                for(let l=0;l<this.englishMinCount;l++){
-                                    this.orderList.push({
-                                        "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[l].text,
-                                        "children":[item.year,item.classId,item.test,item.children[a],this.englishId,this.tagList.element_test[l].id],
-                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName,this.tagList.element_test[l].text],
-                                        "updateNum":item.updateNum,
-                                        "total_price":item.total,
-                                        "uploadFile":''
-                                    })
-                                }
+                                this.orderList.push({
+                                    "name":item.yearName + item.className + item.testName + item.childrenName[a] ,
+                                    "children":[item.year,item.classId,item.test,item.children[a],this.englishId],
+                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName],
+                                    "updateNum":item.updateNum,
+                                    "total_price":item.total,
+                                    "uploadFile":''
+                                })
                             } 
                         }
+                        // for(var a=0;a<item.childrenName.length;a++){
+                        //     if(item.childrenName[a] == '语文'){
+                        //         for(let k=0;k<this.chinesemMinCount;k++){
+                        //             this.orderList.push({
+                        //                 "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[k].text,
+                        //                 "children":[item.year,item.classId,item.test,item.children[a],this.chineseId,this.tagList.element_test[k].id],
+                        //                 "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName,this.tagList.element_test[k].text],
+                        //                 "updateNum":item.updateNum,
+                        //                 "total_price":item.total,
+                                        
+                        //             })
+                        //         }
+                        //     }else if(item.childrenName[a] == '数学'){
+                        //         for(let j=0;j<this.mathMinCount;j++){
+                        //             this.orderList.push({
+                        //                 "name":item.yearName + item.className +item.testName + item.childrenName[a] + this.tagList.element_test[j].text,
+                        //                 "children":[item.year,item.classId,item.test,item.children[a],this.mathId,this.tagList.element_test[j].id],
+                        //                 "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName,this.tagList.element_test[j].text],
+                        //                 "updateNum":item.updateNum,
+                        //                 "total_price":item.total,
+                        //                 "uploadFile":''
+                                        
+                        //             })
+                        //         }
+                                
+
+                        //     }else if(item.childrenName[a] == '英语'){
+                        //         for(let l=0;l<this.englishMinCount;l++){
+                        //             this.orderList.push({
+                        //                 "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[l].text,
+                        //                 "children":[item.year,item.classId,item.test,item.children[a],this.englishId,this.tagList.element_test[l].id],
+                        //                 "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName,this.tagList.element_test[l].text],
+                        //                 "updateNum":item.updateNum,
+                        //                 "total_price":item.total,
+                        //                 "uploadFile":''
+                        //             })
+                        //         }
+                        //     } 
+                        // }
                         this.Allsubscriptions =this.Allsubscriptions +  this.orderItemList[i].updateNum
                         this.Alltotalmoney = this.Alltotalmoney +  this.orderItemList[i].total
-                        this.dialogTableVisible = false
                     }
                 }
+                console.log(this.orderList)
+                this.dialogTableVisible = false
             },
             // 新建订单项
             // getOrderItem(id,sn,orderItem){

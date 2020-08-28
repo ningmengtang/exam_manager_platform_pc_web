@@ -100,7 +100,7 @@
 		</div>
 		<!-- 提示框 -->
 		<el-dialog title="选择试卷" :visible.sync="dialogTableVisible" >
-			<div>
+			<!-- <div>
 				<span>
 					已选择:[
 					<span style="color:red">
@@ -109,13 +109,18 @@
 					]
 					
 				</span>
-			</div>
+			</div> -->
 			 <el-table
+			 	style="max-height: 580px;overflow: auto;"
 				:data="tableData"
 				highlight-current-row
-				@current-change="handleCurrentChangeSelect"
+				@selection-change="handleCurrentChangeSelect"
 				>
-				 <el-table-column
+				<el-table-column
+					type="selection"
+					width="55">
+				</el-table-column>
+				<el-table-column
 					type="index"
 					width="50">
 				</el-table-column>
@@ -146,11 +151,11 @@
 				</el-table-column>
 				
 			</el-table>
-			<div class="page">
+			<!-- <div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 					:current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
-			</div>
+			</div> -->
 
 			<div>
 				<el-button type="primary" @click="onSubmit">确定分发</el-button>
@@ -214,7 +219,7 @@
 				adminAffirmData:'',
 				dialogTableVisible: false,
 				dialogTableVisible2: false,
-				pageSize:6,
+				pageSize:999,
 				pageNum:1,
 				total:0,
 				id:[],
@@ -236,26 +241,55 @@
 
 				// improtSchoolAndTeachersAndStudentsInfoByAlredyUpload()
 			},
+			async getTypeList(id){
+				await this.TagTypePromise(id)
+			},
+			TagTypePromise(id){
+				return new Promise((resolve, reject)=>{
+					improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.Itemid,id).then(res=>{
+						if(res.data.result){
+						}else{
+							this.$message.error(res.data.message)
+						}
+						resolve(res)
+					})
+					
+				})
+			},
 			onSubmit(){
 				// 分配学生
-				improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.Itemid,this.ParperType.id).then(res=>{
-					// console.log(res)
-					if(res.data.result){
-						this.$message.success('分配成功')
-						this.dialogTableVisible = false
-						apiAdminOrderItemList({
-							"order_id":this.adminAffirmData.id
-						}).then(res=>{
-							if(res.data.data.list){
-								this.papers = res.data.data.list
-							}else{
-								this.$message.error('查询不到订单项')
-							}
-						})
+				for(var i=0;i<this.ParperType.length;i++){
+					this.getTypeList(this.ParperType[i].id)
+				}
+				this.$message.success('操作成功')
+				this.dialogTableVisible = false
+				apiAdminOrderItemList({
+					"order_id":this.adminAffirmData.id
+				}).then(res=>{
+					if(res.data.data.list){
+						this.papers = res.data.data.list
 					}else{
-						this.$message.error(res.data.message)
+						this.$message.error('查询不到订单项')
 					}
 				})
+				// improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.Itemid,this.ParperType.id).then(res=>{
+				// 	// console.log(res)
+				// 	if(res.data.result){
+				// 		this.$message.success('分配成功')
+				// 		this.dialogTableVisible = false
+				// 		apiAdminOrderItemList({
+				// 			"order_id":this.adminAffirmData.id
+				// 		}).then(res=>{
+				// 			if(res.data.data.list){
+				// 				this.papers = res.data.data.list
+				// 			}else{
+				// 				this.$message.error('查询不到订单项')
+				// 			}
+				// 		})
+				// 	}else{
+				// 		this.$message.error(res.data.message)
+				// 	}
+				// })
 			},
 			handleCurrentChangeSelect(val){
 				this.ParperType = val
