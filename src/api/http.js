@@ -2,40 +2,41 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 export function get(url, params) {
-	var Base64 = require('js-base64').Base64
-	var loginToken = localStorage.getItem('loginToken');
-	var authStr = ":" + loginToken;
-	var authStr_hex = 'Basic ' + Base64.encode(authStr);
-	return new Promise((resolve, reject) => {
-		axios({
-			url: url,
-			method: 'GET',
-			data: params,
-			contentType: "application/json; charset=utf-8",
-			headers:{
-				"uniqueKey":getUniqueKey(),
-				"Authorization": loginToken == null ? undefined : authStr_hex }
-		}).then(res => {
-			
-			if(res.data.stateCode == 300033){
-				// console.log(res)
-				
-				Message({
-					message: '账号已登录，请重新登录！',
-					type: 'warning'
-				});
-				setTimeout(()=>{
-					localStorage.clear()
-					window.location.href = '/login'
-				},1000)
-				
-			}
-			resolve(res)
-		}).catch(err => {
-			reject(err)
-			
-		})
-	})
+    var Base64 = require('js-base64').Base64
+    var loginToken = localStorage.getItem('loginToken');
+    var authStr = ":" + loginToken;
+    var authStr_hex = 'Basic ' + Base64.encode(authStr);
+    return new Promise((resolve, reject) => {
+        axios({
+            url: url,
+            method: 'GET',
+            data: params,
+            contentType: "application/json; charset=utf-8",
+            headers: {
+                "uniqueKey": getUniqueKey(),
+                "Authorization": loginToken == null ? undefined : authStr_hex
+            }
+        }).then(res => {
+
+            if (res.data.stateCode == 300033) {
+                // console.log(res)
+
+                Message({
+                    message: '账号已登录，请重新登录！',
+                    type: 'warning'
+                });
+                setTimeout(() => {
+                    localStorage.clear()
+                    window.location.href = '/login'
+                }, 1000)
+
+            }
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+
+        })
+    })
 }
 export function uploadget(url, params) {
     var Base64 = require('js-base64').Base64
@@ -63,38 +64,39 @@ export function uploadget(url, params) {
     })
 }
 export function post(url, data) {
-	var Base64 = require('js-base64').Base64
-	var loginToken = localStorage.getItem('loginToken')
-	var authStr = ":" + loginToken;
-	var authStr_hex = 'Basic ' + Base64.encode(authStr);
-	return new Promise((resolve, reject) => {
-		axios({
-			url: url,
-			method: 'POST',
-			data: data,
-			contentType: "application/json; charset=utf-8",
-			headers: {
-				"uniqueKey":getUniqueKey(),
-				"Authorization": loginToken == null ? undefined : authStr_hex }
-		}).then(res => {
-			if(res.data.stateCode == 300033){
-				Message({
-					message: '账号已登录，请重新登录！',
-					type: 'warning'
-				});
-				setTimeout(()=>{
-					localStorage.clear()
-					window.location.href = '/login'
-				},1000)
-				
-			
-			}
-			resolve(res)
-		}).catch(err => {
-			console.log(err)
-			reject(err)
-		})
-	})
+    var Base64 = require('js-base64').Base64
+    var loginToken = localStorage.getItem('loginToken')
+    var authStr = ":" + loginToken;
+    var authStr_hex = 'Basic ' + Base64.encode(authStr);
+    return new Promise((resolve, reject) => {
+        axios({
+            url: url,
+            method: 'POST',
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            headers: {
+                "uniqueKey": getUniqueKey(),
+                "Authorization": loginToken == null ? undefined : authStr_hex
+            }
+        }).then(res => {
+            if (res.data.stateCode == 300033) {
+                Message({
+                    message: '账号已登录，请重新登录！',
+                    type: 'warning'
+                });
+                setTimeout(() => {
+                    localStorage.clear()
+                    window.location.href = '/login'
+                }, 1000)
+
+
+            }
+            resolve(res)
+        }).catch(err => {
+            console.log(err)
+            reject(err)
+        })
+    })
 }
 export function getCode(url, params) {
     return new Promise((resolve, reject) => {

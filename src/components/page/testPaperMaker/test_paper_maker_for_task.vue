@@ -4,7 +4,7 @@
     <el-container>
       <el-aside class="layout_aside" width="200px" style="text-align:center;position:fixed;">
         
-        <div class="div_menu_item background_blue">
+        <!-- <div class="div_menu_item background_blue">
           <i class="el-icon-video-play"></i>选择快捷操作对象
         </div>
 
@@ -26,13 +26,13 @@
         
         <div class="div_menu_item background_orange" style="margin-top:30px;" v-if="qustionPreviewMode" @click="qustionPreviewMode = false">
           <i class="el-icon-collection-tag"></i>退出预览试题
-        </div>
+        </div> -->
 
         <!-- <div class="div_menu_item background_orange" style="margin-top:30px;" v-if="qustionPreviewMode" @click="returnTop();testPaperQuestionsToImage()">
           <i class="el-icon-collection-tag"></i>预览试题图片
         </div> -->
 
-        <div class="div_menu_item background_orange" style="margin-top:30px;" @click="testFor100StudentsDownload">
+        <!-- <div class="div_menu_item background_orange" style="margin-top:30px;" @click="testFor100StudentsDownload">
           <i class="el-icon-collection-tag"></i>直接下载试题
         </div>
         
@@ -59,19 +59,29 @@
 
         <div class="div_menu_item">
           <i class="el-icon-document"></i>添加其他题
-        </div>
+        </div> -->
         
         </el-aside>
       <el-container>
         <el-header class="layout_header">
           
-          <div ref="page_main_tile" class="text_header_title">
-            考试综合管理平台-组卷工具(简化版)
+          <div style="width:800px;margin-left:auto;margin-right:auto;" ref="page_main_tile">
+            <div style="width:100%;text-align:center;font-size:24pt;font-weight:bold;">{{downloadTips.title}}</div>
+            <div style="width:100%;text-align:center;font-size:18pt;">{{downloadTips.content}}</div>
           </div>
 
         </el-header>
         <el-main>
-
+          
+          <!-- 下载按钮 -->
+          <div v-if="!qustionPreviewMode" style="width:800px;margin-left:auto;margin-right:auto;background-color:white;">
+            <div style="clear:both;height:50px;"></div>
+            <div v-if="downloadGroup.length > 0" v-for="(downloadItem,downloadItemIndex) in downloadGroup" style="width:300px;float:left;margin-left:50px;margin-top:30px;">
+              <el-button type="success" @click="downloadItem.isDownload = true;studentsDownload(downloadItem.groupID)"style="font-size:20pt;" round>下载分包&nbsp;{{downloadItem.groupID+""}}<span v-if="downloadItem.isDownload"><i class="el-icon-check"></i></span></el-button>
+              
+            </div>
+            <div style="clear:both;height:50px;"></div>
+          </div>
           
           <!-- 题目预览 -->
           <div v-if="qustionPreviewMode" class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
@@ -1058,33 +1068,57 @@ export default {
             ],
         },//试卷第{{questionPartItemIndex+1}}部分结束
       ],
-      }
-
+      },
+      /**
+       * 下载提示语
+       */
+      downloadTips: {
+        title:"下载试卷",
+        content:"欢迎下载",
+      },
+      /**
+       * downloadGroup 下载组，因为性能问题，需要对下载的用户分组执行
+       */
+      downloadGroup: [
+        // {
+        //   groupID:0,
+        //   isDownload:false,
+        //   students:[
+        //     {
+        //       uid:1,
+        //       utype:"student",
+        //       items:[]
+        //     }
+        //   ],
+        // }
+      ],
     }
   },
   mounted () {
+    
     //this.createTestPaperInfoObj = {}
     this.$nextTick(() => {
-      this.resetTestPaperObj()
-      if(localStorage.getItem('testPaperCache')!=null)
-      {
-        this.testPaperObj = JSON.parse(localStorage.getItem('testPaperCache'))
-        this.$message.success('成功读取上次组卷的历史记录！')
-        console.log("已读取上次组卷的历史记录 ")
-        this.$forceUpdate();
-      }
-      if(localStorage.getItem('newTestPaperInfo')!=null)
-      {
-        var newTestPaperInfo = JSON.parse(localStorage.getItem('newTestPaperInfo'))
-        this.form = newTestPaperInfo.form
-        this.testPaperObj.title = newTestPaperInfo.form.title
-        this.testPaperObj.examExplain = newTestPaperInfo.form.examExplain
-        this.testPaperObj.examTime = newTestPaperInfo.form.examTime
-      }
+      //this.resetTestPaperObj()
+      // if(localStorage.getItem('testPaperCache')!=null)
+      // {
+      //   this.testPaperObj = JSON.parse(localStorage.getItem('testPaperCache'))
+      //   this.$message.success('成功读取上次组卷的历史记录！')
+      //   console.log("已读取上次组卷的历史记录 ")
+      //   this.$forceUpdate();
+      // }
+      // if(localStorage.getItem('newTestPaperInfo')!=null)
+      // {
+      //   var newTestPaperInfo = JSON.parse(localStorage.getItem('newTestPaperInfo'))
+      //   this.form = newTestPaperInfo.form
+      //   this.testPaperObj.title = newTestPaperInfo.form.title
+      //   this.testPaperObj.examExplain = newTestPaperInfo.form.examExplain
+      //   this.testPaperObj.examTime = newTestPaperInfo.form.examTime
+      // }
 
       this.qrInfoObj.uid = localStorage.getItem("userID").toString()
       this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
-      //console.log(this.$route.query.createTestPaperInfoObj)
+      console.log(this.$route.query.createTestPaperInfoObj)
+      
       // console.log(this.$router.params.createTestPaperInfoObj)
       if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)
       {
@@ -1096,6 +1130,7 @@ export default {
           {
             this.$message.error('获取试卷失败，无法下载！')
             console.log("获取试卷失败，无法下载！")
+            this.downloadTips.content = "获取试卷失败，无法下载！请重试！"
             return
           }
 
@@ -1103,13 +1138,50 @@ export default {
 
           console.log(resResultData)
 
-          
-
           this.testPaperObj = JSON.parse(resResultData.data.elementTest)
 
-          this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
+          //下载分组
+          this.downloadGroup = []
+
+          let childDownloadGroup = []
+          
+          let downloadGroupId = 0
+          
+          this.createTestPaperInfoObj.students.forEach((studentArrItem,studentItemIndex) => {
+            if((studentItemIndex) % 3 == 0)
+            {
+              console.log("downloadGroupId + 1")
+              this.downloadGroup.push({
+                groupID:downloadGroupId,
+                isDownload:false,
+                students:[studentArrItem],
+              })
+             
+            }
+            else{
+              console.log("push students")
+              console.log(this.downloadGroup[downloadGroupId])
+              
+              this.downloadGroup[downloadGroupId].students.push(studentArrItem)
+
+              if(studentItemIndex !=0 && (studentItemIndex+1) % 3 == 0)
+              {
+                downloadGroupId+=1
+              }
+            }
+            
+          });
+          console.log("downloadGroup分组完成")
+          console.log(this.downloadGroup)
+          //this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
         })
         
+      }
+      else{
+        this.$message.error('获取试卷失败，无法下载！')
+        console.log("获取试卷失败，无法下载！")
+        this.downloadTips.content = "获取试卷失败，无法下载！请重试！"
+        return
       }
 
     })
@@ -1188,41 +1260,50 @@ export default {
       //this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(studentIdArr)
     },
     /**
+     * 学生小批量下载
+     */
+    studentsDownload(downloadGroupId){
+  
+      this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.downloadGroup[downloadGroupId].students)
+    
+    },
+    /**
      * 为学生批量下载试卷，并加上防伪信息
      */
     multiDownloadTestPaperForStudent(studentIdArr){
 
       this.$options.methods.startFullscreenLoading.bind(this)()
 
-      if(this.zipContentBlob != null && this.zipContentBlob != '')
-      {
-        this.$message.success('开始下载')
-        saveAs(this.zipContentBlob, "试卷PDF与答题卡PDF_共"+studentIdArr.length+"人.zip");
+      // if(this.zipContentBlob != null && this.zipContentBlob != '')
+      // {
+      //   this.$message.success('开始下载')
+      //   saveAs(this.zipContentBlob, "试卷PDF与答题卡PDF_共"+studentIdArr.length+"人.zip");
 
-        //关闭加载
-        this.fullscreenLoading = false;
-        return
-      }
+      //   //关闭加载
+      //   this.fullscreenLoading = false;
+      //   return
+      // }
+      setTimeout(() => {
+        this.$options.methods.startTestPaperImgPreview.bind(this)(studentIdArr).then(res => {
+          
+          //权宜之计使用一个定时器，规避生成pdf时
+          setTimeout(() => {
 
-      this.$options.methods.startTestPaperImgPreview.bind(this)(studentIdArr).then(res => {
-        
-        //权宜之计使用一个定时器，规避生成pdf时
-        setTimeout(() => {
+            // let newStudentIdArrObj = JSON.parse(JSON.stringify(studentIdArr))
+            // console.log(newStudentIdArrObj)
+            //开始批量打包
+            this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdfPromise.bind(this)(studentIdArr).then(res =>{
+              //resolve(true)
 
-          // let newStudentIdArrObj = JSON.parse(JSON.stringify(studentIdArr))
-          // console.log(newStudentIdArrObj)
-          //开始批量打包
-          this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdfPromise.bind(this)(studentIdArr).then(res =>{
-            //resolve(true)
+              //关闭加载
+              this.fullscreenLoading = false;
+              this.qustionPreviewMode = false;
+            })
 
-            //关闭加载
-            this.fullscreenLoading = false;
-          })
+          },5000)
 
-        },5000)
-
-      })
-
+        })
+      },300)
       /*setTimeout(() => {
         if(this.fullscreenLoading == false)
         {
@@ -3731,7 +3812,7 @@ export default {
 }
 .layout_header{
   height: 100px;
-  background-color: #242f42;
+  
   margin-left:auto;
   margin-right: auto;
   width: 800px;

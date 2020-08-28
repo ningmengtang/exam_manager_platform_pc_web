@@ -282,7 +282,7 @@ export default new Router({
                     path: '/test_paper_maker_for_task',
                     component: () =>
                         import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/testPaperMaker/test_paper_maker_for_task.vue'),
-                    meta: { title: '组卷工具批量任务' }
+                    meta: { title: '试卷下载' }
                 }
 
 
