@@ -319,7 +319,7 @@
 				console.log(row)
 				var input =  document.createElement('input')
 				input.type = 'file'
-				input.accept = '.docx'
+				input.accept = '.docx,.DOCX,.doc,.DOC,.pdf,.PDF'
 				input.addEventListener('change',(event)=>{
 					let file = event.target.files[0]
 					var data = new FormData()
