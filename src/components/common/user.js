@@ -39,25 +39,24 @@ export default function usertype() {
             break;
         case 'school':
             items.splice(2, 0, {
-                icon: 'el-icon-sell',
-                index: `order_${loginUserType}`,
-                title: '订购管理'
-            }, {
-                icon: 'el-icon-s-custom',
-                index: `manage_${loginUserType}_subordinate`,
-                title: '用户管理'
-            }, 
-            // {
-			// 	icon: 'el-icon-thirdxuexiao_banji',
-			// 	index: `manage_${loginUserType}_subordinate`,
-			// 	title: '班级管理'
-			// }
-			// {
-            //     icon: 'el-icon-data-line',
-            //     index: `distribution_${loginUserType}`,
-            //     title: '分配试卷'
-			// }
-			)
+                    icon: 'el-icon-sell',
+                    index: `order_${loginUserType}`,
+                    title: '订购管理'
+                }, {
+                    icon: 'el-icon-s-custom',
+                    index: `manage_${loginUserType}_subordinate`,
+                    title: '用户管理'
+                }, {
+                    icon: 'el-icon-thirdxuexiao_banji',
+                    index: `manage_${loginUserType}_class`,
+                    title: '班级管理'
+                }
+                // {
+                //     icon: 'el-icon-data-line',
+                //     index: `distribution_${loginUserType}`,
+                //     title: '分配试卷'
+                // }
+            )
             color = '#2BBB61'
             type = '学校负责人'
             break;
@@ -91,6 +90,7 @@ export default function usertype() {
             // 	title: '用户管理'
             // }
             // )
+
             color = '#2BBB61'
             type = '平台管理员'
             school = '考试综合管理平台'
@@ -124,10 +124,15 @@ export default function usertype() {
                     icon: 'el-icon-s-custom',
                     index: `user_control`,
                     title: '用户管理'
+                }, {
+                    icon: 'el-icon-thirdxuexiao_banji',
+                    index: `manage_${loginUserType}_class`,
+                    title: '班级管理'
                 })
             }
         }
     }
+
 
 
 

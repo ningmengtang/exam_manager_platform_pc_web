@@ -26,13 +26,13 @@
 .message-top {margin-bottom: 24px;border-left: 8px solid #19ADFB;display: flex;align-items: center;padding-left: 10px;font-weight: bold;font-size: 20px;padding-top: 2px;padding-bottom: 2px;}
 /* 学生端 */
 .grid-content {display: flex;align-items: center;height: 100px;}
-.el-row {margin-bottom: 20px;}
+.el-row {margin-bottom: 0px;}
 .bg-purple {background: #d3dce6;}
 .bg-purple-light {background: #e5e9f2;}
 .grid-content {background-color: #4163e3;min-height: 140px;padding: 0 30px;border-radius: 15px;box-shadow: 0px 2px 14px 1px rgba(0, 0, 0, 0.2);}
 .grid-content.other{background-color: #FFFFFF;display: flex;justify-content: center;flex-direction: column;align-items: center;}
 /* 教师端 */
-.el-row-box{height: 188px;background-color: #2BBB61;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.14);}
+.el-row-box{height: 148px;background-color: #2BBB61;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.14);}
 .card-box{color: #FFFFFF;height: 100%;display: flex;justify-content: center;align-items: center;flex-direction: column;}
 .card-box .card-t{font-size: 18px;}
 .card-box .num{font-size: 40px;margin-top: 10px;}
@@ -51,9 +51,9 @@
 .message-row .card-i {width: 100%;display: flex;justify-content: center;align-items: center;border-radius: 10px;}
 
 
-.right-box .upload-papers{margin-top: 22px;}
+.right-box .upload-papers{margin-top: 10px;}
 .right-box .li-box{display: flex;padding: 10px 25px;background-color: #FFFFFF;align-items: center;border-radius: 4px;}
-.right-box .li-box.top{background-color: #2BBB61;height: 68px;display: flex;justify-content: center;color: #FFFFFF;font-size: 18px;width: 100%;}
+.right-box .li-box.top{background-color: #2BBB61;height: 48px;display: flex;justify-content: center;color: #FFFFFF;font-size: 18px;width: 100%;margin-bottom: 12px;}
 .right-box .i{margin: 0 5px;font-size: 18px;}
 .right-box .icon{font-size: 20px;color: #2BBB61;font-weight: bold;cursor: pointer;}
 .li-box+.li-box{margin-top: 10px;}
@@ -90,7 +90,8 @@
 .ts-select .arr span:nth-child(2){color: #2BBB61;}
 .ts-select .student-box{margin-top: 10px;}
 .ts-select .student-name{margin:  0 10px ;white-space: nowrap;}
-.box /deep/ .el-table th{text-align: center;}
+.box /deep/ .el-table {border-radius: 8px;}
+.box /deep/ .el-table th{text-align: center;background-color: #FFFFFF!important;padding: 10px;}
 .box /deep/ .el-table td, .el-table th.is-leaf{text-align: center;}
 .box /deep/.el-date-editor .el-range-separator{padding: 0;}
 .ts-select .block-time{margin-top: 20px;display: flex;align-items: center;justify-content: space-between;}
@@ -104,10 +105,11 @@
 .group /deep/ .el-checkbox-button--small .el-checkbox-button__inner{font-size: 14px;}
 .group /deep/ .el-checkbox-button, .el-checkbox-button__inner{min-width: 92px;}
 .ts-select /deep/ .el-progress{width: 200px;}
-.row-group .th-group{font-size: 14px;margin-right: 14px;padding: 8px 22px;min-width: 100px;}
+.row-group .th-group{font-size: 14px;margin-right: 14px;padding: 15px 22px;min-width: 120px;}
 .row-group .td-group{font-size: 14px;}
 .box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
 .box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}
+
 
 
 
