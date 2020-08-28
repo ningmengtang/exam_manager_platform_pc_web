@@ -83,11 +83,10 @@
 							</el-radio-group>
 						</div>
 					</div>
-					<div class="search">
-						<!-- <el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-						<el-button type="primary" @click="" class="buttom" :style="{ 'background-color': color, 'border-color': color }">搜索</el-button> -->
+					<!-- <div class="search">
+						
 						<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd"><span class="el-icon-plus"></span> 新增订购单</el-button>
-					</div>
+					</div> -->
 				</div>
 				
 			</div>
@@ -254,9 +253,9 @@ export default {
 		getValue() {
 			console.log(this.array_nav);
 		},
-		goAdd(){
-			this.$router.push('order_school_add')
-		},
+		// goAdd(){
+		// 	this.$router.push('order_school_add')
+		// },
 		handleCurrentChange(val) {
 			this.pageNum = val
 			selectSchoolTag({
