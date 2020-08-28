@@ -409,8 +409,6 @@ import { forEach } from 'jszip'
                         }
                         this.Allsubscriptions =this.Allsubscriptions +  this.orderItemList[i].updateNum
                         this.Alltotalmoney = this.Alltotalmoney +  this.orderItemList[i].total
-
-                        // this.Alltotalmoney = this.Alltotalmoney.toFixed(2)
                         this.dialogTableVisible = false
                     }
                 }

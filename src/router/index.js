@@ -105,12 +105,12 @@ export default new Router({
                         import ( /* webpackChunkName: "order_school" */ '../components/page/order/order_school.vue'),
                     meta: { title: '学校-订购管理' }
                 },
-                {
-                    path: '/order_school_add',
-                    component: () =>
-                        import ( /* webpackChunkName: "order_school_add" */ '../components/page/order/order_school_add.vue'),
-                    meta: { title: '学校-订购管理-新增订购' }
-                },
+                // {
+                //     path: '/order_school_add',
+                //     component: () =>
+                //         import ( /* webpackChunkName: "order_school_add" */ '../components/page/order/order_school_add.vue'),
+                //     meta: { title: '学校-订购管理-新增订购' }
+                // },
                 {
                     path: '/order_school_add2',
                     component: () =>
