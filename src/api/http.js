@@ -20,7 +20,7 @@ export function get(url, params) {
 
             if (res.data.stateCode == 300033) {
                 localStorage.clear()
-                window.location.href = '/login'
+                    // window.location.href = '/login'
 
             }
             resolve(res)
@@ -73,8 +73,7 @@ export function post(url, data) {
         }).then(res => {
             if (res.data.stateCode == 300033) {
                 localStorage.clear()
-                window.location.href = '/login'
-
+                    // window.location.href = '/login'
             }
             resolve(res)
         }).catch(err => {
