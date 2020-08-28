@@ -183,6 +183,13 @@
                     </td> 
                 </tr>
                </table>
+               <!-- <div class="detailsListP">
+                    <p v-for="(item,index) in tagList.grade">
+                        <span>
+                            {{item.text}}
+                        </span>
+                    </p>   
+               </div> -->
                <div style="float:right;margin: 10px;" >
                     <el-button type="primary" @click="onSubmit">立即创建</el-button>
                     <el-button>取消</el-button>
@@ -236,7 +243,8 @@ import { forEach } from 'jszip'
                 Alltotalmoney:0,
                 chinesemMinCount:'',
                 englishMinCount:'',
-                mathMinCount:''
+                mathMinCount:'',
+                detailsList:[]  //订单明细
 			};
 		},
 		components: {
@@ -299,16 +307,19 @@ import { forEach } from 'jszip'
             },
             // 年级
             changeSub(index,id){
-
+                // console.log(id)
+                // console.log(this.subject[index])
                 this.orderItemList[index].classId = id
+                let className = ''
                 this.tagList.grade.forEach(element=>{
                     if(element.id == id){
-                         this.orderItemList[index].className = element.text
+                        this.orderItemList[index].className = element.text
+                        className = element.text
                     }
                 })
                 this.orderItemList[index].children = []
                 this.orderItemList[index].childrenName = []
-                // console.log(this.subject[index])
+               
                 for(var i=0;i<this.subject[index].length;i++){
                     this.orderItemList[index].childrenName.push(this.subject[index][i])
                     
@@ -322,10 +333,13 @@ import { forEach } from 'jszip'
                         }
                     });
                 }
-                
                 this.getMoney(index)
 
-                // console.log(this.orderItemList[index])
+
+
+
+
+
             },
             // 征订人数
             changeNum(index){

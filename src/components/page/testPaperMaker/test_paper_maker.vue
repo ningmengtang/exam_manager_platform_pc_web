@@ -4,7 +4,7 @@
     <el-container>
       <el-aside class="layout_aside" width="200px" style="text-align:center;position:fixed;">
         
-        <div class="div_menu_item background_blue">
+        <!-- <div class="div_menu_item background_blue">
           <i class="el-icon-video-play"></i>选择快捷操作对象
         </div>
 
@@ -26,13 +26,13 @@
         
         <div class="div_menu_item background_orange" style="margin-top:30px;" v-if="qustionPreviewMode" @click="qustionPreviewMode = false">
           <i class="el-icon-collection-tag"></i>退出预览试题
-        </div>
+        </div> -->
 
         <!-- <div class="div_menu_item background_orange" style="margin-top:30px;" v-if="qustionPreviewMode" @click="returnTop();testPaperQuestionsToImage()">
           <i class="el-icon-collection-tag"></i>预览试题图片
         </div> -->
 
-        <div class="div_menu_item background_orange" style="margin-top:30px;" @click="testFor100StudentsDownload">
+        <!-- <div class="div_menu_item background_orange" style="margin-top:30px;" @click="testFor100StudentsDownload">
           <i class="el-icon-collection-tag"></i>直接下载试题
         </div>
         
@@ -59,10 +59,30 @@
 
         <div class="div_menu_item">
           <i class="el-icon-document"></i>添加其他题
-        </div>
+        </div> -->
         
         </el-aside>
       <el-container>
+        <div style="width:100px;position:fixed;top:150px;right:50px;text-align:center;">
+          <div style="margin-top:10px;">
+            组卷功能
+          </div>
+          <div style="margin-top:10px;">
+            <el-button style="height:50px;" type="success" round @click="saveTestPaperCache()">完成组卷</el-button>
+          </div>
+          <div style="margin-top:10px;">
+            <el-button type="danger" round @click="resetTestPaperObj()">重置试卷</el-button>
+          </div>
+          <div style="margin-top:30px;">
+            试卷预览
+          </div>
+          <div style="margin-top:10px;">
+            <el-button type="warning" round @click="startTestPaperPreview()" v-if="!qustionPreviewMode">预览试题</el-button>
+          </div>
+          <div style="margin-top:10px;">
+            <el-button type="success" round @click="qustionPreviewMode = false;qustionPreviewImgMode = false;" v-if="qustionPreviewMode">退出预览</el-button>
+          </div>
+        </div>
         <el-header class="layout_header">
           
           <div ref="page_main_tile" class="text_header_title">
@@ -74,10 +94,10 @@
           <!-- 输出试卷预览 -->
           <!-- 每一个部分都独立一个框框，便于辨识 -->
           <!-- ============================================================================================================ -->
-          <div v-for="(questionPartItem,questionPartItemIndex) in testPaperObj.items" class="layout_question_part_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="!qustionPreviewMode" >
+          <div v-for="(questionPartItem,questionPartItemIndex) in testPaperObj.items" class="layout_question_part_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;box-shadow:0px 0px 10px rgb(221, 221, 221);" v-if="!qustionPreviewMode" >
           <!-- 第一个部分 -->
           <!-- ============================================================================================================ -->
-          <div class="layout_question_part" style="float:left;width:100%;">
+          <div class="layout_question_part ql-container ql-snow" style="float:left;width:100%;">
             <div class="layout_question_part_header" style="float:left;width:100%;margin-left:30px;">
               <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
                 <span class="font_question_big" style="color:#d44949;">{{testPaperObj.title}}</span>
@@ -99,7 +119,8 @@
                 <span class="span_question_part_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="testPaperObj.items.length <= 1" @click="delTestPaperQuestionPartItem(questionPartItemIndex)">删除本部分</el-button></span>
               </div>
               <div class="layout_question_part_header_content" :style="testPaperAnwserSheetStyle">
-                <myQuillEditor :contentData.sync="questionPartItem.topic_text" :classUniqueId.sync="questionPartItem.uniqueId"></myQuillEditor>
+                <myQuillEditor :contentData.sync="questionPartItem.topic_text" :classUniqueId.sync="questionPartItem.uniqueId" v-if="questionPartItem.isEditing"></myQuillEditor>
+                <div class="ql-editor" v-html="questionPartItem.topic_text" v-if="!questionPartItem.isEditing" style="width:100%"></div>
                 <!--<quill-editor
                   ref="quill_editor_questionPartItem"
                   class="layout_question_part_topic_input"
@@ -110,6 +131,16 @@
                   @change="onEditorChange($event)">
                 </quill-editor>-->
               </div>
+              <!-- 编辑工具栏 -->
+              <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
+                <el-tooltip class="item" effect="dark" content="完成编辑" placement="top-start">
+                  <el-button type="success" icon="el-icon-check" circle @click="questionPartItem.isEditing = false" :disabled="!questionPartItem.isEditing"></el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="编辑文本" placement="top-start">
+                  <el-button type="primary" icon="el-icon-edit" circle @click="questionPartItem.isEditing = true" :disabled="questionPartItem.isEditing"></el-button>
+                </el-tooltip>
+              </div>
+              <!-- 编辑工具栏 结束 -->
               <!--<div class="quill_editor_uploader">
                 <el-upload
                   ref="quill_editor_uploader_questionPartItem"
@@ -151,8 +182,19 @@
                     @blur="onEditorBlur($event)"
                     @change="onEditorChange($event)">
                   </quill-editor>-->
-                  <myQuillEditor :contentData.sync="questionBigItem.topic_text" :classUniqueId.sync="questionBigItem.uniqueId"></myQuillEditor>
+                  <myQuillEditor :contentData.sync="questionBigItem.topic_text" :classUniqueId.sync="questionBigItem.uniqueId" v-if="questionBigItem.isEditing"></myQuillEditor>
+                  <div class="ql-editor" v-html="questionBigItem.topic_text" v-if="!questionBigItem.isEditing" style="width:100%"></div>
                 </div>
+                <!-- 编辑工具栏 -->
+                <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
+                  <el-tooltip class="item" effect="dark" content="完成编辑" placement="top-start">
+                  <el-button type="success" icon="el-icon-check" circle @click="questionBigItem.isEditing = false" :disabled="!questionBigItem.isEditing"></el-button>
+                  </el-tooltip>
+                  <el-tooltip class="item" effect="dark" content="编辑文本" placement="top-start">
+                  <el-button type="primary" icon="el-icon-edit" circle @click="questionBigItem.isEditing = true" :disabled="questionBigItem.isEditing"></el-button>
+                  </el-tooltip>
+                </div>
+                <!-- 编辑工具栏 结束 -->
               </div>
               <!-- 小题 -->
               <!-- ============================================================================================================ -->
@@ -175,8 +217,19 @@
                       @blur="onEditorBlur($event)"
                       @change="onEditorChange($event)">
                     </quill-editor> -->
-                    <myQuillEditor :contentData.sync="questionItem.topic_text" :classUniqueId.sync="questionItem.uniqueId"></myQuillEditor>
+                    <myQuillEditor :contentData.sync="questionItem.topic_text" :classUniqueId.sync="questionItem.uniqueId" v-if="questionItem.isEditing"></myQuillEditor>
+                    <div class="ql-editor" v-html="questionItem.topic_text" v-if="!questionItem.isEditing" style="width:100%"></div>
                   </div>
+                  <!-- 编辑工具栏 -->
+                  <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
+                    <el-tooltip class="item" effect="dark" content="完成编辑" placement="top-start">
+                    <el-button type="success" icon="el-icon-check" circle @click="questionItem.isEditing = false" :disabled="!questionItem.isEditing"></el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="编辑文本" placement="top-start">
+                    <el-button type="primary" icon="el-icon-edit" circle @click="questionItem.isEditing = true" :disabled="questionItem.isEditing"></el-button>
+                    </el-tooltip>
+                  </div>
+                  <!-- 编辑工具栏 结束 -->
                 </div>
 
                 <!-- 综合题 设置区域-->
@@ -201,6 +254,7 @@
                     </quill-editor> -->
                     <myQuillEditor :contentData.sync="questionItem.anwserSheet.topic_text" :classUniqueId.sync="'anwserSheet_'+questionItem.uniqueId"></myQuillEditor>
                   </div>
+                  
                 </div>
 
                 <div class="layout_question_anwser" style="float:left;width:100%;margin-left:30px;" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
@@ -216,8 +270,19 @@
                       @blur="onEditorBlur($event)"
                       @change="onEditorChange($event)">
                     </quill-editor> -->
-                    <myQuillEditor :contentData.sync="questionItem.anwser.answer_text" :classUniqueId.sync="'anwser_'+questionItem.uniqueId"></myQuillEditor>
+                    <myQuillEditor :contentData.sync="questionItem.anwser.answer_text" :classUniqueId.sync="'anwser_'+questionItem.uniqueId" v-if="questionItem.anwser.isEditing"></myQuillEditor>
+                    <div class="ql-editor" v-html="questionItem.anwser.answer_text" v-if="!questionItem.anwser.isEditing" style="width:100%"></div>
                   </div>
+                  <!-- 编辑工具栏 -->
+                  <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
+                    <el-tooltip class="item" effect="dark" content="完成编辑" placement="top-start">
+                    <el-button type="success" icon="el-icon-check" circle @click="questionItem.anwser.isEditing = false" :disabled="!questionItem.anwser.isEditing"></el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="编辑文本" placement="top-start">
+                    <el-button type="primary" icon="el-icon-edit" circle @click="questionItem.anwser.isEditing = true" :disabled="questionItem.anwser.isEditing"></el-button>
+                    </el-tooltip>
+                  </div>
+                  <!-- 编辑工具栏 结束 -->
                 </div>
                 <!-- ============================================================================================================ -->
                 <!-- 综合题 设置区域 结束-->
@@ -237,7 +302,8 @@
                     <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="questionItem.items.length <= 1" @click="delNewTestPaperChoiceQuestionOptionsItem(questionItem,questionOptionItemIndex)">删除选项</el-button></span>
                   </div>
                   <div class="layout_question_anwser_sheet_content" :style="testPaperAnwserSheetStyle">
-                    <myQuillEditor :contentData.sync="questionOptionItem.topic_text" :classUniqueId.sync="questionOptionItem.uniqueId"></myQuillEditor>
+                    <myQuillEditor :contentData.sync="questionOptionItem.topic_text" :classUniqueId.sync="questionOptionItem.uniqueId" v-if="questionOptionItem.isEditing"></myQuillEditor>
+                    <div class="ql-editor" v-html="questionOptionItem.topic_text" v-if="!questionOptionItem.isEditing" style="width:100%"></div>
                     <!-- <quill-editor
                       class="layout_question_anwser_sheet_content_input"
                       v-model="questionOptionItem.topic_text"
@@ -247,6 +313,16 @@
                       @change="onEditorChange($event)">
                     </quill-editor>-->
                   </div>
+                  <!-- 编辑工具栏 -->
+                  <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
+                    <el-tooltip class="item" effect="dark" content="完成编辑" placement="top-start">
+                    <el-button type="success" icon="el-icon-check" circle @click="questionOptionItem.isEditing = false" :disabled="!questionOptionItem.isEditing"></el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="编辑文本" placement="top-start">
+                    <el-button type="primary" icon="el-icon-edit" circle @click="questionOptionItem.isEditing = true" :disabled="questionOptionItem.isEditing"></el-button>
+                    </el-tooltip>
+                  </div>
+                  <!-- 编辑工具栏 结束 -->
                 </div>
                 <!-- ============================================================================================================ -->
                 <!-- 选择题 设置区域 结束-->
@@ -264,7 +340,11 @@
           </div>
           <!-- ============================================================================================================ -->
           <!-- 第一个部分，结束 -->
-            <div class="layout_padding_footer" style="float:left;height:50px;width:100%;"><!-- --></div>
+            <div class="layout_padding_footer" style="float:left;height:50px;width:100%;text-align:center;">
+              <el-tooltip class="item" effect="dark" content="增加试卷部分" placement="top-start">
+                <el-button type="success" icon="el-icon-plus" circle @click="addNewTestPaperQuestionPartItem"></el-button>
+              </el-tooltip>
+            </div>
             <div style="clear:both"></div>
           </div>
           <!-- ============================================================================================================ -->
@@ -316,9 +396,10 @@
                       </tr>
                     </table>
                   </div>
+                  <!-- 输出小题 -->
                   <!-- 输出小题（其他题） -->
                   <!-- ============================================================================================================ -->
-                  <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
+                  <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text">
                     <div :class="'layout_question_topic_text_'+questionItem.uniqueId">
                       <table>
                         <tr>
@@ -333,27 +414,7 @@
                         </tr>
                       </table>
                     </div>
-                  </div>
-                  <!-- ============================================================================================================ -->
-                  <!-- 输出小题（其他题） 完成-->
 
-                  <!-- 输出小题（选择题） -->
-                  <!-- ============================================================================================================ -->
-                  <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
-                    <div :class="'layout_question_topic_text_'+questionItem.uniqueId">
-                      <table>
-                        <tr>
-                          <td width="70px">
-                              <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                              <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                          </td>
-                          <td>
-                            <div v-html="questionItem.topic_text">
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
                     <!-- 输出小题选项 -->
                     <!-- ============================================================================================================ -->
                     <div v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" class="layout_question_topic_text" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
@@ -374,9 +435,13 @@
                     </div>
                     <!-- ============================================================================================================ -->
                     <!-- 输出小题选项 完成-->
+
                   </div>
                   <!-- ============================================================================================================ -->
-                  <!-- 输出小题（选择题） 完成-->
+                  <!-- 输出小题（其他题） 完成-->
+                  <!-- 输出小题 完成-->
+
+                  
                 </div>
                 <!-- ============================================================================================================ -->
                 <!-- 输出大题 完成-->
@@ -431,7 +496,7 @@
                   </div> -->
                     <!-- 输出小题（其他题） -->
                     <!-- ============================================================================================================ -->
-                    <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
+                    <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text">
                       <div style="border:2px solid black;" :class="'layout_question_anwser_sheet_'+questionItem.uniqueId">
                         <table>
                           <tr>
@@ -439,43 +504,29 @@
                                 <p style="text-align:right;">第{{questionItem.no}}小题、</p>
                                 <vue-qr :id="'qr_'+questionItem.uniqueId" :text="'layout_question_anwser_sheet_'+questionItem.uniqueId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                             </td>
-                            <td width="480px">
+                            <td width="480px" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
                               <div v-html="questionItem.anwserSheet.topic_text">
                               </div>
+                              
                             </td>
+                            <!-- 输出小题选项 -->
+                              <!-- ============================================================================================================ -->
+                              <td width="480px" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
+                                <div>
+                                  <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="text-align:right;border:2px solid black;text-align:center;font-weight:bold;margin-left:10px;margin-top:30px;">&nbsp;&nbsp;&nbsp;{{enCharArr[questionOptionItemIndex]}}&nbsp;&nbsp;&nbsp;</span>
+                                </div>
+                              </td>
+                              <!-- ============================================================================================================ -->
+                              <!-- 输出小题选项 完成-->
                           </tr>
                         </table>
+                        
                       </div>
                     </div>
                     <!-- ============================================================================================================ -->
                   <!-- 输出小题（其他题） 完成-->
 
-                  <!-- 输出小题（选择题） -->
-                  <!-- ============================================================================================================ -->
-                  <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
-                    <div style="border:2px solid black;" :class="'layout_question_anwser_sheet_'+questionItem.uniqueId">
-                      <table>
-                        <tr>
-                          <td width="70px">
-                              <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                              <vue-qr :id="'qr_'+questionItem.uniqueId" :text="'layout_question_anwser_sheet_'+questionItem.uniqueId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                          </td>
-                          <!-- 输出小题选项 -->
-                          <!-- ============================================================================================================ -->
-                          <td v-if="questionItem.question_type != questionType.comprehensive_topic.id">
-                            <div>
-                              <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="text-align:right;border:2px solid black;text-align:center;font-weight:bold;margin-left:10px;margin-top:30px;">&nbsp;&nbsp;&nbsp;{{enCharArr[questionOptionItemIndex]}}&nbsp;&nbsp;&nbsp;</span>
-                            </div>
-                          </td>
-                          <!-- ============================================================================================================ -->
-                          <!-- 输出小题选项 完成-->
-                        </tr>
-                      </table>
-                    </div>
-                    <div style="clear:both;"></div>
-                  </div>
-                  <!-- ============================================================================================================ -->
-                  <!-- 输出小题（选择题） 完成-->
+
                 </div>
                 <!-- ============================================================================================================ -->
                 <!-- 输出大题 完成-->
@@ -492,12 +543,12 @@
 
           <!-- 题目预览，图片模式 -->
           <!-- ============================================================================================================ -->
-          <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && !qustionPreviewImgMode">
+          <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && qustionPreviewImgMode">
             <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
               <span>题目预览（图片）</span>
             </div>
           </div>
-          <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && !qustionPreviewImgMode">
+          <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && qustionPreviewImgMode">
             <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
               <div style="width:100%" class="layout_test_paper_header">
                 <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
@@ -524,32 +575,24 @@
                   <img :src="questionBigItem.imgFile" />
                     <!-- 输出小题（其他题） -->
                     <!-- ============================================================================================================ -->
-                    <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
+                    <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text">
                       <!--<div :class="'layout_question_topic_text_'+questionItem.uniqueId" v-html="questionItem.topic_text">
                       </div>-->
                       <img :src="questionItem.imgFile" />
+                      <!-- 输出小题选项 -->
+                      <!-- ============================================================================================================ -->
+                      <div v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" class="layout_question_topic_text" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
+                        <!--<div :class="'layout_question_topic_text_'+questionItem.uniqueId" v-html="questionOptionItem.topic_text">
+                        </div>-->
+                        <img :src="questionOptionItem.imgFile" />
+                      </div>
+                      <!-- ============================================================================================================ -->
+                      <!-- 输出小题选项 完成-->
                     </div>
                     <!-- ============================================================================================================ -->
                   <!-- 输出小题（其他题） 完成-->
 
-                  <!-- 输出小题（选择题） -->
-                  <!-- ============================================================================================================ -->
-                  <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
-                    <!--<div :class="'layout_question_topic_text_'+questionItem.uniqueId" v-html="questionItem.topic_text">
-                    </div>-->
-                    <img :src="questionItem.imgFile" />
-                    <!-- 输出小题选项 -->
-                    <!-- ============================================================================================================ -->
-                    <div v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" class="layout_question_topic_text" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
-                      <!--<div :class="'layout_question_topic_text_'+questionItem.uniqueId" v-html="questionOptionItem.topic_text">
-                      </div>-->
-                      <img :src="questionOptionItem.imgFile" />
-                    </div>
-                    <!-- ============================================================================================================ -->
-                    <!-- 输出小题选项 完成-->
-                  </div>
-                  <!-- ============================================================================================================ -->
-                  <!-- 输出小题（选择题） 完成-->
+                  
                 </div>
                 <!-- ============================================================================================================ -->
                 <!-- 输出大题 完成-->
@@ -579,7 +622,7 @@
           </div> -->
 
           <!-- 题目预览按钮， -->
-          <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && qustionPreviewImgMode">
+          <!-- <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && qustionPreviewImgMode">
             <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
               <span>题目预览（模拟下载版本）</span>
             </div>
@@ -599,7 +642,7 @@
                 <i class="el-icon-collection-tag"></i>下载试卷和答题卡PDF
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- 题目预览按钮，结束 -->
 
         </el-main>
@@ -771,6 +814,7 @@ export default {
         //辅助属性段
         "uniqueId": 0,//string,前端标识元素使用
         "imgFile":null,//imgFile,用于保存上传的文件使用
+        "isEditing":false,//标志当前是否处于被编辑状态
       },
       /**
        * 大题目-部分
@@ -792,6 +836,7 @@ export default {
           "uniqueId": 1,//string,前端标识元素使用
           "isHide":false,//标志是否隐藏
           "imgFile":null,//imgFile,用于保存上传的文件使用
+          "isEditing":false,//标志当前是否处于被编辑状态
           "items": [],
       },
       /**
@@ -813,6 +858,7 @@ export default {
           //辅助属性段，用来辅助前端绑定小题
           "uniqueId": 2,//string,前端标识元素使用
           "imgFile":null,//imgFile,用于保存上传的文件使用
+          "isEditing":false,//标志当前是否处于被编辑状态
           "items": [],
       },
       /**
@@ -840,6 +886,7 @@ export default {
         "questionTypeName":null,//string
         "questionOptionIsAnwser":false,//是否正确答案
         "imgFile":null,//imgFile,用于保存上传的文件使用
+        "isEditing":false,//标志当前是否处于被编辑状态
       },
       /**
        * 答题卡
@@ -856,6 +903,7 @@ export default {
         //辅助属性段
         "uniqueId": 4,//string,前端标识元素使用
         "imgFile":null,//imgFile,用于保存上传的文件使用
+        "isEditing":false,//标志当前是否处于被编辑状态
       },
       /**
        * 答案
@@ -874,6 +922,7 @@ export default {
         //辅助属性段
         "uniqueId": 5,//string,前端标识元素使用
         "imgFile":null,//imgFile,用于保存上传的文件使用
+        "isEditing":false,//标志当前是否处于被编辑状态
       },
       /**
        * 试卷的基本信息
@@ -1073,6 +1122,7 @@ export default {
         //辅助属性段，用来辅助前端绑定小题
         "uniqueId": 6,//string,前端标识元素使用
         "imgFile":null,//imgFile,用于保存上传的文件使用
+        "isEditing":false,//标志当前是否处于被编辑状态
         "items": [
             //预设试卷第{{questionPartItemIndex+1}}部分
             {
@@ -1090,6 +1140,7 @@ export default {
             "uniqueId": 7,//string,前端标识元素使用
             "isHide":false,//标志是否隐藏
             "imgFile":null,//imgFile,用于保存上传的文件使用
+            "isEditing":false,//标志当前是否处于被编辑状态
             "items": [
               //预设试卷第{{questionBigItemIndex+1}}大题
               {
@@ -1106,6 +1157,7 @@ export default {
                   //辅助属性段，用来辅助前端绑定小题
                   "uniqueId": 8,//string,前端标识元素使用
                   "imgFile":null,//imgFile,用于保存上传的文件使用
+                  "isEditing":false,//标志当前是否处于被编辑状态
                   "items": [
                     //预设试卷第一小题
                     {
@@ -1123,6 +1175,8 @@ export default {
                       "uniqueId": 9,//string,前端标识元素使用
                       "questionTypeName": null,//string
                       "questionOptionIsAnwser":false,//是否正确答案
+                      "imgFile":null,//imgFile,用于保存上传的文件使用
+                      "isEditing":false,//标志当前是否处于被编辑状态
                       "items": [],
                       "anwserSheet":{//第一小题答题卡
                         "id": null,//int
@@ -1135,6 +1189,7 @@ export default {
                         "uniqueId": 10,//string,前端标识元素使用
                         "isNull": true,//是否答题卡区域为空
                         "imgFile":null,//imgFile,用于保存上传的文件使用
+                        "isEditing":false,//标志当前是否处于被编辑状态
                       },//第一小题答题卡结束
                       "anwser": {//第一小题答案
                         "id": null,//1,
@@ -1148,6 +1203,7 @@ export default {
                         //辅助属性段
                         "uniqueId": 11,//string,前端标识元素使用
                         "imgFile":null,//imgFile,用于保存上传的文件使用
+                        "isEditing":false,//标志当前是否处于被编辑状态
                       },//第一小题答案结束
                       "weight": null,//int
                     },//预设试卷第一小题结束
@@ -1314,6 +1370,7 @@ export default {
         //辅助属性段，用来辅助前端绑定小题
         "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
         "imgFile":null,//imgFile,用于保存上传的文件使用
+        "isEditing":false,//标志当前是否处于被编辑状态
         "items": [
             //预设试卷第{{questionPartItemIndex+1}}部分
             {
@@ -1331,6 +1388,7 @@ export default {
             "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
             "isHide":false,//标志是否隐藏
             "imgFile":null,//imgFile,用于保存上传的文件使用
+            "isEditing":false,//标志当前是否处于被编辑状态
             "items": [
               //预设试卷第{{questionBigItemIndex+1}}大题
               {
@@ -1347,6 +1405,7 @@ export default {
                   //辅助属性段，用来辅助前端绑定小题
                   "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
                   "imgFile":null,//imgFile,用于保存上传的文件使用
+                  "isEditing":false,//标志当前是否处于被编辑状态
                   "items": [
                     //预设试卷第一小题
                     {
@@ -1365,6 +1424,7 @@ export default {
                       "questionTypeName" : this.questionType.comprehensive_topic.name,
                       "questionOptionIsAnwser":false,//是否正确答案
                       "imgFile":null,//imgFile,用于保存上传的文件使用
+                      "isEditing":false,//标志当前是否处于被编辑状态
                       "items": [],
                       "anwserSheet":{//第一小题答题卡
                         "id": null,//int
@@ -1377,6 +1437,7 @@ export default {
                         "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
                         "isNull": true,//是否答题卡区域为空
                         "imgFile":null,//imgFile,用于保存上传的文件使用
+                        "isEditing":false,//标志当前是否处于被编辑状态
                       },//第一小题答题卡结束
                       "anwser": {//第一小题答案
                         "id": null,//1,
@@ -1390,6 +1451,7 @@ export default {
                         //辅助属性段
                         "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
                         "imgFile":null,//imgFile,用于保存上传的文件使用
+                        "isEditing":false,//标志当前是否处于被编辑状态
                       },//第一小题答案结束
                       "weight": null,//int
                     },//预设试卷第一小题结束
@@ -2087,6 +2149,27 @@ export default {
      */
     returnTop(){
       this.$refs.page_main_tile.scrollIntoView()
+    },
+    /**
+     * 开始预览整个试卷
+     */
+    startTestPaperPreview(){
+      this.$options.methods.startFullscreenLoading.bind(this)()
+      
+      
+        this.$refs.page_main_tile.scrollIntoView()
+        this.previewQuestionBigNum = 1
+        this.previewQuestionNum = 1
+        this.$options.methods.testPaperQuestionCreateAutoNo.bind(this)()
+        this.qustionPreviewMode = true
+        this.qustionPreviewImgMode = false
+        setTimeout(() => {
+          
+          //关闭屏蔽层
+          this.fullscreenLoading = false
+          
+        }, 300);
+
     },
     /**
      * 开始预览整个试卷（直接进入图片版）
@@ -3100,13 +3183,14 @@ export default {
   cursor:pointer;
 }
 .text_header_title{
-  color: #FFF;
+  color: #909399;
   line-height: 60px;
-  
+  text-align: center;
+  font-weight: bold;
 }
 .layout_header{
   height: 100px;
-  background-color: #242f42;
+  /*background-color: #242f42;*/
   margin-left:auto;
   margin-right: auto;
   width: 800px;

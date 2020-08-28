@@ -544,3 +544,9 @@ table tr td {
 .dialogTop {
     margin: 10px;
 }
+/* .detailsListP{
+    margin: 10px;
+} */
+.detailsListP p{
+    padding: 8px;
+}
