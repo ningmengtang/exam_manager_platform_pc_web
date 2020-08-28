@@ -144,7 +144,7 @@
 					:value="item.id">
 					</el-option>
 				</el-select>
-				<div class="student-box">
+				<div class="student-box"  style="max-height: 580px;overflow: auto;">
                     <el-table
                         :data="tableData"
                         @selection-change="handleSelectionChange">
@@ -173,15 +173,16 @@
                             >
                         </el-table-column>
                     </el-table>
-						<div class="page">
+						<!-- <div class="page">
 							<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange1" @current-change="handleCurrentChange1"
 							:current-page.sync="currentPage1" :page-size="pageSize1" :total="total1"></el-pagination>
-						</div>
-                    <div>
+						</div> -->
+					</div>
+                    <div style="margin:10px">
                         <el-button type="primary" @click="onSubmit">立即分发</el-button>
                         <el-button @click="dialogTableVisible = false">取消</el-button>
                     </div>
-				</div>
+				
 			</div>
 		</el-dialog>
 	</div>
@@ -242,7 +243,7 @@ export default {
 			testPaperId:'',
 
 			pageNum1:1,
-			pageSize1:8,
+			pageSize1:999,
 			currentPage1: 1,
 			total1:0,
 			papaerType:[]
@@ -254,7 +255,7 @@ export default {
 			console.log(this.array_nav);
 		},
 		goAdd(){
-			this.$router.push('order_school_add')
+			this.$router.push('order_school_add2')
 		},
 		handleCurrentChange(val) {
 			this.pageNum = val
@@ -459,7 +460,7 @@ export default {
 		},
 		changeClass(){
 			this.pageNum1 = 1
-			this.pageSize1 = 8
+			this.pageSize1 = 999
 			selectBySchoolIdAndPaperIdAndClassId(this.pageNum1,this.pageSize1,this.testPaperId,this.classId,this.schoolId).then(res=>{
 				this.tableData = res.data.data.list
 				this.total1=res.data.data.total
@@ -472,17 +473,19 @@ export default {
         },
 		// 批量下载
 		onSubmit(){
-			for(var i=0;i<this.papaerType.length;i++){
-                let  createTestPaperInfoObj = {
-                 	testPaperId:this.testPaperId,
-                       students:[
-                         {
-                           suid:this.papaerType[i].id
-                          }
-                        ]
-                      }
-                this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
-            }
+			this.dialogTableVisible = false
+				let  createTestPaperInfoObj = {
+					 	testPaperId:this.testPaperId,
+					    students:[]
+					}
+				for(var i=0;i<this.papaerType.length;i++){
+					createTestPaperInfoObj.students.push({
+						"uid":this.papaerType[i].id,
+						"utype":"student",
+						"items":[]
+					})
+				}
+				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
 		}
 
 

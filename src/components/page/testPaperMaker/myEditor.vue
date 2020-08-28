@@ -74,11 +74,12 @@ export default {
                         [{'align': []}],
                         ['image','clean'],//去除video即可 暂时去掉公式, 'formula'
                         ],
-                        handlers: {
+                        //暂时屏蔽
+                        /*handlers: {
                             'image': function (value) {
                                 this.quill.format('image', false);
                             }
-                        }
+                        }*/
                     },
                     //支持图片拖动、放大缩小
                     /*imageDrop: true, // 拖动加载图片组件。
@@ -111,12 +112,13 @@ export default {
                 console.log('.uploader_'+this.classUniqueId+' .el-upload input')
                 document.querySelector('.uploader_'+this.classUniqueId+' .el-upload input').click()
         }*/
-
-        var imgup=document.querySelector('.editor_'+this.classUniqueId+' .ql-image')
+        
+        //暂时屏蔽
+        /*var imgup=document.querySelector('.editor_'+this.classUniqueId+' .ql-image')
             imgup.onclick= () =>{
                 //console.log('.uploader_'+this.classUniqueId+' .el-upload input')
                 document.querySelector('.uploader_'+this.classUniqueId+' .el-upload input').click()
-        }
+        }*/
     },
     methods: {
         // 上传图片前

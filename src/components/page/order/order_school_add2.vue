@@ -166,7 +166,7 @@
                         增订人数（年级人数尾数需是0或5）
                     </td>
                     <td v-for="(item,index) in tagList.grade"  :key="index"> 
-                        <el-input-number v-model="UpdatenNum[index]"  :min="5" :step="5"  @change="changeNum(index)"></el-input-number>
+                        <el-input-number v-model="UpdatenNum[index]"  :min="5" :step="5"  step-strictly @change="changeNum(index)"></el-input-number>
                     </td>
                 </tr>
                 <tr>
@@ -410,7 +410,7 @@ import { forEach } from 'jszip'
                         this.Allsubscriptions =this.Allsubscriptions +  this.orderItemList[i].updateNum
                         this.Alltotalmoney = this.Alltotalmoney +  this.orderItemList[i].total
 
-                        this.Alltotalmoney = this.Alltotalmoney.toFixed(2)
+                        // this.Alltotalmoney = this.Alltotalmoney.toFixed(2)
                         this.dialogTableVisible = false
                     }
                 }

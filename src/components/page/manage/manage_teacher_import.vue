@@ -6,7 +6,7 @@
 				<!-- <el-select v-model="paperType" placeholder="请选择" class="ids" @change="changeType">
 					<el-option v-for="item in options"  :label="item.label" :value="item.label"></el-option>
 				</el-select> -->
-				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px">
+				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px;">
 					<el-radio label="图片试卷">图片试卷</el-radio>
 					<el-radio label="在线组卷">在线组卷</el-radio>
 				</el-radio-group>
@@ -124,20 +124,25 @@
 					</div>
 				</div>
 			</div>
-			
-
+			<!-- <div   v-if="uploadFile">已上传文件</div> -->
 			<div class="l-box-2" v-if="ispaperType">
+				
 				<el-upload 
 				class="upload-demo" 
 				drag action=""  
 				:show-file-list="false"
                 :http-request="uploadFild">
 					<i class="el-icon-upload"></i>
-					<div class="el-upload__text">
+					<div class="el-upload__text"  v-if="!uploadFile">
 						将文件拖到此处，或
 						<em>点击上传</em>
 					</div>
+					<div class="el-upload__text" v-if="uploadFile">
+							已上传文件
+						<!-- <em>点击上传</em> -->
+					</div>
 				</el-upload>
+				
 			</div>
 		</div>
 		<div class="right">
@@ -163,7 +168,7 @@
 					</el-col>
 				</el-row>
 			</div>
-			<div class="group" style="margin-top:30px;">
+			<div class="group" style="margin-top:30px;max-height: 500px;overflow: auto;">
 				<el-table
 				      :data="StudenList"
 				      style="width: 100%"
@@ -190,11 +195,11 @@
 					  </el-table-column>
 				    </el-table>
 			</div>
-			<div class="page">
+			<!-- <div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
-			</div>
+			</div> -->
 			
 			<div class="hint">
 				<div>温馨提示：</div>
@@ -231,7 +236,7 @@ export default {
 			total:0,
 			currentPage: 1,
 			pageNum:1,
-			pageSize:16,
+			pageSize:999,
 			dialogVisible: false,
 			ispaperType:true,
 			paperType:'图片试卷',
@@ -371,6 +376,7 @@ export default {
 											"examinationId":examId,
 											"studentId":this.selectStudentList[i].id
 										}).then(res=>{
+											
 											if(res.data.result){
 											}else{
 												this.$message.error(res.data.message)
@@ -380,7 +386,7 @@ export default {
 									this.$message.success('操作成功')								
 								}else{
 									this.$message.success('操作完成，未绑定学生')
-									// 没有绑定学生
+									this.$router.push('/manage_teacher')
 								}
 							}else{
 								this.$message.error(res.data.message)

@@ -186,7 +186,7 @@
 				 :current-page.sync="currentPage" :page-size="pageSize" :total="total"></el-pagination>
 			</div>
 			</div>
-				<el-dialog title="批量下载" :visible.sync="dialogTableVisible">
+			<el-dialog title="批量下载" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
 				<el-select v-model="classId" placeholder="请选择班级" @change="changeClass" style="margin:10px">
 					<el-option
@@ -196,7 +196,7 @@
 					:value="item.id">
 					</el-option>
 				</el-select>
-				<div class="student-box">
+				<div class="student-box" style="max-height: 580px;overflow: auto;">
                     <el-table
                         :data="tableData"
                         @selection-change="handleSelectionChange">
@@ -235,6 +235,7 @@
 							</template>
                         </el-table-column>
                     </el-table>
+					</div>
 						<!-- <div class="page">
 							<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange1" @current-change="handleCurrentChange1"
 							:current-page.sync="currentPage1" :page-size="pageSize1" :total="total1"></el-pagination>
@@ -243,7 +244,7 @@
                         <el-button type="primary" @click="onSubmit">立即分发</el-button>
                         <el-button @click="dialogTableVisible = false">取消</el-button>
                     </div>
-				</div>
+				
 			</div>
 		</el-dialog>
 	</div>
@@ -460,18 +461,18 @@
 			},
 			onSubmit(){
 				this.dialogTableVisible = false
-				
-				for(var i=0;i<this.papaerType.length;i++){
-					let  createTestPaperInfoObj = {
+				let  createTestPaperInfoObj = {
 					 	testPaperId:this.testPaperId,
-					       students:[
-					         {
-					           suid:this.papaerType[i].student.id
-					          }
-					        ]
-					      }
-					this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+					    students:[]
+					}
+				for(var i=0;i<this.papaerType.length;i++){
+					createTestPaperInfoObj.students.push({
+						"uid":this.papaerType[i].id,
+						"utype":"student",
+						"items":[]
+					})
 				}
+				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
 			}
 		},
 		mounted() {

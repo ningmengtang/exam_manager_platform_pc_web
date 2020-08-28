@@ -46,7 +46,11 @@ export default function usertype() {
                 icon: 'el-icon-s-custom',
                 index: `manage_${loginUserType}_subordinate`,
                 title: '用户管理'
-			}, 
+			}, {
+				icon: 'el-icon-thirdxuexiao_banji',
+				index: `manage_${loginUserType}_subordinate`,
+				title: '班级管理'
+			}
 			// {
             //     icon: 'el-icon-data-line',
             //     index: `distribution_${loginUserType}`,

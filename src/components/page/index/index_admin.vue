@@ -303,11 +303,13 @@
 				 		testPaperId:item.id,
 				        students:[
 				          {
-				            suid:localStorage.getItem('userID')
+				            uid:localStorage.getItem('userID'),
+							utype:"student",
+				          	items:[]
 				          }
 				        ]
 				      }
-					this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+					this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
 				}
 			}
 

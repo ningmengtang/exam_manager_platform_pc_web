@@ -19,8 +19,16 @@ export function get(url, params) {
         }).then(res => {
 
             if (res.data.stateCode == 300033) {
-                localStorage.clear()
-                    // window.location.href = '/login'
+                // console.log(res)
+
+                Message({
+                    message: '账号已登录，请重新登录！',
+                    type: 'warning'
+                });
+                setTimeout(() => {
+                    localStorage.clear()
+                    window.location.href = '/login'
+                }, 1000)
 
             }
             resolve(res)
@@ -72,8 +80,16 @@ export function post(url, data) {
             }
         }).then(res => {
             if (res.data.stateCode == 300033) {
-                localStorage.clear()
-                    // window.location.href = '/login'
+                Message({
+                    message: '账号已登录，请重新登录！',
+                    type: 'warning'
+                });
+                setTimeout(() => {
+                    localStorage.clear()
+                    window.location.href = '/login'
+                }, 1000)
+
+
             }
             resolve(res)
         }).catch(err => {

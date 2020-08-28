@@ -1,6 +1,13 @@
 <template>
-    <div>
+    <div style="padding: 24px 38px;">
         <div class="container">
+            <el-select v-model="examineStatus" placeholder="请选择"  @change="changeStatus" style="margin:10px">
+                <el-option
+                v-for="item in options"
+                :label="item.label"
+                :value="item.id">
+                </el-option>
+            </el-select>
             <el-table
                 v-loading="loading"
                 :data="tableData"
@@ -65,7 +72,20 @@ export default {
             pageSize:6,
             pageNum:1,
             total:0,
-            loading:false
+            loading:false,
+            examineStatus:'',
+            options:[{
+                id:0,
+                label:'入库失败'
+            },
+            {
+                id:1,
+                label:'入库成功'
+            },
+            {
+                id:2,
+                label:'正在入库'
+            }]
         }
     },
     mounted(){
@@ -77,6 +97,7 @@ export default {
             apiCommonExamSelectList({
                 "operator_type":'user',
                 "pageSize":this.pageSize,
+                "putInto":this.examineStatus,
                 "pageNum":this.pageNum
             }).then(res=>{
                 this.loading = false
@@ -84,6 +105,9 @@ export default {
                 this.total = res.data.data.total
                 this.currentPage = res.data.data.pageNum
             })
+        },
+        changeStatus(){
+            this.init()
         },
         //改变时
         handleSizeChange(val) {
@@ -149,11 +173,13 @@ export default {
                  testPaperId:row.id,
                     students:[
                          {
-                           suid:localStorage.getItem('userID')
+                            uid:localStorage.getItem('userID'),
+                            utype:"student",
+                            items:[]
                          }
                        ]
             }
-            this.$router.push({name :'test_paper_maker',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+            this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
         }
     }
 }

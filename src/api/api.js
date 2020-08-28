@@ -200,7 +200,7 @@ export function apiAdminExamQuestionAnwserSheetInsert(data) {
 
 //通过id查看试卷标签
 export function apiCommonExamSelectById(data) {
-	const result = get('/api/common/exam/selectById/' + data)
+	const result = get('/api/common/exam/selectById/' + data+"?d="+new Date()* 1)
 	return result;
 }
 
