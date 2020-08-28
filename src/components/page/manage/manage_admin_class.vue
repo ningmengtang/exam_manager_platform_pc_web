@@ -98,8 +98,8 @@
 					</el-table-column>
 					<el-table-column fixed="right" label="操作">
 						<template slot-scope="scope">
-							<el-button class="icon el-icon-edit-outline" type="text" size="small" @click="operation('update',{grade:scope.row.grade,sort:scope.row.sort,id:scope.row.id,schoolId:scope.row.schoolId})">
-							</el-button>
+							<!-- <el-button class="icon el-icon-edit-outline" type="text" size="small" @click="operation('update',{grade:scope.row.grade,sort:scope.row.sort,id:scope.row.id,schoolId:scope.row.schoolId})">
+							</el-button> -->
 							<el-button class="icon el-icon-close" type="text" size="small" @click="operation('delete',scope.row.id);dialogVisible=true">
 							</el-button>
 						</template>
@@ -132,14 +132,15 @@
 							<div class="row-group">
 								<div class="th-group">班级(班号)</div>
 								<div class="td-group" change>
-									<el-radio-group v-model="table_classNum">
+									<!-- <el-radio-group v-model="table_classNum">
 										<el-radio-button label="1">1班</el-radio-button>
 										<el-radio-button label="2">2班</el-radio-button>
 										<el-radio-button label="3">3班</el-radio-button>
 										<el-radio-button label="4">4班</el-radio-button>
 										<el-radio-button label="5">5班</el-radio-button>
 										<el-radio-button label="6">6班</el-radio-button>
-									</el-radio-group>
+									</el-radio-group> -->
+									<el-input-number v-model="table_classNum" controls-position="right" @change="handleChange" :min="1" ></el-input-number>
 								</div>
 							</div>
 						</div>
@@ -318,8 +319,23 @@
 						"name": `${this.table_yearNum}级${this.table_classNum}班`,
 						"schoolId": this.schoolDefault,
 					}).then(res => {
-						this.$message.success('新增班级成功!')
-						this.cancel();
+						if(res.data.result){
+							this.$message.success('新增班级成功!')
+							ApiClassSelectListByOptions({
+								pageSize: this.page.pageSize,
+								pageNum: this.page.pageNum
+							}).then(res => {
+								this.page.pageNum = res.data.data.pageNum;
+								this.page.pageSize = res.data.data.pageSize;
+								this.total = res.data.data.total;
+								this.classList = res.data.data.list;
+							});
+							this.cancel();
+						}else{
+							this.$message.error(res.data.message)
+						}
+						
+						
 					})
 					// 查询班级
 					ApiClassSelectListByOptions({
@@ -340,8 +356,23 @@
 						"name": `${this.table_yearNum}级${this.table_classNum}班`,
 						"schoolId": this.update_data.schoolId,
 					}).then(res => {
-						this.$message.success('修改班级成功!')
-						this.cancel();
+						if(res.data.result){
+							this.$message.success('修改班级成功!')
+							ApiClassSelectListByOptions({
+								pageSize: this.page.pageSize,
+								pageNum: this.page.pageNum
+							}).then(res => {
+								this.page.pageNum = res.data.data.pageNum;
+								this.page.pageSize = res.data.data.pageSize;
+								this.total = res.data.data.total;
+								this.classList = res.data.data.list;
+							});
+							this.cancel();
+						}else{
+							this.$message.error(res.data.message)
+						}
+						// this.$message.success('修改班级成功!')
+						
 					})
 					// 查询班级
 					ApiClassSelectListByOptions({
@@ -356,7 +387,21 @@
 					});
 				} else if (type == 'delete') {
 					ApiClassDelete(this.delete_id).then(res => {
-						this.$message.success('删除班级成功!')
+						if(res.data.result){
+							this.$message.success('删除班级成功!')
+							ApiClassSelectListByOptions({
+								pageSize: this.page.pageSize,
+								pageNum: this.page.pageNum
+							}).then(res => {
+								this.page.pageNum = res.data.data.pageNum;
+								this.page.pageSize = res.data.data.pageSize;
+								this.total = res.data.data.total;
+								this.classList = res.data.data.list;
+							});
+							this.cancel();
+						}else{
+							this.$message.error(res.data.message)
+						}
 					});
 					// 查询班级
 					ApiClassSelectListByOptions({

@@ -320,12 +320,14 @@
 								json['roleId'] = a[i]
 								arr.push(json)
 							})
+							
 							adminAddAdmin({
 								mobilePhone: form.mobile,
 								name: form.userName,
 								password: md5(form.password),
 								sex: form.sexDefault,
-								type:'admin'
+								type:'admin',
+								adminRoles:arr
 							}).then(res => {
 								this.$message.success('添加管理员账号成功')
 								this.black()
