@@ -89,7 +89,23 @@ export function tagSelectId(id, data) {
 	const result = get('/api/tag/selectById/' + id + '?d=' + new Date() * 1, data)
 	return result;
 }
-
+// -----------------------班级操作---------------------------
+//新增班级
+export function ApiClassAdd(data){
+	const result =post('/api/classes/add',data)
+	return result;
+}
+//修改班级
+export function ApiClassUpdate(data){
+	const result =post('/api/classes/update',data)
+	return result;
+}
+//修改班级
+export function ApiClassDelete(data){
+	const result =get(`/api/classes/delId/${data}`)
+	return result;
+}
+//-------------------------------------------------
 
 // 学校首页查询试卷
 export function SchoolIndex(data) {

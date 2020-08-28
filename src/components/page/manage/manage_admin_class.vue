@@ -9,7 +9,7 @@
 						<div class="username">
 							<div class="name">{{usserName}}</div>
 							<div class="user-id">ID:{{userId}}</div>
-							<div class="identity" :style="{'background-color':color}">学校负责人</div>
+							<div class="identity" :style="{'background-color':color}">管理员</div>
 							<!-- <div class="message">
 								<div class="school">北京师范小学</div>
 								<div class="grade">一年级</div>
@@ -98,7 +98,7 @@
 					</el-table-column>
 					<el-table-column fixed="right" label="操作">
 						<template slot-scope="scope">
-							<el-button class="icon el-icon-edit-outline" type="text" size="small" @click="operation('update',{grade:scope.row.grade,sort:scope.row.sort,id:scope.row.id})">
+							<el-button class="icon el-icon-edit-outline" type="text" size="small" @click="operation('update',{grade:scope.row.grade,sort:scope.row.sort,id:scope.row.id,schoolId:scope.row.schoolId})">
 							</el-button>
 							<el-button class="icon el-icon-close" type="text" size="small" @click="operation('delete',scope.row.id);dialogVisible=true">
 							</el-button>
@@ -143,6 +143,19 @@
 								</div>
 							</div>
 						</div>
+						<div class="group">
+							<div class="row-group">
+								<div class="th-group">学校</div>
+								<div class="td-group" change>
+									<el-select v-model="schoolDefault" placeholder="请选择" >
+										<el-option v-for="(item,i) in school" :key="item.i" :label="item.name" :value="item.id">
+										</el-option>
+									</el-select>
+									</el-radio-group>
+								</div>
+							</div>
+						</div>
+
 					</div>
 					<div class="arr"><span>您已经选择：</span><span>{{table_yearNum}}年级,{{table_classNum}}班</span></div>
 					<div class="student-box">
@@ -179,7 +192,8 @@
 		StudentAccountInfo,
 		ApiClassAdd,
 		ApiClassUpdate,
-		ApiClassDelete
+		ApiClassDelete,
+		apiSchoolAccountSelectByOptions
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -195,7 +209,7 @@
 				table_classNum: 1,
 				operation_type: '',
 				update_data: '',
-				delete_id:'',
+				delete_id: '',
 				dialogTableVisible: false,
 				dialogVisible: false,
 				array_nav2: [],
@@ -207,6 +221,8 @@
 					pageSize: 8,
 					pageNum: 1
 				},
+				schoolDefault: '',
+				school: [1, 2],
 				total: 0,
 				usserName: localStorage.getItem('userName'),
 				userId: localStorage.getItem('userID'),
@@ -282,7 +298,6 @@
 			handleCurrentChange(val) {
 				this.page.pageNum = val
 				ApiClassSelectListByOptions({
-					schoolId: this.userId,
 					pageSize: this.page.pageSize,
 					pageNum: this.page.pageNum
 				}).then(res => {
@@ -301,18 +316,17 @@
 						"sort": this.table_classNum,
 						"grade": `${this.table_yearNum}级`,
 						"name": `${this.table_yearNum}级${this.table_classNum}班`,
-						"schoolId": this.userId,
+						"schoolId": this.schoolDefault,
 					}).then(res => {
 						this.$message.success('新增班级成功!')
 						this.cancel();
 					})
 					// 查询班级
 					ApiClassSelectListByOptions({
-						schoolId: this.userId,
 						pageSize: this.page.pageSize,
 						pageNum: this.page.pageNum
 					}).then(res => {
-						console.log(res)
+						// console.log(res)
 						this.page.pageNum = res.data.data.pageNum;
 						this.page.pageSize = res.data.data.pageSize;
 						this.total = res.data.data.total;
@@ -324,28 +338,38 @@
 						"sort": this.table_classNum,
 						"grade": `${this.table_yearNum}级`,
 						"name": `${this.table_yearNum}级${this.table_classNum}班`,
-						"schoolId": this.userId,
+						"schoolId": this.update_data.schoolId,
 					}).then(res => {
 						this.$message.success('修改班级成功!')
 						this.cancel();
 					})
-				}else if (type == 'delete'){
-					ApiClassDelete(this.delete_id).then(res=>{
-						this.$message.success('删除班级成功!')
-					});
 					// 查询班级
 					ApiClassSelectListByOptions({
-						schoolId: this.userId,
 						pageSize: this.page.pageSize,
 						pageNum: this.page.pageNum
 					}).then(res => {
-						console.log(res)
+						// console.log(res)
 						this.page.pageNum = res.data.data.pageNum;
 						this.page.pageSize = res.data.data.pageSize;
 						this.total = res.data.data.total;
 						this.classList = res.data.data.list;
 					});
-					
+				} else if (type == 'delete') {
+					ApiClassDelete(this.delete_id).then(res => {
+						this.$message.success('删除班级成功!')
+					});
+					// 查询班级
+					ApiClassSelectListByOptions({
+						pageSize: this.page.pageSize,
+						pageNum: this.page.pageNum
+					}).then(res => {
+						// console.log(res)
+						this.page.pageNum = res.data.data.pageNum;
+						this.page.pageSize = res.data.data.pageSize;
+						this.total = res.data.data.total;
+						this.classList = res.data.data.list;
+					});
+
 				}
 			},
 			// 操作
@@ -358,31 +382,36 @@
 					this.operation_type = type;
 					this.update_data = data;
 					this.table_classNum = data.sort;
+					this.schoolDefault=data.schoolId;
 					this.table_yearNum = data.grade.replace(/(\级*$)/g, "");
 				} else if (type == 'delete') {
-					this.dialogVisible=true;
-					this.delete_id=data
+					this.dialogVisible = true;
+					this.delete_id = data
 				}
 			}
 		},
 		mounted() {
 			this.color = user().color;
+			// 查询学校
+			apiSchoolAccountSelectByOptions({
+				pageSize: 999,
+				pageNum: 1
+			}).then(res => {
+				this.school=res.data.data.list
+			})
 			// 查询班级
 			ApiClassSelectListByOptions({
-				schoolId: this.userId,
 				pageSize: this.page.pageSize,
 				pageNum: this.page.pageNum
 			}).then(res => {
-				console.log(res)
+				// console.log(res)
 				this.page.pageNum = res.data.data.pageNum;
 				this.page.pageSize = res.data.data.pageSize;
 				this.total = res.data.data.total;
 				this.classList = res.data.data.list;
 			});
 			//查询教师数量
-			schoolSelectTeacher({
-				schoolId: this.userId
-			}).then(res => {
+			schoolSelectTeacher({}).then(res => {
 				// console.log(res)
 				this.teacher_num = res.data.data.total
 			})
@@ -390,7 +419,6 @@
 			StudentAccountInfo({
 				pageNum: this.page.pageNum,
 				pageSize: this.page.pageSize,
-				schoolId: this.userId
 			}).then(res => {
 				res.data ? (this.student_num = res.data.data.total) : this.$message.error(
 					'查询超时,请刷新重新查询！')

@@ -129,6 +129,12 @@ export default new Router({
                         import ( /* webpackChunkName: "order_admin_add" */ '../components/page/order/order_admin_add.vue'),
                     meta: { title: '管理员-订购管理-新增订购' }
                 },
+				{
+				    path: '/manage_admin_class',
+				    component: () =>
+				        import ( /* webpackChunkName: "manage_admin_class" */ '../components/page/manage/manage_admin_class.vue'),
+				    meta: { title: '管理员-班级管理' }
+				},
                 {
                     path: 'manage_school_subordinate',
                     component: () =>
