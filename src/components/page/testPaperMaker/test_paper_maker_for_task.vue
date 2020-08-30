@@ -1271,6 +1271,7 @@ export default {
             }
             else{
               this.downloadTips.content = "请下载正式考试试卷！"
+              this.downloadForPreview = false
             }
             //this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
           })
