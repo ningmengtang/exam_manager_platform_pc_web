@@ -64,23 +64,34 @@
         </el-aside>
       <el-container>
         <div style="width:100px;position:fixed;top:150px;right:50px;text-align:center;">
-          <div style="margin-top:10px;">
+          <div style="margin-top:10px;color:#909399;">
+            重置功能
+          </div>
+           <div style="margin-top:10px;">
+            <el-button type="danger" round @click="resetTestPaperObj()">重置试卷</el-button>
+          </div>
+          <div style="margin-top:30px;color:#909399;">
             组卷功能
           </div>
           <div style="margin-top:10px;">
             <el-button style="height:50px;" type="success" round @click="saveTestPaperCache()">完成组卷</el-button>
           </div>
+
           <div style="margin-top:10px;">
-            <el-button type="danger" round @click="resetTestPaperObj()">重置试卷</el-button>
+            <el-button style="height:50px;" type="success" round @click="saveTestPaperTempCache()">立刻保存</el-button>
           </div>
-          <div style="margin-top:30px;">
+         
+          <div style="margin-top:30px;color:#909399;">
             试卷预览
           </div>
           <div style="margin-top:10px;">
-            <el-button type="warning" round @click="startTestPaperPreview()" v-if="!qustionPreviewMode">预览试题</el-button>
+            <el-button type="warning" round @click="saveTestPaperTempCache();startTestPaperPreview();" v-if="!qustionPreviewMode">预览试题</el-button>
           </div>
           <div style="margin-top:10px;">
-            <el-button type="success" round @click="qustionPreviewMode = false;qustionPreviewImgMode = false;" v-if="qustionPreviewMode">退出预览</el-button>
+            <el-button type="warning" round @click="qustionPreviewMode = false;qustionPreviewImgMode = false;" v-if="qustionPreviewMode">退出预览</el-button>
+          </div>
+          <div style="margin-top:10px;">
+            <el-button type="primary" round @click="downloadTempTestPaper()" v-if="qustionPreviewMode">模拟下载</el-button>
           </div>
         </div>
         <el-header class="layout_header">
@@ -361,7 +372,17 @@
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && !qustionPreviewImgMode"><!-- 临时去掉v-if="qustionPreviewMode && !qustionPreviewImgMode" -->
             <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
-              
+              <div style="width:100%" class="layout_test_paper_header">
+                <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
+                  <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span>
+                </div>
+                <div class="layout_question_part_header_title" style="font-size:18px;line-height:30px;text-align:center;">
+                  {{testPaperObj.examExplain}}
+                </div>
+                <div class="layout_question_part_header_title" style="font-size:16px;line-height:20px;text-align:center;">
+                  作答时间：{{testPaperObj.examTime}}分钟
+                </div>
+              </div>
               <!-- 输出部分 -->
               <!-- ============================================================================================================ -->
               <div v-for="(questionPartItem,questionPartItemIndex) in testPaperObj.items" class="layout_question_topic_text ql-editor" :style="testPaperPreviewStyle">
@@ -465,7 +486,17 @@
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && !qustionPreviewImgMode">
             <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
-              
+              <div style="width:100%" class="layout_test_paper_header">
+                <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
+                  <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span>
+                </div>
+                <div class="layout_question_part_header_title" style="font-size:18px;line-height:30px;text-align:center;">
+                  {{testPaperObj.examExplain}}
+                </div>
+                <div class="layout_question_part_header_title" style="font-size:16px;line-height:20px;text-align:center;">
+                  作答时间：{{testPaperObj.examTime}}分钟
+                </div>
+              </div>
               <!-- 输出部分 -->
               <!-- ============================================================================================================ -->
               <div v-for="(questionPartItem,questionPartItemIndex) in testPaperObj.items" class="layout_question_topic_text ql-editor" :style="testPaperPreviewStyle">
@@ -1263,6 +1294,10 @@ export default {
         
       }
 
+      /**
+       * 启动自动保存功能
+       */
+      this.$options.methods.autoSaveTestPaperTempCache.bind(this)(10 * 60 * 1000 )
     })
       //console.log(this.testPaperObj)
       //this.editor = this.$refs.myQuillEditor.quill;
@@ -1462,6 +1497,7 @@ export default {
       ],
       }
       this.$options.methods.testPaperUpdateScore.bind(this)()
+      this.qustionPreviewMode = false
       //重置完成
     },
     /**
@@ -2267,6 +2303,12 @@ export default {
      * 开始任务，完成组卷
      */
     saveTestPaperCache(){
+      if(!this.qustionPreviewMode)
+      {
+        this.$message.warning('请先预览试卷再完成组卷！')
+        console.log("请先预览试卷再完成组卷！ ")
+        return
+      }
       localStorage.setItem('testPaperCache', JSON.stringify(this.testPaperObj) )
       localStorage.setItem('testPaperCacheReady', true)
       this.$message.success('已经完成组卷！您现在可以提交试卷入库！')
@@ -2288,6 +2330,42 @@ export default {
         this.$router.push(`/manage_admin_import`)
       }
       
+    },
+    /**
+     * 下载这张临时的卷子
+     */
+    downloadTempTestPaper(){
+      let  createTestPaperInfoObj = {
+ 		    testPaperId:-1,
+        isTempTestPaper:true,
+        students:[
+          {
+            uid:localStorage.getItem('userID'),
+            utype:localStorage.getItem('loginUserType'),
+          	items:[]
+          }
+        ]
+      }
+      this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+    },
+    /**
+     * 临时保存组卷数据
+     */
+    saveTestPaperTempCache(){
+      localStorage.setItem('testPaperCache', JSON.stringify(this.testPaperObj) )
+      this.$message.success('已经保存当前组卷数据！')
+      console.log("已经保存当前组卷数据！ ")
+      
+    },
+    /**
+     * 临时保存组卷数据,自动保存,传入的是毫秒数
+     */
+    autoSaveTestPaperTempCache(autoSaveTimeInterval){
+      setInterval(() => {
+        localStorage.setItem('testPaperCache', JSON.stringify(this.testPaperObj) )
+      this.$message.success('已经自动保存当前组卷数据！')
+      console.log("已经自动保存当前组卷数据！ ")
+      }, autoSaveTimeInterval);
     },
     /**
      * 开始任务，完成组卷，插入数据库

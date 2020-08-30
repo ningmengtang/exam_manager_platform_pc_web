@@ -208,6 +208,8 @@
 					          }
 					        ]
 					      }
+
+				//bus.$emit("download_test_paper",['test_paper_maker_for_task',createTestPaperInfoObj])
 				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
 			}
 		},

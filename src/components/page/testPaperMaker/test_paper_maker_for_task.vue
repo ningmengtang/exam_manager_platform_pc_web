@@ -77,7 +77,7 @@
           <div v-if="!qustionPreviewMode" style="width:800px;margin-left:auto;margin-right:auto;background-color:white;">
             <div style="clear:both;height:50px;"></div>
             <div v-if="downloadGroup.length > 0" v-for="(downloadItem,downloadItemIndex) in downloadGroup" style="width:300px;float:left;margin-left:50px;margin-top:30px;">
-              <el-button type="success" @click="downloadItem.isDownload = true;studentsDownload(downloadItem.groupID)"style="font-size:20pt;" round>下载分包&nbsp;{{downloadItem.groupID+""}}<span v-if="downloadItem.isDownload"><i class="el-icon-check"></i></span></el-button>
+              <el-button type="success" @click="downloadItem.isDownload = true;studentsDownload(downloadItem.groupID)"style="font-size:20pt;" round>下载分包&nbsp;{{downloadItem.groupID+""}}<span v-if="downloadItem.isDownload"><i class="el-icon-check"></i></span><span v-if="!downloadItem.isDownload"><i class="el-icon-download"></i></span></el-button>
               
             </div>
             <div style="clear:both;height:50px;"></div>
@@ -96,7 +96,7 @@
             <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
               <div style="width:100%" :class="'layout_test_paper_header_'+studentItem.uid">
                 <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
-                  <span class="font_question_big" style="color:#000;">{{testPaperObjItem.title}}</span>
+                  <span class="font_question_big" style="color:#000;">{{testPaperObjItem.title}}</span><span v-if="downloadForPreview">(仅供预览，勿作他用)</span>
                 </div>
                 <div class="layout_question_part_header_title" style="font-size:18px;line-height:30px;text-align:center;">
                   {{testPaperObjItem.examExplain}}
@@ -230,7 +230,7 @@
             <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
               <div style="width:100%" :class="'layout_test_paper_header_'+studentItem.uid">
                 <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
-                  <span class="font_question_big" style="color:#000;">{{testPaperObjItem.title}}</span>
+                  <span class="font_question_big" style="color:#000;">{{testPaperObjItem.title}}</span><span v-if="downloadForPreview">(仅供预览，勿作他用)</span>
                 </div>
                 <div class="layout_question_part_header_title" style="font-size:18px;line-height:30px;text-align:center;">
                   {{testPaperObjItem.examExplain}}
@@ -1070,6 +1070,10 @@ export default {
       ],
       },
       /**
+       * 本次下载是否用于预览
+       */
+      downloadForPreview: false,
+      /**
        * 下载提示语
        */
       downloadTips: {
@@ -1094,10 +1098,41 @@ export default {
       ],
     }
   },
+  watch: {
+    //监听路由变化，并重新获取数据
+    $route(to, from) {
+      //this.$nextTick(() => {
+        //console.log(to)
+        //console.log(from)
+        if(to.name == "test_paper_maker_for_task")
+        {
+          this.$options.methods.pageInit.bind(this)()
+        }
+        
+      //})
+    }
+  },
   mounted () {
     
     //this.createTestPaperInfoObj = {}
-    this.$nextTick(() => {
+    //this.$nextTick(() => {
+
+      this.$options.methods.pageInit.bind(this)()
+
+    //})
+      //console.log(this.testPaperObj)
+      //this.editor = this.$refs.myQuillEditor.quill;
+      //console.log(this.testPaperObj.items[0].topic_text)
+  },
+  beforeDestroy(){
+    //this.editor = null;
+    //delete this.editor;
+  },
+  methods: {
+    /**
+     * 初始化页面
+     */
+    pageInit(){
       //this.resetTestPaperObj()
       // if(localStorage.getItem('testPaperCache')!=null)
       // {
@@ -1124,21 +1159,11 @@ export default {
       {
         //进入批量生产模式
         this.createTestPaperInfoObj = this.$route.query.createTestPaperInfoObj
-        
-        apiCommonExamSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
-          if(!res.data.result)
-          {
-            this.$message.error('获取试卷失败，无法下载！')
-            console.log("获取试卷失败，无法下载！")
-            this.downloadTips.content = "获取试卷失败，无法下载！请重试！"
-            return
-          }
 
-          var resResultData = res.data
-
-          console.log(resResultData)
-
-          this.testPaperObj = JSON.parse(resResultData.data.elementTest)
+        //临时预览下载模式，用于组卷中途预览自己的卷子，此时卷子没提交到数据库
+        if(this.createTestPaperInfoObj.isTempTestPaper){
+          console.log("进入临时预览下载模式")
+          this.testPaperObj = JSON.parse(localStorage.getItem("testPaperCache"))
 
           //下载分组
           this.downloadGroup = []
@@ -1156,7 +1181,7 @@ export default {
                 isDownload:false,
                 students:[studentArrItem],
               })
-             
+            
             }
             else{
               console.log("push students")
@@ -1173,9 +1198,83 @@ export default {
           });
           console.log("downloadGroup分组完成")
           console.log(this.downloadGroup)
-          //this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
-        })
-        
+
+          if(this.downloadGroup[0].students[0].utype != 'student')
+          {
+            //说明是预览模式
+            this.downloadForPreview = true
+            this.$message.warning('您进入了预览模式，下载试卷仅供参考，请勿用于实际考试！')
+            console.log("您进入了预览模式，下载试卷仅供参考，请勿用于实际考试！")
+            this.downloadTips.content = "您进入了预览模式，下载试卷仅供参考，请勿用于实际考试！"
+          }
+        }
+        else{
+          //实际下载
+          console.log("进入下载模式")
+          apiCommonExamSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
+            if(!res.data.result)
+            {
+              this.$message.error('获取试卷失败，无法下载！')
+              console.log("获取试卷失败，无法下载！")
+              this.downloadTips.content = "获取试卷失败，无法下载！请重试！"
+              return
+            }
+
+            var resResultData = res.data
+
+            console.log(resResultData)
+
+            this.testPaperObj = JSON.parse(resResultData.data.elementTest)
+
+            //下载分组
+            this.downloadGroup = []
+
+            let childDownloadGroup = []
+            
+            let downloadGroupId = 0
+            
+            this.createTestPaperInfoObj.students.forEach((studentArrItem,studentItemIndex) => {
+              if((studentItemIndex) % 3 == 0)
+              {
+                console.log("downloadGroupId + 1")
+                this.downloadGroup.push({
+                  groupID:downloadGroupId,
+                  isDownload:false,
+                  students:[studentArrItem],
+                })
+              
+              }
+              else{
+                console.log("push students")
+                console.log(this.downloadGroup[downloadGroupId])
+                
+                this.downloadGroup[downloadGroupId].students.push(studentArrItem)
+
+                if(studentItemIndex !=0 && (studentItemIndex+1) % 3 == 0)
+                {
+                  downloadGroupId+=1
+                }
+              }
+              
+            });
+            console.log("downloadGroup分组完成")
+            console.log(this.downloadGroup)
+
+            if(this.downloadGroup[0].students[0].utype != 'student')
+            {
+              console.log("进入预览下载模式")
+              //说明是预览模式
+              this.downloadForPreview = true
+              this.$message.warning('您进入了预览模式，下载试卷仅供参考，请勿用于实际考试！')
+              console.log("您进入了预览模式，下载试卷仅供参考，请勿用于实际考试！")
+              this.downloadTips.content = "您进入了预览模式，下载试卷仅供参考，请勿用于实际考试！"
+            }
+            else{
+              this.downloadTips.content = "请下载正式考试试卷！"
+            }
+            //this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
+          })
+        }
       }
       else{
         this.$message.error('获取试卷失败，无法下载！')
@@ -1183,17 +1282,7 @@ export default {
         this.downloadTips.content = "获取试卷失败，无法下载！请重试！"
         return
       }
-
-    })
-      //console.log(this.testPaperObj)
-      //this.editor = this.$refs.myQuillEditor.quill;
-      //console.log(this.testPaperObj.items[0].topic_text)
-  },
-  beforeDestroy(){
-    //this.editor = null;
-    //delete this.editor;
-  },
-  methods: {
+    },
     /**
      * 测试100个学生批量下载
      */
@@ -3568,7 +3657,11 @@ export default {
       
       //console.log("开始获取所有试卷答题卡图片")
       //循环输出试卷部分================================================================================================
-
+      //试卷抬头
+      previewImgArr.push({
+        image: testPaperObj.imgFile,
+        width: this.pdfPrintA4PaperSizeWidth,
+      })
       testPaperObj.items.forEach(questionPartItem => {
 
         //循环输出大题================================================================================================

@@ -109,6 +109,21 @@
                 }
             })
 
+            bus.$on('download_test_paper', target => {
+                console.log(target)
+                //this.$options.methods.closeAll.bind(this)()
+                this.tagsList = [];
+                this.$router.push({name :target[0],query:{createTestPaperInfoObj:target[1]}})
+            })
+
+            bus.$on('close_other_tags', () => {
+                this.$options.methods.closeOther.bind(this)()
+            })
+
+            bus.$on('close_all_tags', () => {
+                this.$options.methods.closeAll.bind(this)()
+            })
+
             this.bg_color = user().color;
         }
     }

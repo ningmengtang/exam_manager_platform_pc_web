@@ -181,7 +181,7 @@ export default {
                     students:[
                          {
                             uid:localStorage.getItem('userID'),
-                            utype:"student",
+                            utype:localStorage.getItem('loginUserType'),
                             items:[]
                          }
                        ]
