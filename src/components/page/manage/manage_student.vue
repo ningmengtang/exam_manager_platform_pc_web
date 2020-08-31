@@ -124,15 +124,13 @@
 					<div class="label" v-for="i in item.tag_list">
 						{{i.text}}
 					</div>
-					<!-- <div class="label">人教版</div>
-					<div class="label">语文</div>
-					<div class="label">一年级</div> -->
 				</div>
 				<div class="right">
 					<i class="icon el-icon-time"></i>
-					<div class="status" >{{item.putInto == '0'?'入库失败':item.putInto == '1'?'入库成功':item.putInto == '2'?'正在入库':''}}</div>
-					<el-button  type="primary" disabled v-if="item.status == 1" >立即下载</el-button>
-					<el-button type="primary"   v-if="item.status == 0" @click="downloadFile(item)">立即下载</el-button>
+					<div class="status" >{{item.putInto == '0'?'不可下载':item.putInto == '1'?'可以下载':item.putInto == '2'?'未到下载时间':''}}</div>
+					
+					<el-button type="primary"    v-if="item.status == 0 && item.putInto == 1 " @click="downloadFile(item)" >立即下载</el-button>
+					<el-button  type="primary" disabled  v-else style="background-color: #999999;" >立即下载</el-button>
 				</div>
 			</div>
 			<div class="page">
@@ -141,8 +139,8 @@
 				</el-pagination>
 			</div>
 		</div>
-		<!-- <el-button type="text"  @click="dialogVisible = true" >点击打开 Dialog</el-button> -->
-
+		
+       <!-- 弹窗 -->
 		<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose" >
 			<div class="ts-box">
 				<div class="big-icon  el-icon-success"></div>
@@ -154,7 +152,6 @@
 				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
 			</span>
 		</el-dialog>
-
 	</div>
 </template>
 <script>
@@ -196,6 +193,7 @@
 				TagTypeList:[],
 				search: '',
 				dialogVisible: false,
+				download_status:0,
 
 			};
 		},
@@ -346,6 +344,7 @@
 						}
 						
 					}else{
+						this.download_status=1;
 						this.$message.warning('未到下载时间，不允许下载')
 					}
 				}else{
@@ -399,6 +398,7 @@
 				this.paperList = res.data.data.list
 				this.total= res.data.data.total
 				this.currentPage= res.data.data.pageNum
+				console.log(res)
 			})
 		}
 		

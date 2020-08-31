@@ -182,7 +182,7 @@
 		StudentAccountInfo,
 		ApiClassAdd,
 		ApiClassUpdate,
-		ApiClassDelete
+		ApiClassDelete,
 	} from '@/api/api.js'
 	export default {
 		data() {

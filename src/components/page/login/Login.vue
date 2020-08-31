@@ -197,7 +197,6 @@
 				if (this.param.username) {
 					this.vcodeimg = "/api/user/account/vcodeimg?key=" + this.param.username + "&d=" + new Date().getTime()
 				}
-
 			},
 			submitForm() {
 				this.$refs.login.validate((valid) => {
@@ -216,18 +215,18 @@
 						})
 						userLogin(`${type}`, data).then(res => {
 							let wd = res.data;
-							
+
 							switch (wd.stateCode) {
 								case 200:
 									//存登录数据
-									
+
 									localStorage.setItem('loginToken', wd.data.token)
 									localStorage.setItem('userID', wd.data.id)
 									localStorage.setItem('userName', wd.data.name)
-									if(wd.data.roleList){
-										localStorage.setItem('roleList',JSON.stringify(wd.data.roleList))
+									if (wd.data.roleList) {
+										localStorage.setItem('roleList', JSON.stringify(wd.data.roleList))
 									}
-									
+
 									//判断是否是学生
 									if (type == 'student') {
 										localStorage.setItem('userSchoolName', wd.data.schoolName)
@@ -271,11 +270,45 @@
 					}
 				})
 			},
+			getCookie(name) {
+				//取出cookie   
+				var strCookie = document.cookie;
+				//cookie的保存格式是 分号加空格 "; "  
+				var arrCookie = strCookie.split("; ");
+				for (var i = 0; i < arrCookie.length; i++) {
+					var arr = arrCookie[i].split("=");
+					if (arr[0] == name) {
+						return unescape(arr[1]);
+					}
+				}
+				return "";
+			},
+			setCookie(name, value) {
+				if (value) {
+					var days = 1; //定义一天
+					var exp = new Date();
+					exp.setTime(exp.getTime() + days * 24 * 60 * 60 * 1000);
+					// 写入Cookie, toGMTString将时间转换成字符串
+					document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString;
+					// document.cookie.Expires = DateTime.Now.AddDays(1)
+				}
+			}
 		},
 		mounted() {
-			let loginUserType = localStorage.getItem('loginUserType')
+			let loginUserType = localStorage.getItem('loginUserType');
+			// this.setCookie('p',65);
+			let HistoryUserType=this.getCookie('HistoryUserType');
 			if (!loginUserType) {
-				localStorage.setItem('loginUserType', this.type);
+				if(HistoryUserType){
+					localStorage.setItem('loginUserType', HistoryUserType);
+				}else{
+					localStorage.setItem('loginUserType', this.type);
+				}
+				
+			}
+			if(HistoryUserType){
+				this.value=HistoryUserType;
+				this.identity(HistoryUserType)
 			}
 
 			// userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
@@ -321,13 +354,13 @@
 
 	.form-login {
 		width: 331px;
-		background-color: rgb(249,249,249);
+		background-color: rgb(249, 249, 249);
 		border-radius: 20px;
-		box-shadow: 0px 0px 20px 0px rgb(25, 18, 18,);
-		filter:alpha(opacity=90);   
-		-moz-opacity:0.9;   
-		-khtml-opacity: 0.9;   
-		opacity: 0.9;  
+		box-shadow: 0px 0px 20px 0px rgb(25, 18, 18, );
+		filter: alpha(opacity=90);
+		-moz-opacity: 0.9;
+		-khtml-opacity: 0.9;
+		opacity: 0.9;
 	}
 
 	.form-login-box {
@@ -377,7 +410,7 @@
 
 	.select>>>.el-input__inner {
 		text-align: center;
-		border-bottom: 1px solid rgb(48,49,51);
+		border-bottom: 1px solid rgb(48, 49, 51);
 	}
 
 	.title {
@@ -428,10 +461,10 @@
 		color: #FFFFFF;
 		font-size: 14px;
 		background-color: rgb(153, 153, 153);
-		filter:alpha(opacity=100);   
-		-moz-opacity:1;   
-		-khtml-opacity: 1;   
-		opacity: 1;  
+		filter: alpha(opacity=100);
+		-moz-opacity: 1;
+		-khtml-opacity: 1;
+		opacity: 1;
 		margin-top: 8px;
 	}
 

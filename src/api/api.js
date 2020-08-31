@@ -246,7 +246,13 @@ export function adminSelectRoleadminPower(data){
 	const result =post('/api/role/selectListByOptions',data)
 	return result;
 }
-
+// -----------------------管理员通过角色id查询全部------------------------------------
+// "1.专家2.管理员3.学校4.教师5.学生"
+export function adminSelectRoleType(data){
+	const result =post('/api/admin/user/manage/userSelect',data)
+	return result;
+}
+//-------------------------------------------------------
 // -----------------------管理员通过id查询账号------------------------------------
 //查询管理员管理通过学生id查询
 export function adminSelectRoleStudentId(data){
