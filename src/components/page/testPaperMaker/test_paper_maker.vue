@@ -247,14 +247,10 @@
                 <!-- ============================================================================================================ -->
                 <div class="layout_question_anwser_sheet" style="float:left;width:100%;margin-left:30px;" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
                   <div class="layout_question_anwser_sheet_title" style="font-size:18px;font-weight:bold;line-height:50px;color:#a6a6a6;">
-                    <i class="el-icon-document-checked"></i>答题卡不显示内容（点击编辑）
-                    <el-switch
-                      v-model="questionItem.anwserSheet.isNull"
-                      active-color="#13ce66"
-                      inactive-color="#ff4949">
-                    </el-switch>
+                    <i class="el-icon-document-checked"></i>答题卡显示内容
+
                   </div>
-                  <div class="layout_question_anwser_sheet_content" :style="testPaperAnwserSheetStyle" v-if="!questionItem.anwserSheet.isNull">
+                  <div class="layout_question_anwser_sheet_content" :style="testPaperAnwserSheetStyle">
                     <!-- <quill-editor
                       class="layout_question_anwser_sheet_content_input"
                       v-model="questionItem.anwserSheet.topic_text"
@@ -263,9 +259,19 @@
                       @blur="onEditorBlur($event)"
                       @change="onEditorChange($event)">
                     </quill-editor> -->
-                    <myQuillEditor :contentData.sync="questionItem.anwserSheet.topic_text" :classUniqueId.sync="'anwserSheet_'+questionItem.uniqueId"></myQuillEditor>
+                    <myQuillEditor :contentData.sync="questionItem.anwserSheet.topic_text" :classUniqueId.sync="'anwserSheet_'+questionItem.uniqueId" v-if="questionItem.anwserSheet.isEditing"></myQuillEditor>
+                    <div class="ql-editor" v-html="questionItem.anwserSheet.topic_text" v-if="!questionItem.anwserSheet.isEditing" style="width:100%;border:2px solid #000;"></div>
                   </div>
-                  
+                  <!-- 编辑工具栏 -->
+                  <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
+                    <el-tooltip class="item" effect="dark" content="完成编辑" placement="top-start">
+                    <el-button type="success" icon="el-icon-check" circle @click="questionItem.anwserSheet.isEditing = false" :disabled="!questionItem.anwserSheet.isEditing"></el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="编辑文本" placement="top-start">
+                    <el-button type="primary" icon="el-icon-edit" circle @click="questionItem.anwserSheet.isEditing = true" :disabled="questionItem.anwserSheet.isEditing"></el-button>
+                    </el-tooltip>
+                  </div>
+                  <!-- 编辑工具栏 结束 -->
                 </div>
 
                 <div class="layout_question_anwser" style="float:left;width:100%;margin-left:30px;" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
@@ -389,10 +395,10 @@
                 <div :class="'layout_question_topic_text_'+questionPartItem.uniqueId">
                   <table>
                     <tr>
-                      <td width="70px">
+                      <!-- <td width="70px">
                           <p style="text-align:right;">第{{questionPartItemIndex + 1}}部分、</p>
                           <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,null,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                      </td>
+                      </td> -->
                       <td>
                         <div v-html="questionPartItem.topic_text">
                         </div>
@@ -406,10 +412,10 @@
                   <div :class="'layout_question_topic_text_'+questionBigItem.uniqueId">
                     <table>
                       <tr>
-                      <td width="70px">
+                      <!-- <td width="70px">
                           <p style="text-align:right;">第{{questionBigItemIndex + 1}}大题、</p>
                           <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                      </td>
+                      </td> -->
                       <td>
                         <div v-html="questionBigItem.topic_text">
                         </div>
@@ -424,13 +430,14 @@
                     <div :class="'layout_question_topic_text_'+questionItem.uniqueId">
                       <table>
                         <tr>
+                        
+                        <td width="530px">
+                          <div v-html="questionItem.topic_text">
+                          </div>
+                        </td>
                         <td width="70px">
                             <p style="text-align:right;">第{{questionItem.no}}小题、</p>
                             <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                        </td>
-                        <td>
-                          <div v-html="questionItem.topic_text">
-                          </div>
                         </td>
                         </tr>
                       </table>
