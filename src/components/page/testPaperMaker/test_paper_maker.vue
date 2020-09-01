@@ -132,6 +132,9 @@
               <div class="layout_question_part_header_content" :style="testPaperAnwserSheetStyle">
                 <myQuillEditor :contentData.sync="questionPartItem.topic_text" :classUniqueId.sync="questionPartItem.uniqueId" v-if="questionPartItem.isEditing"></myQuillEditor>
                 <div class="ql-editor" v-html="questionPartItem.topic_text" v-if="!questionPartItem.isEditing" style="width:100%"></div>
+                <div class="ql-editor" v-if="!questionPartItem.isEditing" style="width:100%">
+                    <div v-if="null == questionPartItem.topic_text || questionPartItem.topic_text == ''">【空】</div>
+                  </div>
                 <!--<quill-editor
                   ref="quill_editor_questionPartItem"
                   class="layout_question_part_topic_input"
@@ -180,8 +183,12 @@
               <div class="layout_question_big_header" style="float:left;width:770px;margin-left:20px;">
                 <div class="layout_question_big_header_title" style="font-size:18px;font-weight:bold;line-height:50px;">
                   <i class="el-icon-document"></i>请添加<span class="font_question_big" style="color:#d44949;" @click="refreshCurrentCtrlObj(questionPartItemIndex,null,null,questionPartItem,null,null)">第{{questionPartItemIndex+1}}部分</span> > <span class="font_question_big" style="color:#2a82e4;" @click="refreshCurrentCtrlObj(questionPartItemIndex,questionBigItemIndex,null,questionPartItem,questionBigItem,null)">第{{questionBigItemIndex+1}}大题</span>的题目
-                  <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain @click="addNewTestPaperQuestionItem(questionBigItem)">增加小题（综合题）</el-button></span>
-                  <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain @click="addNewTestPaperChoiceQuestionItem(questionBigItem)">增加小题（选择题）</el-button></span>
+                  
+                  <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain icon="el-icon-plus" @click="dialogVisibleForAddQuestion = true;dialogVisibleForAddQuestionParent = questionBigItem;dialogVisibleForAddQuestionTypeName = questionType.comprehensive_topic.name;"></el-button></span>
+                  <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain @click="addNewTestPaperQuestionItem(questionBigItem)">增加综合题</el-button></span>
+                  <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain icon="el-icon-plus" @click="dialogVisibleForAddQuestion = true;dialogVisibleForAddQuestionParent = questionBigItem;dialogVisibleForAddQuestionTypeName = questionType.single_choice.name;"></el-button></span>
+                  <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain @click="addNewTestPaperChoiceQuestionItem(questionBigItem)">增加选择题</el-button></span>
+                  
                   <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="questionPartItem.items.length <= 1" @click="delTestPaperQuestionBigItem(questionPartItem,questionBigItemIndex)">删除本大题</el-button></span>
                 </div>
                 <div class="layout_question_big_header_content" :style="testPaperAnwserSheetStyle">
@@ -195,6 +202,9 @@
                   </quill-editor>-->
                   <myQuillEditor :contentData.sync="questionBigItem.topic_text" :classUniqueId.sync="questionBigItem.uniqueId" v-if="questionBigItem.isEditing"></myQuillEditor>
                   <div class="ql-editor" v-html="questionBigItem.topic_text" v-if="!questionBigItem.isEditing" style="width:100%"></div>
+                  <div class="ql-editor" v-if="!questionBigItem.isEditing" style="width:100%">
+                    <div v-if="null == questionBigItem.topic_text || questionBigItem.topic_text == ''">【空】</div>
+                  </div>
                 </div>
                 <!-- 编辑工具栏 -->
                 <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
@@ -216,7 +226,7 @@
                 <div class="layout_question" style="float:left;width:770px;margin-left:10px;">
                   <div class="layout_question_title" style="font-size:18px;font-weight:bold;line-height:50px;">
                     <i class="el-icon-document"></i>请添加<span class="font_question_big" style="color:#d44949;" @click="refreshCurrentCtrlObj(questionPartItemIndex,null,null,questionPartItem,null,null)">第{{questionPartItemIndex+1}}部分</span> > <span class="font_question_big" style="color:#2a82e4;" @click="refreshCurrentCtrlObj(questionPartItemIndex,questionBigItemIndex,null,questionPartItem,questionBigItem,null)">第{{questionBigItemIndex+1}}大题</span> > <span class="font_question_big" style="color:#43cf7c;" @click="refreshCurrentCtrlObj(questionPartItemIndex,questionBigItemIndex,questionItemIndex,questionPartItem,questionBigItem,questionItem)">第{{questionItemIndex+1}}小题({{questionItem.questionTypeName}})</span>的题目
-                    <span>本题分值<el-input-number size="mini" :min="1" :max="1000" v-model="questionItem.score"></el-input-number></span>
+                    <span>分值<el-input-number size="mini" :min="1" :max="1000" v-model="questionItem.score"></el-input-number></span>
                     <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="questionBigItem.items.length <=1" @click="delTestPaperQuestionItem(questionBigItem,questionItemIndex)">删除本小题</el-button></span>
                   </div>
                   <div class="layout_question_content" :style="testPaperAnwserSheetStyle">
@@ -230,6 +240,9 @@
                     </quill-editor> -->
                     <myQuillEditor :contentData.sync="questionItem.topic_text" :classUniqueId.sync="questionItem.uniqueId" v-if="questionItem.isEditing"></myQuillEditor>
                     <div class="ql-editor" v-html="questionItem.topic_text" v-if="!questionItem.isEditing" style="width:100%"></div>
+                    <div class="ql-editor" v-if="!questionItem.isEditing" style="width:100%">
+                    <div v-if="null == questionItem.topic_text || questionItem.topic_text == ''">【空】</div>
+                  </div>
                   </div>
                   <!-- 编辑工具栏 -->
                   <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
@@ -682,6 +695,25 @@
             </div>
           </div> -->
           <!-- 题目预览按钮，结束 -->
+          
+          <!-- 增加复数小题 -->
+          <el-dialog
+            :title="dialogVisibleForAddQuestionTypeName"
+            :visible.sync="dialogVisibleForAddQuestion"
+            width="600px"
+            >
+            <div style="width:100%;text-align:center">
+                <span>添加<el-input-number size="mini" :min="1" :max="1000" v-model="dialogVisibleForAddQuestionNums"></el-input-number>道小题</span>
+            </div>
+            
+            <span slot="footer" class="dialog-footer">
+
+                <el-button @click="dialogVisibleForAddQuestion = false">考虑一下</el-button>
+                <el-button v-if="dialogVisibleForAddQuestionTypeName == questionType.single_choice.name" type="primary" @click="dialogVisibleForAddQuestion = false;addNewTestPaperChoiceQuestionItem(dialogVisibleForAddQuestionParent,dialogVisibleForAddQuestionNums)">立刻添加</el-button>
+                <el-button v-if="dialogVisibleForAddQuestionTypeName == questionType.comprehensive_topic.name" type="primary" @click="dialogVisibleForAddQuestion = false;addNewTestPaperQuestionItem(dialogVisibleForAddQuestionParent,dialogVisibleForAddQuestionNums)">立刻添加</el-button>
+            </span>
+          </el-dialog>
+          <!-- 增加复数小题，结束 -->
 
         </el-main>
       </el-container>
@@ -914,7 +946,7 @@ export default {
         "question_type": null,//"string"
         "score": 5,//"string"
         "sn": null,//"string"
-        "topic_text": "null",//"string"
+        "topic_text": null,//"string"
         "weight": null,//int
         //辅助属性段，用来辅助前端绑定小题
         "uniqueId": 3,//string,前端标识元素使用
@@ -1000,7 +1032,22 @@ export default {
         ]
       },
       //正式用于引用的属性
-
+      /**
+       * 新增多道小题
+       */
+      dialogVisibleForAddQuestion: false,
+      /**
+       * 新增多道小题的类型，与前面的实体类匹配
+       */
+      dialogVisibleForAddQuestionTypeName: "单选/多选题",
+      /**
+       * 新增多道小题的数量
+       */
+      dialogVisibleForAddQuestionNums: 1,
+      /**
+       * 新增多道小题的父节点，bigquestion
+       */
+      dialogVisibleForAddQuestionParent: 1,
       /**
        * 二维码包含的数据样板
        */
@@ -1066,7 +1113,7 @@ export default {
        * 编辑器部分
        */
       editor: null,   // 富文本编辑器对象
-      content: '<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>', // 富文本编辑器默认内容
+      content: null, // 富文本编辑器默认内容
       editorOption: { //  富文本编辑器配置
           modules: {
               syntax: {
@@ -1172,7 +1219,7 @@ export default {
             "paper_id": null,////int
             "score": null,//"string"
             "sn": null,//"string"
-            "topic_text": "<p>请问本部分的标题是什么？</p>",//"string"
+            "topic_text": null,//"string"
             "weight": null,//int
             //辅助属性段，用来辅助前端绑定大题目
             "uniqueId": 7,//string,前端标识元素使用
@@ -1190,7 +1237,7 @@ export default {
                   "paper_id": null,////int
                   "score": null,//"string"
                   "sn": null,//"string"
-                  "topic_text": "<p>请问大题的题目是什么？</p>",//"string"
+                  "topic_text": null,//"string"
                   "weight": null,//int
                   //辅助属性段，用来辅助前端绑定小题
                   "uniqueId": 8,//string,前端标识元素使用
@@ -1208,7 +1255,7 @@ export default {
                       "question_type": null,//"string"
                       "score": 5,//"string"
                       "sn": null,//"string"
-                      "topic_text": "<p>请问题目是什么？</p>",//"string"
+                      "topic_text": null,//"string"
                       //辅助属性段，用来辅助前端绑定小题
                       "uniqueId": 9,//string,前端标识元素使用
                       "questionTypeName": null,//string
@@ -1424,7 +1471,7 @@ export default {
             "paper_id": null,////int
             "score": null,//"string"
             "sn": null,//"string"
-            "topic_text": "<p>请问本部分的标题是什么？</p>",//"string"
+            "topic_text": null,//"string"
             "weight": null,//int
             //辅助属性段，用来辅助前端绑定大题目
             "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
@@ -1442,7 +1489,7 @@ export default {
                   "paper_id": null,////int
                   "score": null,//"string"
                   "sn": null,//"string"
-                  "topic_text": "<p>请问大题的题目是什么？</p>",//"string"
+                  "topic_text": null,//"string"
                   "weight": null,//int
                   //辅助属性段，用来辅助前端绑定小题
                   "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
@@ -1460,7 +1507,7 @@ export default {
                       "question_type": this.questionType.comprehensive_topic.id,//"string"
                       "score": 5,//"string"
                       "sn": null,//"string"
-                      "topic_text": "<p>请问题目是什么？</p>",//"string"
+                      "topic_text": null,//"string"
                       //辅助属性段，用来辅助前端绑定小题
                       "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
                       "questionTypeName" : this.questionType.comprehensive_topic.name,
@@ -1521,9 +1568,9 @@ export default {
       newQuestionAnwserSheetItem.isNull = true
       newQuestionItem.question_type = this.questionType.comprehensive_topic.id
       newQuestionItem.questionTypeName = this.questionType.comprehensive_topic.name
-      newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
-      newQuestionBigItem.topic_text = "<p>请问大题题目是什么？</p>"
-      newQuestionBigPartItem.topic_text = "<p>请问本部分的标题是什么？</p>"
+      // newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
+      // newQuestionBigItem.topic_text = "<p>请问大题题目是什么？</p>"
+      // newQuestionBigPartItem.topic_text = "<p>请问本部分的标题是什么？</p>"
       newQuestionAnwserItem.answer_text = "<p>参考答案：略</p>"
       newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
 
@@ -1591,8 +1638,8 @@ export default {
       newQuestionAnwserSheetItem.isNull = true
       newQuestionItem.question_type = this.questionType.comprehensive_topic.id
       newQuestionItem.questionTypeName = this.questionType.comprehensive_topic.name
-      newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
-      newQuestionBigItem.topic_text = "<p>请问大题题目是什么？</p>"
+      // newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
+      // newQuestionBigItem.topic_text = "<p>请问大题题目是什么？</p>"
       newQuestionAnwserItem.answer_text = "<p>参考答案：略</p>"
       newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
       newQuestionAnwserSheetItem.topic_text = "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>"
@@ -1611,13 +1658,18 @@ export default {
     /**
      * 为一个试卷的大题目，新增一个小题目（其他题目）
      */
-    addNewTestPaperQuestionItem (questionBigItem) {
+    addNewTestPaperQuestionItem (questionBigItem,nums) {
       //console.log("开始调用addNewTestPaperQuestionBigItem")
       //console.log(this.currentCtrlObj)
       //当传值为空时
       if(null == questionBigItem)
       {
         return false
+      }
+      //至少1个
+      if(null == nums || nums <=0)
+      {
+        nums = 1
       }
 
       if(!questionBigItem.items)
@@ -1626,41 +1678,49 @@ export default {
         questionBigItem.items = []
       }
 
-      //深拷贝一个实体类对象
 
-      let newQuestionItem = this.$options.methods.copyPojo.bind(this)(this.question);
-      let newQuestionAnwserItem = this.$options.methods.copyPojo.bind(this)(this.anwser);
-      let newQuestionAnwserSheetItem = this.$options.methods.copyPojo.bind(this)(this.anwserSheet);
+      for(let i=0;i<nums;i++)
+      {
+        //深拷贝一个实体类对象
 
-      //初始化数值
-      newQuestionAnwserSheetItem.isNull = true
-      newQuestionItem.question_type = this.questionType.comprehensive_topic.id
-      newQuestionItem.questionTypeName = this.questionType.comprehensive_topic.name
-      newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
-      newQuestionAnwserItem.answer_text = "<p>参考答案：略</p>"
-      newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
-      newQuestionAnwserSheetItem.topic_text = "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>"
+        let newQuestionItem = this.$options.methods.copyPojo.bind(this)(this.question);
+        let newQuestionAnwserItem = this.$options.methods.copyPojo.bind(this)(this.anwser);
+        let newQuestionAnwserSheetItem = this.$options.methods.copyPojo.bind(this)(this.anwserSheet);
 
-      //嵌套成为完整的部分
-      newQuestionItem.anwser = newQuestionAnwserItem
-      newQuestionItem.anwserSheet = newQuestionAnwserSheetItem
+        //初始化数值
+        newQuestionAnwserSheetItem.isNull = true
+        newQuestionItem.question_type = this.questionType.comprehensive_topic.id
+        newQuestionItem.questionTypeName = this.questionType.comprehensive_topic.name
+        // newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
+        newQuestionAnwserItem.answer_text = "<p>参考答案：略</p>"
+        newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
+        newQuestionAnwserSheetItem.topic_text = "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>"
 
-      //加入现有的实体当中
-      questionBigItem.items.push(newQuestionItem)
-        
+        //嵌套成为完整的部分
+        newQuestionItem.anwser = newQuestionAnwserItem
+        newQuestionItem.anwserSheet = newQuestionAnwserSheetItem
+
+        //加入现有的实体当中
+        questionBigItem.items.push(newQuestionItem)
+      }
       //更新分数
       this.$options.methods.testPaperUpdateScore.bind(this)()
     },
     /**
      * 为一个试卷的大题目，新增一个小题目（选择题目）
      */
-    addNewTestPaperChoiceQuestionItem (questionBigItem) {
+    addNewTestPaperChoiceQuestionItem (questionBigItem,nums) {
       //console.log("开始调用addNewTestPaperQuestionBigItem")
       //console.log(this.currentCtrlObj)
       //当传值为空时
       if(null == questionBigItem)
       {
         return false
+      }
+      //至少1个
+      if(null == nums || nums <=0)
+      {
+        nums = 1
       }
 
       if(!questionBigItem.items)
@@ -1669,28 +1729,32 @@ export default {
         questionBigItem.items = []
       }
 
-      //深拷贝一个实体类对象
+      for(let i=0;i<nums;i++)
+      {
+        //深拷贝一个实体类对象
 
-      let newQuestionItem = this.$options.methods.copyPojo.bind(this)(this.question);
-      let newQuestionAnwserItem = this.$options.methods.copyPojo.bind(this)(this.anwser);
-      let newQuestionAnwserSheetItem = this.$options.methods.copyPojo.bind(this)(this.anwserSheet);
+        let newQuestionItem = this.$options.methods.copyPojo.bind(this)(this.question);
+        let newQuestionAnwserItem = this.$options.methods.copyPojo.bind(this)(this.anwser);
+        let newQuestionAnwserSheetItem = this.$options.methods.copyPojo.bind(this)(this.anwserSheet);
 
-      //初始化数值
-      newQuestionAnwserSheetItem.isNull = true
-      newQuestionItem.question_type = this.questionType.single_choice.id
-      newQuestionItem.questionTypeName = this.questionType.single_choice.name
-      newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
-      newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
-      newQuestionAnwserSheetItem.topic_text = "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>"
+        //初始化数值
+        newQuestionAnwserSheetItem.isNull = true
+        newQuestionItem.question_type = this.questionType.single_choice.id
+        newQuestionItem.questionTypeName = this.questionType.single_choice.name
+        // newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
+        newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
+        newQuestionAnwserSheetItem.topic_text = "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>"
+        
+        this.$options.methods.addNewTestPaperChoiceQuestionOptionsItem.bind(this)(newQuestionItem)
+
+        //嵌套成为完整的部分
+        newQuestionItem.anwser = newQuestionAnwserItem
+        newQuestionItem.anwserSheet = newQuestionAnwserSheetItem
+
+        //加入现有的实体当中
+        questionBigItem.items.push(newQuestionItem)
+      }
       
-      this.$options.methods.addNewTestPaperChoiceQuestionOptionsItem.bind(this)(newQuestionItem)
-
-      //嵌套成为完整的部分
-      newQuestionItem.anwser = newQuestionAnwserItem
-      newQuestionItem.anwserSheet = newQuestionAnwserSheetItem
-
-      //加入现有的实体当中
-      questionBigItem.items.push(newQuestionItem)
         
       //更新分数
       this.$options.methods.testPaperUpdateScore.bind(this)()
