@@ -111,10 +111,10 @@
                 <div :class="'layout_question_topic_text_'+studentItem.uid+'_'+questionPartItem.uniqueId">
                   <table>
                     <tr>
-                      <td width="70px">
+                      <!-- <td width="70px">
                           <p style="text-align:right;">第{{questionPartItemIndex + 1}}部分、</p>
                           <vue-qr v-if="testPaperObjItem.id" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,null,null,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                      </td>
+                      </td> -->
                       <td>
                         <div v-html="questionPartItem.topic_text">
                         </div>
@@ -128,10 +128,10 @@
                   <div :class="'layout_question_topic_text_'+studentItem.uid+'_'+questionBigItem.uniqueId">
                     <table>
                       <tr>
-                      <td width="70px">
+                      <!-- <td width="70px">
                           <p style="text-align:right;">第{{questionBigItemIndex + 1}}大题、</p>
                           <vue-qr v-if="testPaperObjItem.id" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,null,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                      </td>
+                      </td> -->
                       <td>
                         <div v-html="questionBigItem.topic_text">
                         </div>
@@ -145,13 +145,14 @@
                     <div :class="'layout_question_topic_text_'+studentItem.uid+'_'+questionItem.uniqueId">
                       <table>
                         <tr>
-                        <td width="70px">
-                            <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                            <vue-qr v-if="testPaperObjItem.id" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                        </td>
-                        <td>
+                        
+                        <td width="530px">
                           <div v-html="questionItem.topic_text">
                           </div>
+                        </td>
+                        <td width="70px">
+                            <p style="text-align:right;">第{{questionItem.no}}小题、</p>
+                            <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                         </td>
                         </tr>
                       </table>
@@ -166,13 +167,14 @@
                     <div :class="'layout_question_topic_text_'+studentItem.uid+'_'+questionItem.uniqueId">
                       <table>
                         <tr>
-                          <td width="70px">
-                              <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                              <vue-qr v-if="testPaperObjItem.id" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                          </td>
-                          <td>
+                          
+                          <td width="530px">
                             <div v-html="questionItem.topic_text">
                             </div>
+                          </td>
+                          <td width="70px">
+                              <p style="text-align:right;">第{{questionItem.no}}小题、</p>
+                              <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                           </td>
                         </tr>
                       </table>
