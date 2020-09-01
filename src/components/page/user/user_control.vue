@@ -81,7 +81,7 @@
 					</div>
 				</div>
 			</div> -->
-			<el-table :data="li" height="686" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
+			<el-table :data="li" :height="tableHeight" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
 				<el-table-column prop="id" label="ID" width="180">
 				</el-table-column>
 				<el-table-column prop="name" :label="(typeStatus=='student'?'学生姓名':typeStatus=='teacher'?'教师姓名':typeStatus=='school'?'学校名称':typeStatus=='user'?'专家姓名':'管理员姓名')">
@@ -93,29 +93,29 @@
 				<el-table-column prop="schoolName" label="学校" width="180" v-if="typeStatus=='student'||typeStatus=='teacher'">
 				</el-table-column>
 				//学生年级班级
-				<el-table-column prop="classes.grade" v-if="typeStatus=='student'" label="年级" width="180">
+				<el-table-column  prop="classes.grade" v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
 				</el-table-column>
-				<el-table-column prop="classes.name" v-if="typeStatus=='student'" label="班级">
+				<el-table-column prop="classes.name" v-if="typeStatus=='student'" label="班级" width="180" :key="Math.random()">
 				</el-table-column>
 				//老师年级班级
-				<el-table-column prop="list_cla" label="年级" v-if="typeStatus=='teacher'" width="180">
-					<template slot-scope="scope">
+				<el-table-column v-if="typeStatus=='teacher'" prop="list_cla.grade" label="年级" width="180" :key="Math.random()">
+					<template slot-scope="scope" v-if="typeStatus=='teacher'">
 						<div v-for="(data, i) in scope.row.list_cla" :key="data.i">{{data.grade}}</div>
 					</template>
 				</el-table-column>
-				<el-table-column prop="list_cla" label="班级" v-if="typeStatus=='teacher'" width="180">
-					<template slot-scope="scope">
+				<el-table-column prop="list_cla.name" label="班级" v-if="typeStatus=='teacher'" width="180" :key="Math.random()">
+					<template slot-scope="scope" v-if="typeStatus=='teacher'">
 						<div v-for="(data, i) in scope.row.list_cla" :key="data.i">{{data.name}}</div>
 					</template>
 				</el-table-column>
 				//学校老师数量学生数量
-				<el-table-column prop="student_num" v-if="typeStatus=='school'" label="学生数量">
-				</el-table-column>
 				<el-table-column prop="teacher_num" v-if="typeStatus=='school'" label="老师数量">
+				</el-table-column>
+				<el-table-column prop="student_num" v-if="typeStatus=='school'" label="学生数量">
 				</el-table-column>
 				<el-table-column prop="createDate" label="创建时间">
 				</el-table-column>
-				<el-table-column fixed="right" label="操作">
+				<el-table-column label="操作">
 					<template slot-scope="scope">
 						<div class="table-icon">
 							<el-button class="icon i el-icon-edit-outline ii" :style="{'cursor':'pointer','color':color}" @click="adminChange(scope.row.id)"
@@ -171,6 +171,7 @@
 				color: '',
 				checkAll: false,
 				isIndeterminate: true,
+				tableHeight: 680,
 				array_nav: [], //存储el-chckbox数组
 				array_nav2: [], //存储el-chckbox数组
 				array_nav3: [],
@@ -236,6 +237,7 @@
 					case 'admin':
 						this.selectSql(2);
 						break;
+
 				}
 			},
 			// 新增教师
@@ -357,6 +359,12 @@
 		mounted() {
 			this.color = user().color;
 			this.selectSql(5);
+			//table高度自适应
+			// this.$nextTick(() => {
+			//         this.tableHeight = window.innerHeight - 63;
+			//         //后面100一般是根据你上下导航栏的高度来减掉即可。
+			//     })
+
 		}
 	};
 </script>
@@ -373,7 +381,7 @@
 		margin: 0 20px;
 		color: #999999;
 	}
-
+/* 
 	.box /deep/ .el-table {
 		border-radius: 8px;
 	}
@@ -396,5 +404,5 @@
 
 	.icon+.icon {
 		margin-left: 4px;
-	}
+	} */
 </style>

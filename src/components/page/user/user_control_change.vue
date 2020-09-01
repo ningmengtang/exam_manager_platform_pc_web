@@ -46,7 +46,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student'">
-						<el-select v-model="form.classDefault"  placeholder="请选择" @visible-change="classList">
+						<el-select v-model="form.classDefault" placeholder="请选择" @visible-change="classList">
 							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 							</el-option>
 						</el-select>
@@ -244,12 +244,16 @@
 				this.multipleSelection = val;
 			},
 			// 选择学校事件
-			schoolList(val) {
-				let schoolId = this.form.schoolDefault[0].id;
-				if(schoolId==undefined){
-					let schoolId=val
+			schoolList(val,classId) {
+				let schoolId
+				if (schoolId == undefined) {
+					 schoolId = val
+					 this.form.classDefault = classId;
+				} else {
+					 schoolId = this.form.schoolDefault[0].id;
+					 this.form.classDefault = '';
 				}
-				this.form.classDefault = '';
+				
 				//查询班级
 				ApiClassSelectListByOptions({
 					schoolId: schoolId
@@ -330,7 +334,7 @@
 								})
 								//判断重置密码修改
 								if (this.passwordChange) {
-									
+
 									adminResetPasswordSchool(this.userChangId).then(res => {
 										console.log(res)
 									})
@@ -406,14 +410,15 @@
 						form.stuedntNum = res.data.data.code;
 						form.sex = res.data.data.sex;
 						form.schoolDefault = res.data.data.schoolName
-						// this.schoolList(res.data.data.schoolId)
+						this.schoolList(res.data.data.schoolId,res.data.data.classes.id)
+						console.log(res)
 					})
 					break;
 				case 'teacher':
 					this.form.roleDefault = '教师'
-					
+
 					adminSelectRoleTeacherId(this.userChangId).then(res => {
-						
+
 						form.userName = res.data.data.name;
 						form.sex = res.data.data.sex;
 						form.mobile = res.data.data.mobile
@@ -421,7 +426,13 @@
 						console.log(res)
 						//查询班级
 						let schoolId = res.data.data.schoolId;
-						this.form.classDefault = '';
+						// 遍历老师所在的班级
+						let arr=[];         //存储老师所在班级数组
+						res.data.data.list_cla.map(x=>{
+							arr.push(x.id)
+						})
+						console.log(arr)
+						this.form.classDefault = arr;
 						//查询班级
 						ApiClassSelectListByOptions({
 							schoolId: schoolId
@@ -429,7 +440,7 @@
 							res.data ? (this.form.class = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
 								'查询超时,请刷新重新查询！')
 						})
-						
+
 					})
 					break;
 				case 'school':

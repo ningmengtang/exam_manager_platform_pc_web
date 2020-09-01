@@ -51,9 +51,9 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="管理员角色:" prop="sex" v-if="typeStatus=='admin'">
-						<el-select v-model="form.adminRoleDefault" multiple placeholder="请选择">
-							<el-option v-for="(item,i) in form.adminRole" :key="item.i" :label="item.name" :value="item.id">
+					<el-form-item label="班级:" prop="class" v-if="typeStatus=='teacher'">
+						<el-select v-model="form.classDefault" multiple placeholder="请选择" @visible-change="classList">
+							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -251,7 +251,7 @@
 			},
 			// 选择班级事件
 			classList() {
-				if (this.form.class == '') {
+				if (this.form.class == ' ') {
 					this.$message.error('请先选择学校')
 				}
 			},
@@ -342,6 +342,24 @@
 						form.sex = res.data.data.sex;
 						form.mobile = res.data.data.mobile
 						form.schoolDefault = res.data.data.schoolName
+						//查询班级
+						let schoolId = res.data.data.schoolId;
+						// 遍历老师所在的班级
+						let arr=[];         //存储老师所在班级数组
+						if(res.data.data.hasOwnProperty('list_cla')){
+							res.data.data.list_cla.map(x=>{
+								arr.push(x.id)
+							})
+						}
+						
+						this.form.classDefault = arr;
+						//查询班级
+						ApiClassSelectListByOptions({
+							schoolId: schoolId
+						}).then(res => {
+							res.data ? (this.form.class = res.data.data.list, this.total = res.data.data.total,console.log(res)) : this.$message.error(
+								'查询超时,请刷新重新查询！')
+						})
 					})
 					break;
 			}
