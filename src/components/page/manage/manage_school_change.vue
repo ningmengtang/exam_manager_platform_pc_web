@@ -330,7 +330,7 @@
 						form.userName = res.data.data.name;
 						form.idCard = res.data.data.idCard;
 						form.stuedntNum = res.data.data.code;
-						form.sex = res.data.data.sex;
+						form.sexDefault = res.data.data.sex;
 						form.schoolDefault = res.data.data.schoolName
 					})
 					break;
@@ -339,7 +339,7 @@
 					adminSelectRoleTeacherId(this.userChangId).then(res => {
 						console.log(res);
 						form.userName = res.data.data.name;
-						form.sex = res.data.data.sex;
+						form.sexDefault = res.data.data.sex;
 						form.mobile = res.data.data.mobile
 						form.schoolDefault = res.data.data.schoolName
 						//查询班级

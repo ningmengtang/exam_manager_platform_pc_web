@@ -43,12 +43,14 @@
 					</div>
 				</div>
 			</div> -->
-			<el-table :data="li" :height="680" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
+			<el-table :data="li" :height="680"  style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)" >
 				<el-table-column prop="id" label="ID" width="180">
 				</el-table-column>
 				<el-table-column prop="name" :label="(typeStatus=='student'?'学生姓名':'教师姓名')">
 				</el-table-column>
 				<el-table-column prop="idCard" label="身份证号码" width="180" v-if="typeStatus=='student'">
+				</el-table-column>
+				<el-table-column prop="mobile" label="手机号码" width="180" v-if="typeStatus=='teacher'">
 				</el-table-column>
 				<el-table-column prop="schoolName" label="学校" width="180" v-if="typeStatus=='student'||typeStatus=='teacher'">
 				</el-table-column>
@@ -300,13 +302,13 @@
 						adminDeleteStuednt(id).then(res => {
 							this.$message.success('删除成功')
 						})
-						this.selectSql(5)
+						this.selectSql('student')
 						break;
 					case 'teacher':
 						adminDeleteTeacher(id).then(res => {
 							this.$message.success('删除成功')
 						})
-						this.selectSql(4)
+						this.selectSql('teacher')
 						break;
 				}
 

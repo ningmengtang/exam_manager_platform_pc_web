@@ -83,6 +83,14 @@
 							</el-radio-group>
 						</div>
 					</div>
+					
+				</div>
+				<div class="right">
+					<div class="right-son">
+						<div class="bg-purple">
+							<div class="card-other-i" @click="addPaper" >开始组卷</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -260,7 +268,10 @@ export default {
 			async getTypeList(tagType, index) {
 				await this.TagTypePromise(tagType, index)
 				// return n 
-			}
+			},
+			addPaper(){
+				this.$router.push('manage_user_import')
+			},
 	},
 	mounted() {
 		this.color = user().color;
@@ -314,5 +325,13 @@ export default {
 .group /deep/  .el-radio-button__orig-radio:checked+.el-radio-button__inner{
 	background-color: rgb(43, 187, 97);
 }
+.right .download {
+		background-color: #2bbb61;
+	}
 
+	.status {
+		color: #2bbb61;
+	}
+
+	
 </style>

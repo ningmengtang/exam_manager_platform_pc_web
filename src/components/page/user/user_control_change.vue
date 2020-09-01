@@ -408,7 +408,7 @@
 						form.userName = res.data.data.name;
 						form.idCard = res.data.data.idCard;
 						form.stuedntNum = res.data.data.code;
-						form.sex = res.data.data.sex;
+						form.sexDefault = res.data.data.sex;
 						form.schoolDefault = res.data.data.schoolName
 						this.schoolList(res.data.data.schoolId,res.data.data.classes.id)
 						console.log(res)
@@ -420,7 +420,7 @@
 					adminSelectRoleTeacherId(this.userChangId).then(res => {
 
 						form.userName = res.data.data.name;
-						form.sex = res.data.data.sex;
+						form.sexDefault = res.data.data.sex;
 						form.mobile = res.data.data.mobile
 						form.schoolDefault = res.data.data.schoolName
 						console.log(res)
@@ -448,7 +448,7 @@
 					adminSelectRoleSchoolId(this.userChangId).then(res => {
 						console.log(res);
 						form.userName = res.data.data.name;
-						form.sex = res.data.data.sex;
+						form.sexDefault = res.data.data.sex;
 						form.mobile = res.data.data.mobile
 						form.schoolCode = res.data.data.code
 						form.schoolDefault = res.data.data.schoolName
@@ -459,7 +459,7 @@
 					adminSelectRoleUserId(this.userChangId).then(res => {
 						console.log(res);
 						form.userName = res.data.data.name;
-						form.sex = res.data.data.sex;
+						form.sexDefault = res.data.data.sex;
 						form.mobile = res.data.data.mobilePhone
 						form.schoolCode = res.data.data.code
 						form.schoolDefault = res.data.data.schoolName
@@ -470,7 +470,7 @@
 					adminSelectRoleAdminId(this.userChangId).then(res => {
 						console.log(res);
 						form.userName = res.data.data.name;
-						form.sex = res.data.data.sex;
+						form.sexDefault = res.data.data.sex;
 						form.mobile = res.data.data.mobilePhone;
 						form.sn = res.data.data.sn;
 						//遍历管理员角色id

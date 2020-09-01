@@ -16,6 +16,7 @@
 					</router-link>
 				</el-col>
 				<el-col :span="8">
+					<router-link :to="{path:'manage_student'}">
 					<div class="grid-content bg-purple" :style="style.card_2">
 						<div class="card-left">
 							<div class="card-c">可以下载</div>
@@ -25,8 +26,10 @@
 						</div>
 						<div class="card-right" :style="style.cardRight_2"></div>
 					</div>
+					</router-link>
 				</el-col>
 				<el-col :span="8">
+					<router-link :to="{path:'manage_student'}">
 					<div class="grid-content bg-purple" :style="style.card_3">
 						<div class="card-left">
 							<div class="card-c">下载失效</div>
@@ -36,6 +39,7 @@
 						</div>
 						<div class="card-right" :style="style.cardRight_3"></div>
 					</div>
+					</router-link>
 				</el-col>
 			</el-row>
 		</div>

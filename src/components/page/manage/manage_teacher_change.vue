@@ -341,7 +341,7 @@
 				form.userName = res.data.data.name;
 				form.idCard = res.data.data.idCard;
 				form.stuedntNum = res.data.data.code;
-				form.sex = res.data.data.sex;
+				form.sexDefault = res.data.data.sex;
 				form.schoolDefault = res.data.data.schoolName
 				form.classDefault=res.data.data.classesId
 			})

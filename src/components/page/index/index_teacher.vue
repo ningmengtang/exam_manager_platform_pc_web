@@ -50,7 +50,7 @@
 			</el-row>
 		</div>
 		<div class="papers-box" v-loading="loading">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.putInto == 0?style.pLi:d.putInto == 1?style.pLi5:style.pLi1">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.putInto == 0?style.pLi:d.putInto == 1?style.pLi5:style.pLi1" @click="d.putInto==1?downloadFile(d):(0)">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
