@@ -100,7 +100,7 @@ export function ApiClassUpdate(data){
 	const result =post('/api/classes/update',data)
 	return result;
 }
-//修改班级
+//删除班级
 export function ApiClassDelete(data){
 	const result =get(`/api/classes/delId/${data}`)
 	return result;

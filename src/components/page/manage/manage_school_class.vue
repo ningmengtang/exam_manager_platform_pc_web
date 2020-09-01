@@ -9,6 +9,7 @@
 						<div class="username">
 							<div class="name">{{usserName}}</div>
 							<div class="user-id">ID:{{userId}}</div>
+							<div class="user-id">学校编号:{{code}}</div>
 							<div class="identity" :style="{'background-color':color}">学校负责人</div>
 							<!-- <div class="message">
 								<div class="school">北京师范小学</div>
@@ -90,7 +91,7 @@
 				<el-table :data="classList" height="480" style="width: 100%">
 					<el-table-column prop="id" label="ID" width="180">
 					</el-table-column>
-					<el-table-column prop="schoolName" label="ID" width="180">
+					<el-table-column prop="schoolName" label="学校" width="180">
 					</el-table-column>
 					<el-table-column prop="grade" label="年级" width="180">
 					</el-table-column>
@@ -102,7 +103,7 @@
 						<template slot-scope="scope">
 							<!-- <el-button class="icon el-icon-edit-outline" type="text" size="small" @click="operation('update',{grade:scope.row.grade,sort:scope.row.sort,id:scope.row.id})">
 							</el-button> -->
-							<el-button class="icon el-icon-close" type="text" size="small" @click="operation('delete',scope.row.id);dialogVisible=true">
+							<el-button class="icon el-icon-close" type="text" size="small" v-show="scope.row.student_num==0"  @click="operation('delete',scope.row.id);dialogVisible=true">
 							</el-button>
 						</template>
 					</el-table-column>
@@ -183,6 +184,7 @@
 		ApiClassAdd,
 		ApiClassUpdate,
 		ApiClassDelete,
+		apiSchoolAccountSelectByPrimaryKey
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -206,6 +208,7 @@
 				array_nav4: [],
 				array_nav5: [],
 				array_nav9: [],
+				code:0,
 				page: {
 					pageSize: 8,
 					pageNum: 1
@@ -261,6 +264,7 @@
 			},
 			cancel() {
 				this.dialogTableVisible = false
+				this.dialogVisible=false
 			},
 			submit(type) {
 				if (type == 'add') {
@@ -345,6 +349,7 @@
 							this.$message.error(res.data.message)
 						}
 					});
+					
 					// 查询班级
 					ApiClassSelectListByOptions({
 						schoolId: this.userId,
@@ -375,10 +380,18 @@
 					this.dialogVisible=true;
 					this.delete_id=data
 				}
+			},
+			//查询本学校信息
+			selectSchool(){
+				apiSchoolAccountSelectByPrimaryKey(this.userId).then(res=>{
+					this.code=res.data.data.code
+					console.log(res.data.data)
+				})
 			}
 		},
 		mounted() {
 			this.color = user().color;
+			this.selectSchool();
 			// 查询班级
 			ApiClassSelectListByOptions({
 				schoolId: this.userId,

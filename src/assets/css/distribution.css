@@ -78,3 +78,13 @@
 }
 
 .table-icon {display: flex;justify-content: center;}
+
+	 .box /deep/ .el-table__fixed-right {
+	  height: 100% !important; 
+	  }
+/* 修改表格样式 */
+.box /deep/ .el-table {border-radius: 8px;}
+.box /deep/ .el-table th {text-align: center;background-color: #FFFFFF !important;padding: 20px;}
+.box /deep/ .el-table th.is-leaf {text-align: center;}
+.box /deep/ .el-table td {color: #333;}
+.icon+.icon {margin-left: 4px;}

@@ -9,6 +9,7 @@
 						<div class="username">
 							<div class="name">{{this.personalInfo.name}}</div>
 							<div class="user-id">ID:{{userID}}</div>
+							<div class="user-id">学校编号:{{code}}</div>
 							<div class="identity" :style="{'background-color':color}">学校负责人</div>
 							<div class="message">
 								<div class="school">{{userSchoolName}}</div>
@@ -238,8 +239,8 @@
 		schoolStudentAllow,
 		schoolStudentUnAllow,
 		apiAdminOrderList,
-		SchoolIndex
-
+		SchoolIndex,
+		ApiSchoolAccountSelectByOptions
 	} from '@/api/api.js'
 	
 	export default {
@@ -357,6 +358,7 @@
 				endVal1: 6,
 				endVal2: 454,
 				currentPage: 1,
+				code:0,
 				pageNum:1,
 				pageSize:6,
 				userID:localStorage.getItem('userID'),
@@ -679,11 +681,18 @@
 			
 					}
 				})
+			},
+			// 学校编号
+			selectSchool(){
+				apiSchoolAccountSelectByPrimaryKey(this.userID).then(res=>{
+					this.code=res.data.data.code
+				})
 			}
 		},
 		mounted() {
 			this.color = user().color;
 			this.getStatisticsOrder()
+			this.selectSchool();
              //试卷
              SchoolIndex({
              	"pageSize":this.pageSize,

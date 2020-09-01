@@ -12,7 +12,8 @@
 							<div class="identity">学生</div>
 							<div class="message">
 								<div class="school">{{userSchoolName}}</div>
-								<div class="grade">{{userGrade}}</div>
+								<div class="grade">年级：{{userGrade}}</div>
+								<div class="grade">班级：{{classes}}</div>
 							</div>
 						</div>
 					</div>
@@ -395,6 +396,7 @@
                 currentPage:0,
 				download: 0,
 				disabled: 0,
+				classes:'',
 
 				style: {
 					card_2: 'background-color: #41dde3;',
@@ -835,7 +837,7 @@
 					var resResultData = res.data.data
 
 					console.log(resResultData)
-
+                    this.classes=resResultData.classes.name
 					this.personalInfo.id = resResultData.id
 					this.personalInfo.email = resResultData.email
 					this.personalInfo.mobile = resResultData.tel

@@ -1,9 +1,9 @@
-.box{color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;height: 100%;padding: 36px;display: flex;background-image: url(../img/login.png);background-size: cover;border-radius: 10px;justify-content: center;}
+.box{color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;height: 100%;padding: 36px;display: flex;background-image: url(../img/login.png);background-size: cover;border-radius: 10px;justify-content: center;align-items: center;}
 
-.left-box{width: 33%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;align-items: center;position: relative;}
+.left-box{background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;align-items: center;position: relative;height: min-content;}
 .left-box .user-img{width: 90px;height: 90px;border-radius: 50%;}
 .left-box .card-top{display: flex;align-items: center;justify-content: center;flex-direction: column;}
-.left-box .user-top{width: 100%;margin-top: 30px;}
+.left-box .user-top{width: 100%;margin-top: 16px;}
 .left-box .username{}
 .left-box .name{font-size: 20px;}
 .left-box .user-id{font-size: 18px;color: rgba(128, 128, 128, 1);margin-top: 12px;}
@@ -12,10 +12,10 @@
 .left-box .school{font-size: 20px;font-weight: bold;}
 .left-box .message{margin-left: auto;font-size: 20px;color: #333333;}
 .left-box .grade{margin-top: 12px;color: #999999;font-size: 20px;}
-.left-box .form{margin: 58px 0;color: #FFFFFF;}
+.left-box .form{margin-top: 28px;color: #FFFFFF;margin-bottom: 68px;}
 .left-box .buttom-true{color: #FFFFFF;}
 /* .left-box .buttom-false{} */
-.title{font-size: 20px;font-weight: bold;color: rgb(43, 187, 97);margin-top: 100px;}
+.title{font-size: 20px;font-weight: bold;color: rgb(43, 187, 97);margin-top: 20px;}
 
 .left-box .change-box{margin-top: 90px;display: flex;}
 .left-box .li{padding: 15px 14px;display: flex;align-items: center;flex-direction: column;justify-content: space-around;width: 100%;}
@@ -26,10 +26,10 @@
 
 /* 中间 */
 .middle-box{width: 33%;padding: 34px;margin-left: 20px;background-color: #FFFFFF;position: relative;}
-.message-top {margin-bottom: 24px;border-left: 8px solid #19ADFB;display: flex;align-items: center;padding-left: 10px;font-weight: bold;font-size: 20px;padding-top: 2px;padding-bottom: 2px;}
-.message-box{margin:26px 0;}
+.message-top {margin-bottom: 10px;border-left: 8px solid #19ADFB;display: flex;align-items: center;padding-left: 10px;font-weight: bold;font-size: 20px;padding-top: 2px;padding-bottom: 2px;}
+.message-box{margin:10px 0;}
  .i{margin-top: 8px;}
-.bottom-box{display: flex;justify-content: center;color: #FFFFFF;position: absolute;bottom: 24px;width: calc(100% - 32px);left: 50%;right: 50%;margin: auto;transform: translate(-50%, -50%); }
+.bottom-box{display: flex;justify-content: center;color: #FFFFFF;position: absolute;bottom: 10px;width: calc(100% - 32px);left: 50%;right: 50%;margin: auto;transform: translate(-50%, -50%); }
  .bottom{color: #FFFFFF;background-color: #2BBB61;}
  .bottom-i{color: #FFFFFF;background-color: #2BBB61;}
  .bottom-i.ii{background-color: #FFFFFF;color: #333333;}
