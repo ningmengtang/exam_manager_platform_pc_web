@@ -76,3 +76,5 @@
 .box /deep/  .el-radio-button__orig-radio:checked+.el-radio-button__inner{
     background-color:rgb(43, 187, 97);
 }
+
+.table-icon {display: flex;justify-content: center;}

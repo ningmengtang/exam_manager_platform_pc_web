@@ -1,5 +1,5 @@
 <template>
-	<div class="header" >
+	<div class="header">
 		<!-- 折叠按钮 -->
 		<!-- <div class="collapse-btn" @click="collapseChage">
             <i v-if="!collapse" class="el-icon-s-fold"></i>
@@ -23,14 +23,14 @@
 
 				<!-- 用户名下拉菜单 -->
 				<!-- <el-dropdown class="user-name" trigger="click" @command="handleCommand"> -->
-					<span class="el-dropdown-link">
-						<!-- <i class="el-icon-caret-bottom"></i> -->
-						<div class="user-message">
-							<div class="username">{{ username }}</div>
-							<div class="user-school">{{school}} {{userType}}</div>
-						</div>
-					</span>
-					<!-- <el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu>
+				<span class="el-dropdown-link">
+					<!-- <i class="el-icon-caret-bottom"></i> -->
+					<div class="user-message">
+						<div class="username">{{ username }}</div>
+						<div class="user-school">{{school}} {{userType}}</div>
+					</div>
+				</span>
+				<!-- <el-dropdown-menu slot="dropdown"><el-dropdown-item divided command="loginout">退出登录</el-dropdown-item></el-dropdown-menu>
 				</el-dropdown> -->
 				<!-- 用户头像 -->
 				<div class="user-avator"><img src="../../assets/img/img.jpg" /></div>
@@ -42,192 +42,220 @@
 	</div>
 </template>
 <script>
-import bus from '../common/bus';
-import { userLoginOut } from '@/api/api.js';
-import user from '../common/user';
-import axios from 'axios';
-export default {
-	data() {
-		return {
-			collapse: false,
-			fullscreen: false,
-			username: '',
-			message: 2,
-			bg_color: '',
-			getColor:'',
-			userType:'',
-			school:'',
-		};
-	},
-	methods: {
-		// 用户名下拉菜单选择事件
-		handleCommand() {
+	import bus from '../common/bus';
+	import {
+		userLoginOut
+	} from '@/api/api.js';
+	import user from '../common/user';
+	import axios from 'axios';
+	export default {
+		data() {
+			return {
+				collapse: false,
+				fullscreen: false,
+				username: '',
+				message: 2,
+				bg_color: '',
+				getColor: '',
+				userType: '',
+				school: '',
+			};
+		},
+		methods: {
+			// 用户名下拉菜单选择事件
+			handleCommand() {
 
-			var token = localStorage.getItem('loginToken');
-			userLoginOut({}).then(res=>{
-				console.log(res.data)
-				if(res.data.result){
-					localStorage.clear();
-					this.$message.success('登出成功！')
-					this.$router.push('/login');
-				}else{
-					localStorage.clear();
-					// this.$message.error('登出失败！');
-					this.$router.push('/login');
+				var token = localStorage.getItem('loginToken');
+				userLoginOut({}).then(res => {
+					console.log(res.data)
+					if (res.data.result) {
+						this.setCookie('HistoryUserType',this.loginUserType)
+						localStorage.clear();
+						this.$message.success('登出成功！')
+						this.$router.push('/login');
+					} else {
+						localStorage.clear();
+						// this.$message.error('登出失败！');
+						this.$router.push('/login');
+					}
+				})
+			},
+			// 侧边栏折叠
+			collapseChage() {
+				this.collapse = !this.collapse;
+				bus.$emit('collapse', this.collapse);
+			},
+			// 全屏事件
+			handleFullScreen() {
+				let element = document.documentElement;
+				if (this.fullscreen) {
+					if (document.exitFullscreen) {
+						document.exitFullscreen();
+					} else if (document.webkitCancelFullScreen) {
+						document.webkitCancelFullScreen();
+					} else if (document.mozCancelFullScreen) {
+						document.mozCancelFullScreen();
+					} else if (document.msExitFullscreen) {
+						document.msExitFullscreen();
+					}
+				} else {
+					if (element.requestFullscreen) {
+						element.requestFullscreen();
+					} else if (element.webkitRequestFullScreen) {
+						element.webkitRequestFullScreen();
+					} else if (element.mozRequestFullScreen) {
+						element.mozRequestFullScreen();
+					} else if (element.msRequestFullscreen) {
+						// IE11
+						element.msRequestFullscreen();
+					}
 				}
-			})
+				this.fullscreen = !this.fullscreen;
+			},
+			//设置cookie时间
+			setCookie(name, value) {
+				if (value) {
+					var Days = 1;
+					var exp = new Date(); 
+					exp.setTime(exp.getTime() + Days*24*60*60*1000);
+					document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+				}
+			},
+			// getColor(){
+
+			// }
 		},
-		// 侧边栏折叠
-		collapseChage() {
-			this.collapse = !this.collapse;
-			bus.$emit('collapse', this.collapse);
-		},
-		// 全屏事件
-		handleFullScreen() {
-			let element = document.documentElement;
-			if (this.fullscreen) {
-				if (document.exitFullscreen) {
-					document.exitFullscreen();
-				} else if (document.webkitCancelFullScreen) {
-					document.webkitCancelFullScreen();
-				} else if (document.mozCancelFullScreen) {
-					document.mozCancelFullScreen();
-				} else if (document.msExitFullscreen) {
-					document.msExitFullscreen();
-				}
-			} else {
-				if (element.requestFullscreen) {
-					element.requestFullscreen();
-				} else if (element.webkitRequestFullScreen) {
-					element.webkitRequestFullScreen();
-				} else if (element.mozRequestFullScreen) {
-					element.mozRequestFullScreen();
-				} else if (element.msRequestFullscreen) {
-					// IE11
-					element.msRequestFullscreen();
-				}
+		mounted() {
+			this.username = localStorage.getItem('userName');
+			this.loginUserType = localStorage.getItem('loginUserType')
+			if (document.body.clientWidth < 1500) {
+				this.collapseChage();
 			}
-			this.fullscreen = !this.fullscreen;
-		},
-		// getColor(){
-
-		// }
-	},
-	mounted() {
-		this.username = localStorage.getItem('userName');
-		this.loginUserType = localStorage.getItem('loginUserType')
-		if (document.body.clientWidth < 1500) {
-			this.collapseChage();
+			if (this.loginUserType == 'student') {
+				this.getColor = 'rgb(25, 174, 251)'
+			}
+			this.bg_color = user().color;
+			this.userType = user().type;
+			this.school = user().school;
 		}
-		if(this.loginUserType == 'student'){
-			this.getColor ='rgb(25, 174, 251)'
-		}
-		this.bg_color = user().color;
-		this.userType=user().type;
-		this.school=user().school;
-	}
-};
+	};
 </script>
 <style scoped>
-.loginout{
-	margin-left: 20px;
+	.loginout {
+		margin-left: 20px;
 
-	/* border-color: rgb(43, 187, 97);
+		/* border-color: rgb(43, 187, 97);
 	color: rgb(43, 187, 97); */
-}
-.header {
-	position: relative;
-	box-sizing: border-box;
-	width: 100%;
-	height: 70px;
-	font-size: 22px;
-	color: #fff;
-	background-color: #fff;
-}
-.collapse-btn {
-	float: left;
-	padding: 0 21px;
-	cursor: pointer;
-	line-height: 70px;
-}
-.header .logo {
-	float: left;
-	width: 249px;
-	line-height: 70px;
-	text-align: center;
-}
-.header-right {
-	float: right;
-	padding-right: 50px;
-}
-.header-user-con {
-	display: flex;
-	height: 70px;
-	align-items: center;
-}
-.btn-fullscreen {
-	transform: rotate(45deg);
-	margin-right: 5px;
-	font-size: 24px;
-}
-.btn-bell,
-.btn-fullscreen {
-	position: relative;
-	width: 30px;
-	height: 30px;
-	text-align: center;
-	border-radius: 15px;
-	cursor: pointer;
-	/* color: #409eff; */
-}
-.btn-bell-badge {
-	position: absolute;
-	right: 0;
-	top: -2px;
-	width: 8px;
-	height: 8px;
-	border-radius: 4px;
-	background: #f56c6c;
-	color: #fff;
-}
-.btn-bell .el-icon-bell {
-	color: #fff;
-}
-.user-message {
-	text-align: right;
-	margin-left: 8px;
-}
-.username {
-	font-size: 18px;
-	color: #333333;
-}
-.user-school {
-	font-size: 14px;
-	color: rgba(166, 166, 166,1);
-}
+	}
 
-.user-name {
-	margin-left: 10px;
-}
-.user-avator {
-	margin-left: 20px;
-}
-.user-avator img {
-	display: block;
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-}
-.el-dropdown-link {
-/* 	color: #fff; */
-	cursor: pointer;
-}
-.el-dropdown-menu__item {
-	text-align: center;
-}
+	.header {
+		position: relative;
+		box-sizing: border-box;
+		width: 100%;
+		height: 70px;
+		font-size: 22px;
+		color: #fff;
+		background-color: #fff;
+	}
+
+	.collapse-btn {
+		float: left;
+		padding: 0 21px;
+		cursor: pointer;
+		line-height: 70px;
+	}
+
+	.header .logo {
+		float: left;
+		width: 249px;
+		line-height: 70px;
+		text-align: center;
+	}
+
+	.header-right {
+		float: right;
+		padding-right: 50px;
+	}
+
+	.header-user-con {
+		display: flex;
+		height: 70px;
+		align-items: center;
+	}
+
+	.btn-fullscreen {
+		transform: rotate(45deg);
+		margin-right: 5px;
+		font-size: 24px;
+	}
+
+	.btn-bell,
+	.btn-fullscreen {
+		position: relative;
+		width: 30px;
+		height: 30px;
+		text-align: center;
+		border-radius: 15px;
+		cursor: pointer;
+		/* color: #409eff; */
+	}
+
+	.btn-bell-badge {
+		position: absolute;
+		right: 0;
+		top: -2px;
+		width: 8px;
+		height: 8px;
+		border-radius: 4px;
+		background: #f56c6c;
+		color: #fff;
+	}
+
+	.btn-bell .el-icon-bell {
+		color: #fff;
+	}
+
+	.user-message {
+		text-align: right;
+		margin-left: 8px;
+	}
+
+	.username {
+		font-size: 18px;
+		color: #333333;
+	}
+
+	.user-school {
+		font-size: 14px;
+		color: rgba(166, 166, 166, 1);
+	}
+
+	.user-name {
+		margin-left: 10px;
+	}
+
+	.user-avator {
+		margin-left: 20px;
+	}
+
+	.user-avator img {
+		display: block;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+	}
+
+	.el-dropdown-link {
+		/* 	color: #fff; */
+		cursor: pointer;
+	}
+
+	.el-dropdown-menu__item {
+		text-align: center;
+	}
 </style>
 <style>
-.header-user-con .el-button:hover{
-	background-color: #fff;
-}
+	.header-user-con .el-button:hover {
+		background-color: #fff;
+	}
 </style>

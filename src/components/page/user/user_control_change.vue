@@ -45,7 +45,13 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student'||typeStatus=='teacher'">
+					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student'">
+						<el-select v-model="form.classDefault"  placeholder="请选择" @visible-change="classList">
+							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="班级:" prop="class" v-if="typeStatus=='teacher'">
 						<el-select v-model="form.classDefault" multiple placeholder="请选择" @visible-change="classList">
 							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 							</el-option>
@@ -240,7 +246,9 @@
 			// 选择学校事件
 			schoolList(val) {
 				let schoolId = this.form.schoolDefault[0].id;
-				console.log(schoolId)
+				if(schoolId==undefined){
+					let schoolId=val
+				}
 				this.form.classDefault = '';
 				//查询班级
 				ApiClassSelectListByOptions({
@@ -252,7 +260,7 @@
 			},
 			// 选择班级事件
 			classList() {
-				if (this.form.class == '') {
+				if (this.form.class == ' ') {
 					this.$message.error('请先选择学校')
 				}
 			},
@@ -398,6 +406,7 @@
 						form.stuedntNum = res.data.data.code;
 						form.sex = res.data.data.sex;
 						form.schoolDefault = res.data.data.schoolName
+						// this.schoolList(res.data.data.schoolId)
 					})
 					break;
 				case 'teacher':

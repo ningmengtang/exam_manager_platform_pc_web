@@ -3,6 +3,7 @@
 		<div class="message-row">
 			<el-row :gutter="20" type="flex">
 				<el-col :span="8">
+					<router-link :to="{path:'manage_student'}">
 					<div class="grid-content bg-purple">
 						<div class="card-left">
 							<div class="card-c">全部试卷</div>
@@ -12,6 +13,7 @@
 						</div>
 						<div class="card-right"></div>
 					</div>
+					</router-link>
 				</el-col>
 				<el-col :span="8">
 					<div class="grid-content bg-purple" :style="style.card_2">

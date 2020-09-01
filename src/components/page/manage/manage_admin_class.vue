@@ -90,8 +90,6 @@
 				<el-table :data="classList" height="480" style="width: 100%">
 					<el-table-column prop="id" label="ID" width="180">
 					</el-table-column>
-					<el-table-column prop="schoolName" label="ID" width="180">
-					</el-table-column>
 					<el-table-column prop="grade" label="年级" width="180">
 					</el-table-column>
 					<el-table-column prop="name" label="班级">
