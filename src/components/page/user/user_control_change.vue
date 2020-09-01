@@ -246,14 +246,22 @@
 			// 选择学校事件
 			schoolList(val,classId) {
 				let schoolId
-				if (schoolId == undefined) {
-					 schoolId = val
-					 this.form.classDefault = classId;
-				} else {
-					 schoolId = this.form.schoolDefault[0].id;
-					 this.form.classDefault = '';
+				// if (schoolId == undefined) {
+				// 	 schoolId = val
+				// 	 // this.form.classDefault = classId;
+					
+				// } else {
+				// 	 schoolId = this.form.schoolDefault[0].id;
+				// 	 this.form.classDefault = '';
+				// }
+					
+				if( this.form.schoolDefault[0].id==undefined){
+						 schoolId = val
+						  this.form.classDefault = classId;
+				}else{
+					schoolId = this.form.schoolDefault[0].id;
+						 this.form.classDefault = '';
 				}
-				
 				//查询班级
 				ApiClassSelectListByOptions({
 					schoolId: schoolId
@@ -411,7 +419,6 @@
 						form.sexDefault = res.data.data.sex;
 						form.schoolDefault = res.data.data.schoolName
 						this.schoolList(res.data.data.schoolId,res.data.data.classes.id)
-						console.log(res)
 					})
 					break;
 				case 'teacher':
@@ -428,11 +435,16 @@
 						let schoolId = res.data.data.schoolId;
 						// 遍历老师所在的班级
 						let arr=[];         //存储老师所在班级数组
-						res.data.data.list_cla.map(x=>{
-							arr.push(x.id)
-						})
+						if(res.data.data.hasOwnProperty('list_cla')){
+							res.data.data.list_cla.map(x=>{
+								arr.push(x.id)
+							})
+						}
+		
+						
 						console.log(arr)
 						this.form.classDefault = arr;
+						
 						//查询班级
 						ApiClassSelectListByOptions({
 							schoolId: schoolId

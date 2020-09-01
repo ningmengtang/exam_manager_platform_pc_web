@@ -61,11 +61,11 @@
 					<div class="p-time">
 						结束下载时间：{{d.overTime}}
 					</div>
-					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0?'可以下载':'不允许下载'}}</div>
-					<i  class="p-status-icon el-icon-download" v-if="d.status == 0">
+					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0 && d.putInto == 1?'可以下载':'不允许下载'}}</div>
+					<i  class="p-status-icon el-icon-download" v-if="d.status == 0 && d.putInto == 1">
 						
 					</i>
-					<i  class="p-status-icon el-icon-close"  v-if="d.status == 1">
+					<i  class="p-status-icon   el-icon-close " style="color: rgb(242, 94, 67);"   v-if="d.status == 1 || d.putInto == 0"  >
 						
 					</i>
 

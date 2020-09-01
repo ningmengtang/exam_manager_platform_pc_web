@@ -39,14 +39,14 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<!-- <el-form-item label="所在学校:" prop="school" v-if="typeStatus!='school'&&typeStatus!='user'&& typeStatus!='admin'">
+					<!-- <el-form-item label="所在学校:" prop="school"  >
 						<el-select v-model="form.schoolDefault" placeholder="请选择" @change="schoolList">
 							<el-option v-for="(item,i) in form.school" :key="item.i" :label="item.name" :value="[{'id':item.id,'sn':item.sn,'schoolName':item.name}]">
 							</el-option>
 						</el-select>
 					</el-form-item> -->
-					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student1'">
-						<el-select v-model="form.classDefault" multiple placeholder="请选择" @visible-change="classList">
+					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student'">
+						<el-select v-model="form.classDefault"  placeholder="请选择" @visible-change="classList">
 							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 							</el-option>
 						</el-select>
@@ -271,8 +271,6 @@
 									idCard: form.idCard,
 									sex: form.sexDefault,
 									schoolName: form.schoolDefault[0].schoolName,
-									schoolId: form.schoolDefault[0].id,
-									schoolSn: form.schoolDefault[0].sn,
 									classesId: form.classDefault,
 									code: form.stuedntNum
 								}).then(res => {
@@ -292,9 +290,8 @@
 									id: this.userChangId,
 									name: form.userName,
 									sex: form.sexDefault,
-									schoolName: form.schoolDefault[0].schoolName,
-									schoolId: form.schoolDefault[0].id,
-									schoolSn: form.schoolDefault[0].sn,
+									schoolId: localStorage.getItem('userID'),
+									classesId:this.form.classDefault,
 								}).then(res => {
 									console.log(res)
 									this.$message.success('修改成功');
@@ -318,6 +315,15 @@
 			black() {
 				this.$router.push('manage_school_subordinate')
 			},
+			classes(id){
+				//查询班级
+				ApiClassSelectListByOptions({
+					schoolId: id
+				}).then(res => {
+					res.data ? (this.form.class = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
+						'查询超时,请刷新重新查询！')
+				})
+			}
 
 
 		},
@@ -332,18 +338,20 @@
 						form.stuedntNum = res.data.data.code;
 						form.sexDefault = res.data.data.sex;
 						form.schoolDefault = res.data.data.schoolName
+						form.classDefault=res.data.data.classesId
+			             this.classes(res.data.data.schoolId)
 					})
 					break;
 				case 'teacher':
 					this.form.roleDefault = '教师'
+					
 					adminSelectRoleTeacherId(this.userChangId).then(res => {
-						console.log(res);
 						form.userName = res.data.data.name;
 						form.sexDefault = res.data.data.sex;
 						form.mobile = res.data.data.mobile
-						form.schoolDefault = res.data.data.schoolName
 						//查询班级
 						let schoolId = res.data.data.schoolId;
+						this.classes(schoolId);
 						// 遍历老师所在的班级
 						let arr=[];         //存储老师所在班级数组
 						if(res.data.data.hasOwnProperty('list_cla')){
@@ -351,6 +359,7 @@
 								arr.push(x.id)
 							})
 						}
+						
 						
 						this.form.classDefault = arr;
 						//查询班级
