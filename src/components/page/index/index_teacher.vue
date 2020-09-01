@@ -63,9 +63,11 @@
 					<div class="p-time">{{d.createDate}}</div>
 					<div class="p-particular">{{d.examExplain}}</div>
 					<div class="p-status">{{d.putInto == 0?'入库失败':d.putInto == 1?'入库完成':'正在入库'}}</div>
+					<el-tooltip class="item" effect="dark" content="预览试卷" placement="top">
 					<i @click="downloadFile(d)" class="p-status-icon el-icon-download" v-if="d.putInto == 1">
 						
 					</i>
+					</el-tooltip>
 				</div>
 			</div>
 		</div>
@@ -208,6 +210,8 @@
 					          }
 					        ]
 					      }
+
+				//bus.$emit("download_test_paper",['test_paper_maker_for_task',createTestPaperInfoObj])
 				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
 			}
 		},
