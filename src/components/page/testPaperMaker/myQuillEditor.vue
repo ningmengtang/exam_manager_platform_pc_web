@@ -31,10 +31,14 @@
 </template>
 <script>
 import { quillEditor } from 'vue-quill-editor'
+import * as Quill from 'quill'  //引入编辑器
+import { ImageDrop } from 'quill-image-drop-module'
+Quill.register('modules/imageDrop', ImageDrop)
 export default {
     name:"myQuillEditor",
     components: {
-        quillEditor
+        quillEditor,
+        ImageDrop
     },
     props:[
         'data',
@@ -45,6 +49,7 @@ export default {
             content: `<p></p>`, // 富文本编辑器默认内容
             editorOption: { //  富文本编辑器配置
           modules: {
+              imageDrop: true,
               syntax: {
                   highlight: text => hljs.highlightAuto(text).value
               },
@@ -52,19 +57,19 @@ export default {
               toolbar: {
                 container:[
                   ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-                  ['blockquote', 'code-block'],
+                //   ['blockquote', 'code-block'],
 
-                  [{'header': 1}, {'header': 2}],               // custom button values
-                  [{'list': 'ordered'}, {'list': 'bullet'}],
-                  [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
-                  [{'direction': 'rtl'}],                         // text direction
+                //   [{'header': 1}, {'header': 2}],               // custom button values
+                //   [{'list': 'ordered'}, {'list': 'bullet'}],
+                //   [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
+                //   [{'direction': 'rtl'}],                         // text direction
 
-                  [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+                //   [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
 
-                  [{'color': []}, {'background': []}],          // dropdown with defaults from theme
-                  [{'font': []}],
-                  [{'align': []}],
-                  ['image','clean'],//去除video即可 暂时去掉公式, 'formula'
+                //   [{'color': []}, {'background': []}],          // dropdown with defaults from theme
+                //   [{'font': []}],
+                //   [{'align': []}],
+                //   ['image','clean'],//去除video即可 暂时去掉公式, 'formula'
                 ],
                 handlers: {
                     'image': function (value) {
