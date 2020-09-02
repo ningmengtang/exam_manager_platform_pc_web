@@ -171,6 +171,11 @@ export function apiCommonExamSelectUpdate(data) {
 	const result = post('/api/common/exam/update', data)
 	return result;
 }
+// 试卷修改
+export function CommonExamUpdateTime(data){
+	const result =post('/api/common/exam/updateTime',data)
+	return result;
+}
 
 //新增试卷
 export function apiCommonExamAdd(data) {
