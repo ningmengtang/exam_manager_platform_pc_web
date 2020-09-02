@@ -21,14 +21,14 @@ export function get(url, params) {
             if (res.data.stateCode == 300033) {
                 // console.log(res)
 
-                // Message({
-                //     message: '账号已登录，请重新登录！',
-                //     type: 'warning'
-                // });
-                // setTimeout(() => {
-                //     localStorage.clear()
-                //     window.location.href = '/login'
-                // }, 500)
+                Message({
+                    message: '账号已登录，请重新登录！',
+                    type: 'warning'
+                });
+                setTimeout(() => {
+                    localStorage.clear()
+                    window.location.href = '/login'
+                }, 500)
 
             }
             resolve(res)
@@ -80,14 +80,14 @@ export function post(url, data) {
             }
         }).then(res => {
             if (res.data.stateCode == 300033) {
-                // Message({
-                //     message: '账号已登录，请重新登录！',
-                //     type: 'warning'
-                // });
-                // setTimeout(() => {
-                //     localStorage.clear()
-                //     window.location.href = '/login'
-                // }, 500)
+                Message({
+                    message: '账号已登录，请重新登录！',
+                    type: 'warning'
+                });
+                setTimeout(() => {
+                    localStorage.clear()
+                    window.location.href = '/login'
+                }, 500)
 
 
             }
