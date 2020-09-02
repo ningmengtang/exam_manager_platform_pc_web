@@ -530,7 +530,7 @@ import html2canvas from "html2canvas"
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import {
-
+  apiCommonExamSeleElementTestById,
 	apiCommonExamSelectById
 
 } from '@/api/api.js'
@@ -1213,7 +1213,7 @@ export default {
         else{
           //实际下载
           console.log("进入下载模式")
-          apiCommonExamSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
+          apiCommonExamSeleElementTestById(this.createTestPaperInfoObj.testPaperId).then(res => {
             if(!res.data.result)
             {
               this.$message.error('获取试卷失败，无法下载！')

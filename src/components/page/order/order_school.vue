@@ -114,7 +114,8 @@
 					id:2,
 					name:"已取消"
 				}
-				]
+				],
+				userId:localStorage.getItem('userID')
 			};
 		},
 		methods: {
@@ -153,8 +154,8 @@
 						apiAdminOrderList({
 							"pageNum":this.pageNum,
 							"pageSize":this.pageSize,
-							"operator_id": this.operatorId,
-							"operator_type":this.operatorType
+							"school_id": this.userId,
+							// "operator_type":this.operatorType
 						}).then(res=>{
 							this.loading  = false
 							this.orderList = res.data.data.list
@@ -165,8 +166,9 @@
 						apiAdminOrderList({
 							"pageNum":this.pageNum,
 							"pageSize":this.pageSize,
-							"operator_id": this.operatorId,
-							"operator_type":this.operatorType,
+							"school_id": this.userId,
+							// "operator_id": this.operatorId,
+							// "operator_type":this.operatorType,
 							"status":this.orderStatus
 						}).then(res=>{
 							this.loading  = false
@@ -180,8 +182,9 @@
 						AdminOrderEndOfTermList({
 							"pageNum":this.pageNum,
 							"pageSize":this.pageSize,
-							"operator_id": this.operatorId,
-							"operator_type":this.operatorType
+							"school_id": this.userId,
+							// "operator_id": this.operatorId,
+							// "operator_type":this.operatorType
 						}).then(res=>{
 							this.loading  = false
 							this.orderList = res.data.data.list
@@ -192,8 +195,9 @@
 						AdminOrderEndOfTermList({
 							"pageNum":this.pageNum,
 							"pageSize":this.pageSize,
-							"operator_id": this.operatorId,
-							"operator_type":this.operatorType,
+							"school_id": this.userId,
+							// "operator_id": this.operatorId,
+							// "operator_type":this.operatorType,
 							"status":this.orderStatus
 						}).then(res=>{
 							this.loading  = false
@@ -288,8 +292,9 @@
 								apiAdminOrderList({
 									"pageNum":this.pageNum,
 									"pageSize":this.pageSize,
-									"operator_id": this.operatorId,
-									"operator_type":this.operatorType
+									"school_id": this.userId
+									// "operator_id": this.operatorId,
+									// "operator_type":this.operatorType
 								}).then(res=>{
 									this.orderList = res.data.data.list
 									this.total = res.data.data.total
@@ -358,8 +363,9 @@
 			apiAdminOrderList({
 				"pageNum":this.pageNum,
 				"pageSize":this.pageSize,
-				"operator_id": this.operatorId,
-				"operator_type":this.operatorType
+				"school_id": this.userId
+				// "operator_id": this.operatorId,
+				// "operator_type":this.operatorType
 			}).then(res=>{
 				this.orderList = res.data.data.list
 				this.total = res.data.data.total

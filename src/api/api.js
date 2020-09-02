@@ -249,7 +249,11 @@ export function apiCommonExamSelectById(data) {
 	const result = get('/api/common/exam/selectById/' + data+"?d="+new Date()* 1)
 	return result;
 }
-
+//通过id查看试卷element
+export function apiCommonExamSeleElementTestById(data) {
+	const result = get('/api/common/exam/selectElementTestById/' + data+"?d="+new Date()* 1)
+	return result;
+}
 //更新试卷
 export function apiAdminExamUpdate(data) {
 	const result = post("/api/common/exam/update", data)

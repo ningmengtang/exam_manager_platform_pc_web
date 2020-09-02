@@ -69,7 +69,8 @@
 <script>
 import {
     apiCommonExamSelectList,
-    apiCommonExamSelectUpdate
+    apiCommonExamSelectUpdate,
+    apicommonExamGetFile
 } from '@/api/api.js'
 export default {
     data(){

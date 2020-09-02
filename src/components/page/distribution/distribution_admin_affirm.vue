@@ -108,7 +108,7 @@
 				>
 				<el-table-column
 					type="selection"
-					width="55">
+					width="120">
 				</el-table-column>
 				<el-table-column
 					type="index"
@@ -350,42 +350,30 @@
 						this.getupdateList(this.ParperType[a].id)
 					}
 					this.$message.success('操作成功')
+
 					this.dialogTableVisible = false
 					this.innerVisible = false
-					// apiCommonExamUpdateTime({
-					// 	"id":this.Itemid,
-					// 	"startTime":this.startTime,
-					// 	"overTime":this.overTime
-					// }).then(res=>{
-					// 	this.$message.success('操作成功')
-					// 	this.dialogTableVisible = false
-					// 	this.innerVisible = false
-					// })
-					
-
-
-					
-					// if(this.orderType == 1){
-					// 	apiAdminOrderItemList({
-					// 		"order_id":adminAffirmData.id
-					// 	}).then(res=>{
-					// 		if(res.data.data.list){
-					// 			this.papers = res.data.data.list
-					// 		}else{
-					// 			this.$message.error('查询不到订单项')
-					// 		}
-					// 	})
-					// }else if(this.orderType == 2){
-					// 	AdminOrderEndOfTermItemList({
-					// 		"order_id":adminAffirmData.id
-					// 	}).then(res=>{
-					// 		if(res.data.data.list){
-					// 			this.papers = res.data.data.list
-					// 		}else{
-					// 			this.$message.error('查询不到订单项')
-					// 		}
-					// 	})
-					// }
+					if(this.orderType == 1){
+						apiAdminOrderItemList({
+							"order_id":this.adminAffirmData.id
+						}).then(res=>{
+							if(res.data.data.list){
+								this.papers = res.data.data.list
+							}else{
+								this.$message.error('查询不到订单项')
+							}
+						})
+					}else if(this.orderType == 2){
+						AdminOrderEndOfTermItemList({
+							"order_id":this.adminAffirmData.id
+						}).then(res=>{
+							if(res.data.data.list){
+								this.papers = res.data.data.list
+							}else{
+								this.$message.error('查询不到订单项')
+							}
+						})
+					}
 				}else{
 					this.$message.error('请填写相应数据')
 				}
@@ -497,7 +485,7 @@
 							if(res.data.result){
 								this.$message.success('上传成功')
 								AdminOrderEndOfTermItemList({
-									"order_id":adminAffirmData.id
+									"order_id":this.adminAffirmData.id
 								}).then(res=>{
 									if(res.data.data.list){
 										this.papers = res.data.data.list
