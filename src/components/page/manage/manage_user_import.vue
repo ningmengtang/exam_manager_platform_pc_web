@@ -2,17 +2,20 @@
 	<div class="box">
 		<div class="left">
 			<div class="l-box-1">
+				<div class="l-title">请选择试卷类型</div>
+				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px;">
+					<el-radio label="图片试卷">图片试卷</el-radio>
+					<el-radio label="在线组卷">在线组卷</el-radio>
+				</el-radio-group>
+			</div>
+			<div class="l-box-1">
 				<div class="l-title">标题</div>
 				<el-input v-model="form.title" placeholder="请输入内容" maxlength="30" show-word-limit class="ids"></el-input>
 			</div>
 			<div class="l-box-1">
 				<div class="l-title">试卷说明</div>
-				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" maxlength="30" show-word-limit></el-input>
+				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" :autosize="{ minRows:2, maxRows:8}"></el-input>
 			</div>
-			<!-- <div class="l-box-1">
-				<div class="l-title">试卷类型</div>
-				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" maxlength="30" show-word-limit></el-input>
-			</div> -->
 			<div class="l-box-1">
 				<div class="l-title">试卷作答时间</div>
 				<el-input v-model="form.examTime" :min="1" :max="9999"   type="number" show-word-limit class="ids">
@@ -21,7 +24,7 @@
 					</template>
 				</el-input>
 			</div>
-			<div class="l-box-1">
+			<!-- <div class="l-box-1">
 				<div class="l-title">开始下载时间</div>
 				<el-date-picker
 					style="margin-top:20px"
@@ -42,9 +45,30 @@
 					value-format="yyyy-MM-dd HH:mm:ss"
 					placeholder="选择日期时间">
 				</el-date-picker>
+			</div> -->
+			<div class="l-box-2" v-if="ispaperType">
+				<el-upload 
+				class="upload-demo" 
+				drag action=""  
+				:show-file-list="false"
+                :http-request="uploadFild">
+					<i class="el-icon-upload" v-if="!uploadFile"></i>
+					<div class="el-upload__text"  v-if="!uploadFile">
+						将文件拖到此处，或
+						<em>点击上传</em>
+					</div>
+					<i class="el-icon-check" v-if="uploadFile"></i>
+					<div class="el-upload__text" v-if="uploadFile">
+							已上传文件
+					</div>
+				</el-upload>
+				
 			</div>
+			
+			
+		</div>
+		<div class="right">
 			<div class="l-box-1">
-				<div class="l-title">试卷标签</div>
 				<div class="t-content">
 					<div class="group">
 							<div class="row-group">
@@ -110,7 +134,7 @@
 						<div class="row-group">
 							<div class="th-group">试卷类型</div>
 							<div class="td-group" >
-								<el-radio-group v-model="form.tag_list[6].id" disabled>
+								<el-radio-group v-model="form.tag_list[6].id" >
 									<el-radio-button v-for="(d,i) in tagList.purpose" :label="d.id" >{{d.text}}</el-radio-button>
 								</el-radio-group>
 							</div>
@@ -118,31 +142,34 @@
 					</div>
 				</div>
 			</div>
-			
-		</div>
-		<div class="right">
 			<div class="card-box">
 				<el-row :gutter="20">
-					<el-col :span="8">
+					<el-col :span="8" v-if="!ispaperType" :offset="3">
 						<div class="grid-content bg-purple">
 							<el-button class="i" @click="redictToTestPaperMaker(0)">进入组卷工具</el-button>
 							<div class="ii">(在线组卷)</div>
 						</div>
 					</el-col>
-					<el-col :span="8">
+					<el-col :span="8" v-if="!ispaperType" :disabled="!testPaperCacheReady" :offset="3">
 						<div class="grid-content bg-purple">
-							<el-button class="i" @click="parperAddPic" >确认提交</el-button>
+							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
 							<div class="ii">(在线组卷)</div>
+						</div>
+					</el-col>
+					<el-col :span="8" v-if="ispaperType" :offset="8">
+						<div class="grid-content bg-purple">
+							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
+							<div class="ii">(图片试卷)</div>
 						</div>
 					</el-col>
 				</el-row>
 			</div>
-			<div class="hint">
+			<!-- <div class="hint">
 				<div>温馨提示：</div>
 				<span>1.下载word模板正确填写各项题目信息后，在本页面进行上传处理，上传后将提交管理员确认，确认完
 				                      毕后会进入试卷库。复杂题目可以图片形式插入word模板文档。
 				                      2.图片试卷仅能用于作业、练习，无法接入题库、评价系统等其他功能，建议优先选择按模板提交试卷。</span>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
@@ -300,45 +327,38 @@ export default {
 		parperAddPic(){
 			// 在线组卷
 			// 新建试卷
-			console.log(this.form)
-			apiCommonExamAdd(this.form).then(res=>{
-				
-			// console.log(res)
-			if(res.data.result){
-				console.log("新增试卷完成")
-				// 新建试卷完成后绑定试卷id
-				let examId = res.data.data.id
-				console.log("开始新增试题")
-				this.$options.methods.startTestPaperUpdatePaperToServer.bind(this)(examId)
-
-				if(this.selectStudentList !=[]){
-					console.log("开始新增学生")
-					// 有绑定学生
-					for(var i=0;i<this.selectStudentList.length;i++){
-						// 绑定学生
-						studentStudentExamAdd({
-							"examinationId":examId,
-							"studentId":this.selectStudentList[i].id
-						}).then(res=>{
+			if(this.paperType == '图片试卷'){
+				// 新建试卷
+				apiCommonExamAdd(this.form).then(res=>{
+					if(res.data.result){
+						let examId = res.data.data.id
+						apiCommonExamUpload(examId,this.uploadFile).then(res=>{
 							if(res.data.result){
-								console.log("新增学生完成")
-								
+								this.$message.success('操作完成，请前往分配学生')
+								this.$router.push('/manage_user')
 							}else{
 								this.$message.error(res.data.message)
 							}
 						})
 					}
-					this.$message.success('操作成功')								
-				}else{
-					this.$message.success('操作成功')
-					// 没有绑定学生
-				}
-
+				})
 			}else{
-				this.$message.error(res.data.message)
-				console.log("发生错误")
+			apiCommonExamAdd(this.form).then(res=>{
+				// console.log(res)
+				if(res.data.result){
+					console.log("新增试卷完成")
+					// 新建试卷完成后绑定试卷id
+					let examId = res.data.data.id
+					console.log("开始新增试题")
+					this.$options.methods.startTestPaperUpdatePaperToServer.bind(this)(examId)
+					// 没有绑定学生
+					this.$message.success('操作成功')
+				}else{
+					this.$message.error(res.data.message)
+					console.log("发生错误")
+				}
+				})
 			}
-			})
 		},
 		/**
 		 * 全屏加载等待

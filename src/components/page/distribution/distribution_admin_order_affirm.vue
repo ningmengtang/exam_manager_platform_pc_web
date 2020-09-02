@@ -16,7 +16,7 @@
 			</div>
 			<el-form ref="form" :model="form" label-width="80px" class="form" style="margin-bottom: 20px;">
 				<el-form-item label="订购总数">
-					<el-input v-model="form.count" readonly>
+					<el-input v-model="form.count"  readonly>
 						<template slot="append">份</template>
 					</el-input>
 				</el-form-item>
@@ -75,8 +75,9 @@
 							<!-- <div class="" v-if=""></div> -->
 						</div>
 					</div>
-					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="!item.status" >分配试卷</el-button>
-					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="item.status == 1" >已分配</el-button>
+					<!-- <el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="!item.status" >分配试卷</el-button> -->
+					<el-button type="success" size="small" style="float:right" v-if="item.status == 1" disabled >已分配</el-button>
+                    <el-button type="success" size="small" style="float:right" v-if="item.status == 0" disabled >未分配</el-button>
 				</div>
 			</div>
 			<!-- <div class="page">
@@ -140,35 +141,34 @@
                     </template>
 				</el-table-column>
 			</el-table>
-			<div style="margin:10px">
+			<div>
 				<el-button type="primary" @click="innerVisible = true">设置分发时间</el-button>
     			<el-button @click="dialogTableVisible = false">取消</el-button>
 			</div>
 			<el-dialog
-      			width="60%"
+      			width="80%"
 				title="请选择试卷开始和结束下载时间"
 				:visible.sync="innerVisible"
 				append-to-body>
-				<el-form label-width="120px">
-					<el-form-item label="开始下载时间：">
-						<el-date-picker
-							class="selectTime"
-							v-model="startTime"
-							type="datetime"
-							value-format="yyyy-MM-dd HH:mm:ss"
-							placeholder="选择日期时间">
-						</el-date-picker>
-					</el-form-item>
-					<el-form-item label="结束下载时间：">
-						<el-date-picker
-							class="selectTime"
-							v-model="overTime"
-							type="datetime"
-							value-format="yyyy-MM-dd HH:mm:ss"
-							placeholder="选择日期时间">
-						</el-date-picker>
-					</el-form-item>
-				</el-form>
+				<div class="l-title">开始下载时间</div>
+					<el-date-picker
+						style="margin-top:20px"
+						class="selectTime"
+						v-model="startTime"
+						type="datetime"
+						value-format="yyyy-MM-dd HH:mm:ss"
+						placeholder="选择日期时间">
+					</el-date-picker>
+				<div class="l-title">结束下载时间</div>
+				<el-date-picker
+					style="margin-top:20px"
+					class="selectTime"
+					v-model="overTime"
+					type="datetime"
+					value-format="yyyy-MM-dd HH:mm:ss"
+					placeholder="选择日期时间">
+				</el-date-picker>
+
 				<div slot="footer" class="dialog-footer">
 					<el-button @click="innerVisible = false">取 消</el-button>
 					<el-button type="primary" @click="onSubmit">确定</el-button>
@@ -189,8 +189,7 @@
 		improtSchoolAndTeachersAndStudentsInfoByAlredyUpload,
 		AdminOrderEndOfTermItemList,
 		AdmindistributionOfTestPaperByOrderEndOfTerm,
-		AdminOrderEndOfTermItemUpload,
-		apiCommonExamUpdateTime
+		AdminOrderEndOfTermItemUpload
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -270,47 +269,6 @@
 				}
 				
 			},
-			async getupdateList(id){
-				if(this.orderType == 1){
-					await this.TagTypePromiseUpdateTime(id)
-				}else{
-					await this.TagTypePromiseEndUpdateTime(id)
-				}
-			},
-			TagTypePromiseUpdateTime(id){
-				return new Promise((resolve, reject)=>{
-					apiCommonExamUpdateTime({
-						"id":id,
-						"startTime":this.startTime,
-						"overTime":this.overTime
-					}).then(res=>{
-						if(res.data.result){
-							resolve(res)
-						}else{
-							this.$message.error(res.data.message)
-						}
-						
-					})
-					
-				})
-			},
-			TagTypePromiseEndUpdateTime(id){
-				return new Promise((resolve, reject)=>{
-					apiCommonExamUpdateTime({
-						"id":id,
-						"startTime":this.startTime,
-						"overTime":this.overTime
-					}).then(res=>{
-						if(res.data.result){
-							resolve(res)
-						}else{
-							this.$message.error(res.data.message)
-						}
-						
-					})
-					
-				})
-			},
 			TagTypePromise(id){
 				return new Promise((resolve, reject)=>{
 					improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.Itemid,id).then(res=>{
@@ -341,53 +299,37 @@
 				// 分配学生
 				// this.innerVisible = true
 				
-				if(this.startTime && this.overTime && this.ParperType !=[] ){
+				if(this.startTime && this.overTime){
 					for(var i=0;i<this.ParperType.length;i++){
 						this.getTypeList(this.ParperType[i].id)
 					}
-
-					for(var a=0;a<this.ParperType.length;a++){
-						this.getupdateList(this.ParperType[a].id)
-					}
+					
 					this.$message.success('操作成功')
+					
 					this.dialogTableVisible = false
-					this.innerVisible = false
-					// apiCommonExamUpdateTime({
-					// 	"id":this.Itemid,
-					// 	"startTime":this.startTime,
-					// 	"overTime":this.overTime
-					// }).then(res=>{
-					// 	this.$message.success('操作成功')
-					// 	this.dialogTableVisible = false
-					// 	this.innerVisible = false
-					// })
-					
-
-
-					
-					// if(this.orderType == 1){
-					// 	apiAdminOrderItemList({
-					// 		"order_id":adminAffirmData.id
-					// 	}).then(res=>{
-					// 		if(res.data.data.list){
-					// 			this.papers = res.data.data.list
-					// 		}else{
-					// 			this.$message.error('查询不到订单项')
-					// 		}
-					// 	})
-					// }else if(this.orderType == 2){
-					// 	AdminOrderEndOfTermItemList({
-					// 		"order_id":adminAffirmData.id
-					// 	}).then(res=>{
-					// 		if(res.data.data.list){
-					// 			this.papers = res.data.data.list
-					// 		}else{
-					// 			this.$message.error('查询不到订单项')
-					// 		}
-					// 	})
-					// }
+					if(this.orderType == 1){
+						apiAdminOrderItemList({
+							"order_id":adminAffirmData.id
+						}).then(res=>{
+							if(res.data.data.list){
+								this.papers = res.data.data.list
+							}else{
+								this.$message.error('查询不到订单项')
+							}
+						})
+					}else if(this.orderType == 2){
+						AdminOrderEndOfTermItemList({
+							"order_id":adminAffirmData.id
+						}).then(res=>{
+							if(res.data.data.list){
+								this.papers = res.data.data.list
+							}else{
+								this.$message.error('查询不到订单项')
+							}
+						})
+					}
 				}else{
-					this.$message.error('请填写相应数据')
+					this.$message.error('请填写开始或结束时间')
 				}
 				
 			},
@@ -451,7 +393,7 @@
 			// },
 			netx(){
 				this.percentage=100;
-			   	this.dialogTableVisible2 = false;
+			   this.dialogTableVisible2 = false;
 			},
 			black(){
 				this.$router.push('order_school')
@@ -520,7 +462,6 @@
 				if(item.file_path){
 					this.Itemid = item.id
 					this.dialogTableVisible = true
-
 					// 通过标签查询试卷
 					this.id = []
 					this.ParperType = ''

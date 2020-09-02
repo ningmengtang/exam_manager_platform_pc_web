@@ -97,7 +97,8 @@
 	import {
 		ApiTeacherMangerList,
 		teacherIndex,
-		teacherIndexStatus
+		teacherIndexStatus,
+		apicommonExamGetFile
 	} from '@/api/api.js'
 	export default {
 		name: 'index_student',
@@ -197,8 +198,23 @@
 				this.$router.push('manage_teacher_import')
 			},
 			downloadFile(item){
-				console.log(item)
-				let  createTestPaperInfoObj = {
+				if(item.affix){
+				apicommonExamGetFile(item.pid).then(res=>{
+					// console.log(res)
+					var headers = res.headers['content-disposition']
+					// console.log(headers)
+					headers = headers.substring(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
+					const blob = new Blob([res.data],{type:''})
+					let link = document.createElement('a');
+					let objectUrl = URL.createObjectURL(blob);
+					link.setAttribute("href",objectUrl);
+					link.setAttribute("download",headers); 
+					link.click();
+					//释放内存
+					window.URL.revokeObjectURL(link.href)
+				})
+				}else{
+					let  createTestPaperInfoObj = {
 					 		testPaperId:item.pid,
 					        students:[
 					          {
@@ -208,7 +224,9 @@
 					          }
 					        ]
 					      }
-				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+					this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				}
+				
 			}
 		},
 		mounted() {

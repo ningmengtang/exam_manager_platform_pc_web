@@ -28,14 +28,14 @@
 						<template slot="append">种</template>
 					</el-input>
 				</el-form-item>
-				<el-form-item label="联系电话" readonly>
-					<el-input v-model="form.contact_phone"></el-input>
+				<el-form-item label="联系电话" >
+					<el-input v-model="form.contact_phone" readonly></el-input>
 				</el-form-item>
-				<el-form-item label="收货人员" readonly>
-					<el-input v-model="form.contacts"></el-input>
+				<el-form-item label="收货人员" >
+					<el-input v-model="form.contacts" readonly></el-input>
 				</el-form-item>
-				<el-form-item label="收货地址" readonly>
-					<el-input v-model="form.contact_address"></el-input>
+				<el-form-item label="收货地址" >
+					<el-input v-model="form.contact_address" readonly></el-input>
 				</el-form-item>
 			</el-form>
 			<div class="buttom-box">
@@ -52,24 +52,27 @@
 
 			<!--订单列表 -->
 			<div class="upload-papers">
-				<div class="li-box" v-for="(item,i) in papers">
+				<div class="li-box" v-for="(item,i) in orderDetailsList">
 					<div class="ranking">{{i+1}}</div>
 					<div class="papers-box">
-						<div class="p-title">{{item.title}}
-							<div class="label-box">
-								<div class="label" v-for="tag in item.tag_list">{{tag.text}}</div>
-							</div>
+						<div class="p-title">
+                            <span>
+                                {{item.classes}} ： 已选
+                            </span>
+                            <span>
+                                {{item.subject}}
+                            </span>
 						</div>
 						<div class="p-particular">
-							<div><span>数量{{item.count}} 份</span></div>
-			
-							
-							<div class="fault" v-if="!item.file_path"  @click="uploadFile(item)">学生信息未导入，点击导入</div>
-							<div class="success" v-if="item.file_path"  @click="uploadFile(item)">学生信息已导入，点击重新导入</div>
-							<!-- <div class="" v-if=""></div> -->
+							<div>数量：各{{item.count}}份</div>
+						    <!-- <div>单价{{item.price}}元</div> -->
+							<div>总价：{{item.total_price }}元</div>
+							<!-- <div class="fault" @click="upload(i)"  v-if="!item.uploadFile">学生信息未导入，点击重导</div> -->
 						</div>
 					</div>
-					<el-button type="success" size="small" style="float:right" v-if="item.status == 1" disabled >已分配</el-button>
+					<el-button type="primary" size="small" style="float:right" v-if="!item.isOrderType"  @click="uploadFile(item,i)" >导入学生信息</el-button>
+					<el-button type="success" size="small" style="float:right" v-if="item.isOrderType"  @click="uploadFile(item,i)" >已导入学生信息</el-button>
+					<!-- <el-button type="success" size="small" style="float:right" v-if="item.status == 1" disabled >已分配</el-button> -->
 				</div>
 			</div>
 		</div>
@@ -133,7 +136,11 @@
 		apiAdminOrderItemList,
 		AdminOrderUpload,
 		selectAllUserTag,
-		improtSchoolAndTeachersAndStudentsInfoByAlredyUpload
+		improtSchoolAndTeachersAndStudentsInfoByAlredyUpload,
+		selectTag,
+		SchoolOrederDetailsList,
+		SchoolOrderEndOfTermDetailsList,
+		AdminOrderEndOfTermUpload
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -145,11 +152,13 @@
 				endVal1: 6,
 				endVal2: 454,
 				currentPage: 1,
+				orderDetailsList:[],
 				array_nav2: [],
 				array_nav3: [],
 				array_nav4: [],
 				array_nav5: [],
 				array_nav9: [],
+				orderType:'',
 				percentage:50,
 				value1: '',
 				style: {
@@ -179,7 +188,7 @@
 				adminAffirmData:'',
 				dialogTableVisible: false,
 				dialogTableVisible2: false,
-				pageSize:6,
+				pageSize:8,
 				pageNum:1,
 				total:0,
 				id:[],
@@ -204,19 +213,19 @@
 			onSubmit(){
 				// 分配学生
 				improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.Itemid,this.ParperType.id).then(res=>{
-					// console.log(res)
+					console.log(res)
 					if(res.data.result){
 						this.$message.success('分配成功')
 						this.dialogTableVisible = false
-						apiAdminOrderItemList({
-							"order_id":this.adminAffirmData.id
-						}).then(res=>{
-							if(res.data.data.list){
-								this.papers = res.data.data.list
-							}else{
-								this.$message.error('查询不到订单项')
-							}
-						})
+						// apiAdminOrderItemList({
+						// 	"order_id":this.adminAffirmData.id
+						// }).then(res=>{
+						// 	if(res.data.data.list){
+						// 		this.papers = res.data.data.list
+						// 	}else{
+						// 		this.$message.error('查询不到订单项')
+						// 	}
+						// })
 					}else{
 						this.$message.error(res.data.message)
 					}
@@ -287,34 +296,56 @@
 			black(){
 				this.$router.push('order_school')
 			},
-			uploadFile(item){
-				var input =  document.createElement('input')
-				input.type = 'file'
-				input.accept = '.xls'
-				input.addEventListener('change',(event)=>{
-					let file = event.target.files[0]
-					let data = new FormData()
-					data.append('file',file)
-					AdminOrderUpload(item.id,data).then(res=>{
-						if(res.data.result){
-							this.$message.success('上传成功')
-							apiAdminOrderItemList({
-								"order_id":this.adminAffirmData.id
-							}).then(res=>{
-								if(res.data.data.list){
-									this.papers = res.data.data.list
-								}else{
-									this.$message.error('查询不到订单项')
-								}
-								console.log(res)
-							})
-						}else{
-							this.$message.error(res.data.message)
-						}
+			uploadFile(item,index){
+				if(this.orderType){
+					var input =  document.createElement('input')
+					input.type = 'file'
+					input.accept = '.xls'
+					input.addEventListener('change',(event)=>{
+						let file = event.target.files[0]
+						let data = new FormData()
+						data.append('file',file)
+						AdminOrderUpload(item.order_item_ids,data).then(res=>{
+							if(res.data.result){
+								
+								this.orderDetailsList[index].isOrderType = true
+								 this.$forceUpdate();
+								// console.log(this.orderDetailsList[index])
+								this.$message.success('上传成功')
+								
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
 					})
-				})
-				input.click()
-            	input.remove() 
+					input.click()
+					input.remove() 
+				}else{
+					
+					var input =  document.createElement('input')
+					input.type = 'file'
+					input.accept = '.xls'
+					input.addEventListener('change',(event)=>{
+						let file = event.target.files[0]
+						let data = new FormData()
+						data.append('file',file)
+						AdminOrderEndOfTermUpload(item.order_item_ids,data).then(res=>{
+							if(res.data.result){
+								this.orderDetailsList[index].isOrderType = true
+								 this.$forceUpdate();
+								// console.log(this.orderDetailsList[index])
+								this.$message.success('上传成功')
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+					})
+					input.click()
+					input.remove() 
+					
+				}
+				
+				
 			},
 			// 分配试卷
 			addPaper(item){
@@ -344,9 +375,11 @@
 		},
 		mounted() {
 			this.color = user().color;
+			this.orderType = this.$route.query.orderType
+			console.log(this.orderType)
 			let adminAffirmData = JSON.parse(sessionStorage.getItem("schoolAffirmData")) 
 			if(adminAffirmData){
-                console.log(adminAffirmData)
+                // console.log(adminAffirmData)
 				this.adminAffirmData = adminAffirmData
 				this.form.count = adminAffirmData.count
 				this.form.style_count =adminAffirmData.style_count
@@ -354,16 +387,28 @@
 				this.form.contacts = adminAffirmData.contacts
 				this.form.contact_address = adminAffirmData.contact_address
 				this.form.id = adminAffirmData.id
-				apiAdminOrderItemList({
-					"order_id":adminAffirmData.id
-				}).then(res=>{
-					if(res.data.data.list){
-						this.papers = res.data.data.list
-					}else{
-						this.$message.error('查询不到订单项')
-					}
-					console.log(res)
-				})
+				if(this.orderType){
+					SchoolOrederDetailsList({
+						"order_id":adminAffirmData.id,
+						"order_sn":adminAffirmData.sn
+					}).then(res=>{
+						this.orderDetailsList = res.data.data.list
+						for(var i=0;i<this.orderDetailsList.length;i++){
+							this.orderDetailsList[i].isOrderType = false
+						}
+					})
+				}else{
+					SchoolOrderEndOfTermDetailsList({
+						"order_id":adminAffirmData.id,
+						"order_sn":adminAffirmData.sn
+					}).then(res=>{
+						this.orderDetailsList = res.data.data.list
+						for(var i=0;i<this.orderDetailsList.length;i++){
+							this.orderDetailsList[i].isOrderType = false
+						}
+					})
+				}
+				
 			}else{
 				this.$message.error('查询不到订单信息')
 			}

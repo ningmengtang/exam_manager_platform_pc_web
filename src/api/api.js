@@ -133,16 +133,41 @@ export function AdminOrderItemAdd(data) {
 	const result = post('/api/admin/order/item/insert', data)
 	return result;
 }
-// 
+// 新建订单
 export function AdminOrderAdd(data) {
 	const result = post('/api/admin/order/insert', data)
 	return result;
 }
+
+// 新建期末考试订单
+export function AdminOrderEndOfTermAdd(data) {
+	const result = post('/api/school/orderEndOfTerm/insert', data)
+	return result;
+}
+
+// 新建期末考试订单管理员
+export function AdminOrderEndOfTermAddList(data) {
+	const result = post('/api/admin/orderEndOfTerm/insert', data)
+	return result;
+}
+// 期末考试订单查询
+export function AdminOrderEndOfTermList(data) {
+	const result = post('/api/school/orderEndOfTerm/list', data)
+	return result;
+}
+
+
 // 上传订单项文件
 export function AdminOrderUpload(id, data) {
 	const result = post('/api/admin/order/item/upload/' + id, data)
 	return result;
 }
+// 上传订单项文件(期末)
+export function AdminOrderEndOfTermUpload(id, data) {
+	const result = post('/api/school/orderEndOfTerm/item/upload/' + id, data)
+	return result;
+}
+
 //学校新增老师
 export function schoolAddTeacher(data){
 	const result =post('/api/school/teacher/insertAndupdate',data)
@@ -406,11 +431,16 @@ export function improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(orderItemId
 		'/' + parperId, data)
 	return result;
 }
+// 修改订单信息
 export function apiAdminOrderUpdate(data) {
 	const result = post('/api/admin/order/updateById', data)
 	return result;
 }
-
+// 修改订单信息（期末）
+export function apiAdminOrderEndOfTermUpdate(data) {
+	const result = post('/api/admin/orderEndOfTerm/updateById', data)
+	return result;
+}
 // /api/admin/order/item/upload/{item_id}
 
 //根据条件查询试卷列表
@@ -681,6 +711,13 @@ export function AdminOrderDel(id,data){
     const result =get('/api/admin/order/delete/' +id +'?d=' + new Date() * 1 ,data)
 	return result;
 }
+
+
+// 删除订单(期末)
+export function AdminOrderEndOfTermDel(id,data){
+    const result =get('/api/school/orderEndOfTerm/delete/' +id +'?d=' + new Date() * 1 ,data)
+	return result;
+}
 // 允许学生下载
 export function schoolStudentAllow(id,data){
     const result =get('/api/school/student/allow/' +id +'?d=' + new Date() * 1 ,data)
@@ -698,3 +735,111 @@ export function apicommonExamGetFile(id,data){
     const result =uploadget('/api/common/exam/getFile/' +id +'?d=' + new Date() * 1 ,data)
 	return result;
 }
+
+// 订购申请详情
+export function SchoolOrederDetailsAdd(data){
+    const result =post('/api/school/order/details/insert'+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 订购申请详情
+export function AdminOrederDetailsAdd(data){
+    const result =post('/api/admin/order/details/list'+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+
+
+// 订购申请查询
+export function SchoolOrederDetailsList(data){
+    const result =post('/api/school/order/details/list'+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+
+
+// 订购申请查询(期末)
+export function SchoolOrderEndOfTermDetailsList(data){
+    const result =post('/api/school/orderEndOfTerm/details/list'+'?d=' + new Date() * 1 ,data)
+	return result;
+} 
+
+// 订购申请详情管理员（期末）
+export function AdminOrederEndOfTermDetailsAdd(data){
+    const result =post('/api/admin/orderEndOfTerm/details/insert'+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 订购申请详情（期末）
+export function SchoolOrederEndOfTermDetailsAdd(data){
+    const result =post('/api/school/orderEndOfTerm/details/insert'+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 订购申请查询（期末）
+export function SchoolOrederEndOfTermDetailsList(data){
+    const result =post('/api/school/orderEndOfTerm/details/list'+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+
+// 附件下载（期末）
+export function SchoolOrderEndOfTermGetFile(id,data){
+    const result =uploadget('/api/school/orderEndOfTerm/getFile/'+id+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 上传合同（期末）
+export function SchoolOrderEndOfTermUploadFile(id,data){
+    const result =post('/api/school/orderEndOfTerm/upload/'+id ,data)
+	return result;
+}
+
+// 管理员订单列表
+export function AdminOrderEndOfTermListAll(data){
+    const result =post('/api/admin/orderEndOfTerm/list' ,data)
+	return result;
+}
+
+// 管理员订单删除
+export function AdminOrderEndOfTermDelAll(id,data){
+    const result =get('/api/admin/orderEndOfTerm/delete/'+id+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 管理员下载合同（期末）
+export function AdminlOrderEndOfTermGetFile(id,data){
+    const result =uploadget('/api/admin/orderEndOfTerm/getFile/'+id+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+
+// 管理员上传合同（期末）
+export function AdminOrderEndOfTermUploadFile(id,data){
+    const result =post('/api/admin/orderEndOfTerm/upload/'+id ,data)
+	return result;
+}
+// 管理员订单项（期末）
+export function AdminOrderEndOfTermItemList(data){
+    const result =post('/api/admin/orderEndOfTerm/item/list' ,data)
+	return result;
+}
+// 导入已上传的学生信息
+export function AdmindistributionOfTestPaperByOrderEndOfTerm(orderItemId, parperId, data) {
+	const result = post('/api/admin/improt/excel/distributionOfTestPaperByOrderEndOfTerm/' + orderItemId +
+		'/' + parperId, data)
+	return result;
+}
+
+// 管路员上传学生信息
+export function AdminOrderEndOfTermItemUpload(id,data){
+    const result =post('/api/admin/orderEndOfTerm/item/upload/'+id ,data)
+	return result;
+}
+
+
+// 试卷管理修改试卷开始结束时间
+export function apiCommonExamUpdateTime(data){
+    const result =post('/api/common/exam/updateTime' ,data)
+	return result;
+}
+
+
+// 管理员用户管理接口
+export function apiAdminUseManageSelect(data){
+    const result =post('/api/admin/user/manage/userSelect' ,data)
+	return result;
+}
+
+

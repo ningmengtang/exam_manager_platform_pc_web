@@ -1117,7 +1117,7 @@ export default {
 
       this.qrInfoObj.uid = localStorage.getItem("userID").toString()
       this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
-      console.log(this.$route.query.createTestPaperInfoObj)
+      // console.log(this.$route.query.createTestPaperInfoObj)
       
       // console.log(this.$router.params.createTestPaperInfoObj)
       if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)

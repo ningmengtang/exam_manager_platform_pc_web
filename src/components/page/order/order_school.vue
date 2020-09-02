@@ -1,7 +1,17 @@
 <template>
-	<div>
+	<div style="padding:20px">
 		<div class="container">
+			
 			<el-button type="success" size="small"  @click="goAdd"  style="float:right;margin:10px">新建订单</el-button>
+			<el-switch
+				@change="changeOrderType"
+				style="display: block;margin:15px;float:right"
+				v-model="orderType"
+				active-color="#13ce66"
+				inactive-color="#409EFF"
+				active-text="普通试卷订购"
+				inactive-text="期末试卷订购">
+			</el-switch>
 			<el-select v-model="orderStatus" placeholder="请选择" @change="changeSelect">
 				<el-option
 				v-for="item in options"
@@ -10,6 +20,7 @@
 				</el-option>
 			</el-select>
 			<el-table
+				 v-loading="loading"
 				:data="orderList"
 				border
                 class="table"
@@ -44,7 +55,7 @@
 						<el-button type="primary" size="small"  @click="loadFile(scope.$index, scope.row)">上传合同</el-button>
 						<el-button type="success" size="small"  @click="uploadFile(scope.$index, scope.row)">导出合同</el-button>
 						<el-button type="success" size="small"  @click="openFile(scope.$index, scope.row)">查看详情</el-button>
-						<el-button type="danger" size="small"  @click="DelFile(scope.$index, scope.row)">删除</el-button>
+						<el-button type="danger" size="small"  @click="DelFile(scope.$index, scope.row)">取消</el-button>
                     </template>
                 </el-table-column>
 			</el-table>
@@ -65,17 +76,23 @@
 		AdminOrderGetFile,
 		AdminOrderDel,
 		AdminOrderUpload,
-		AdminOrderUploadFile
+		AdminOrderUploadFile,
+		AdminOrderEndOfTermList,
+		AdminOrderEndOfTermDel,
+		SchoolOrderEndOfTermUploadFile,
+		SchoolOrderEndOfTermGetFile
 	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				currentPage:1,
-				pageSize:6,
+				pageSize:8,
 				pageNum:1,
 				total:0,
 				orderList:[],  //订单数据
 				orderStatus:4,
+				orderType:true,
+				loading:false,
 				options:[
 				{
 					id:4,
@@ -103,36 +120,90 @@
 		methods: {
 		
 			goAdd(){
-				this.$router.push('order_school_add2')
+				if(this.orderType){
+					this.$router.push('order_school_add2')
+				}else{
+					this.$router.push('order_school_add3')
+				}
+				
 			},
 			changeSelect(){
+				this.currentPage = 1
+				this.pageSize = 8
+				this.pageNum = 1
+				this.total = 0
+				this.orderList = []  //订单数据
+				this.getItemTable()
+				
+
+			},
+			changeOrderType(){
+				this.currentPage = 1
+				this.pageSize = 8
+				this.pageNum = 1
+				this.total = 0
+				this.orderList = []  //订单数据
+				this.orderStatus = 4
 				this.getItemTable()
 			},
 			getItemTable(){
-				if(this.orderStatus == 4){
-					apiAdminOrderList({
-						"pageNum":this.pageNum,
-						"pageSize":this.pageSize,
-						"operator_id": this.operatorId,
-						"operator_type":this.operatorType
-					}).then(res=>{
-						this.orderList = res.data.data.list
-						this.total = res.data.data.total
-						this.currentPage = res.data.data.pageNum
-					})	
+				this.loading  = true
+				if(this.orderType){
+					if(this.orderStatus == 4){
+						apiAdminOrderList({
+							"pageNum":this.pageNum,
+							"pageSize":this.pageSize,
+							"operator_id": this.operatorId,
+							"operator_type":this.operatorType
+						}).then(res=>{
+							this.loading  = false
+							this.orderList = res.data.data.list
+							this.total = res.data.data.total
+							this.currentPage = res.data.data.pageNum
+						})	
+					}else{
+						apiAdminOrderList({
+							"pageNum":this.pageNum,
+							"pageSize":this.pageSize,
+							"operator_id": this.operatorId,
+							"operator_type":this.operatorType,
+							"status":this.orderStatus
+						}).then(res=>{
+							this.loading  = false
+							this.orderList = res.data.data.list
+							this.total = res.data.data.total
+							this.currentPage = res.data.data.pageNum
+						})	
+					}
 				}else{
-					apiAdminOrderList({
-						"pageNum":this.pageNum,
-						"pageSize":this.pageSize,
-						"operator_id": this.operatorId,
-						"operator_type":this.operatorType,
-						"status":this.orderStatus
-					}).then(res=>{
-						this.orderList = res.data.data.list
-						this.total = res.data.data.total
-						this.currentPage = res.data.data.pageNum
-					})	
+					if(this.orderStatus == 4){
+						AdminOrderEndOfTermList({
+							"pageNum":this.pageNum,
+							"pageSize":this.pageSize,
+							"operator_id": this.operatorId,
+							"operator_type":this.operatorType
+						}).then(res=>{
+							this.loading  = false
+							this.orderList = res.data.data.list
+							this.total = res.data.data.total
+							this.currentPage = res.data.data.pageNum
+						})	
+					}else{
+						AdminOrderEndOfTermList({
+							"pageNum":this.pageNum,
+							"pageSize":this.pageSize,
+							"operator_id": this.operatorId,
+							"operator_type":this.operatorType,
+							"status":this.orderStatus
+						}).then(res=>{
+							this.loading  = false
+							this.orderList = res.data.data.list
+							this.total = res.data.data.total
+							this.currentPage = res.data.data.pageNum
+						})	
+					}
 				}
+				
 			},
 			handleSizeChange(val) {
 				this.pageSize = val
@@ -141,78 +212,142 @@
 			},
 			handleCurrentChange(val) {
 				this.pageNum = val
-				console.log(this.orderStatus)
 				this.getItemTable()
 
 			},
 			// 下载合同
 			uploadFile(index,row){
-				AdminOrderGetFile(row.id).then(res=>{
-					// console.log(res)
-					const blob = new Blob([res.data],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8'})
-					let link = document.createElement('a');
-				 	let objectUrl = URL.createObjectURL(blob);
-					link.setAttribute("href",objectUrl);
-					link.setAttribute("download",'订购合同.docx'); 
-					link.click();
-					//释放内存
-					window.URL.revokeObjectURL(link.href)
-				})
+				if(this.orderType){
+					AdminOrderGetFile(row.id).then(res=>{
+						// console.log(res)
+						const blob = new Blob([res.data],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8'})
+						let link = document.createElement('a');
+						let objectUrl = URL.createObjectURL(blob);
+						link.setAttribute("href",objectUrl);
+						link.setAttribute("download",'订购合同.docx'); 
+						link.click();
+						//释放内存
+						window.URL.revokeObjectURL(link.href)
+					})
+				}else{
+					SchoolOrderEndOfTermGetFile(row.id).then(res=>{
+						// console.log(res)
+						const blob = new Blob([res.data],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8'})
+						let link = document.createElement('a');
+						let objectUrl = URL.createObjectURL(blob);
+						link.setAttribute("href",objectUrl);
+						link.setAttribute("download",'期末订购合同.docx'); 
+						link.click();
+						//释放内存
+						window.URL.revokeObjectURL(link.href)
+					})
+				}
+				
 			},
 			// 上传合同
 			loadFile(index,row){
-				var input =  document.createElement('input')
-				input.type = 'file'
-				input.accept = '.docx,.DOCX,.doc,.DOC,.pdf,.PDF'
-				input.addEventListener('change',(event)=>{
-					let file = event.target.files[0]
-					var data = new FormData()
-					data.append('file',file)
-					AdminOrderUploadFile(row.id,data).then(res=>{
-						if(res.data.result){
-							this.$message.success('上传成功')
-							apiAdminOrderList({
-								"pageNum":this.pageNum,
-								"pageSize":this.pageSize,
-								"operator_id": this.operatorId,
-								"operator_type":this.operatorType
-							}).then(res=>{
-								this.orderList = res.data.data.list
-								this.total = res.data.data.total
-								this.currentPage = res.data.data.pageNum
-							})
-						}else{
-							this.$message.error(res.data.message)
-						}
+				if(this.orderType){
+					var input =  document.createElement('input')
+					input.type = 'file'
+					input.accept = '.docx,.DOCX,.doc,.DOC,.pdf,.PDF'
+					input.addEventListener('change',(event)=>{
+						let file = event.target.files[0]
+						var data = new FormData()
+						data.append('file',file)
+						AdminOrderUploadFile(row.id,data).then(res=>{
+							if(res.data.result){
+								this.$message.success('上传成功')
+								apiAdminOrderList({
+									"pageNum":this.pageNum,
+									"pageSize":this.pageSize,
+									"operator_id": this.operatorId,
+									"operator_type":this.operatorType
+								}).then(res=>{
+									this.orderList = res.data.data.list
+									this.total = res.data.data.total
+									this.currentPage = res.data.data.pageNum
+								})
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
 					})
-				})
-				input.click()
-				input.remove()
-				// AdminOrderUpload(row.id,)
+					input.click()
+					input.remove()
+				}else{
+					var input =  document.createElement('input')
+					input.type = 'file'
+					input.accept = '.docx,.DOCX,.doc,.DOC,.pdf,.PDF'
+					input.addEventListener('change',(event)=>{
+						let file = event.target.files[0]
+						var data = new FormData()
+						data.append('file',file)
+						SchoolOrderEndOfTermUploadFile(row.id,data).then(res=>{
+							if(res.data.result){
+								this.$message.success('上传成功')
+								apiAdminOrderList({
+									"pageNum":this.pageNum,
+									"pageSize":this.pageSize,
+									"operator_id": this.operatorId,
+									"operator_type":this.operatorType
+								}).then(res=>{
+									this.orderList = res.data.data.list
+									this.total = res.data.data.total
+									this.currentPage = res.data.data.pageNum
+								})
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+					})
+					input.click()
+					input.remove()
+				}
+
 			},
 			// 删除订单
 			DelFile(index,row){
-				this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
-        		  confirmButtonText: '确定',
-        		  cancelButtonText: '取消',
-        		  type: 'warning'
-        		}).then(() => {
-					AdminOrderDel(row.id).then(res=>{
-						if(res.data.result){
-							this.$message.success('删除成功')
-							this.getItemTable()
-						}else{
-							this.$message.error(res.data.message)
-						}
-					})
-        		}).catch(() => {
-        		         
-        		});
+				if(this.orderType){
+					this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						AdminOrderDel(row.id).then(res=>{
+							if(res.data.result){
+								this.$message.success('删除成功')
+								this.getItemTable()
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+					}).catch(() => {
+							
+					});
+				}else{
+					this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						AdminOrderEndOfTermDel(row.id).then(res=>{
+							if(res.data.result){
+								this.$message.success('删除成功')
+								this.getItemTable()
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+					}).catch(() => {
+							
+					});
+				}
+				
 			},
 			openFile(index,row){
-				console.log(row)
 				sessionStorage.setItem('schoolAffirmData', JSON.stringify(row))
-				this.$router.push('/distribution_school_affirm')
+				this.$router.push({name: "distribution_school_affirm", query:{orderType:this.orderType}});
+				
 			}
 		},
 		mounted() {

@@ -9,7 +9,7 @@
 						<div class="username">
 							<div class="name">{{userName}}</div>
 							<div class="user-id">ID:{{userID}}</div>
-							<div class="identity" :style="{'background-color':color}">学校负责人</div>
+							<div class="identity" :style="{'background-color':color}">试卷订购管理员</div>
 						
 						</div>
 					</div>
@@ -25,6 +25,15 @@
 					<el-input v-model="orderList.length" readonly>
 						<template slot="append">种</template>
 					</el-input>
+				</el-form-item>
+                <el-form-item label="选择学校">
+                   <el-select v-model="form.school_id" placeholder="请选择" >
+                        <el-option
+                        v-for="item in schoolList"
+                        :label="item.name"
+                        :value="item.id">
+                        </el-option>
+                    </el-select>
 				</el-form-item>
 				<el-form-item label="联系电话">
 					<el-input v-model="form.contact_phone"></el-input>
@@ -209,12 +218,13 @@
 	import Schart from 'vue-schart'
 	import ICountUp from 'vue-countup-v2'
 	import user from '../../common/user'
-	import {AdminOrderPriceSelect,selectTag,AdminOrderTagAdd,AdminOrderItemAdd,ApiTagSelectList,AdminOrderAdd,AdminOrderUpload,SchoolOrederDetailsAdd} from '@/api/api.js'
+	import {AdminOrederDetailsAdd,apiAdminUseManageSelect,AdminOrderPriceSelect,selectTag,AdminOrderTagAdd,AdminOrderItemAdd,ApiTagSelectList,AdminOrderAdd,AdminOrderUpload,SchoolOrederDetailsAdd} from '@/api/api.js'
 import { forEach } from 'jszip'
 
 	export default {
 		data() {
 			return {
+                schoolList:[],
                 userName:localStorage.getItem('userName'),
                 userID:localStorage.getItem('userID'),
                 color: '',
@@ -227,7 +237,8 @@ import { forEach } from 'jszip'
 					contacts:'凯里' ,
 					contact_phone: '1888888',
 					contact_address: '北京市海淀区北京路1号',
-					total_price:0
+                    total_price:0,
+                    school_id:''
                 },
                 paper:{
                     year:'',
@@ -554,7 +565,8 @@ import { forEach } from 'jszip'
                     "contacts":this.form.contacts,
                     "contact_address":this.form.contact_address,
                     "total_price":this.Alltotalmoney,
-                    "orderItems":orderItems
+                    "orderItems":orderItems,
+                    "school_id":this.form.school_id
                 }).then(res=>{
                     if(res.data.result){
                         let id = res.data.data.id
@@ -610,7 +622,7 @@ import { forEach } from 'jszip'
                             }
                         }
                         this.$message.success('提交成功')
-                        this.$router.push('/order_school')
+                        this.$router.push('/admin_school')
                         loading.close();
                         
                     }else{
@@ -625,7 +637,7 @@ import { forEach } from 'jszip'
             },
             detailsPromise(item,id,sn,order_item_ids){
                 return new Promise((resolve,reject)=>{
-                    SchoolOrederDetailsAdd({
+                    AdminOrederDetailsAdd({
                         "order_id": id,
                         "order_sn": sn,
                         "classes":item.class,
@@ -699,7 +711,11 @@ import { forEach } from 'jszip'
                 this.englishId = res.data.data.list[0].id
                 this.englishName = res.data.data.list[0].text
             })
-
+            apiAdminUseManageSelect({
+                "userType":3
+            }).then(res=>{
+                this.schoolList = res.data.data.list
+            })
 		},
 		watch:{
 		}

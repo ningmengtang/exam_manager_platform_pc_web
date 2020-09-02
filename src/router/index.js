@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history',
+    // mode: 'history',
     routes: [{
             path: '/',
             redirect: '/login',
@@ -85,7 +85,7 @@ export default new Router({
                     path: '/manage_user_import',
                     component: () =>
                         import ( /* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_user_import.vue'),
-                    meta: { title: '教师-专家-提交试卷' }
+                    meta: { title: '专家-试卷管理-提交试卷' }
                 },
                 {
                     path: '/manage_teacher_submit',
@@ -116,6 +116,28 @@ export default new Router({
                     component: () =>
                         import ( /* webpackChunkName: "order_school_add" */ '../components/page/order/order_school_add2.vue'),
                     meta: { title: '学校-订购管理-新增订购' }
+                },
+                {
+                    path: '/order_school_add3',
+                    component: () =>
+                        import ( /* webpackChunkName: "order_school_add" */ '../components/page/order/order_school_add3.vue'),
+                    meta: { title: '学校-订购管理-期末试卷-新增订购' }
+                },
+                {
+                    path: '/order_admin_add2',
+                    name:'order_admin_add2',
+                    component: () =>
+                        import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/order/order_admin_add2.vue'),
+                    meta: { title: '管理员-普通订单' }
+
+                },
+                {
+                    path: '/order_admin_add3',
+                    name:'order_admin_add3',
+                    component: () =>
+                        import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/order/order_admin_add3.vue'),
+                    meta: { title: '管理员-期末订单' }
+
                 },
                 {
                     path: '/order_admin',
@@ -244,14 +266,24 @@ export default new Router({
                 },
                 {
                     path: '/distribution_admin_affirm',
-
+                    name:'distribution_admin_affirm',
                     component: () =>
                         import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_affirm.vue'),
                     meta: { title: '管理员-试卷分发-试卷确认' }
+
                 },
                 {
-                    path: '/distribution_school_affirm',
+                    path: '/distribution_admin_order_affirm',
+                    name:'distribution_admin_order_affirm',
+                    component: () =>
+                        import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_order_affirm.vue'),
+                    meta: { title: '管理员-订单详情' }
 
+                },
+               
+                {
+                    path: '/distribution_school_affirm',
+                    name:'distribution_school_affirm',
                     component: () =>
                         import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_school_affirm.vue'),
                     meta: { title: '学校-试卷分发-试卷确认' }

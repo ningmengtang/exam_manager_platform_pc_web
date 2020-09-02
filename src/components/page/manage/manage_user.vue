@@ -100,7 +100,13 @@
 					<div class="label" v-for="card in data.tag_list">{{ card.text }}</div>
 
 				</div>
-				<div class="time">{{data.putInto == 0?'入库失败':data.putInto == 1?'入库成功':data.putInto==2?'正在入库':''}}</div>
+				<div class="right">	
+					<div class="time" style="width:120px">{{data.putInto == 0?'入库失败':data.putInto == 1?'入库成功':data.putInto==2?'正在入库':''}}</div>
+					<div >
+						<el-button type="success" size="medium" @click="openFile(data)" >预览</el-button>
+					</div>
+				</div>
+				
 			</div>
 			<!-- 分页 -->
 			<div class="page">
@@ -120,7 +126,8 @@ import {
 		teacherIndex,
 		teacherSelectTag,
 		teacherDistributeselect,
-		apiPaperWithTagList
+		apiPaperWithTagList,
+		apicommonExamGetFile
 	} from '@/api/api.js'
 export default {
 	data() {
@@ -216,6 +223,36 @@ export default {
 				this.total= res.data.data.total
 				this.currentPage= res.data.data.pageNum
 			})
+		},
+		openFile(item){
+			if(item.affix){
+				apicommonExamGetFile(item.id).then(res=>{
+					// console.log(res)
+					var headers = res.headers['content-disposition']
+					// console.log(headers)
+					headers = headers.substring(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
+					const blob = new Blob([res.data],{type:''})
+					let link = document.createElement('a');
+					let objectUrl = URL.createObjectURL(blob);
+					link.setAttribute("href",objectUrl);
+					link.setAttribute("download",headers); 
+					link.click();
+					//释放内存
+					window.URL.revokeObjectURL(link.href)
+				})
+			}else{
+				let  createTestPaperInfoObj = {
+			 		testPaperId:item.id,
+			        students:[
+			          {
+			            uid:localStorage.getItem('userID'),
+						utype:"user",
+			  			items:[]
+			          }
+			        ]
+			      }
+				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+			}
 		},
 		TagTypePromise(tagType, index) {
 				return new Promise((resolve, reject) => {

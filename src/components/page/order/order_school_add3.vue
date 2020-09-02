@@ -27,13 +27,13 @@
 					</el-input>
 				</el-form-item>
 				<el-form-item label="联系电话">
-					<el-input v-model="form.contact_phone"></el-input>
+					<el-input v-model="form.contact_phone" ></el-input>
 				</el-form-item>
 				<el-form-item label="收货人员">
-					<el-input v-model="form.contacts"></el-input>
+					<el-input v-model="form.contacts" ></el-input>
 				</el-form-item>
 				<el-form-item label="收货地址">
-					<el-input v-model="form.contact_address"></el-input>
+					<el-input v-model="form.contact_address" ></el-input>
 				</el-form-item>
 			</el-form>
 			<div class="buttom-box">
@@ -92,7 +92,11 @@
 			</div>
 		</div>
 		<!-- 操作1 -->
-		<el-dialog title="添加订购" :visible.sync="dialogTableVisible" width="1600px">
+		<el-dialog title="添加订购" :visible.sync="dialogTableVisible" width="1700px">
+            <el-alert
+                title="1、购买一科期末试卷加20元/送学校一科测评服务，购买两科期末试卷加10元/送学校两科科测评服务，购买三科期末试卷免费赠送三科测评服务。"
+                type="warning">
+            </el-alert>
             <div class="dialogTop" >
                 <span > 年份：</span>
                 <el-select v-model="paper.year" placeholder="请选择年份" @change="changeYear">
@@ -102,52 +106,7 @@
                         :value="item.id">
                     </el-option>
                 </el-select>
-                <span style="margin-left:8px">
-                    学期：
-                </span>
-                <el-select v-model="paper.test" placeholder="请选择单元" @change="changeTest">
-                    <el-option
-                        v-for="item in tagList.semester"
-                        :label="item.text"
-                        :value="item.id">
-                    </el-option>
-                </el-select>
             </div>
-            <!-- <el-row :gutter="20">
-                <el-col :span="4">
-                    <div class="grid-content bg-purple">
-                        年份
-                    </div>
-                </el-col>
-                <el-col :span="8">
-                    <div class="grid-content bg-purple">
-                        <el-select v-model="paper.year" placeholder="请选择年份">
-                            <el-option
-                                v-for="item in tagList.years"
-                                :label="item.text"
-                                :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </div>
-                </el-col>
-                <el-col :span="4">
-                    <div class="grid-content bg-purple">
-                        单元
-                    </div>
-                </el-col>
-                <el-col :span="8">
-                    <div class="grid-content bg-purple">
-                        <el-select v-model="paper.test" placeholder="请选择单元">
-                            <el-option
-                                v-for="item in tagList.element_test"
-                                :label="item.text"
-                                :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </div>
-                </el-col>
-            </el-row> -->
-            
             <el-row :span="24">
                <table>
                 <tr>
@@ -164,10 +123,34 @@
                 </tr>
                 <tr>
                     <td style="width:80px">
-                        增订人数（年级人数尾数需是0或5）
+                        40张/袋
                     </td>
                     <td v-for="(item,index) in tagList.grade"  :key="index"> 
-                        <el-input-number v-model="UpdatenNum[index]"  :min="5" :step="5"  step-strictly @change="changeNum(index)"></el-input-number>
+                        <el-input-number v-model="bagNum[index].sheet_40_bug"  :min="0" :step="1"  step-strictly @change="changeNum(index)"></el-input-number>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:80px">
+                        30张/袋
+                    </td>
+                    <td v-for="(item,index) in tagList.grade"  :key="index"> 
+                        <el-input-number v-model="bagNum[index].sheet_30_bug"  :min="0" :step="1"  step-strictly @change="changeNum(index)"></el-input-number>
+                    </td>
+                </tr>
+                 <tr>
+                    <td style="width:80px">
+                       20张/袋
+                    </td>
+                    <td v-for="(item,index) in tagList.grade"  :key="index"> 
+                        <el-input-number v-model="bagNum[index].sheet_20_bug"  :min="0" :step="1"  step-strictly @change="changeNum(index)"></el-input-number>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:80px">
+                        5张/袋
+                    </td>
+                    <td v-for="(item,index) in tagList.grade"  :key="index"> 
+                        <el-input-number v-model="bagNum[index].sheet_5_bug"  :min="0" :step="1"  step-strictly @change="changeNum(index)"></el-input-number>
                     </td>
                 </tr>
                 <tr>
@@ -177,7 +160,7 @@
                     <td v-for="(item,index) in tagList.grade"  :key="index"> 
                         <el-input
                             style="width:180px"
-                            v-model="Allmoney[index]"
+                            v-model="orderItemList[index].allTotal"
                             :disabled="true"
                             >
                         </el-input>
@@ -192,8 +175,8 @@
                         <span v-if="subject[index]">
                             已选：{{subject[index]}}
                         </span>
-                        <span v-if="Allmoney[index]">
-                            合计：{{Allmoney[index]}}元
+                        <span v-if="orderItemList[index].allTotal">
+                            合计：{{orderItemList[index].allTotal}}元
                         </span>
                     </p>   
                </div>
@@ -209,7 +192,7 @@
 	import Schart from 'vue-schart'
 	import ICountUp from 'vue-countup-v2'
 	import user from '../../common/user'
-	import {AdminOrderPriceSelect,selectTag,AdminOrderTagAdd,AdminOrderItemAdd,ApiTagSelectList,AdminOrderAdd,AdminOrderUpload,SchoolOrederDetailsAdd} from '@/api/api.js'
+	import {SchoolOrederEndOfTermDetailsAdd,SchoolOrederEndOfTermDetailsList,AdminOrderPriceSelect,selectTag,AdminOrderTagAdd,AdminOrderItemAdd,ApiTagSelectList,AdminOrderAdd,AdminOrderUpload,AdminOrderEndOfTermAdd} from '@/api/api.js'
 import { forEach } from 'jszip'
 
 	export default {
@@ -234,6 +217,7 @@ import { forEach } from 'jszip'
                     test:'',
                     class:''
                 },
+                bagNum:[],
                 chineseId:'',
                 chineseName:'',
                 mathId:'',
@@ -261,27 +245,12 @@ import { forEach } from 'jszip'
 		methods: {
             addOrderItem(){
                 this.dialogTableVisible = true
-                for(var i=0;i<this.tagList.grade.length;i++){
+                for(var i=0;i<this.tagList.grade.length + 1;i++){
                     this.subject.push([])
                 }
-
-                for(var a=0;a<this.tagList.grade.length;a++){
-                    this.orderItemList.push({
-                        "children":[],
-                        "childrenName":[],
-                        "classId":'',
-                        "updateNum":'',
-                        "total":'',
-                        "year":'',
-                        "test":'',
-                        "className":'',
-                        "yearName":'',
-                        "testName":'',
-                        "name":'',
-
-                    })
-                }
-                // console.log(this.subject)
+                
+                
+               
             },
             // 改变年份
             changeYear(){
@@ -296,39 +265,45 @@ import { forEach } from 'jszip'
                     this.orderItemList[i].year = this.paper.year
                     this.orderItemList[i].yearName = yearName
                 }
-               
-                // console.log(this.orderItemList)
             },
-            // 改变单元
-            changeTest(){
-                let testName = ''
-                this.tagList.semester.forEach(element=>{
-                    if(element.id == this.paper.test){
-                        testName = element.text
-                    }
-                })
-                for(var i=0;i<this.orderItemList.length;i++){
-                    this.orderItemList[i].test = this.paper.test
-                    this.orderItemList[i].testName = testName
-                }
-                // console.log(this.orderItemList)
-            },
+            // // 改变单元
+            // changeTest(){
+            //     let testName = ''
+            //     this.tagList.semester.forEach(element=>{
+            //         if(element.id == this.paper.test){
+            //             testName = element.text
+            //         }
+            //     })
+            //     for(var i=0;i<this.orderItemList.length;i++){
+            //         this.orderItemList[i].test = this.paper.test
+            //         this.orderItemList[i].testName = testName
+            //     }
+            // },
             // 年级
             changeSub(index,id){
                 this.orderItemList[index].classId = id
-                let className = ''
+                this.orderItemList[index].need_appraisal = false
                 this.tagList.grade.forEach(element=>{
                     if(element.id == id){
                         this.orderItemList[index].className = element.text
-                        className = element.text
                     }
                 })
+
                 this.orderItemList[index].children = []
                 this.orderItemList[index].childrenName = []
                
                 for(var i=0;i<this.subject[index].length;i++){
-                    this.orderItemList[index].childrenName.push(this.subject[index][i])
-                    
+                    if(this.subject[index][i] == '测评'){
+                        if(this.subject[index].length <= 1 ){
+                            this.$message.warning('不能单选测评')
+                            this.orderItemList[index].allTotal = 0
+                            return
+                        }else{
+                            this.orderItemList[index].need_appraisal = true
+                        }
+                    }else{
+                        this.orderItemList[index].childrenName.push(this.subject[index][i])
+                    }
                 }
                 for(var a=0;a<this.orderItemList[index].childrenName.length;a++){
                     let item = this.orderItemList[index].childrenName[a]
@@ -343,186 +318,165 @@ import { forEach } from 'jszip'
             },
             // 征订人数
             changeNum(index){
-                this.orderItemList[index].updateNum =  this.UpdatenNum[index]
+                // 计算总人数
+                this.orderItemList[index].allPeppleNum = 0
+                this.orderItemList[index].sheet_5_bug = this.bagNum[index].sheet_5_bug
+                this.orderItemList[index].sheet_20_bug = this.bagNum[index].sheet_20_bug
+                this.orderItemList[index].sheet_30_bug = this.bagNum[index].sheet_30_bug
+                this.orderItemList[index].sheet_40_bug = this.bagNum[index].sheet_40_bug
+                this.orderItemList[index].allPeppleNum = Number(this.bagNum[index].sheet_5_bug*5) + Number(this.bagNum[index].sheet_20_bug*20) + Number(this.bagNum[index].sheet_30_bug*30) + Number(this.bagNum[index].sheet_40_bug*40)
                 this.getMoney(index)
             },
             // 计算总数和折扣
             getMoney(index){
-                this.orderItemList[index].total = 0
-                this.Allmoney[index] = 0
-                for(var i=0;i<this.selectiveList.length;i++){
-                    // console.log( this.selectiveList[i].tag_id)
-                    this.orderItemList[index].childrenName.forEach(element => {
-                        if(element == this.selectiveList[i].subNameCh){
-                            this.orderItemList[index].total = Number(this.orderItemList[index].total)  + Number(this.selectiveList[i].priceForOne * this.orderItemList[index].updateNum)
+                // 判断选了几门科目
+                // 一到三 8元
+                // 四到六 15元
+                this.orderItemList[index].allTotal = 0
+
+                // console.log(this.orderItemList[index].children)
+                if(this.orderItemList[index].children.length == 1){
+                     
+                    // 是否勾选了评测
+                    if(this.orderItemList[index].need_appraisal){
+                        // 判断几年级
+                        if(this.orderItemList[index].className == '一年级' || this.orderItemList[index].className == '二年级' || this.orderItemList[index].className == '三年级'){
+                            // 一到三 8元 + 20元评测
+                            this.orderItemList[index].allTotal = (this.orderItemList[index].allPeppleNum  * 8) + (this.orderItemList[index].allPeppleNum  * 20)
+                        }else if(this.orderItemList[index].className == '四年级' || this.orderItemList[index].className == '五年级' || this.orderItemList[index].className == '六年级'){
+                            // 四到六 15元 + 20元评测
+                            this.orderItemList[index].allTotal = (this.orderItemList[index].allPeppleNum  * 15) + (this.orderItemList[index].allPeppleNum  * 20)
                         }
-                    });
+                    }else{
+                        // this.orderItemList[index].need_apprai
+                        // 判断几年级
+                        if(this.orderItemList[index].className == '一年级' || this.orderItemList[index].className == '二年级' || this.orderItemList[index].className == '三年级'){
+                            // 一到三 8元 
+                            this.orderItemList[index].allTotal = this.orderItemList[index].allPeppleNum  * 8
+                        }else if(this.orderItemList[index].className == '四年级' || this.orderItemList[index].className == '五年级' || this.orderItemList[index].className == '六年级'){
+                            // 四到六 15元
+                            this.orderItemList[index].allTotal = this.orderItemList[index].allPeppleNum  * 15
+                        }
+                    }
+                }else if(this.orderItemList[index].children.length == 2){
+                    // 是否勾选了评测
+                   
+                    if(this.orderItemList[index].need_appraisal){
+                        // 判断几年级
+                        if(this.orderItemList[index].className == '一年级' || this.orderItemList[index].className == '二年级' || this.orderItemList[index].className == '三年级'){
+                            // 一到三 8元 + 20元评测
+                            this.orderItemList[index].allTotal = (this.orderItemList[index].allPeppleNum  * 8 * 2) + (this.orderItemList[index].allPeppleNum   * 10)
+                        }else if(this.orderItemList[index].className == '四年级' || this.orderItemList[index].className == '五年级' || this.orderItemList[index].className == '六年级'){
+                            // 四到六 15元 + 20元评测
+                            this.orderItemList[index].allTotal = (this.orderItemList[index].allPeppleNum  * 15 * 2 ) + (this.orderItemList[index].allPeppleNum  * 10)
+                        }
+                    }else{
+                        // 判断几年级
+                        if(this.orderItemList[index].className == '一年级' || this.orderItemList[index].className == '二年级' || this.orderItemList[index].className == '三年级'){
+                            // 一到三 8元 
+                            this.orderItemList[index].allTotal = this.orderItemList[index].allPeppleNum  * 8 * 2
+                        }else if(this.orderItemList[index].className == '四年级' || this.orderItemList[index].className == '五年级' || this.orderItemList[index].className == '六年级'){
+                            // 四到六 15元
+                            this.orderItemList[index].allTotal = this.orderItemList[index].allPeppleNum  * 15 * 2
+                        }
+                    }
+                }else if(this.orderItemList[index].children.length == 3){
+                   
+                    // 判断几年级
+                    // 默认勾选测评
+                    // console.log(this.subject[index])
+                    if(this.subject[index].length == 3){
+                        this.subject[index].push('测评')
+                    }
+                    this.orderItemList[index].need_appraisal = true
+                    // if()
+
+                    if(this.orderItemList[index].className == '一年级' || this.orderItemList[index].className == '二年级' || this.orderItemList[index].className == '三年级'){
+                        // 一到三 8元 
+                        this.orderItemList[index].allTotal = this.orderItemList[index].allPeppleNum  * 8 *3
+                    }else if(this.orderItemList[index].className == '四年级' || this.orderItemList[index].className == '五年级' || this.orderItemList[index].className == '六年级'){
+                        // 四到六 15元
+                        this.orderItemList[index].allTotal = this.orderItemList[index].allPeppleNum  * 15 * 3
+                    } 
+                }else{
+                    // console.log(this.orderItemList[index].children.length)
+                    this.orderItemList[index].allTotal = 0
+                    this.bagNum[index].sheet_5_bug = 0
+                    this.bagNum[index].sheet_20_bug = 0
+                    this.bagNum[index].sheet_30_bug = 0
+                    this.bagNum[index].sheet_40_bug = 0
                 }
-                if(this.orderItemList[index].children.length == 2){
-                    // 两份打9折
-                    this.orderItemList[index].total =  this.orderItemList[index].total  * 0.9
-                }else if(this.orderItemList[index].children.length > 2){
-                    // 两份以上打8折
-                    this.orderItemList[index].total =  this.orderItemList[index].total  * 0.8
-                }
-                this.Allmoney[index] = this.orderItemList[index].total
-                this.$forceUpdate();
-                
             },
             // 确定订单项
             onSubmit(){
+                // console.log(this.orderItemList)
                 this.orderList = []
-                this.Allsubscriptions = 0
+                this.Allsubscriptions =0
                 this.Alltotalmoney = 0
                 for(var i=0;i<this.orderItemList.length;i++){
-
-                    if(this.orderItemList[i].children.length == 0 && this.orderItemList[i].updateNum =='' && this.orderItemList[i].total ==''){
+                    if(this.orderItemList[i].children.length <=0 || this.orderItemList[i].allTotal <= 0){
                         continue
                     }else{
                         let item = this.orderItemList[i]
-                        // for(var a=0;a<item.childrenName.length;a++){
-                        //     if(item.childrenName[a] == '语文'){
-                        //         this.orderList.push({
-                        //             "name":item.yearName + item.className + item.testName + item.childrenName[a] ,
-                        //             "children":[item.year,item.classId,item.test,item.children[a],this.chineseId],
-                        //             "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName],
-                        //             "updateNum":item.updateNum,
-                        //             "total_price":item.total   
-                        //         })
-                        //     }else if(item.childrenName[a] == '数学'){
-                        //         this.orderList.push({
-                        //             "name":item.yearName + item.className +item.testName + item.childrenName[a] ,
-                        //             "children":[item.year,item.classId,item.test,item.children[a],this.mathId],
-                        //             "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName],
-                        //             "updateNum":item.updateNum,
-                        //             "total_price":item.total,
-                        //             "uploadFile":''  
-                        //         })
-                        //     }else if(item.childrenName[a] == '英语'){
-                        //         this.orderList.push({
-                        //             "name":item.yearName + item.className + item.testName + item.childrenName[a] ,
-                        //             "children":[item.year,item.classId,item.test,item.children[a],this.englishId],
-                        //             "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName],
-                        //             "updateNum":item.updateNum,
-                        //             "total_price":item.total,
-                        //             "uploadFile":''
-                        //         })
-                        //     } 
-                        // }
                         for(var a=0;a<item.childrenName.length;a++){
                             if(item.childrenName[a] == '语文'){
-                                for(let k=0;k<this.chinesemMinCount;k++){
-                                    this.orderList.push({
-                                        "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[k].text,
-                                        "children":[item.year,item.classId,item.test,item.children[a],this.chineseId,this.tagList.element_test[k].id],
-                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName,this.tagList.element_test[k].text],
-                                        "updateNum":item.updateNum,
-                                        "total_price":item.total,
-                                        
-                                    })
-                                }
+                                this.orderList.push({
+                                    'name':item.yearName + item.className + item.childrenName[a] + item.testName + this.chineseName ,
+                                    "children":[item.year,item.classId,item.children[a],item.test,this.chineseId],
+                                    "count":item.allPeppleNum,
+                                    "sheet_20_bug": item.sheet_20_bug,
+                                    "sheet_30_bug": item.sheet_30_bug,
+                                    "sheet_40_bug": item.sheet_40_bug,
+                                    "sheet_5_bug": item.sheet_5_bug,
+                                    "need_appraisal":item.need_appraisal
+                                })
                             }else if(item.childrenName[a] == '数学'){
-                                for(let j=0;j<this.mathMinCount;j++){
-                                    this.orderList.push({
-                                        "name":item.yearName + item.className +item.testName + item.childrenName[a] + this.tagList.element_test[j].text,
-                                        "children":[item.year,item.classId,item.test,item.children[a],this.mathId,this.tagList.element_test[j].id],
-                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName,this.tagList.element_test[j].text],
-                                        "updateNum":item.updateNum,
-                                        "total_price":item.total,
-                                        "uploadFile":''
-                                        
-                                    })
-                                }
-                                
-
+                                this.orderList.push({
+                                    'name':item.yearName + item.className + item.childrenName[a] + item.testName + this.mathName ,
+                                    "children":[item.year,item.classId,item.children[a],item.test,this.mathId],
+                                    "count":item.allPeppleNum,
+                                    "sheet_20_bug": item.sheet_20_bug,
+                                    "sheet_30_bug": item.sheet_30_bug,
+                                    "sheet_40_bug": item.sheet_40_bug,
+                                    "sheet_5_bug": item.sheet_5_bug,
+                                    "need_appraisal":item.need_appraisal
+                                })
                             }else if(item.childrenName[a] == '英语'){
-                                for(let l=0;l<this.englishMinCount;l++){
-                                    this.orderList.push({
-                                        "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[l].text,
-                                        "children":[item.year,item.classId,item.test,item.children[a],this.englishId,this.tagList.element_test[l].id],
-                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName,this.tagList.element_test[l].text],
-                                        "updateNum":item.updateNum,
-                                        "total_price":item.total,
-                                        "uploadFile":''
-                                    })
-                                }
-                            } 
+                                this.orderList.push({
+                                    'name':item.yearName + item.className + item.childrenName[a] + item.testName + this.englishName ,
+                                    "children":[item.year,item.classId,item.children[a],item.test,this.englishId],
+                                    "count":item.allPeppleNum,
+                                    "sheet_20_bug": item.sheet_20_bug,
+                                    "sheet_30_bug": item.sheet_30_bug,
+                                    "sheet_40_bug": item.sheet_40_bug,
+                                    "sheet_5_bug": item.sheet_5_bug,
+                                    "need_appraisal":item.need_appraisal
+                                })
+                            }  
                         }
-                        this.Allsubscriptions =this.Allsubscriptions +  this.orderItemList[i].updateNum
-                        this.Alltotalmoney = this.Alltotalmoney +  this.orderItemList[i].total
+                        this.Allsubscriptions =Number(this.Allsubscriptions)  +Number(this.orderList[i].count) 
+                        this.Alltotalmoney = Number(this.Alltotalmoney) +  Number(this.orderItemList[i].allTotal)
                     }
+                    
                 }
-               
-
                 this.detailsList = []
                 for(var k=0;k<this.tagList.grade.length;k++){
-                    if(this.Allmoney[k] == undefined ||  this.Allmoney[k] ==0){
-                        continue
-                    }else{
+                    if(this.orderItemList[k].allTotal){
                         this.detailsList.push({
                             "class":this.tagList.grade[k].text,
                             "subject":this.subject[k],
-                            "Allmoney":this.Allmoney[k],
-                            "updateNum":this.orderItemList[k].updateNum
+                            "Allmoney":this.orderItemList[k].allTotal,
+                            "updateNum":this.orderItemList[k].allPeppleNum
                         })
-                        
+                    }else{
+                        continue
                     }
                 }
-                // console.log(this.detailsList)
+                console.log(this.detailsList)
                 this.dialogTableVisible = false
+
+
             },
-            // 新建订单项
-            // getOrderItem(id,sn,orderItem){
-            //     AdminOrderItemAdd({
-            //         "count":orderItem.updateNum,
-            //         "title":orderItem.name,
-            //         "order_sn":sn,
-            //         "order_id":id
-            //     }).then(res=>{
-            //         if(res.data.result){
-            //             let itemId = res.data.data.id
-            //             if(orderItem.uploadFile){
-            //                 AdminOrderUpload(itemId,orderItem.uploadFile).then(res=>{
-			// 					if(res.data.result){
-			// 						for(var i=0;i<orderItem.children.length;i++){
-			// 							let item = orderItem.children[i]
-			// 							AdminOrderTagAdd({
-			// 								"item_id":itemId,
-			// 								"tag_id":item
-			// 							}).then(res=>{
-			// 								if(res.data.result){
-
-			// 								}else{
-			// 									this.$message.error(res.data.message)
-			// 								}
-			// 							})
-			// 						}
-			// 						// this.$message.success('新增成功')
-								
-			// 					}else{
-			// 						this.$message.error(res.data.message)
-			// 					}
-			// 				})
-            //             }else{
-            //                 for(var i=0;i<orderItem.children.length;i++){
-			// 					let item = orderItem.children[i]
-			// 					AdminOrderTagAdd({
-			// 						"item_id":itemId,
-			// 						"tag_id":item
-			// 					}).then(res=>{
-			// 						if(res.data.result){
-
-			// 						}else{
-			// 							this.$message.error(res.data.message)
-            //                         }
-
-
-			// 					})
-			// 				}
-            //             }
-            //         }
-            //     })
-            // },
             // 确认订单
             placeOrder(){
                 const loading = this.$loading({
@@ -542,12 +496,19 @@ import { forEach } from 'jszip'
                         })
                     }
                     orderItems.push({
-                        "count":this.orderList[i].updateNum,
+                        "count":this.orderList[i].count,
                         "title":this.orderList[i].name,
-                        "tag_list":tag_list      
+                        "tag_list":tag_list,
+                        "need_appraisal": this.orderList[i].need_appraisal,
+                        "sheet_20_bug": this.orderList[i].sheet_20_bug,
+                        "sheet_30_bug": this.orderList[i].sheet_30_bug,
+                        "sheet_40_bug": this.orderList[i].sheet_40_bug,
+                        "sheet_5_bug": this.orderList[i].sheet_5_bug
                     })
                 }
-                AdminOrderAdd({
+                
+               
+                AdminOrderEndOfTermAdd({
                     "count":this.Allsubscriptions,
                     "style_count":this.orderList.length,
                     "contact_phone":this.form.contact_phone,
@@ -556,11 +517,11 @@ import { forEach } from 'jszip'
                     "total_price":this.Alltotalmoney,
                     "orderItems":orderItems
                 }).then(res=>{
+                    loading.close();
                     if(res.data.result){
                         let id = res.data.data.id
                         let sn = res.data.data.sn
                         let orderItems = res.data.data.orderItems
-                        // console.log(orderItems)
                         let one = ''
                         let two = ''
                         let three = ''
@@ -568,9 +529,7 @@ import { forEach } from 'jszip'
                         let five = ''
                         let six = ''
                         for(var b=0;b<orderItems.length;b++){
-                            // console.log(orderItems)
-                            if(orderItems[b].title.indexOf("一年级" ) != -1){
-                                
+                            if(orderItems[b].title.indexOf("一年级" ) != -1){ 
                                 one = orderItems[b].id
                             }else if(orderItems[b].title.indexOf("二年级" ) != -1){
                                 two = orderItems[b].id
@@ -586,11 +545,7 @@ import { forEach } from 'jszip'
                             else if(orderItems[b].title.indexOf("六年级" ) != -1){
                                 six = orderItems[b].id
                             }
-                            
                         }
-                      
-                        // console.log(one)
-                        // console.log(two)
                         for(var a=0;a<this.detailsList.length;a++){
                             // let order_item_ids = ''
                             if(this.detailsList[a].class == '一年级'){
@@ -607,17 +562,16 @@ import { forEach } from 'jszip'
                             }
                             else if(this.detailsList[a].class == '六年级'){
                                 this.getDetailsList(this.detailsList[a],id,sn,six)
-                            }
+                            } 
                         }
                         this.$message.success('提交成功')
                         this.$router.push('/order_school')
                         loading.close();
-                        
                     }else{
                         this.$message.error(res.data.message)
                     }
                 }).catch(()=>{
-                    loading.close();
+                     loading.close();
                 })
             },
             async getDetailsList(item,id,sn,order_item_ids){
@@ -625,7 +579,7 @@ import { forEach } from 'jszip'
             },
             detailsPromise(item,id,sn,order_item_ids){
                 return new Promise((resolve,reject)=>{
-                    SchoolOrederDetailsAdd({
+                    SchoolOrederEndOfTermDetailsAdd({
                         "order_id": id,
                         "order_sn": sn,
                         "classes":item.class,
@@ -643,34 +597,51 @@ import { forEach } from 'jszip'
                     })
                 })
             }
-
 		},
 		mounted() {
 			this.color = user().color;
 			// 获取各个标签
 			selectTag().then(res=>{
                 this.tagList = res.data.data
-                // console.log(this.tagList)
+                for(var k=0;k<this.tagList.grade.length;k++){
+                    this.bagNum.push({
+                        sheet_40_bug:'',
+                        sheet_30_bug:'',
+                        sheet_20_bug:'',
+                        sheet_5_bug:''
+                    })
+                }
+                for(var a=0;a<this.tagList.grade.length;a++){
+                    this.orderItemList.push({
+                        "children":[],
+                        "childrenName":[],
+                        "classId":'',
+                        "allTotal":0,
+                        "year":'',
+                        "test":37,
+                        "className":'',
+                        "yearName":'',
+                        "testName":'期末考试',
+                        "name":'',
+                        "need_appraisal":false,
+                        "allPeppleNum":0,
+                        "sheet_20_bug": 0,
+                        "sheet_30_bug": 0,
+                        "sheet_40_bug": 0,
+                        "sheet_5_bug": 0,
+                    })
+                }
             })
-
             // 获取订购数量管理
             AdminOrderPriceSelect({}).then(res=>{
                 this.selectiveList = res.data.data.list
-                for(var i=0;i<this.selectiveList.length;i++){
-                    if(this.selectiveList[i].subNameCh == '语文'){
-                      
-                        this.chinesemMinCount = this.selectiveList[i].minCount
-                     
-                    }else if(this.selectiveList[i].subNameCh == '英语'){
-                        
-                        this.englishMinCount = this.selectiveList[i].minCount
-                     
-                    }else if(this.selectiveList[i].subNameCh == '数学'){
-                        
-                        this.mathMinCount = this.selectiveList[i].minCount
-                      
-                    }
-                }
+                // console.log(this.selectiveList)
+                this.selectiveList.push({
+                    "subNameCh":'测评',
+                    "price":20,
+                    "id":'test'
+                })
+               
             })
             
             // 获取语文、数学、英语版本
@@ -681,7 +652,6 @@ import { forEach } from 'jszip'
             }).then(res=>{
                 this.chineseId = res.data.data.list[0].id
                 this.chineseName = res.data.data.list[0].text
-
             })
             ApiTagSelectList({
                 "pageNum": 1,
@@ -706,3 +676,12 @@ import { forEach } from 'jszip'
 	};
 </script>
 <style scoped src="../../../assets/css/order-add.css"></style>
+<style scoped>
+table tr td {
+    height: 100px;
+    line-height: 30px;
+    border: 1px solid #ccc;
+    width: 265px;
+    text-align: center;
+}
+</style>
