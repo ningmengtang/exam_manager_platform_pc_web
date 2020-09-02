@@ -44,7 +44,7 @@
 			</el-row>
 		</div>
 		<div class="papers-box" v-loading="loading">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi" @click="downloadFile(d)" style="cursor: pointer;">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi" @click="downloadFile(d)" style="cursor: pointer">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>

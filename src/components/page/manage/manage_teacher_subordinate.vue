@@ -33,10 +33,10 @@
 				<div class="other">班级:{{data.student.classes.name}}</div>
 				<div class="time">{{ data.student.createDate }}</div>
 				<!-- <div class="label-box">
-					<div class="label">{{ data.label }}</div>
+					<div class="label">{{ data.label }}</div> 
 					<div class="label">人教版</div>
 					<div class="label">语文</div>
-					<div class="label">一年级</div>
+					<div class="label">一年级</div> 
 				</div> -->
 				<div class="right">
 					<div class="ii">
