@@ -3,6 +3,7 @@
 		<div class="message-row">
 			<el-row :gutter="20" type="flex">
 				<el-col :span="8">
+					<router-link :to="{path:'manage_student'}">
 					<div class="grid-content bg-purple">
 						<div class="card-left">
 							<div class="card-c">全部试卷</div>
@@ -12,8 +13,10 @@
 						</div>
 						<div class="card-right"></div>
 					</div>
+					</router-link>
 				</el-col>
 				<el-col :span="8">
+					<router-link :to="{path:'manage_student'}">
 					<div class="grid-content bg-purple" :style="style.card_2">
 						<div class="card-left">
 							<div class="card-c">可以下载</div>
@@ -23,8 +26,10 @@
 						</div>
 						<div class="card-right" :style="style.cardRight_2"></div>
 					</div>
+					</router-link>
 				</el-col>
 				<el-col :span="8">
+					<router-link :to="{path:'manage_student'}">
 					<div class="grid-content bg-purple" :style="style.card_3">
 						<div class="card-left">
 							<div class="card-c">下载失效</div>
@@ -34,11 +39,12 @@
 						</div>
 						<div class="card-right" :style="style.cardRight_3"></div>
 					</div>
+					</router-link>
 				</el-col>
 			</el-row>
 		</div>
 		<div class="papers-box" v-loading="loading">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi" @click="downloadFile(d)" style="cursor: pointer;">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi" @click="downloadFile(d)" style="cursor: pointer">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
@@ -55,11 +61,11 @@
 					<div class="p-time">
 						结束下载时间：{{d.overTime}}
 					</div>
-					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0?'可以下载':'不允许下载'}}</div>
-					<i  class="p-status-icon el-icon-download" v-if="d.status == 0">
+					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0 && d.putInto == 1?'可以下载':'不允许下载'}}</div>
+					<i  class="p-status-icon el-icon-download" v-if="d.status == 0 && d.putInto == 1">
 						
 					</i>
-					<i  class="p-status-icon el-icon-close"  v-if="d.status == 1">
+					<i  class="p-status-icon   el-icon-close " style="color: rgb(242, 94, 67);"   v-if="d.status == 1 || d.putInto == 0"  >
 						
 					</i>
 

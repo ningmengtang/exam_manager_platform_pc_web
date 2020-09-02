@@ -22,24 +22,26 @@
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
-			<div class="li" v-for="(data, i) in li" :key="data.i">
-				<!-- <img src="../../../assets/img/img.jpg" class="user-img" /> -->
+			<div class="select_box">
+				<el-select v-model="gradeDefault" placeholder="请选择年级" class="ll" clearable @change="selectCondition">
+					<el-option v-for="(item,i) in classes" :key="item.i" :label="item.grade" :value="item.grade">
+					</el-option>
+				</el-select>
+				<el-select v-model="classDefault" placeholder="请选择班级" class="ll" clearable @change="selectCondition">
+					<el-option v-for="(item,i) in classes" :key="item.i" :label="item.name" :value="item.sort">
+					</el-option>
+				</el-select>
+			</div>
+			<!-- <div class="li" v-for="(data, i) in li" :key="data.i">
 				<div class="teacher-name">ID:{{data.id}}</div>
 				<div class="title-box">
 					<div class="synopsis">{{ data.name }}</div>
 				</div>
 				<div class="title-box">
-					<!-- <div class="title">{{ data.mobile }}</div> -->
 					<div class="other" v-if="typeStatus=='student'">身份证:{{data.idCard}}</div>
 					<div class="other" v-else>手机号码：{{ data.mobile }}</div>
 				</div>
 				<div class="time">{{ data.createDate }}</div>
-				<!-- <div class="label-box">
-					<div class="label">{{ data.label }}</div>
-					<div class="label">人教版</div>
-					<div class="label">语文</div>
-					<div class="label">一年级</div>
-				</div> -->
 				<div class="right">
 					<div class="ii">
 						<div class="status_box">
@@ -50,7 +52,48 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
+			<el-table :data="li" :height="680" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
+				<el-table-column prop="id"  sortable label="ID" width="180">
+				</el-table-column>
+				<el-table-column prop="name" sortable :label="(typeStatus=='student'?'学生姓名':'教师姓名')">
+				</el-table-column>
+				<el-table-column prop="idCard" sortable label="身份证号码" width="180" v-if="typeStatus=='student'">
+				</el-table-column>
+				<el-table-column prop="mobile" sortable label="手机号码" width="180" v-if="typeStatus=='teacher'">
+				</el-table-column>
+				<el-table-column prop="schoolName" sortable label="学校" width="180" v-if="typeStatus=='student'||typeStatus=='teacher'">
+				</el-table-column>
+				//学生年级班级
+				<el-table-column prop="classes.grade" sortable v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
+				</el-table-column>
+				<el-table-column prop="classes.name"  sortable v-if="typeStatus=='student'" label="班级" width="180" :key="Math.random()">
+				</el-table-column>
+				//老师年级班级
+				<el-table-column v-if="typeStatus=='teacher'" prop="list_cla.grade" label="年级"  sortable width="180" :key="Math.random()">
+					<template slot-scope="scope" v-if="typeStatus=='teacher'">
+						<div v-for="(data, i) in scope.row.list_cla" :key="data.i">{{data.grade}}</div>
+					</template>
+				</el-table-column>
+				<el-table-column prop="list_cla.name" label="班级" v-if="typeStatus=='teacher'" sortable width="180" :key="Math.random()">
+					<template slot-scope="scope" v-if="typeStatus=='teacher'">
+						<div v-for="(data, i) in scope.row.list_cla" :key="data.i">{{data.name}}</div>
+					</template>
+				</el-table-column>
+				<el-table-column prop="createDate" sortable label="创建时间">
+				</el-table-column>
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+						<div class="table-icon">
+							<el-button class="icon i el-icon-edit-outline ii" :style="{'cursor':'pointer','color':color}" @click="teacherChange(scope.row.id)"
+							 type="text" size="small">
+							</el-button>
+							<el-button class="icon i el-icon-close  ii" :style="{'cursor':'pointer','color':color}" @click="deleteLi(scope.row.id);dialogVisible=true"
+							 type="text" size="small"></el-button>
+						</div>
+					</template>
+				</el-table-column>
+			</el-table>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="page.pageSize" :total="total">
@@ -58,9 +101,8 @@
 			</div>
 		</div>
 		<!-- 提示框 -->
-		<!-- 	<el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
 		<!-- Table -->
-		<el-dialog title="" :visible.sync="dialogTableVisible">
+		<!-- <el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
 				<div class="t-title">请选择班级</div>
 				<div class="t-content">
@@ -105,11 +147,6 @@
 						<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
 						<el-table-column prop="class" label="班级" show-overflow-tooltip></el-table-column>
 					</el-table>
-					<!-- <div class="page">
-						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
-						</el-pagination>
-					</div> -->
 					<div class="block-time">
 						<div>
 							<span style="margin-right:10px ;">选择日期</span>
@@ -124,7 +161,7 @@
 
 				</div>
 			</div>
-		</el-dialog>
+		</el-dialog> -->
 	</div>
 </template>
 <script>
@@ -133,13 +170,16 @@
 		schoolSelectTeacher,
 		adminDeleteTeacher,
 		StudentAccountInfo,
-		adminDeleteStuednt
+		adminDeleteStuednt,
+		adminSelectRoleType,
+		selectListByOptions
 	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				color: '',
 				schoolId: localStorage.getItem('userID'),
+				tableHeight: 680,
 				checkAll: false,
 				isIndeterminate: true,
 				disStatus: '',
@@ -150,8 +190,11 @@
 				currentPage: 1,
 				dialogVisible: false,
 				cities: ['全部', '分发完成', '正在分发', '分发失败'],
-				class2: ['全部', '一年级', '二年级', '三年级'],
-				class1: ['全部', '一班', '二班', '三班'],
+				class1: [],
+				class2: [],
+				classes: '',
+				gradeDefault: '',
+				classDefault: '',
 				student: [1, 2, 3, 4, 5],
 				checkboxGroup2: ['上海'],
 				page: {
@@ -162,7 +205,7 @@
 				array_nav3: [],
 				array_nav4: {},
 				total: 0,
-				li: '',
+				li: [],
 				typeStatus: 'student',
 				userType: [{
 					name: '学生',
@@ -201,44 +244,14 @@
 			getValue() {
 				switch (this.typeStatus) {
 					case 'student':
-						StudentAccountInfo({
-							pageNum: this.page.pageNum,
-							pageSize: this.page.pageSize,
-							schoolId: this.schoolId
-						}).then(res => {
-							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
-								'查询超时,请刷新重新查询！')
-						})
+						this.selectSql('student')
 						break;
 					case 'teacher':
-						schoolSelectTeacher({
-							pageNum: this.page.pageNum,
-							pageSize: this.page.pageSize,
-							schoolId: this.schoolId
-						}).then(res => {
-							if (res.data) {
-								this.li = res.data.data.list
-								this.total = res.data.data.total
-							} else {
-								this.$message.error(
-									'查询超时,请刷新重新查询！')
-							}
-						})
+						this.selectSql('teacher')
 						break;
 				}
-
 			},
-			handleSizeChange(val) {
-				// this.pageNum = val
-				// schoolSelectTeacher({
-				// 	'pageNum': this.pageNum,
-				// 	'pageSize': this.pageSize,
-				// 	'schoolId': localStorage.getItem('userID')
-				// }).then(res => {
-				// 	console.log(res.data.data)
-				// 	this.li = res.data.data.list
-				// })
-			},
+			handleSizeChange(val) {},
 			handleCurrentChange(val) {
 				this.page.pageNum = val;
 				this.getValue();
@@ -287,22 +300,13 @@
 						adminDeleteStuednt(id).then(res => {
 							this.$message.success('删除成功')
 						})
-						StudentAccountInfo(this.page).then(res => {
-							res.data ? (this.li = res.data.data.list, this.total = res.data.data.total) : this.$message.error(
-								'查询超时,请刷新重新查询！')
-						})
+						this.selectSql('student')
 						break;
 					case 'teacher':
 						adminDeleteTeacher(id).then(res => {
 							this.$message.success('删除成功')
 						})
-						schoolSelectTeacher({
-							'schoolId': localStorage.getItem('userID')
-						}).then(res => {
-							console.log(res.data.data)
-							this.li = res.data.data.list
-							this.total = res.data.data.total
-						})
+						this.selectSql('teacher')
 						break;
 				}
 
@@ -317,19 +321,50 @@
 					}
 
 				})
+			},
+			// 班级查询
+			selectClass() {
+				selectListByOptions({
+					schoolId: this.schoolId
+				}).then(res => {
+					res.data ? (this.classes = res.data.data.list, console.log(res.data.data)) : this.$message.error(
+						'查询超时,请刷新重新查询！')
+				})
+			},
+			//数据查询
+			selectSql(type, condition) {
+				let json = {
+					schoolId: this.schoolId
+				}
+				if (condition != undefined) {
+					json=Object.assign({},json,condition)
+					console.log(json)
+				}
+				if (type == 'student') {
+					StudentAccountInfo(json).then(res => {
+						res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
+							'查询超时,请刷新重新查询！')
+					})
+				} else if (type == 'teacher') {
+					schoolSelectTeacher(json).then(res => {
+						res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
+							'查询超时,请刷新重新查询！')
+					})
+				}
+			},
+			//条件查询
+			selectCondition() {
+				this.selectSql(this.typeStatus, {
+					'grade': this.gradeDefault,
+					'sort': this.classDefault
+				})
+				
 			}
 		},
 		mounted() {
 			this.color = user().color;
-			StudentAccountInfo({
-				pageNum: this.page.pageNum,
-				pageSize: this.page.pageSize,
-				schoolId: this.schoolId
-			}).then(res => {
-				res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
-					'查询超时,请刷新重新查询！')
-			})
-
+			this.selectClass();
+			this.selectSql('student')
 		}
 	};
 </script>
@@ -345,5 +380,10 @@
 		font-size: 14px;
 		margin: 0 20px;
 		color: #999999;
+	}
+
+	.particular {
+		background-color: #FFFFFF;
+		border-radius: 8px;
 	}
 </style>

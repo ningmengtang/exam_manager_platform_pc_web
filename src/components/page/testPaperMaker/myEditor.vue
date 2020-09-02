@@ -50,7 +50,7 @@ export default {
             serverUrl: '/api/temp/image/upload/',  // 这里写你要上传的图片服务器地址
             header: {token: sessionStorage.token},  // 有的图片服务器要求请求头需要有token之类的参数，写在这里
             //uploaderClassUniqueId: this.classUniqueId,
-            detailContent: '', // 富文本内容
+            detailContent: null, // 富文本内容
             editorOption: { //  富文本编辑器配置
                 modules: {
                     syntax: {

@@ -37,7 +37,7 @@ const i18n = new VueI18n({
 });
 //全局变量
 Vue.prototype.global = {
-    loginUserType: localStorage.getItem('loginUserType'),
+    loginUserType: window.localStorage.getItem('loginUserType'),
     loginToken: localStorage.getItem('loginToken'),
     userID: localStorage.getItem('userID'),
     userName: localStorage.getItem('userName')

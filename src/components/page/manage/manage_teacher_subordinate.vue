@@ -29,12 +29,14 @@
 				<div class="title-box">
 					<div class="other">身份证:{{data.student.idCard}}</div>
 				</div>
+				<div class="other">年级:{{data.student.classes.grade}}</div>
+				<div class="other">班级:{{data.student.classes.name}}</div>
 				<div class="time">{{ data.student.createDate }}</div>
 				<!-- <div class="label-box">
-					<div class="label">{{ data.label }}</div>
+					<div class="label">{{ data.label }}</div> 
 					<div class="label">人教版</div>
 					<div class="label">语文</div>
-					<div class="label">一年级</div>
+					<div class="label">一年级</div> 
 				</div> -->
 				<div class="right">
 					<div class="ii">
@@ -130,7 +132,9 @@
 		adminDeleteStuednt,
 		StudentAccountInfo,
 		adminSelectRoleTeacherId,
-		PaperAllotByTeacherIdAndPaperId
+		PaperAllotByTeacherIdAndPaperId,
+		ApiClassSelectListByOptions,
+		apiTeacherAccountSelectByPrimaryKey
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -300,9 +304,10 @@
 			PaperAllotByTeacherIdAndPaperId(
 				this.teacherId
 			).then(res => {
-				res.data ? (this.li = res.data.data, console.log(res.data.data)) : this.$message.error(
-					'查询超时,请刷新重新查询！')
+				console.log(res)
+				this.li = res.data.data
 			})
+
 
 		}
 	};

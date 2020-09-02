@@ -120,7 +120,7 @@ export default function usertype() {
                 })
 
             } else if (loginUserRoleList[i].roleName == '超级管理员') {
-                items.push({
+                items.splice(2, 0,{
                     icon: 'el-icon-s-custom',
                     index: `user_control`,
                     title: '用户管理'

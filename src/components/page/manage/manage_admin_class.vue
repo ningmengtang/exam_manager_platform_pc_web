@@ -10,10 +10,10 @@
 							<div class="name">{{usserName}}</div>
 							<div class="user-id">ID:{{userId}}</div>
 							<div class="identity" :style="{'background-color':color}">管理员</div>
-							<!-- <div class="message">
-								<div class="school">北京师范小学</div>
-								<div class="grade">一年级</div>
-							</div> -->
+							<div class="message">
+								<div class="school">综合管理平台</div>
+								<div class="grade">综合管理平台</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -88,21 +88,21 @@
 					<div class="time"><i class="icon el-icon-close"></i></div>
 				</div> -->
 				<el-table :data="classList" height="480" style="width: 100%">
-					<el-table-column prop="id" label="ID" width="180">
+					<el-table-column prop="id" label="ID" sortable width="180">
 					</el-table-column>
-					<el-table-column prop="schoolName" label="ID" width="180">
+					<el-table-column prop="schoolName" sortable label="学校" width="180">
 					</el-table-column>
-					<el-table-column prop="grade" label="年级" width="180">
+					<el-table-column prop="grade" sortable label="年级" width="180">
 					</el-table-column>
-					<el-table-column prop="name" label="班级">
+					<el-table-column prop="name"  sortable label="班级">
 					</el-table-column>
-					<el-table-column prop="createDate" label="创建时间">
+					<el-table-column prop="createDate" sortable label="创建时间">
 					</el-table-column>
 					<el-table-column fixed="right" label="操作">
 						<template slot-scope="scope">
 							<!-- <el-button class="icon el-icon-edit-outline" type="text" size="small" @click="operation('update',{grade:scope.row.grade,sort:scope.row.sort,id:scope.row.id,schoolId:scope.row.schoolId})">
 							</el-button> -->
-							<el-button class="icon el-icon-close" type="text" size="small" @click="operation('delete',scope.row.id);dialogVisible=true">
+							<el-button class="icon el-icon-close" type="text" size="small" v-show="scope.row.student_num==0" @click="operation('delete',scope.row.id);dialogVisible=true">
 							</el-button>
 						</template>
 					</el-table-column>
@@ -142,7 +142,7 @@
 										<el-radio-button label="5">5班</el-radio-button>
 										<el-radio-button label="6">6班</el-radio-button>
 									</el-radio-group> -->
-									<el-input-number v-model="table_classNum" controls-position="right" @change="handleChange" :min="1" ></el-input-number>
+									<el-input-number v-model="table_classNum" controls-position="right" @change="handleChange" :min="1"></el-input-number>
 								</div>
 							</div>
 						</div>
@@ -150,7 +150,7 @@
 							<div class="row-group">
 								<div class="th-group">学校</div>
 								<div class="td-group" change>
-									<el-select v-model="schoolDefault" placeholder="请选择" >
+									<el-select v-model="schoolDefault" placeholder="请选择">
 										<el-option v-for="(item,i) in school" :key="item.i" :label="item.name" :value="item.id">
 										</el-option>
 									</el-select>
@@ -272,10 +272,12 @@
 					this.page.pageSize = res.data.data.pageSize;
 					this.total = res.data.data.total;
 					this.classList = res.data.data.list;
+					console.log(res.data.data)
 				});
 			},
 			cancel() {
 				this.dialogTableVisible = false
+				this.dialogVisible = false
 			},
 			submit(type) {
 				if (type == 'add') {
@@ -285,7 +287,7 @@
 						"name": `${this.table_yearNum}级${this.table_classNum}班`,
 						"schoolId": this.schoolDefault,
 					}).then(res => {
-						if(res.data.result){
+						if (res.data.result) {
 							this.$message.success('新增班级成功!')
 							ApiClassSelectListByOptions({
 								pageSize: this.page.pageSize,
@@ -297,11 +299,11 @@
 								this.classList = res.data.data.list;
 							});
 							this.cancel();
-						}else{
+						} else {
 							this.$message.error(res.data.message)
 						}
-						
-						
+
+
 					})
 					// 查询班级
 					ApiClassSelectListByOptions({
@@ -322,7 +324,7 @@
 						"name": `${this.table_yearNum}级${this.table_classNum}班`,
 						"schoolId": this.update_data.schoolId,
 					}).then(res => {
-						if(res.data.result){
+						if (res.data.result) {
 							this.$message.success('修改班级成功!')
 							ApiClassSelectListByOptions({
 								pageSize: this.page.pageSize,
@@ -334,11 +336,11 @@
 								this.classList = res.data.data.list;
 							});
 							this.cancel();
-						}else{
+						} else {
 							this.$message.error(res.data.message)
 						}
 						// this.$message.success('修改班级成功!')
-						
+
 					})
 					// 查询班级
 					ApiClassSelectListByOptions({
@@ -353,7 +355,7 @@
 					});
 				} else if (type == 'delete') {
 					ApiClassDelete(this.delete_id).then(res => {
-						if(res.data.result){
+						if (res.data.result) {
 							this.$message.success('删除班级成功!')
 							ApiClassSelectListByOptions({
 								pageSize: this.page.pageSize,
@@ -365,7 +367,7 @@
 								this.classList = res.data.data.list;
 							});
 							this.cancel();
-						}else{
+						} else {
 							this.$message.error(res.data.message)
 						}
 					});
@@ -393,7 +395,7 @@
 					this.operation_type = type;
 					this.update_data = data;
 					this.table_classNum = data.sort;
-					this.schoolDefault=data.schoolId;
+					this.schoolDefault = data.schoolId;
 					this.table_yearNum = data.grade.replace(/(\级*$)/g, "");
 				} else if (type == 'delete') {
 					this.dialogVisible = true;
@@ -408,7 +410,7 @@
 				pageSize: 999,
 				pageNum: 1
 			}).then(res => {
-				this.school=res.data.data.list
+				this.school = res.data.data.list
 			})
 			// 查询班级
 			ApiClassSelectListByOptions({

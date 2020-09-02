@@ -16,9 +16,11 @@
 .search .go{height: 36px;}
 .search .cancel {margin-left:20px;font-size: 14px;color:rgba(80, 80, 80, 1)}
 
-.particular{margin-top: 10px;}
+.particular{margin-top: 10px;padding: 20px 10px;}
 .particular .li{display: flex;justify-content: flex-end;align-items: center;padding: 16px 25px;background-color: #FFFFFF;border-radius: 8px;}
 .particular .li+.li{margin-top: 10px;}
+.select_box{margin:  0 10px; }
+.select_box .ll{margin: 10px;}
 .user-img{width: 50px;height: 50px;border-radius: 50%;}
 .teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #2BBB61;margin: 0 0 0 20px; }
 .title-box{margin-left: 20px;}
@@ -76,3 +78,15 @@
 .box /deep/  .el-radio-button__orig-radio:checked+.el-radio-button__inner{
     background-color:rgb(43, 187, 97);
 }
+
+.table-icon {display: flex;justify-content: center;}
+
+	 .box /deep/ .el-table__fixed-right {
+	  height: 100% !important; 
+	  }
+/* 修改表格样式 */
+.box /deep/ .el-table {border-radius: 8px;}
+.box /deep/ .el-table th {text-align: center;background-color: #FFFFFF !important;padding: 20px;}
+.box /deep/ .el-table th.is-leaf {text-align: center;}
+.box /deep/ .el-table td {color: #333;}
+.icon+.icon {margin-left: 4px;}

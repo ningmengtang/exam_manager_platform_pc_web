@@ -100,7 +100,7 @@ export function ApiClassUpdate(data){
 	const result =post('/api/classes/update',data)
 	return result;
 }
-//修改班级
+//删除班级
 export function ApiClassDelete(data){
 	const result =get(`/api/classes/delId/${data}`)
 	return result;
@@ -196,6 +196,11 @@ export function apiCommonExamSelectUpdate(data) {
 	const result = post('/api/common/exam/update', data)
 	return result;
 }
+// 试卷修改
+export function CommonExamUpdateTime(data){
+	const result =post('/api/common/exam/updateTime',data)
+	return result;
+}
 
 //新增试卷
 export function apiCommonExamAdd(data) {
@@ -271,7 +276,13 @@ export function adminSelectRoleadminPower(data){
 	const result =post('/api/role/selectListByOptions',data)
 	return result;
 }
-
+// -----------------------管理员通过角色id查询全部------------------------------------
+// "1.专家2.管理员3.学校4.教师5.学生"
+export function adminSelectRoleType(data){
+	const result =post('/api/admin/user/manage/userSelect',data)
+	return result;
+}
+//-------------------------------------------------------
 // -----------------------管理员通过id查询账号------------------------------------
 //查询管理员管理通过学生id查询
 export function adminSelectRoleStudentId(data){

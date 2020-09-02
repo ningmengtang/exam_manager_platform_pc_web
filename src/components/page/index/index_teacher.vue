@@ -50,7 +50,7 @@
 			</el-row>
 		</div>
 		<div class="papers-box" v-loading="loading">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.putInto == 0?style.pLi:d.putInto == 1?style.pLi5:style.pLi1">
+			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.putInto == 0?style.pLi:d.putInto == 1?style.pLi5:style.pLi1" style="cursor: pointer;" @click="d.putInto==1?downloadFile(d):(0)">
 				<div class="p-icon-box">
 					<div class="p-icon"></div>
 				</div>
@@ -63,9 +63,10 @@
 					<div class="p-time">{{d.createDate}}</div>
 					<div class="p-particular">{{d.examExplain}}</div>
 					<div class="p-status">{{d.putInto == 0?'入库失败':d.putInto == 1?'入库完成':'正在入库'}}</div>
+					<el-tooltip class="item" effect="dark" content="预览试卷" placement="top">
 					<i @click="downloadFile(d)" class="p-status-icon el-icon-download" v-if="d.putInto == 1">
-						
 					</i>
+					</el-tooltip>
 				</div>
 			</div>
 		</div>
