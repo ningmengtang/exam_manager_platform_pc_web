@@ -98,6 +98,7 @@
 				</div>
 				<div class="title-box" style="margin: 0 20px;">
 				<div class="time">创建时间：{{item.createDate}}</div>
+				<div class="time">开始下载：{{item.startTime}}</div>
 				<div class="time" style="color: #fb4919;">失效时间：{{item.overTime}}</div>
 				</div>
 
