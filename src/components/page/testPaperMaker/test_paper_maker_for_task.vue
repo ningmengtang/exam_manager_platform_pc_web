@@ -531,7 +531,7 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import {
 
-	apiCommonExamSelectById
+	apiCommonExamElementTestSelectById
 
 } from '@/api/api.js'
 
@@ -1213,7 +1213,7 @@ export default {
         else{
           //实际下载
           console.log("进入下载模式")
-          apiCommonExamSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
+          apiCommonExamElementTestSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
             if(!res.data.result)
             {
               this.$message.error('获取试卷失败，无法下载！')
@@ -1317,7 +1317,7 @@ export default {
 
       console.log(this.createTestPaperInfoObj)
       this.createTestPaperInfoObj.testPaperId = 69
-      apiCommonExamSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
+      apiCommonExamElementTestSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
           if(!res.data.result)
           {
             this.$message.error('获取试卷失败，无法下载！')

@@ -220,6 +220,12 @@ export function apiCommonExamSelectById(data) {
 	return result;
 }
 
+//通过id查看试卷编辑对象
+export function apiCommonExamElementTestSelectById(data) {
+	const result = get('/api/common/exam/selectElementTestById/' + data+"?d="+new Date()* 1)
+	return result;
+}
+
 //更新试卷
 export function apiAdminExamUpdate(data) {
 	const result = post("/api/common/exam/update", data)

@@ -735,7 +735,7 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import {
 
-	apiCommonExamSelectById
+	apiCommonExamElementTestSelectById
 
 } from '@/api/api.js'
 
@@ -1329,7 +1329,7 @@ export default {
         //进入批量生产模式
         this.createTestPaperInfoObj = this.$route.query.createTestPaperInfoObj
         
-        apiCommonExamSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
+        apiCommonExamElementTestSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
           if(!res.data.result)
           {
             this.$message.error('获取试卷失败，无法下载！')
