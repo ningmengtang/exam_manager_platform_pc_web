@@ -18,17 +18,18 @@
 .search .cancel {margin-left:20px;font-size: 14px;color:rgba(80, 80, 80, 1)}
 .search .buttom{height: 36px;}
 .search .buttom .i{font-size: 20px;}
-
+.font-i{color: #999999;}
 
 .particular{margin-top: 10px;}
 .particular .li{display: flex;align-items: center;padding: 16px;background-color: #FFFFFF;border-radius: 8px;}
 .particular .li+.li{margin-top: 10px;}
 .user-img{width: 50px;height: 50px;border-radius: 50%;}
-.teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #19aefb;margin: 0 0 0 20px; }
+.teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #19aefb;margin: 0 0 0 20px;min-width: 42px; }
+.teacher-name.i{margin: 0;}
 .title-box{margin-left: 20px;}
-.title{font-size: 20px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 480px;}
-.synopsis{font-size: 18px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 480px;}
-.time{font-size: 20px;;color: rgba(166, 166, 166, 1);margin-left: 10px;width: 200px;overflow: hidden;}
+.title{font-size: 20px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 400px;}
+.synopsis{font-size: 18px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 400px;}
+.time{font-size: 14px;;color: rgba(166, 166, 166, 1);margin-left: 10px;width: 200px;overflow: hidden;}
 .label-box{display: flex;margin:  0 12px 0 0;flex-wrap: wrap;}
 .label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}
 .label:nth-child(1n+1){background-color: #fb4919;}
@@ -75,3 +76,12 @@
 .flex-box-first .cancel{color: #2BBB61;border-color: #2BBB61;}
 .flex-box-second{width: 56.5%;background-color: #FFFFFF;padding: 44px;position: relative;}
 .flex-box-second .icon{font-size: 40px;position: absolute;right: 54px;bottom: 48px;}
+
+/* element表格修改 */
+.box /deep/ .el-table th{text-align: center;}
+.box /deep/ .el-table td, .el-table th.is-leaf{text-align: center;}
+.box /deep/ .el-table {border-radius: 8px;}
+.box /deep/ .el-table th {text-align: center;background-color: #FFFFFF !important;padding: 20px;}
+.box /deep/ .el-table th.is-leaf {text-align: center;}
+.box /deep/ .el-table td {color: #333;}
+.icon+.icon {margin-left: 4px;}

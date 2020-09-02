@@ -108,7 +108,10 @@
 					<div class="label" v-for="card in data.tag_list">{{ card.text }}</div>
 
 				</div>
-				<div class="time">{{data.putInto == 0?'入库失败':data.putInto == 1?'入库成功':data.putInto==2?'正在入库':''}}</div>
+				<div class="right">
+					<div class="time">{{data.putInto == 0?'入库失败':data.putInto == 1?'入库成功':data.putInto==2?'正在入库':''}}</div>
+					 <el-button type="success" round>预览</el-button>
+				</div>
 			</div>
 			<!-- 分页 -->
 			<div class="page">
