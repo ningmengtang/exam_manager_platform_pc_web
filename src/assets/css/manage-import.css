@@ -1,4 +1,4 @@
-.box{padding: 20px;border-radius: 8px;width: auto;height: 100%;overflow-y: scroll;-webkit-box-sizing: border-box;box-sizing: border-box;color: #333333;font-size: 14px;display: flex;}
+.box{padding: 20px;border-radius: 8px;width: auto;overflow-y: scroll;-webkit-box-sizing: border-box;box-sizing: border-box;color: #333333;font-size: 14px;display: flex;}
 .row-group{width: 100%;display: flex;align-items: center;padding: 5px;}
 .row-group .th-group{font-size: 14px;margin-right: 38px;width: 60px;}
 .t-content{padding: 20px;border-radius: 8px;}
