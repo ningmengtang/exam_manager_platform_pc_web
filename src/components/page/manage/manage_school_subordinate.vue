@@ -22,6 +22,16 @@
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
+			<div class="select_box">
+				<el-select v-model="gradeDefault" placeholder="请选择年级" class="ll" clearable @change="selectCondition">
+					<el-option v-for="(item,i) in classes" :key="item.i" :label="item.grade" :value="item.grade">
+					</el-option>
+				</el-select>
+				<el-select v-model="classDefault" placeholder="请选择班级" class="ll" clearable @change="selectCondition">
+					<el-option v-for="(item,i) in classes" :key="item.i" :label="item.name" :value="item.sort">
+					</el-option>
+				</el-select>
+			</div>
 			<!-- <div class="li" v-for="(data, i) in li" :key="data.i">
 				<div class="teacher-name">ID:{{data.id}}</div>
 				<div class="title-box">
@@ -43,7 +53,7 @@
 					</div>
 				</div>
 			</div> -->
-			<el-table :data="li" :height="680"  style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)" >
+			<el-table :data="li" :height="680" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
 				<el-table-column prop="id" label="ID" width="180">
 				</el-table-column>
 				<el-table-column prop="name" :label="(typeStatus=='student'?'学生姓名':'教师姓名')">
@@ -55,7 +65,7 @@
 				<el-table-column prop="schoolName" label="学校" width="180" v-if="typeStatus=='student'||typeStatus=='teacher'">
 				</el-table-column>
 				//学生年级班级
-				<el-table-column  prop="classes.grade" v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
+				<el-table-column prop="classes.grade" v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
 				</el-table-column>
 				<el-table-column prop="classes.name" v-if="typeStatus=='student'" label="班级" width="180" :key="Math.random()">
 				</el-table-column>
@@ -75,7 +85,7 @@
 				<el-table-column label="操作">
 					<template slot-scope="scope">
 						<div class="table-icon">
-							<el-button class="icon i el-icon-edit-outline ii" :style="{'cursor':'pointer','color':color}"@click="teacherChange(scope.row.id)"
+							<el-button class="icon i el-icon-edit-outline ii" :style="{'cursor':'pointer','color':color}" @click="teacherChange(scope.row.id)"
 							 type="text" size="small">
 							</el-button>
 							<el-button class="icon i el-icon-close  ii" :style="{'cursor':'pointer','color':color}" @click="deleteLi(scope.row.id);dialogVisible=true"
@@ -92,7 +102,7 @@
 		</div>
 		<!-- 提示框 -->
 		<!-- Table -->
-		<el-dialog title="" :visible.sync="dialogTableVisible">
+		<!-- <el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
 				<div class="t-title">请选择班级</div>
 				<div class="t-content">
@@ -137,11 +147,6 @@
 						<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
 						<el-table-column prop="class" label="班级" show-overflow-tooltip></el-table-column>
 					</el-table>
-					<!-- <div class="page">
-						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
-						</el-pagination>
-					</div> -->
 					<div class="block-time">
 						<div>
 							<span style="margin-right:10px ;">选择日期</span>
@@ -156,7 +161,7 @@
 
 				</div>
 			</div>
-		</el-dialog>
+		</el-dialog> -->
 	</div>
 </template>
 <script>
@@ -166,7 +171,8 @@
 		adminDeleteTeacher,
 		StudentAccountInfo,
 		adminDeleteStuednt,
-		adminSelectRoleType
+		adminSelectRoleType,
+		selectListByOptions
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -184,8 +190,11 @@
 				currentPage: 1,
 				dialogVisible: false,
 				cities: ['全部', '分发完成', '正在分发', '分发失败'],
-				class2: ['全部', '一年级', '二年级', '三年级'],
-				class1: ['全部', '一班', '二班', '三班'],
+				class1: [],
+				class2: [],
+				classes: '',
+				gradeDefault: '',
+				classDefault: '',
 				student: [1, 2, 3, 4, 5],
 				checkboxGroup2: ['上海'],
 				page: {
@@ -196,7 +205,7 @@
 				array_nav3: [],
 				array_nav4: {},
 				total: 0,
-				li:[],
+				li: [],
 				typeStatus: 'student',
 				userType: [{
 					name: '学生',
@@ -241,19 +250,8 @@
 						this.selectSql('teacher')
 						break;
 				}
-
 			},
-			handleSizeChange(val) {
-				// this.pageNum = val
-				// schoolSelectTeacher({
-				// 	'pageNum': this.pageNum,
-				// 	'pageSize': this.pageSize,
-				// 	'schoolId': localStorage.getItem('userID')
-				// }).then(res => {
-				// 	console.log(res.data.data)
-				// 	this.li = res.data.data.list
-				// })
-			},
+			handleSizeChange(val) {},
 			handleCurrentChange(val) {
 				this.page.pageNum = val;
 				this.getValue();
@@ -324,25 +322,49 @@
 
 				})
 			},
+			// 班级查询
+			selectClass() {
+				selectListByOptions({
+					schoolId: this.schoolId
+				}).then(res => {
+					res.data ? (this.classes = res.data.data.list, console.log(res.data.data)) : this.$message.error(
+						'查询超时,请刷新重新查询！')
+				})
+			},
 			//数据查询
-			selectSql(type) {
-				if(type=='student'){
-					StudentAccountInfo({schoolId:this.schoolId}).then(res=>{
+			selectSql(type, condition) {
+				let json = {
+					schoolId: this.schoolId
+				}
+				if (condition != undefined) {
+					json=Object.assign({},json,condition)
+					console.log(json)
+				}
+				if (type == 'student') {
+					StudentAccountInfo(json).then(res => {
 						res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
-								'查询超时,请刷新重新查询！')
+							'查询超时,请刷新重新查询！')
 					})
-				}else if(type=='teacher'){
-					schoolSelectTeacher({schoolId:this.schoolId}).then(res=>{
-					res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
+				} else if (type == 'teacher') {
+					schoolSelectTeacher(json).then(res => {
+						res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
 							'查询超时,请刷新重新查询！')
 					})
 				}
+			},
+			//条件查询
+			selectCondition() {
+				this.selectSql(this.typeStatus, {
+					'grade': this.gradeDefault,
+					'sort': this.classDefault
+				})
+				
 			}
 		},
 		mounted() {
 			this.color = user().color;
+			this.selectClass();
 			this.selectSql('student')
-
 		}
 	};
 </script>
@@ -360,4 +382,8 @@
 		color: #999999;
 	}
 
+	.particular {
+		background-color: #FFFFFF;
+		border-radius: 8px;
+	}
 </style>
