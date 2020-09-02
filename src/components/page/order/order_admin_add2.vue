@@ -622,7 +622,7 @@ import { forEach } from 'jszip'
                             }
                         }
                         this.$message.success('提交成功')
-                        this.$router.push('/admin_school')
+                        this.$router.push('/order_admin')
                         loading.close();
                         
                     }else{

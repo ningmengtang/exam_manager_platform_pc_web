@@ -309,7 +309,7 @@
 					this.dialogTableVisible = false
 					if(this.orderType == 1){
 						apiAdminOrderItemList({
-							"order_id":adminAffirmData.id
+							"order_id":this.adminAffirmData.id
 						}).then(res=>{
 							if(res.data.data.list){
 								this.papers = res.data.data.list
@@ -319,7 +319,7 @@
 						})
 					}else if(this.orderType == 2){
 						AdminOrderEndOfTermItemList({
-							"order_id":adminAffirmData.id
+							"order_id":this.adminAffirmData.id
 						}).then(res=>{
 							if(res.data.data.list){
 								this.papers = res.data.data.list
@@ -439,7 +439,7 @@
 							if(res.data.result){
 								this.$message.success('上传成功')
 								AdminOrderEndOfTermItemList({
-									"order_id":adminAffirmData.id
+									"order_id":this.adminAffirmData.id
 								}).then(res=>{
 									if(res.data.data.list){
 										this.papers = res.data.data.list

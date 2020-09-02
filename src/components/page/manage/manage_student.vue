@@ -109,7 +109,7 @@
 				</div>
 				<div class="right">
 					<i class="icon el-icon-time"></i>
-					<div class="status">{{item.putInto == '0'?'不可下载':item.putInto == '1'?'可以下载':item.putInto == '2'?'未到下载时间':''}}</div>
+					<div class="status">{{item.putInto == '0'?'不可下载':item.putInto == '1' && item.status == 0?'可以下载':item.putInto == '2'?'未到下载时间':''}}</div>
 
 					<el-button type="primary" v-if="item.status == 0 && item.putInto == 1 " @click="downloadFile(item)">立即下载</el-button>
 					<el-button type="primary" disabled v-else style="background-color: #999999;">立即下载</el-button>
