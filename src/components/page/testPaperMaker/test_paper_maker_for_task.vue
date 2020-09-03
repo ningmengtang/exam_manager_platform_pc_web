@@ -74,7 +74,7 @@
         <el-main>
           
           <!-- 下载按钮 -->
-          <div v-if="!qustionPreviewMode" style="width:800px;margin-left:auto;margin-right:auto;background-color:white;">
+          <div v-if="!qustionPreviewMode" style="width:800px;margin-left:auto;margin-right:auto;background-color:white;border-radius:25px;box-shadow:0px 0px 10px rgb(221, 221, 221);">
             <div style="clear:both;height:50px;"></div>
             <div v-if="downloadGroup.length > 0" v-for="(downloadItem,downloadItemIndex) in downloadGroup" style="width:300px;float:left;margin-left:50px;margin-top:30px;">
               <el-button type="success" @click="downloadItem.isDownload = true;studentsDownload(downloadItem.groupID)"style="font-size:20pt;" round>下载分包&nbsp;{{downloadItem.groupID+""}}<span v-if="downloadItem.isDownload"><i class="el-icon-check"></i></span><span v-if="!downloadItem.isDownload"><i class="el-icon-download"></i></span></el-button>
@@ -115,7 +115,7 @@
                           <p style="text-align:right;">第{{questionPartItemIndex + 1}}部分、</p>
                           <vue-qr v-if="testPaperObjItem.id" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,null,null,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                       </td> -->
-                      <td>
+                      <td width="580px">
                         <div v-html="questionPartItem.topic_text">
                         </div>
                       </td>
@@ -132,7 +132,7 @@
                           <p style="text-align:right;">第{{questionBigItemIndex + 1}}大题、</p>
                           <vue-qr v-if="testPaperObjItem.id" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,null,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                       </td> -->
-                      <td>
+                      <td width="580px">
                         <div v-html="questionBigItem.topic_text">
                         </div>
                       </td>
