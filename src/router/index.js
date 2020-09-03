@@ -308,6 +308,22 @@ export default new Router({
                     meta: { title: '管理员-用户管理-用户修改' }
 
                 },
+				{
+				    name: 'log_all',
+				    path: '/log_all',
+				    component: () =>
+				        import ( /* webpackChunkName: "log_all" */ '../components/page/log/log_all.vue'),
+				    meta: { title: '管理员-日志' }
+				
+				},
+				{
+				    name: 'log_papers',
+				    path: '/log_papers',
+				    component: () =>
+				        import ( /* webpackChunkName: "log_papers" */ '../components/page/log/log_papers.vue'),
+				    meta: { title: '管理员-订单操作日志' }
+				
+				},
                 {
                     name: 'test_paper_maker',
                     path: '/test_paper_maker',

@@ -423,6 +423,12 @@ export function adminUpdateAdmin(data){
 	return result;
 }
 //-------------------------------------------------------
+// 管理员查询日志
+export function adminSelectLog(data){
+	const result =post('/api/log/selectListByOptions',data)
+	return result;
+	
+}
 // 查询专家
 export function apiPaperWithTagList(data) {
 	const result = post('/api/paperWithTag/selectUserTag', data)

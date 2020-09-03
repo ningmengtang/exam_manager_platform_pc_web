@@ -277,8 +277,12 @@
 									code: form.stuedntNum,
 									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
 								}).then(res => {
-									this.$message.success('添加学生账号成功')
-									this.black()
+									if(res.data.stateCode==200){
+										this.$message.success('添加学生账号成功')
+										this.black()
+									}else{
+										this.$message.error('改用户已存在')
+									}
 								})
 								break;
 							case 'teacher':
@@ -291,8 +295,12 @@
 									classesId:form.classDefault,
 									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
 								}).then(res => {
-									this.$message.success('添加教师账号成功')
-									this.black()
+									if(res.data.stateCode==200){
+										this.$message.success('添加教师账号成功')
+										this.black()
+									}else{
+										this.$message.error('改用户已存在')
+									}
 								})
 								break;
 							case 'school':
@@ -303,8 +311,13 @@
 									code:form.schoolCode,
 									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
 								}).then(res => {
-									this.$message.success('添加学校账号成功')
-									this.black()
+									if(res.data.stateCode==200){
+										this.$message.success('添加学校账号成功')
+										this.black()
+									}else{
+										this.$message.error('改用户已存在')
+									}
+									
 								})
 								break;
 							case 'user':
@@ -315,8 +328,13 @@
 									sex: form.sexDefault,
 									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
 								}).then(res => {
-									this.$message.success('添加专家账号成功')
-									this.black()
+									if(res.data.stateCode==200){
+										this.$message.success('添加专家账号成功')
+										this.black()
+									}else{
+										this.$message.error('改用户已存在')
+									}
+									
 								})
 								break;
 							case 'admin':
@@ -335,8 +353,12 @@
 								type:'admin',
 								adminRoles:arr
 							}).then(res => {
-								this.$message.success('添加管理员账号成功')
-								this.black()
+								if(res.data.stateCode==200){
+									this.$message.success('添加管理员账号成功')
+									this.black()
+								}else{
+									this.$message.error('改用户已存在')
+								}
 							})
 								break;
 						}

@@ -1,0 +1,24 @@
+.box{background-color: #FFFFFF;min-height: 720px;height: 100%;}
+
+.a-box{padding: 20px;width: 100%;height: 100%;}
+.message-top{border-left: 8px solid rgb(43, 187, 97);padding-left: 12px;font-size: 18px;font-weight: bold;display: flex;align-items: center;}
+.more{padding: 10px;}
+.font-i{color: #2BBB61;}
+.font-ii{color: #999999;}
+.search{width: 400px;margin: 20px;display: flex;align-items: center;justify-content: center;}
+
+/* 分页 */
+.page{margin: 20px auto;display: flex;justify-content: center;}
+
+/* 修改表格样式 */
+.table-icon {display: flex;justify-content: center;}
+  .box /deep/ .el-table__fixed-right {
+	  height: 100% !important; 
+}
+.box /deep/ .el-table th{text-align: center;}
+.box /deep/ .el-table td, .el-table th.is-leaf{text-align: center;}
+.box /deep/ .el-table {border-radius: 8px;}
+.box /deep/ .el-table th {text-align: center;background-color: #FFFFFF !important;padding: 20px;}
+.box /deep/ .el-table th.is-leaf {text-align: center;}
+.box /deep/ .el-table td {color: #333;}
+.icon+.icon {margin-left: 4px;}
