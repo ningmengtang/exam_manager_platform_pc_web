@@ -3,6 +3,18 @@
 		<div class="top">
 			<div class="group">
 				<div class="row-group">
+					<div class="th-group">订单类型</div>
+					<div class="td-group" >
+						<el-radio-group v-model="orderType" @change="changeOrderType">
+							<el-radio-button v-for="(item,index) in orderTypeList" :label="item.id">
+								{{item.name}}
+							</el-radio-button>
+						</el-radio-group>
+					</div>
+				</div>
+			</div>
+			<div class="group">
+				<div class="row-group">
 					<div class="th-group">订单状态</div>
 					<div class="td-group" >
 						<el-radio-group v-model="orderStatus" @change="changeOrder">
@@ -13,11 +25,11 @@
 					</div>
 				</div>
 			</div>
-			<!-- <div class="search">
-				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-button type="primary"  :style="{ 'background-color': color, 'border-color': color }">搜索</el-button>
-				<el-button type="success" class="buttom" :style="{ 'background-color': color, 'border-color': color }" @click="goAdd()"><span class="el-icon-plus"></span> 新增订购单</el-button>
-			</div> -->
+			<div style="margin: 15px 15px 0px 15px">
+				<el-button size="medium" type="success" @click="clickEndOrder">新建期末考试订单</el-button>
+				<el-button size="medium" type="success" @click="clickOrder">新建普通考试订单</el-button>
+			</div>
+			
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
@@ -45,12 +57,6 @@
 						{{ data.create_date }}申请订购
 					</span>
 				</div>
-				<!-- <div class="label-box">
-					<div class="label">{{ data.label }}</div>
-					<div class="label">人教版</div>
-					<div class="label">语文</div>
-					<div class="label">一年级</div>
-				</div> -->
 				<div class="right">
 					<div class="ii" >
 						<div class="status_box">
@@ -59,7 +65,8 @@
 							<el-button type="primary"   v-if="data.status == 0"  @click="addOrder(data)">缴费</el-button>
 							<el-button type="success" size="small"  @click="loadFile(data)">上传合同</el-button>
 							<el-button type="success" size="small"  @click="uploadFile(data)">导出合同</el-button>
-						    <el-button   v-if="data.status == 0" type="danger" @click="DelFile(data)" >取消</el-button>
+							<el-button type="success" size="small"  @click="openFile(data)">查看详情</el-button>
+						    <el-button   v-if="data.status == 0 || data.status == 1" type="danger" @click="DelFile(data)" >取消</el-button>
 						</div>
 					</div>
 				</div>
@@ -70,74 +77,6 @@
 				</el-pagination>
 			</div>
 		</div>
-		<!-- 提示框 -->
-		<!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
-		<!-- Table -->
-		<!-- <el-dialog title="" :visible.sync="dialogTableVisible">
-			<div class="ts-select">
-				<div class="t-title">请选择班级</div>
-				<div class="t-content">
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">分发状态</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav2" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-					<div class="group">
-						<div class="row-group">
-							<div class="th-group">分发状态</div>
-							<div class="td-group" change>
-								<el-checkbox-group v-model="array_nav3" @change="getValue()">
-									<el-checkbox-button v-for="(d,i) in class1" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-								</el-checkbox-group>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="arr"><span>您已经选择：</span><span>{{array_nav4}}</span></div>
-				<div class="student-box">
-					<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-						<el-table-column type="selection" width="55"></el-table-column>
-						<el-table-column label="学号" width="120">
-							<template slot-scope="scope">
-								{{ scope.row.date }}
-							</template>
-						</el-table-column>
-						<el-table-column prop="name" label="名字" width="120">
-							<template slot-scope="scope">
-								<div style="display: flex;align-items: center;">
-									<img src="../../../assets/img/img.jpg" class="user-img" />
-									<div class="student-name">{{ scope.row.name }}</div>
-								</div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="grade" label="年级" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="class" label="班级" show-overflow-tooltip></el-table-column>
-					</el-table>
-					<div class="page">
-						<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						 :current-page.sync="currentPage" :page-size="100" :total="1000">
-						</el-pagination>
-					</div>
-					<div class="block-time">
-						<div>
-							<span style="margin-right:10px ;">选择日期</span>
-							<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-							</el-date-picker>
-						</div>
-						<div class="block-a">
-							<el-button @click="toggleSelection()" class="out">取消选择</el-button>
-							<el-button @click="submit()" class="affirm">确认</el-button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</el-dialog> -->
 	</div>
 </template>
 <script>
@@ -146,7 +85,12 @@
 		apiAdminOrderList,
 		apiAdminOrderUpdate,
 		AdminOrderUploadFile,
-		AdminOrderGetFile
+		AdminOrderGetFile,
+		AdminOrderEndOfTermListAll,
+		apiAdminOrderEndOfTermUpdate,
+		AdminOrderEndOfTermDelAll,
+		AdminlOrderEndOfTermGetFile,
+		AdminOrderEndOfTermUploadFile
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -155,6 +99,7 @@
 				pageSize:6,
 				pageNum:1,
 				currentPage:1,
+				orderType:1,
 				total:0,
 				color: '',
 				checkAll: false,
@@ -186,162 +131,253 @@
 					id:2,
 					name:"已取消"
 				}],
+				orderTypeList:[
+				{
+					id:1,
+					name:"普通订单"
+				},
+				{
+					id:2,
+					name:"期末订单"
+				},
+				]
 			};
 		},
 		methods: {
-			//获取选择标签的内容
-			// getValue() {
-			// 	this.array_nav4 = this.array_nav2.concat(this.array_nav3)
-			// 	console.log(this.array_nav4);
-			// },
+			//改变订单类型
+			clickEndOrder(){
+				this.$router.push('order_admin_add3')
+			},
+			clickOrder(){
+				this.$router.push('order_admin_add2')
+			},
+			changeOrderType(){
+				this.currentPage = 1
+				this.pageSize = 6
+				this.pageNum = 1
+				this.total = 0
+				this.orderList = []
+				this.orderStatus = 4
+				this.getOrderList()
+			},
 			handleSizeChange(val) {
 				this.pageSize = val
-				apiAdminOrderList({
-					"pageNum":this.pageNum,
-					"pageSize":this.pageSize
-				}).then(res=>{
-					// console.log(res)
-					this.orderList = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
-				})
+				this.getOrderList()
 			},
 			handleCurrentChange(val) {
 				this.pageNum = val
-				apiAdminOrderList({
-					"pageNum":this.pageNum,
-					"pageSize":this.pageSize
-				}).then(res=>{
-					// console.log(res)
-					this.orderList = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
-				})
+				this.getOrderList()
 			},
 			changeOrder(){
-				if(this.orderStatus == 4){
-					apiAdminOrderList({
-						"pageNum":this.pageNum,
-						"pageSize":this.pageSize
-					}).then(res=>{
-						this.orderList = res.data.data.list
-						this.total = res.data.data.total
-						this.currentPage = res.data.data.pageNum
-					})
-				}else{
-					apiAdminOrderList({
-						"pageNum":this.pageNum,
-						"pageSize":this.pageSize,
-						"status":this.orderStatus
-					}).then(res=>{
-						console.log(res)
-						this.orderList = res.data.data.list
-						this.total = res.data.data.total
-						this.currentPage = res.data.data.pageNum
-					})
-				}
+				this.currentPage = 1
+				this.pageSize = 6
+				this.pageNum = 1
+				this.total = 0
+				this.orderList = []  //订单数据
+				this.getOrderList()
 				
 			},
-			// 确认订单
-			addOrder(data){
-				this.$confirm('是否已缴费?', '提示', {
-        		  confirmButtonText: '确定',
-        		  cancelButtonText: '取消',
-        		  type: 'warning'
-        		}).then(() => {
-				apiAdminOrderUpdate({
-					"id":data.id,
-					"status":1
-				}).then(res=>{
-					if(res.data.result){
-						this.$message.success('确定订单成功，请前往分配')
+			getOrderList(){
+				if(this.orderType == 1){
+					if(this.orderStatus == 4){
 						apiAdminOrderList({
 							"pageNum":this.pageNum,
 							"pageSize":this.pageSize
 						}).then(res=>{
-							// console.log(res)
 							this.orderList = res.data.data.list
 							this.total = res.data.data.total
 							this.currentPage = res.data.data.pageNum
 						})
 					}else{
-						this.$message.error(res.data.message)
+						apiAdminOrderList({
+							"pageNum":this.pageNum,
+							"pageSize":this.pageSize,
+							"status":this.orderStatus
+						}).then(res=>{
+							this.orderList = res.data.data.list
+							this.total = res.data.data.total
+							this.currentPage = res.data.data.pageNum
+						})
 					}
-				})
-        		}).catch(() => {
-        		          
-        		});
-				
+				}else{
+					if(this.orderStatus == 4){
+						AdminOrderEndOfTermListAll({
+							"pageNum":this.pageNum,
+							"pageSize":this.pageSize
+						}).then(res=>{
+							this.orderList = res.data.data.list
+							this.total = res.data.data.total
+							this.currentPage = res.data.data.pageNum
+						})
+					}else{
+						AdminOrderEndOfTermListAll({
+							"pageNum":this.pageNum,
+							"pageSize":this.pageSize,
+							"status":this.orderStatus
+						}).then(res=>{
+							this.orderList = res.data.data.list
+							this.total = res.data.data.total
+							this.currentPage = res.data.data.pageNum
+						})
+					}
+				}
+			
+			},
+			// 查看详细
+			openFile(data){
+				sessionStorage.setItem('adminAffirmData', JSON.stringify(data))
+				this.$router.push({name:'distribution_admin_order_affirm',query:{orderType:this.orderType}})
+			},
+			// 确认订单
+			addOrder(data){
+				if(this.orderType == 1){
+				this.$confirm('是否已缴费?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					apiAdminOrderUpdate({
+						"id":data.id,
+						"status":1
+					}).then(res=>{
+						if(res.data.result){
+							this.$message.success('确定订单成功，请前往分配')
+							this.getOrderList()
+						}else{
+							this.$message.error(res.data.message)
+						}
+					})
+					}).catch(() => {        
+					});	
+				}else{
+					this.$confirm('是否已缴费?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						apiAdminOrderEndOfTermUpdate({
+							"id":data.id,
+							"status":1
+						}).then(res=>{
+							if(res.data.result){
+								this.$message.success('确定订单成功，请前往分配')
+								this.getOrderList()
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+						}).catch(() => {        
+					});	
+				}
+
 			},
 			// 删除该订单
 			DelFile(data){
-				this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
-        		  confirmButtonText: '确定',
-        		  cancelButtonText: '取消',
-        		  type: 'warning'
-        		}).then(() => {
-					AdminOrderDel(data.id).then(res=>{
-						if(res.data.result){
-							this.$message.success('删除成功')
-							apiAdminOrderList({
-								"pageNum":this.pageNum,
-								"pageSize":this.pageSize
-							}).then(res=>{
-								this.orderList = res.data.data.list
-								this.total = res.data.data.total
-								this.currentPage = res.data.data.pageNum
-							})
-						}else{
-							this.$message.error(res.data.message)
-						}
-					})
-        		}).catch(() => {
-        		         
-        		});
+				if(this.orderType == 1){
+					this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
+        			  confirmButtonText: '确定',
+        			  cancelButtonText: '取消',
+        			  type: 'warning'
+        			}).then(() => {
+						AdminOrderDel(data.id).then(res=>{
+							if(res.data.result){
+								this.$message.success('删除成功')
+								this.getOrderList()
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+        			}).catch(() => {
+					
+        			});
+				}else{
+					this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
+        			  confirmButtonText: '确定',
+        			  cancelButtonText: '取消',
+        			  type: 'warning'
+        			}).then(() => {
+						AdminOrderEndOfTermDelAll(data.id).then(res=>{
+							if(res.data.result){
+								this.$message.success('删除成功')
+								this.getOrderList()
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+        			}).catch(() => {
+					
+        			});
+				}
+			
 			},
 			// 下载合同
 			uploadFile(row){
-				console.log(row)
-				AdminOrderGetFile(row.id).then(res=>{
-					// console.log(res)
-					const blob = new Blob([res.data],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8'})
-					let link = document.createElement('a');
-				 	let objectUrl = URL.createObjectURL(blob);
-					link.setAttribute("href",objectUrl);
-					link.setAttribute("download",'订购合同.docx'); 
-					link.click();
-					//释放内存
-					window.URL.revokeObjectURL(link.href)
-				})
+				if(this.orderType == 1){
+					AdminOrderGetFile(row.id).then(res=>{
+						const blob = new Blob([res.data],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8'})
+						let link = document.createElement('a');
+						let objectUrl = URL.createObjectURL(blob);
+						link.setAttribute("href",objectUrl);
+						link.setAttribute("download",'订购合同.docx'); 
+						link.click();
+						//释放内存
+						window.URL.revokeObjectURL(link.href)
+					})
+				}else{
+					AdminlOrderEndOfTermGetFile(row.id).then(res=>{
+						const blob = new Blob([res.data],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8'})
+						let link = document.createElement('a');
+						let objectUrl = URL.createObjectURL(blob);
+						link.setAttribute("href",objectUrl);
+						link.setAttribute("download",'期末订购合同.docx'); 
+						link.click();
+						//释放内存
+						window.URL.revokeObjectURL(link.href)
+					})
+				}
+				
 			},
 			// 上传合同
 			loadFile(row){
-				console.log(row)
-				var input =  document.createElement('input')
-				input.type = 'file'
-				input.accept = '.docx,.DOCX,.doc,.DOC,.pdf,.PDF'
-				input.addEventListener('change',(event)=>{
-					let file = event.target.files[0]
-					var data = new FormData()
-					data.append('file',file)
-					AdminOrderUploadFile(row.id,data).then(res=>{
-						if(res.data.result){
-							this.$message.success('上传成功')
-							apiAdminOrderList({
-								"pageNum":this.pageNum,
-								"pageSize":this.pageSize
-							}).then(res=>{
-								this.orderList = res.data.data.list
-								this.total = res.data.data.total
-								this.currentPage = res.data.data.pageNum
-							})
-						}else{
-							this.$message.error(res.data.message)
-						}
+				if(this.orderType == 1){
+					var input =  document.createElement('input')
+					input.type = 'file'
+					input.accept = '.docx,.DOCX,.doc,.DOC,.pdf,.PDF'
+					input.addEventListener('change',(event)=>{
+						let file = event.target.files[0]
+						var data = new FormData()
+						data.append('file',file)
+						AdminOrderUploadFile(row.id,data).then(res=>{
+							if(res.data.result){
+								this.$message.success('上传成功')
+								this.getOrderList()
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
 					})
-				})
-				input.click()
-				input.remove()
+					input.click()
+					input.remove()
+				}else{
+					var input =  document.createElement('input')
+					input.type = 'file'
+					input.accept = '.docx,.DOCX,.doc,.DOC,.pdf,.PDF'
+					input.addEventListener('change',(event)=>{
+						let file = event.target.files[0]
+						var data = new FormData()
+						data.append('file',file)
+						AdminOrderEndOfTermUploadFile(row.id,data).then(res=>{
+							if(res.data.result){
+								this.$message.success('上传成功')
+								this.getOrderList()
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+					})
+					input.click()
+					input.remove()
+				}
 			},
 			goAdd(){
 				this.$router.push('order_admin_add')

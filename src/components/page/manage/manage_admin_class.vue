@@ -88,15 +88,15 @@
 					<div class="time"><i class="icon el-icon-close"></i></div>
 				</div> -->
 				<el-table :data="classList" height="480" style="width: 100%">
-					<el-table-column prop="id" label="ID" width="180">
+					<el-table-column prop="id" label="ID" sortable width="180">
 					</el-table-column>
-					<el-table-column prop="schoolName" label="学校" width="180">
+					<el-table-column prop="schoolName" sortable label="学校" width="180">
 					</el-table-column>
-					<el-table-column prop="grade" label="年级" width="180">
+					<el-table-column prop="grade" sortable label="年级" width="180">
 					</el-table-column>
-					<el-table-column prop="name" label="班级">
+					<el-table-column prop="name"  sortable label="班级">
 					</el-table-column>
-					<el-table-column prop="createDate" label="创建时间">
+					<el-table-column prop="createDate" sortable label="创建时间">
 					</el-table-column>
 					<el-table-column fixed="right" label="操作">
 						<template slot-scope="scope">

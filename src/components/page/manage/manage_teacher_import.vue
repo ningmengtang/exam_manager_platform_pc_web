@@ -3,9 +3,6 @@
 		<div class="left">
 			<div class="l-box-1">
 				<div class="l-title">请选择试卷类型</div>
-				<!-- <el-select v-model="paperType" placeholder="请选择" class="ids" @change="changeType">
-					<el-option v-for="item in options"  :label="item.label" :value="item.label"></el-option>
-				</el-select> -->
 				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px;">
 					<el-radio label="图片试卷">图片试卷</el-radio>
 					<el-radio label="在线组卷">在线组卷</el-radio>
@@ -17,7 +14,7 @@
 			</div>
 			<div class="l-box-1">
 				<div class="l-title">试卷说明</div>
-				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" maxlength="30" show-word-limit></el-input>
+				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" :autosize="{ minRows: 2, maxRows: 8}"></el-input>
 			</div>
 			<div class="l-box-1">
 				<div class="l-title">试卷作答时间</div>
@@ -27,30 +24,26 @@
 					</template>
 				</el-input>
 			</div>
-			<div class="l-box-1">
-				<div class="l-title">开始下载时间</div>
-				<el-date-picker
-					style="margin-top:20px"
-					class="selectTime"
-					v-model="form.startTime"
-					type="datetime"
-					value-format="yyyy-MM-dd HH:mm:ss"
-					placeholder="选择日期时间">
-				</el-date-picker>
+			<div class="l-box-2" v-if="ispaperType">
+				<el-upload 
+				class="upload-demo" 
+				drag action=""  
+				:show-file-list="false"
+                :http-request="uploadFild">
+					<i class="el-icon-upload"></i>
+					<div class="el-upload__text"  v-if="!uploadFile">
+						将文件拖到此处，或
+						<em>点击上传</em>
+					</div>
+					<div class="el-upload__text" v-if="uploadFile">
+							已上传文件
+					</div>
+				</el-upload>
+				
 			</div>
+		</div>
+		<div class="right">
 			<div class="l-box-1">
-				<div class="l-title">结束下载时间</div>
-				<el-date-picker
-				style="margin-top:20px"
-					class="selectTime"
-					v-model="form.overTime"
-					type="datetime"
-					value-format="yyyy-MM-dd HH:mm:ss"
-					placeholder="选择日期时间">
-				</el-date-picker>
-			</div>
-			<div class="l-box-1">
-				<div class="l-title">试卷标签</div>
 				<div class="t-content">
 					<div class="group">
 							<div class="row-group">
@@ -124,51 +117,8 @@
 					</div>
 				</div>
 			</div>
-			<!-- <div   v-if="uploadFile">已上传文件</div> -->
-			<div class="l-box-2" v-if="ispaperType">
-				
-				<el-upload 
-				class="upload-demo" 
-				drag action=""  
-				:show-file-list="false"
-                :http-request="uploadFild">
-					<i class="el-icon-upload"></i>
-					<div class="el-upload__text"  v-if="!uploadFile">
-						将文件拖到此处，或
-						<em>点击上传</em>
-					</div>
-					<div class="el-upload__text" v-if="uploadFile">
-							已上传文件
-						<!-- <em>点击上传</em> -->
-					</div>
-				</el-upload>
-				
-			</div>
-		</div>
-		<div class="right">
-			<div class="card-box" >
-				<el-row :gutter="20">
-					<el-col :span="8" v-if="!ispaperType">
-						<div class="grid-content bg-purple">
-							<el-button class="i" @click="redictToTestPaperMaker(0)">进入组卷工具</el-button>
-							<div class="ii">(在线组卷)</div>
-						</div>
-					</el-col>
-					<el-col :span="8" v-if="!ispaperType" :disabled="!testPaperCacheReady">
-						<div class="grid-content bg-purple">
-							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
-							<div class="ii">(在线组卷)</div>
-						</div>
-					</el-col>
-					<el-col :span="8" v-if="ispaperType" >
-						<div class="grid-content bg-purple">
-							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
-							<div class="ii">(图片试卷)</div>
-						</div>
-					</el-col>
-				</el-row>
-			</div>
-			<div class="group" style="margin-top:30px;max-height: 500px;overflow: auto;">
+			
+			<div style="margin-top:30px;max-height: 400px;overflow: auto;">
 				<el-table
 				      :data="StudenList"
 				      style="width: 100%"
@@ -176,7 +126,7 @@
 					   <el-table-column
 						type="selection"
 						width="55">
-					</el-table-column>
+						</el-table-column>
 				      <el-table-column
 				        prop="code"
 				        label="学号"
@@ -195,18 +145,40 @@
 					  </el-table-column>
 				    </el-table>
 			</div>
+			<div class="card-box" >
+				<el-row :gutter="20">
+					<el-col :span="8" v-if="!ispaperType" :offset="3">
+						<div class="grid-content bg-purple">
+							<el-button class="i" @click="redictToTestPaperMaker(0)">进入组卷工具</el-button>
+							<div class="ii">(在线组卷)</div>
+						</div>
+					</el-col>
+					<el-col :span="8" v-if="!ispaperType" :disabled="!testPaperCacheReady" :offset="3">
+						<div class="grid-content bg-purple">
+							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
+							<div class="ii">(在线组卷)</div>
+						</div>
+					</el-col>
+					<el-col :span="8" v-if="ispaperType" :offset="8">
+						<div class="grid-content bg-purple">
+							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
+							<div class="ii">(图片试卷)</div>
+						</div>
+					</el-col>
+				</el-row>
+			</div>
 			<!-- <div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
 				</el-pagination>
 			</div> -->
 			
-			<div class="hint">
+			<!-- <div class="hint">
 				<div>温馨提示：</div>
 				<span>1.下载word模板正确填写各项题目信息后，在本页面进行上传处理，上传后将提交管理员确认，确认完
 				                      毕后会进入试卷库。复杂题目可以图片形式插入word模板文档。
 				                      2.图片试卷仅能用于作业、练习，无法接入题库、评价系统等其他功能，建议优先选择按模板提交试卷。</span>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
@@ -341,21 +313,7 @@ export default {
 			this.uploadFile.append('file',file)
 			this.$message.success('导入成功')
 		},
-		// 班级信息
-		// formStatus(row,colum){
-		// 	console.log(row)
-		// 	selectListByOptions({
-		// 		"id":row.classesId
-		// 	}).then(res=>{
-		// 		console.log(res)
-		// 		return res.data.data.list[0].name			
-		// 		// studentStudentExamAdd
-		// 	})
-		// },
-		// 试卷图片上传
-		// parperAdd(){
-
-		// },
+		
 		parperAddPic(){
 
 			if(this.paperType == '图片试卷'){
@@ -378,6 +336,7 @@ export default {
 										}).then(res=>{
 											
 											if(res.data.result){
+
 											}else{
 												this.$message.error(res.data.message)
 											}
@@ -964,11 +923,7 @@ export default {
 </script>
 
 <style scoped src="../../../assets/css/manage-import.css"></style>
-<style scoped>
-.box .left{
-	height: 1500px;
-}
-</style>
+
 <style>
 	.box .left .el-input__inner{
 		border: 1px solid #DCDFE6;

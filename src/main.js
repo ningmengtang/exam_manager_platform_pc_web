@@ -19,9 +19,9 @@ import 'quill/dist/quill.snow.css' // 富文本编辑器外部引用样式  三�
 // import * as Quill from 'quill'  //引入编辑器
 // import ImagePaste from 'quill-yang-image-paste';
 // Quill.register('modules/imagePaste', ImagePaste);
-import * as Quill from 'quill'  //引入编辑器
-import ImagePaste from 'quill-image-paste-module';
-Quill.register('modules/imagePaste', ImagePaste);
+// import * as Quill from 'quill'  //引入编辑器
+// import ImagePaste from 'quill-image-paste-module';
+// Quill.register('modules/imagePaste', ImagePaste);
 // require styles
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.bubble.css'

@@ -530,8 +530,8 @@ import html2canvas from "html2canvas"
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import {
-
-	apiCommonExamElementTestSelectById
+  apiCommonExamSeleElementTestById,
+	apiCommonExamSelectById
 
 } from '@/api/api.js'
 
@@ -1154,7 +1154,7 @@ export default {
 
       this.qrInfoObj.uid = localStorage.getItem("userID").toString()
       this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
-      console.log(this.$route.query.createTestPaperInfoObj)
+      // console.log(this.$route.query.createTestPaperInfoObj)
       
       // console.log(this.$router.params.createTestPaperInfoObj)
       if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)
@@ -1213,7 +1213,7 @@ export default {
         else{
           //实际下载
           console.log("进入下载模式")
-          apiCommonExamElementTestSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
+          apiCommonExamSeleElementTestById(this.createTestPaperInfoObj.testPaperId).then(res => {
             if(!res.data.result)
             {
               this.$message.error('获取试卷失败，无法下载！')
@@ -1317,7 +1317,7 @@ export default {
 
       console.log(this.createTestPaperInfoObj)
       this.createTestPaperInfoObj.testPaperId = 69
-      apiCommonExamElementTestSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
+      apiCommonExamSeleElementTestById(this.createTestPaperInfoObj.testPaperId).then(res => {
           if(!res.data.result)
           {
             this.$message.error('获取试卷失败，无法下载！')

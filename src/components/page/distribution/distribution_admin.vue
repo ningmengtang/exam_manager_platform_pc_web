@@ -3,6 +3,18 @@
 		<div class="top">
 			<div class="group">
 				<div class="row-group">
+					<div class="th-group">订单类型</div>
+					<div class="td-group" >
+						<el-radio-group v-model="orderType" @change="changeOrderType">
+							<el-radio-button v-for="(item,index) in orderTypeList" :label="item.id">
+								{{item.name}}
+							</el-radio-button>
+						</el-radio-group>
+					</div>
+				</div>
+			</div>
+			<div class="group">
+				<div class="row-group">
 					<div class="th-group">分发状态</div>
 					<div class="td-group" >
 						<el-radio-group v-model="orderStatus" @change="changeOrder">
@@ -13,16 +25,10 @@
 					</div>
 				</div>
 			</div>
-			<!-- <div class="search">
-				<el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button>
-			</div> -->
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
 			<div class="li" v-for="(data, i) in orderList" :key="data.id">
-				<!-- <img src="../../../assets/img/img.jpg" class="user-img" />
-				<div class="teacher-name">{{ data.teacher }}</div> -->
 				<div class="title-box">
 					<div class="title">
 						{{ data.operator_name }}</div>
@@ -38,16 +44,9 @@
 						{{ data.create_date }}申请订购
 					</span>
 				</div>
-				<!-- <div class="label-box">
-					<div class="label">{{ data.label }}</div>
-					<div class="label">人教版</div>
-					<div class="label">语文</div>
-					<div class="label">一年级</div>
-				</div> -->
 				<div class="right">
 					<div class="ii" >
 						<div class="status_box">
-							<!-- <i class="icon el-icon-loading ii"></i> -->
 							<span class="text ii">{{data.status == 0?'待确定':data.status == 1?'等待分发':data.status == 2?'已取消':data.status == 3?'分发完成':''}}</span>
 							<el-button type="primary"   v-if="data.status == 1"  @click="addOrder(data)">立即分发</el-button>
 						</div>
@@ -63,7 +62,7 @@
 		<!-- 提示框 -->
 		<!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
 		<!-- Table -->
-		<el-dialog title="" :visible.sync="dialogTableVisible">
+		<!-- <el-dialog title="" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
 				<div class="t-title">请选择班级</div>
 				<div class="t-content">
@@ -127,19 +126,20 @@
 
 				</div>
 			</div>
-		</el-dialog>
+		</el-dialog> -->
 	</div>
 </template>
 <script>
 	import user from '../../common/user';
 	import {
 		apiAdminOrderList,
-		apiAdminOrderUpdate
+		apiAdminOrderUpdate,
+		AdminOrderEndOfTermListAll
 	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
-				orderStatus:4,
+				orderStatus:1,
 				orderList:[],  //订单数据
 				pageSize:6,
 				pageNum:1,
@@ -158,6 +158,7 @@
 				multipleSelection: [],
 				currentPage: 1,
 				dialogVisible: false,
+				orderType:1,
 				orderStatusList:[
 				{
 					id:1,
@@ -171,106 +172,72 @@
 					name:"已取消"
 				}
 				],
-				cities: ['全部', '分发完成', '正在分发', '分发失败'],
-				class2: ['全部', '一年级', '二年级', '三年级'],
-				class1: ['全部', '一班', '二班', '三班'],
-				student: [1, 2, 3, 4, 5],
-				checkboxGroup2: ['上海'],
-				li: [{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '1'
-					},
-					{
-						teacher: '古得老师',
-						title: '2019年人教版一年级第一单元作业5656565656',
-						synopsis: '包含小学一年级语文2019年人教版单元作业65656566555555',
-						time: '2020年10月11日上传',
-						label: '2019',
-						o: '2'
-					}
+				orderTypeList:[
+				{
+					id:1,
+					name:"普通订单"
+				},
+				{
+					id:2,
+					name:"期末订单"
+				},
 				],
-				tableData: [{
-					date: '1',
-					name: '王小虎',
-					grade: '一年级',
-					class: '1'
-				}, {
-					date: '2',
-					name: '王小虎',
-					grade: '二年级',
-					class: '1'
-				}, {
-					date: '3',
-					name: '王小虎',
-					grade: '三年级',
-					class: '1'
-				}, {
-					date: '4',
-					name: '王小虎',
-					grade: '四年级',
-					class: '1'
-				}],
 				dialogTableVisible: false,
 				dialogFormVisible: false,
 			};
 		},
 		methods: {
 			//获取选择标签的内容
-			getValue() {
-				this.array_nav4 = this.array_nav2.concat(this.array_nav3)
-				console.log(this.array_nav4);
+			changeOrderType(){
+				this.currentPage = 1
+				this.pageSize = 6
+				this.pageNum = 1
+				this.total = 0
+				this.orderList = []  //订单数据
+				this.getOrderList()
+			},
+			getOrderList(){
+				if(this.orderType == 1){
+					apiAdminOrderList({
+						"pageNum":this.pageNum,
+						"pageSize":this.pageSize,
+						"status":this.orderStatus
+					}).then(res=>{
+						// console.log(res)
+						this.orderList = res.data.data.list
+						this.total = res.data.data.total
+						this.currentPage = res.data.data.pageNum
+					})
+				}else{
+					AdminOrderEndOfTermListAll({
+						"pageNum":this.pageNum,
+						"pageSize":this.pageSize,
+						"status":this.orderStatus
+					}).then(res=>{
+						this.orderList = res.data.data.list
+						this.total = res.data.data.total
+						this.currentPage = res.data.data.pageNum
+					})
+				}
 			},
 			handleSizeChange(val) {
 				this.pageSize = val
-				apiAdminOrderList({
-					"pageNum":this.pageNum,
-					"pageSize":this.pageSize,
-					"status":this.orderStatus
-				}).then(res=>{
-					// console.log(res)
-					this.orderList = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
-				})
+				this.getOrderList()
+				
 			},
 			handleCurrentChange(val) {
 				this.pageNum = val
-				apiAdminOrderList({
-					"pageNum":this.pageNum,
-					"pageSize":this.pageSize,
-					"status":this.orderStatus
-				}).then(res=>{
-					// console.log(res)
-					this.orderList = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
-				})
+				this.getOrderList()
 			},
 			changeOrder(){
-				apiAdminOrderList({
-					"pageNum":this.pageNum,
-					"pageSize":this.pageSize,
-					"status":this.orderStatus
-				}).then(res=>{
-					this.orderList = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
-				})
+				this.getOrderList()
 				
 			},
 			//立即分发
 			addOrder(data){
 				sessionStorage.setItem('adminAffirmData', JSON.stringify(data))
-				// this.dialogTableVisible = true
-				this.$router.push('/distribution_admin_affirm')
+				this.$router.push({name:'distribution_admin_affirm',query:{orderType:this.orderType}})
 			},
-			// searchO() {
-
-			// },
 			toggleSelection(rows) {
 				if (rows) {
 					rows.forEach(row => {
@@ -295,7 +262,6 @@
 
 			submit() {
 				
-				// this.$router.push('distribution_admin_affirm')
 			}
 		},
 		mounted() {
@@ -303,9 +269,9 @@
 			apiAdminOrderList({
 				"pageNum":this.pageNum,
 				"pageSize":this.pageSize,
-				"status":1
+				"status":this.orderStatus
 			}).then(res=>{
-				console.log(res)
+				
 				this.orderList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum

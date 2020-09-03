@@ -54,33 +54,33 @@
 				</div>
 			</div> -->
 			<el-table :data="li" :height="680" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
-				<el-table-column prop="id" label="ID" width="180">
+				<el-table-column prop="id"  sortable label="ID" width="180">
 				</el-table-column>
-				<el-table-column prop="name" :label="(typeStatus=='student'?'学生姓名':'教师姓名')">
+				<el-table-column prop="name" sortable :label="(typeStatus=='student'?'学生姓名':'教师姓名')">
 				</el-table-column>
-				<el-table-column prop="idCard" label="身份证号码" width="180" v-if="typeStatus=='student'">
+				<el-table-column prop="idCard" sortable label="身份证号码" width="180" v-if="typeStatus=='student'">
 				</el-table-column>
-				<el-table-column prop="mobile" label="手机号码" width="180" v-if="typeStatus=='teacher'">
+				<el-table-column prop="mobile" sortable label="手机号码" width="180" v-if="typeStatus=='teacher'">
 				</el-table-column>
-				<el-table-column prop="schoolName" label="学校" width="180" v-if="typeStatus=='student'||typeStatus=='teacher'">
+				<el-table-column prop="schoolName" sortable label="学校" width="180" v-if="typeStatus=='student'||typeStatus=='teacher'">
 				</el-table-column>
 				//学生年级班级
-				<el-table-column prop="classes.grade" v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
+				<el-table-column prop="classes.grade" sortable v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
 				</el-table-column>
-				<el-table-column prop="classes.name" v-if="typeStatus=='student'" label="班级" width="180" :key="Math.random()">
+				<el-table-column prop="classes.name"  sortable v-if="typeStatus=='student'" label="班级" width="180" :key="Math.random()">
 				</el-table-column>
 				//老师年级班级
-				<el-table-column v-if="typeStatus=='teacher'" prop="list_cla.grade" label="年级" width="180" :key="Math.random()">
+				<el-table-column v-if="typeStatus=='teacher'" prop="list_cla.grade" label="年级"  sortable width="180" :key="Math.random()">
 					<template slot-scope="scope" v-if="typeStatus=='teacher'">
 						<div v-for="(data, i) in scope.row.list_cla" :key="data.i">{{data.grade}}</div>
 					</template>
 				</el-table-column>
-				<el-table-column prop="list_cla.name" label="班级" v-if="typeStatus=='teacher'" width="180" :key="Math.random()">
+				<el-table-column prop="list_cla.name" label="班级" v-if="typeStatus=='teacher'" sortable width="180" :key="Math.random()">
 					<template slot-scope="scope" v-if="typeStatus=='teacher'">
 						<div v-for="(data, i) in scope.row.list_cla" :key="data.i">{{data.name}}</div>
 					</template>
 				</el-table-column>
-				<el-table-column prop="createDate" label="创建时间">
+				<el-table-column prop="createDate" sortable label="创建时间">
 				</el-table-column>
 				<el-table-column label="操作">
 					<template slot-scope="scope">

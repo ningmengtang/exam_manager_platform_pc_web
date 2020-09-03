@@ -43,7 +43,7 @@
                     @selection-change="handleSelectionChange">
                     <el-table-column
                         type="selection"
-                        width="55">
+                        width="180">
                     </el-table-column>
 					<el-table-column
                         label="学校"

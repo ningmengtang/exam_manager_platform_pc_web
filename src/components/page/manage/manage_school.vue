@@ -124,7 +124,7 @@
 							<i class="el-icon-download" @click="studentDownloadList(data)" :style="{'color':color}"></i>
 						</el-tooltip>
 						<el-tooltip class="item" effect="dark" content="给予学生下载权限" placement="top-start">
-							<i class="el-icon-s-custom" @click="studentDownload(data.id,data.status)" :style="data.status=='0'?{'color':color}:{'color':'#999999'}"></i>
+							<i class="el-icon-s-custom" @click="studentDownload(data.id,data.status,data.startTime,data.overTime)" :style="data.status=='0'?{'color':color}:{'color':'#999999'}"></i>
 						</el-tooltip>
 					</div>
 
@@ -136,6 +136,7 @@
 				 :current-page.sync="currentPage" :page-size="pageSize" :total="total"></el-pagination>
 			</div>
 		</div>
+		<!-- 弹窗一 -->
 		<el-dialog title="批量下载" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
 				<el-select v-model="classId" placeholder="请选择班级" @change="changeClass" style="margin:10px">
@@ -144,7 +145,7 @@
 				</el-select>
 				<div class="student-box" style="max-height: 580px;overflow: auto;">
 					<el-table :data="tableData" @selection-change="handleSelectionChange">
-						<el-table-column type="selection" width="55">
+						<el-table-column type="selection" width="120">
 						</el-table-column>
 						<el-table-column label="学号" prop="code">
 						</el-table-column>
@@ -167,11 +168,40 @@
 
 			</div>
 		</el-dialog>
+		<!-- 弹窗2 -->
+		<el-dialog title="时间设置" :visible.sync="dialogTableVisible2">
+			<div>
+							<span class="demonstration" style="margin-right: 20px;">开始时间</span>
+							<el-date-picker
+								class="selectTime"
+								v-model="startTime"
+								type="datetime"
+								value-format="yyyy-MM-dd HH:mm:ss"
+								placeholder="选择日期时间">
+							</el-date-picker>
+		 </div>
+		 <div>
+		                         <span class="demonstration" style="margin-right: 20px;">结束时间</span>
+		 						<el-date-picker
+									class="selectTime"
+									v-model="overTime"
+									type="datetime"
+									value-format="yyyy-MM-dd HH:mm:ss"
+									placeholder="选择日期时间">
+								</el-date-picker>
+		 </div>
+			 <div slot="footer" class="dialog-footer">
+			 	<el-button type="primary" @click="getDownloadTime" >立即设置</el-button>
+			 	<el-button @click="dialogTableVisible2 = false">取消</el-button>
+			 </div>
+		</el-dialog>
+		
 	</div>
 </template>
 <script>
 	import user from '../../common/user';
 	import {
+		apiCommonExamUpdateTime,
 		selectTag,
 		ApiTagSelectList,
 		paperWithTag,
@@ -181,7 +211,8 @@
 		schoolStudentUnAllow,
 		selectBySchoolIdAndPaperIdAndClassId,
 		ApiClassSelectListByOptions,
-		apicommonExamGetFile
+		apicommonExamGetFile,
+		CommonExamUpdateTime
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -191,13 +222,14 @@
 				tableData: [],
 				search: '',
 				classList: [],
-
 				dialogTableVisible: false,
-
+                dialogTableVisible2:false,
 				pageNum: 1,
 				pageSize: 6,
 				disStatus: 0,
 				currentPage: 1,
+				startTime:'',
+				overTime:'',
 				total: 0,
 				paperList: [],
 				DisStatusList: [],
@@ -216,14 +248,14 @@
 				version: 0,
 				years: 0,
 				semester: 0,
-
+                downloadId:0,
 				obj: [],
 				schoolId: '',
 				classId: '',
 				papers: [],
 
 				testPaperId: '',
-
+                
 				pageNum1: 1,
 				pageSize1: 999,
 				currentPage1: 1,
@@ -342,12 +374,12 @@
 				// return n 
 			},
 			// 学生下载权限
-			studentDownload(id, status) {
+			studentDownload(id, status,startTime,overTime) {
 				if (status == 0) {
 					this.$confirm('是否不允许学生下载该试卷?', '提示', {
 						confirmButtonText: '确定',
 						cancelButtonText: '取消',
-						type: 'warning'
+						type: 'warning',
 					}).then(() => {
 						schoolStudentUnAllow(id, {}).then(res => {
 							if (res.data.result) {
@@ -373,21 +405,11 @@
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
-						schoolStudentAllow(id, {}).then(res => {
-							if (res.data.result) {
-								this.$message.success('操作成功')
-								selectSchoolTag({
-									"pageSize": this.pageSize,
-									"pageNum": this.pageNum,
-								}).then(res => {
-									this.papers = res.data.data.list
-									this.total = res.data.data.total
-									this.currentPage = res.data.data.pageNum
-								})
-							} else {
-								this.$message.error(res.data.message)
-							}
-						})
+						this.dialogTableVisible2=true
+						// this.startTime=startTime;
+						// this.overTime=overTime;
+						this.downloadId=id;
+						
 					}).catch(() => {
 
 					});
@@ -478,6 +500,33 @@
 					query: {
 						createTestPaperInfoObj: createTestPaperInfoObj
 					}
+				})
+			},
+			getDownloadTime(){
+				// console.log(this.overTime)
+				// console.log(this.startTime)
+				apiCommonExamUpdateTime({
+					"id":this.downloadId,
+					"overTime": this.overTime,
+					"startTime":this.startTime
+				}).then(res=>{
+					
+					schoolStudentAllow(this.downloadId, {}).then(res => {
+						if (res.data.result) {
+							this.$message.success('操作成功')
+							selectSchoolTag({
+								"pageSize": this.pageSize,
+								"pageNum": this.pageNum,
+							}).then(res => {
+								this.dialogTableVisible2 =false
+								this.papers = res.data.data.list
+								this.total = res.data.data.total
+								this.currentPage = res.data.data.pageNum
+							})
+						} else {
+							this.$message.error(res.data.message)
+						}
+					})
 				})
 			}
 

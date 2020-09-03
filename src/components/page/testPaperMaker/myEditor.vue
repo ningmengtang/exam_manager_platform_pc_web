@@ -30,7 +30,7 @@
     </div>
 </template>
 <script>
-// import { quillEditor } from 'vue-quill-editor'
+import { quillEditor } from 'vue-quill-editor'
 // import * as Quill from 'quill'  //引入编辑器
 // import ImagePaste from 'quill-yang-image-paste';
 // Quill.register('modules/imagePaste', ImagePaste);
@@ -45,7 +45,7 @@ export default {
     ],
     data() {
         return {
-            imagePaste: {},
+            // imagePaste: {},
             /**
              * 允许上传的图片类型
              */
