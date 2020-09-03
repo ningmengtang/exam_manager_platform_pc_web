@@ -29,7 +29,7 @@
 		<!-- 提示框 -->
 		<!-- <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button> -->
 		<!-- Table -->
-		<el-dialog title="" :visible.sync="dialogTableVisible">
+		<el-dialog title="分发试卷" :visible.sync="dialogTableVisible">
 			<div class="ts-select">
 				<el-select v-model="classId" placeholder="请选择班级" @change="changeClass" style="margin:10px">
 					<el-option
@@ -87,10 +87,42 @@
 					
                 </el-table>
 					<div style="margin:10px">
-                        <el-button type="primary" @click="onSubmit">立即分发</el-button>
+                        <el-button type="primary" @click="innerVisible = true">设置分发时间</el-button>
                         <el-button @click="dialogTableVisible = false">取消</el-button>
                     </div>
 			</div>
+			<!-- 选择分发时间 -->
+			<el-dialog
+      			width="60%"
+				title="请选择试卷开始和结束下载时间"
+				:visible.sync="innerVisible"
+				append-to-body>
+				<el-form label-width="120px">
+					<el-form-item label="开始下载时间：">
+						<el-date-picker
+							class="selectTime"
+							v-model="startTime"
+							type="datetime"
+							value-format="yyyy-MM-dd HH:mm:ss"
+							placeholder="选择日期时间">
+						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="结束下载时间：">
+						<el-date-picker
+							class="selectTime"
+							v-model="overTime"
+							type="datetime"
+							value-format="yyyy-MM-dd HH:mm:ss"
+							placeholder="选择日期时间">
+						</el-date-picker>
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="innerVisible = false">取 消</el-button>
+					<el-button type="primary" @click="onSubmit">确定</el-button>
+				</div>
+			</el-dialog>
+
 		</el-dialog>
 	</div>
 </template>
@@ -108,7 +140,8 @@
 		studentStudentExamAdd,
 		schoolSelectTeacher,
 		ApiClassSelectListByOptions,
-		apiCommonExamSelectList
+		apiCommonExamSelectList,
+		apiCommonExamUpdateTime
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -117,12 +150,15 @@
 				paperId:'',
 				checkAll: false,
 				isIndeterminate: true,
+				innerVisible:false,
 				array_nav: [], //存储el-chckbox数组
 				array_nav2: [], //存储el-chckbox数组
 				array_nav3: [],
 				array_nav4: [],
 				array_nav5: [],
 				studentList:[],
+				startTime:'',
+				overTime:'',
 				options:[],
 				pageNum:1,
 				pageSize:8,
@@ -252,11 +288,31 @@
 				
 			},
 			onSubmit(){
-				for(var i=0;i<this.selectStudent.length;i++){
-					this.getStudentExamAdd(this.selectStudent[i].student.id)
+				if(this.startTime && this.overTime && this.selectStudent !=[]){
+					for(var i=0;i<this.selectStudent.length;i++){
+						this.getStudentExamAdd(this.selectStudent[i].student.id)
+					}
+
+					apiCommonExamUpdateTime({
+						"id":this.paperId,
+						"startTime":this.startTime,
+						"overTime":this.overTime
+					}).then(res=>{
+						if(res.data.result){
+
+						}else{
+							this.$message.error(res.data.mesage)
+						}
+					})
+					this.$message.success('操作成功')
+					this.dialogTableVisible = false
+					this.innerVisible = false
+				}else{
+					this.$message.error('请填写相应数据')
 				}
-				this.dialogTableVisible = false
-				this.$message.success('操作成功')
+				
+				
+				
 			}
 
 		},
