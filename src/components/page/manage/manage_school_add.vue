@@ -251,9 +251,10 @@
 									sex: form.sexDefault,
 									passsword: md5(form.password),
 									schoolId: this.schoolId,
-									mobile: form.mobile
+									mobile: form.mobile,
+									classesId:this.form.classDefault
 								}
-
+								console.log(json)
 								schoolAddTeacher(json).then(res => {
 									this.$message.success('添加教师账号成功')
 									this.black();

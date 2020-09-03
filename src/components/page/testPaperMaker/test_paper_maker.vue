@@ -110,10 +110,10 @@
           <!-- ============================================================================================================ -->
           <div class="layout_question_part ql-container ql-snow" style="float:left;width:100%;">
             <div class="layout_question_part_header" style="float:left;width:100%;margin-left:30px;">
-              <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
+              <div class="layout_question_part_header_title" style="width:580px;margin:auto;font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
                 <span class="font_question_big" style="color:#d44949;">{{testPaperObj.title}}</span>
               </div>
-              <div class="layout_question_part_header_title" style="font-size:18px;line-height:50px;text-align:center;">
+              <div class="layout_question_part_header_title" style="width:580px;margin:auto;font-size:18px;line-height:50px;text-align:center;">
                 {{testPaperObj.examExplain}}
               </div>
               <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
@@ -412,7 +412,7 @@
                           <p style="text-align:right;">第{{questionPartItemIndex + 1}}部分、</p>
                           <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,null,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                       </td> -->
-                      <td>
+                      <td width="580px">
                         <div v-html="questionPartItem.topic_text">
                         </div>
                       </td>
@@ -429,7 +429,7 @@
                           <p style="text-align:right;">第{{questionBigItemIndex + 1}}大题、</p>
                           <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                       </td> -->
-                      <td>
+                      <td width="580px">
                         <div v-html="questionBigItem.topic_text">
                         </div>
                       </td>
@@ -735,7 +735,7 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import {
 
-	apiCommonExamSelectById
+	apiCommonExamSeleElementTestById
 
 } from '@/api/api.js'
 
@@ -1329,7 +1329,7 @@ export default {
         //进入批量生产模式
         this.createTestPaperInfoObj = this.$route.query.createTestPaperInfoObj
         
-        apiCommonExamSelectById(this.createTestPaperInfoObj.testPaperId).then(res => {
+        apiCommonExamSeleElementTestById(this.createTestPaperInfoObj.testPaperId).then(res => {
           if(!res.data.result)
           {
             this.$message.error('获取试卷失败，无法下载！')
