@@ -369,13 +369,13 @@ import { forEach } from 'jszip'
                         }
                     });
                 }
-                if(this.orderItemList[index].children.length == 2){
-                    // 两份打9折
-                    this.orderItemList[index].total =  this.orderItemList[index].total  * 0.9
-                }else if(this.orderItemList[index].children.length > 2){
-                    // 两份以上打8折
-                    this.orderItemList[index].total =  this.orderItemList[index].total  * 0.8
-                }
+                // if(this.orderItemList[index].children.length == 2){
+                //     // 两份打9折
+                //     this.orderItemList[index].total =  this.orderItemList[index].total  * 0.9
+                // }else if(this.orderItemList[index].children.length > 2){
+                //     // 两份以上打8折
+                //     this.orderItemList[index].total =  this.orderItemList[index].total  * 0.8
+                // }
                 this.Allmoney[index] = this.orderItemList[index].total
                 this.$forceUpdate();
                 
