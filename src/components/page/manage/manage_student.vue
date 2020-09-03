@@ -343,6 +343,7 @@
 				// return n 
 			},
 			downloadFile(item) {
+
 				if (item.startTime && item.overTime) {
 					let arr = this.isDuringDate(item.startTime, item.overTime)
 					if (arr) {
@@ -383,20 +384,34 @@
 						this.$message.warning('未到下载时间，不允许下载')
 					}
 				} else {
-					let createTestPaperInfoObj = {
-						testPaperId: item.id,
-						students: [{
-							uid: localStorage.getItem('userID'),
-							utype: "student",
-							items: []
-						}]
-					}
-					this.$router.push({
-						name: 'test_paper_maker_for_task',
-						query: {
-							createTestPaperInfoObj: createTestPaperInfoObj
+					if(item.affix){
+							apicommonExamGetFile(item.id).then(res=>{
+								// console.log(res)
+								var headers = res.headers['content-disposition']
+								// console.log(headers)
+								headers = headers.substring(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
+								const blob = new Blob([res.data],{type:''})
+								let link = document.createElement('a');
+								let objectUrl = URL.createObjectURL(blob);
+								link.setAttribute("href",objectUrl);
+								link.setAttribute("download",headers); 
+								link.click();
+								//释放内存
+								window.URL.revokeObjectURL(link.href)
+							})
+						}else{
+							let  createTestPaperInfoObj = {
+							 		testPaperId:item.id,
+							        students:[
+							          {
+							            uid:localStorage.getItem('userID'),
+										utype:"student",
+				          				items:[]
+							          }
+							        ]
+							      }
+							this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
 						}
-					})
 				}
 
 
