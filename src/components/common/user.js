@@ -128,6 +128,10 @@ export default function usertype() {
                     icon: 'el-icon-thirdxuexiao_banji',
                     index: `manage_${loginUserType}_class`,
                     title: '班级管理'
+                },{
+                    icon: 'el-icon-tickets',
+                    index: `log_all`,
+                    title: '操作日志'
                 })
             }
         }
