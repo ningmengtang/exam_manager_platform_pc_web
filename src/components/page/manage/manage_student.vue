@@ -430,7 +430,6 @@
 		},
 		mounted() {
 			this.color = user().color;
-			console.log(this.$route.params.id)
 			this.TagTypeList = [];
 			ApiTagSelectList({
 				"parentId": 0,

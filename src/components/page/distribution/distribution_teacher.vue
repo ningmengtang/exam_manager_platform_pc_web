@@ -226,10 +226,11 @@
 				this.paperId = id
 				// let teacherId = this.userID
 				selectStudentWithPaperAllotByTeacherIdAndPaperId(this.classId,this.paperId,this.userID).then(res=>{
-					console.log(res)
+					// console.log(res)
 					this.studentList = res.data.data
 				})
 			},
+
 			changeClass(){
 				selectStudentWithPaperAllotByTeacherIdAndPaperId(this.classId,this.paperId,this.userID).then(res=>{
 					this.studentList = res.data.data
