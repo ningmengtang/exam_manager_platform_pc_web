@@ -193,7 +193,9 @@
 						label: '管理员',
 						value: 'admin'
 					}],
-					rolename:0,
+					roleName:0,
+					roleSn:0,
+					roleId:0,
 					schoolDefault: '',
 					school: '',
 					stuedntNum: '',
@@ -272,7 +274,8 @@
 									schoolId: form.schoolDefault[0].id,
 									schoolSn: form.schoolDefault[0].sn,
 									classesId: form.classDefault,
-									code: form.stuedntNum
+									code: form.stuedntNum,
+									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
 								}).then(res => {
 									this.$message.success('添加学生账号成功')
 									this.black()
@@ -285,7 +288,8 @@
 									password: md5(form.password),
 									sex: form.sexDefault,
 									schoolId: form.schoolDefault[0].id,
-									classesId:form.classDefault
+									classesId:form.classDefault,
+									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
 								}).then(res => {
 									this.$message.success('添加教师账号成功')
 									this.black()
@@ -296,7 +300,8 @@
 									name: form.userName,
 									mobile: form.mobile,
 									password: md5(form.password),
-									code:form.schoolCode
+									code:form.schoolCode,
+									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
 								}).then(res => {
 									this.$message.success('添加学校账号成功')
 									this.black()
@@ -308,6 +313,7 @@
 									name: form.userName,
 									password: md5(form.password),
 									sex: form.sexDefault,
+									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
 								}).then(res => {
 									this.$message.success('添加专家账号成功')
 									this.black()
@@ -321,7 +327,6 @@
 								json['roleId'] = a[i]
 								arr.push(json)
 							})
-							
 							adminAddAdmin({
 								mobilePhone: form.mobile,
 								name: form.userName,
@@ -347,7 +352,11 @@
 			// 查看角色
 			SelectRoleadminPower(data){
 				 adminSelectRoleadminPower({name:data}).then(res=>{
-					console.log(res)
+					 console.log(res)
+					res.data.data.list.map(x=>{
+						this.form.roleId=x.id
+						this.form.roleSn=x.sn
+					})
 				})
 			}
 
@@ -356,17 +365,20 @@
            let form = this.form
 			switch (this.$route.query.typeStatus) {
 				case 'student':
-					this.form.roleDefault = '学生'
-					this.SelectRoleadminPower('学生')
+				    this.form.roleDefault ='学生'
+					this.SelectRoleadminPower(this.form.roleDefault)
 					break;
 				case 'teacher':
 					this.form.roleDefault = '教师'
+					this.SelectRoleadminPower(this.form.roleDefault)
 					break;
 				case 'school':
 					this.form.roleDefault = '学校'
+					this.SelectRoleadminPower(this.form.roleDefault)
 					break;
 				case 'user':
 					this.form.roleDefault = '专家'
+					this.SelectRoleadminPower(this.form.roleDefault)
 					break;
 				case 'admin':
 				//查询全部角色
@@ -379,7 +391,6 @@
 					break;
 
 			}
-              this.SelectRoleadminPower();
 			//查询学校
 			ApiSchoolAccountSelectByOptions(this.page).then(res => {
 				res.data ? (this.form.school = res.data.data.list, this.total = res.data.data.total,console.log(res)) : this.$message.error(
