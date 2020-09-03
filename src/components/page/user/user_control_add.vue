@@ -85,7 +85,7 @@
 		adminAddSchool,
 		adminAddUser,
 		adminAddAdmin,
-		adminSelectRoleadminPower
+		adminSelectRoleadminPower,
 	} from '@/api/api.js';
 	import md5 from 'js-md5';
 	export default {
@@ -193,6 +193,7 @@
 						label: '管理员',
 						value: 'admin'
 					}],
+					rolename:0,
 					schoolDefault: '',
 					school: '',
 					stuedntNum: '',
@@ -342,6 +343,12 @@
 			},
 			black() {
 				this.$router.push('user_control')
+			},
+			// 查看角色
+			SelectRoleadminPower(data){
+				 adminSelectRoleadminPower({name:data}).then(res=>{
+					console.log(res)
+				})
 			}
 
 		},
@@ -350,6 +357,7 @@
 			switch (this.$route.query.typeStatus) {
 				case 'student':
 					this.form.roleDefault = '学生'
+					this.SelectRoleadminPower('学生')
 					break;
 				case 'teacher':
 					this.form.roleDefault = '教师'
@@ -371,7 +379,7 @@
 					break;
 
 			}
-
+              this.SelectRoleadminPower();
 			//查询学校
 			ApiSchoolAccountSelectByOptions(this.page).then(res => {
 				res.data ? (this.form.school = res.data.data.list, this.total = res.data.data.total,console.log(res)) : this.$message.error(
