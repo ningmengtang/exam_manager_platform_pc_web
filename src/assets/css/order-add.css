@@ -150,10 +150,8 @@
 
 .right-box .upload-papers {
     margin-top: 22px;
-    height: 600px;
     overflow: auto;
 }
-
 .right-box .buttom {
     margin-left: 20px;
 }
@@ -392,7 +390,9 @@
 .box /deep/ .el-table th {
     text-align: center;
 }
-
+.box .left-box /deep/ .el-select{
+    display: block;
+}
 .box /deep/ .el-table td,
 .el-table th.is-leaf {
     text-align: center;

@@ -2,6 +2,7 @@
 .group{margin: 10px 0;background-color: #FFFFFF;padding: 20px;border-radius: 8px;background-image: url(../img/bg-bird.png);background-repeat: no-repeat;background-position: calc( 100% - 20px ) 20px;}
 .row-group{width: 100%;display: flex;align-items: center;}
 .row-group .th-group{font-size: 14px;margin-right: 38px;width: 60px;}
+
 .group /deep/ .el-radio-button__inner{border: none;border-radius: 8px;padding: 8px 22px;margin:0 5px;min-width: 92px;}
 .group .right{display: flex;align-self: center;flex-direction: column;margin-right: 240px;}
 .right-son+.right-son{margin-top: 30px;}

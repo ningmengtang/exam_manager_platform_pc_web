@@ -16,23 +16,23 @@
 			</div>
 			<el-form ref="form" :model="form" label-width="80px" class="form" style="margin-bottom: 20px;">
 				<el-form-item label="订购总数">
-					<el-input v-model="form.count" >
+					<el-input v-model="form.count" readonly>
 						<template slot="append">份</template>
 					</el-input>
 				</el-form-item>
 				<el-form-item label="订购类型">
-					<el-input v-model="form.style_count">
+					<el-input v-model="form.style_count" readonly>
 						<template slot="append">种</template>
 					</el-input>
 				</el-form-item>
 				<el-form-item label="联系电话">
-					<el-input v-model="form.contact_phone"></el-input>
+					<el-input v-model="form.contact_phone" readonly></el-input>
 				</el-form-item>
 				<el-form-item label="收货人员">
-					<el-input v-model="form.contacts"></el-input>
+					<el-input v-model="form.contacts" readonly></el-input>
 				</el-form-item>
 				<el-form-item label="收货地址">
-					<el-input v-model="form.contact_address"></el-input>
+					<el-input v-model="form.contact_address" readonly></el-input>
 				</el-form-item>
 				<!-- <el-date-picker
 				      v-model="value1"
@@ -100,16 +100,6 @@
 		</div>
 		<!-- 提示框 -->
 		<el-dialog title="选择试卷" :visible.sync="dialogTableVisible" >
-			<!-- <div>
-				<span>
-					已选择:[
-					<span style="color:red">
-						{{ParperType.title}}
-					</span>
-					]
-					
-				</span>
-			</div> -->
 			 <el-table
 			 	style="max-height: 580px;overflow: auto;"
 				:data="tableData"
@@ -118,7 +108,7 @@
 				>
 				<el-table-column
 					type="selection"
-					width="55">
+					width="120">
 				</el-table-column>
 				<el-table-column
 					type="index"
@@ -149,18 +139,41 @@
                         >{{scope.row.putInto ===0?'入库失败':scope.row.putInto ===1?'入库成功':scope.row.putInto ===2?'正在入库':''}}</el-tag>
                     </template>
 				</el-table-column>
-				
 			</el-table>
-			<!-- <div class="page">
-				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-					:current-page.sync="currentPage" :page-size="pageSize" :total="total">
-				</el-pagination>
-			</div> -->
-
-			<div>
-				<el-button type="primary" @click="onSubmit">确定分发</el-button>
+			<div style="margin:10px">
+				<el-button type="primary" @click="innerVisible = true">设置分发时间</el-button>
     			<el-button @click="dialogTableVisible = false">取消</el-button>
 			</div>
+			<el-dialog
+      			width="60%"
+				title="请选择试卷开始和结束下载时间"
+				:visible.sync="innerVisible"
+				append-to-body>
+				<el-form label-width="120px">
+					<el-form-item label="开始下载时间：">
+						<el-date-picker
+							class="selectTime"
+							v-model="startTime"
+							type="datetime"
+							value-format="yyyy-MM-dd HH:mm:ss"
+							placeholder="选择日期时间">
+						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="结束下载时间：">
+						<el-date-picker
+							class="selectTime"
+							v-model="overTime"
+							type="datetime"
+							value-format="yyyy-MM-dd HH:mm:ss"
+							placeholder="选择日期时间">
+						</el-date-picker>
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="innerVisible = false">取 消</el-button>
+					<el-button type="primary" @click="onSubmit">确定</el-button>
+				</div>
+			</el-dialog>
 		</el-dialog>
 	
 	</div>
@@ -173,14 +186,21 @@
 		apiAdminOrderItemList,
 		AdminOrderUpload,
 		selectAllUserTag,
-		improtSchoolAndTeachersAndStudentsInfoByAlredyUpload
+		improtSchoolAndTeachersAndStudentsInfoByAlredyUpload,
+		AdminOrderEndOfTermItemList,
+		AdmindistributionOfTestPaperByOrderEndOfTerm,
+		AdminOrderEndOfTermItemUpload,
+		apiCommonExamUpdateTime
 	} from '@/api/api.js'
 	export default {
 		data() {
 			return {
 				adminAffirmData:[],
+				innerVisible:false,
 				useId:localStorage.getItem('userID'),
-                useName:localStorage.getItem('userName'),
+				useName:localStorage.getItem('userName'),
+				startTime:'',
+				overTime:'',
 				color: '',
 				endVal1: 6,
 				endVal2: 454,
@@ -191,6 +211,7 @@
 				array_nav5: [],
 				array_nav9: [],
 				percentage:50,
+				orderType:'',
 				value1: '',
 				style: {
 					card_2: 'background-color: #41dde3;',
@@ -242,54 +263,121 @@
 				// improtSchoolAndTeachersAndStudentsInfoByAlredyUpload()
 			},
 			async getTypeList(id){
-				await this.TagTypePromise(id)
+				if(this.orderType == 1){
+					await this.TagTypePromise(id)
+				}else{
+					await this.TagTypePromiseEnd(id)
+				}
+				
+			},
+			async getupdateList(id){
+				if(this.orderType == 1){
+					await this.TagTypePromiseUpdateTime(id)
+				}else{
+					await this.TagTypePromiseEndUpdateTime(id)
+				}
+			},
+			TagTypePromiseUpdateTime(id){
+				return new Promise((resolve, reject)=>{
+					apiCommonExamUpdateTime({
+						"id":id,
+						"startTime":this.startTime,
+						"overTime":this.overTime
+					}).then(res=>{
+						if(res.data.result){
+							resolve(res)
+						}else{
+							this.$message.error(res.data.message)
+						}
+						
+					})
+					
+				})
+			},
+			TagTypePromiseEndUpdateTime(id){
+				return new Promise((resolve, reject)=>{
+					apiCommonExamUpdateTime({
+						"id":id,
+						"startTime":this.startTime,
+						"overTime":this.overTime
+					}).then(res=>{
+						if(res.data.result){
+							resolve(res)
+						}else{
+							this.$message.error(res.data.message)
+						}
+						
+					})
+					
+				})
 			},
 			TagTypePromise(id){
 				return new Promise((resolve, reject)=>{
 					improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.Itemid,id).then(res=>{
 						if(res.data.result){
+							resolve(res)
 						}else{
 							this.$message.error(res.data.message)
 						}
-						resolve(res)
+						
+					})
+					
+				})
+			},
+			TagTypePromiseEnd(id){
+				return new Promise((resolve, reject)=>{
+					AdmindistributionOfTestPaperByOrderEndOfTerm(this.Itemid,id).then(res=>{
+						if(res.data.result){
+							resolve(res)
+						}else{
+							this.$message.error(res.data.message)
+						}
+						
 					})
 					
 				})
 			},
 			onSubmit(){
 				// 分配学生
-				for(var i=0;i<this.ParperType.length;i++){
-					this.getTypeList(this.ParperType[i].id)
-				}
-				this.$message.success('操作成功')
-				this.dialogTableVisible = false
-				apiAdminOrderItemList({
-					"order_id":this.adminAffirmData.id
-				}).then(res=>{
-					if(res.data.data.list){
-						this.papers = res.data.data.list
-					}else{
-						this.$message.error('查询不到订单项')
+				// this.innerVisible = true
+				
+				if(this.startTime && this.overTime && this.ParperType !=[] ){
+					for(var i=0;i<this.ParperType.length;i++){
+						this.getTypeList(this.ParperType[i].id)
 					}
-				})
-				// improtSchoolAndTeachersAndStudentsInfoByAlredyUpload(this.Itemid,this.ParperType.id).then(res=>{
-				// 	// console.log(res)
-				// 	if(res.data.result){
-				// 		this.$message.success('分配成功')
-				// 		this.dialogTableVisible = false
-				// 		apiAdminOrderItemList({
-				// 			"order_id":this.adminAffirmData.id
-				// 		}).then(res=>{
-				// 			if(res.data.data.list){
-				// 				this.papers = res.data.data.list
-				// 			}else{
-				// 				this.$message.error('查询不到订单项')
-				// 			}
-				// 		})
-				// 	}else{
-				// 		this.$message.error(res.data.message)
-				// 	}
-				// })
+
+					for(var a=0;a<this.ParperType.length;a++){
+						this.getupdateList(this.ParperType[a].id)
+					}
+					this.$message.success('操作成功')
+
+					this.dialogTableVisible = false
+					this.innerVisible = false
+					if(this.orderType == 1){
+						apiAdminOrderItemList({
+							"order_id":this.adminAffirmData.id
+						}).then(res=>{
+							if(res.data.data.list){
+								this.papers = res.data.data.list
+							}else{
+								this.$message.error('查询不到订单项')
+							}
+						})
+					}else if(this.orderType == 2){
+						AdminOrderEndOfTermItemList({
+							"order_id":this.adminAffirmData.id
+						}).then(res=>{
+							if(res.data.data.list){
+								this.papers = res.data.data.list
+							}else{
+								this.$message.error('查询不到订单项')
+							}
+						})
+					}
+				}else{
+					this.$message.error('请填写相应数据')
+				}
+				
 			},
 			handleCurrentChangeSelect(val){
 				this.ParperType = val
@@ -351,45 +439,76 @@
 			// },
 			netx(){
 				this.percentage=100;
-			   this.dialogTableVisible2 = false;
+			   	this.dialogTableVisible2 = false;
 			},
 			black(){
 				this.$router.push('order_school')
 			},
 			uploadFile(item){
-				var input =  document.createElement('input')
-				input.type = 'file'
-				input.accept = '.xls'
-				input.addEventListener('change',(event)=>{
-					let file = event.target.files[0]
-					let data = new FormData()
-					data.append('file',file)
-					AdminOrderUpload(item.id,data).then(res=>{
-						if(res.data.result){
-							this.$message.success('上传成功')
-							apiAdminOrderItemList({
-								"order_id":this.adminAffirmData.id
-							}).then(res=>{
-								if(res.data.data.list){
-									this.papers = res.data.data.list
-								}else{
-									this.$message.error('查询不到订单项')
-								}
-								console.log(res)
-							})
-						}else{
-							this.$message.error(res.data.message)
-						}
+				if(this.orderType == 1){
+					var input =  document.createElement('input')
+					input.type = 'file'
+					input.accept = '.xls'
+					input.addEventListener('change',(event)=>{
+						let file = event.target.files[0]
+						let data = new FormData()
+						data.append('file',file)
+						AdminOrderUpload(item.id,data).then(res=>{
+							if(res.data.result){
+								this.$message.success('上传成功')
+								apiAdminOrderItemList({
+									"order_id":this.adminAffirmData.id
+								}).then(res=>{
+									if(res.data.data.list){
+										this.papers = res.data.data.list
+									}else{
+										this.$message.error('查询不到订单项')
+									}
+									console.log(res)
+								})
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
 					})
-				})
-				input.click()
-            	input.remove() 
+					input.click()
+					input.remove() 
+				}else{
+					var input =  document.createElement('input')
+					input.type = 'file'
+					input.accept = '.xls'
+					input.addEventListener('change',(event)=>{
+						let file = event.target.files[0]
+						let data = new FormData()
+						data.append('file',file)
+						AdminOrderEndOfTermItemUpload(item.id,data).then(res=>{
+							if(res.data.result){
+								this.$message.success('上传成功')
+								AdminOrderEndOfTermItemList({
+									"order_id":this.adminAffirmData.id
+								}).then(res=>{
+									if(res.data.data.list){
+										this.papers = res.data.data.list
+									}else{
+										this.$message.error('查询不到订单项')
+									}
+								})
+							}else{
+								this.$message.error(res.data.message)
+							}
+						})
+					})
+					input.click()
+					input.remove() 
+				}
+
 			},
 			// 分配试卷
 			addPaper(item){
 				if(item.file_path){
 					this.Itemid = item.id
 					this.dialogTableVisible = true
+
 					// 通过标签查询试卷
 					this.id = []
 					this.ParperType = ''
@@ -414,6 +533,7 @@
 		mounted() {
 			this.color = user().color;
 			let adminAffirmData = JSON.parse(sessionStorage.getItem("adminAffirmData")) 
+			this.orderType = this.$route.query.orderType
 			if(adminAffirmData){
 				this.adminAffirmData = adminAffirmData
 				this.form.count = adminAffirmData.count
@@ -422,16 +542,28 @@
 				this.form.contacts = adminAffirmData.contacts
 				this.form.contact_address = adminAffirmData.contact_address
 				this.form.id = adminAffirmData.id
-				apiAdminOrderItemList({
-					"order_id":adminAffirmData.id
-				}).then(res=>{
-					if(res.data.data.list){
-						this.papers = res.data.data.list
-					}else{
-						this.$message.error('查询不到订单项')
-					}
-					console.log(res)
-				})
+				if(this.orderType == 1){
+					apiAdminOrderItemList({
+						"order_id":adminAffirmData.id
+					}).then(res=>{
+						if(res.data.data.list){
+							this.papers = res.data.data.list
+						}else{
+							this.$message.error('查询不到订单项')
+						}
+					})
+				}else if(this.orderType == 2){
+					AdminOrderEndOfTermItemList({
+						"order_id":adminAffirmData.id
+					}).then(res=>{
+						if(res.data.data.list){
+							this.papers = res.data.data.list
+						}else{
+							this.$message.error('查询不到订单项')
+						}
+					})
+				}
+				
 			}else{
 				this.$message.error('查询不到订单信息')
 			}

@@ -51,20 +51,21 @@
 
 			<!--订单列表 -->
 			<div class="upload-papers">
-				<div class="li-box" v-for="(item,i) in orderList ">
+				<div class="li-box" v-for="(item,i) in detailsList ">
 					<div class="ranking">{{i+1}}</div>
 					<div class="papers-box">
-						<div class="p-title">{{item.name}}
-							<div class="label-box">
-								<div class="label" v-for="d in item.childrenName ">
-									{{d}}
-								</div>
-							</div>
+						<div class="p-title">
+                            <span>
+                                {{item.class}} ： 已选
+                            </span>
+                            <span>
+                                {{item.subject}}
+                            </span>
 						</div>
 						<div class="p-particular">
-							<div>数量{{item.updateNum}}份</div>
-							<!-- <div>单价{{item.price}}元</div>
-							<div>总价{{item.total_price }}元</div> -->
+							<div>数量：各{{item.updateNum}}份</div>
+						    <!-- <div>单价{{item.price}}元</div> -->
+							<div>总价：{{item.Allmoney }}元</div>
 							<!-- <div class="fault" @click="upload(i)"  v-if="!item.uploadFile">学生信息未导入，点击重导</div> -->
 						</div>
 					</div>
@@ -208,7 +209,7 @@
 	import Schart from 'vue-schart'
 	import ICountUp from 'vue-countup-v2'
 	import user from '../../common/user'
-	import {AdminOrderPriceSelect,selectTag,AdminOrderTagAdd,AdminOrderItemAdd,ApiTagSelectList,AdminOrderAdd,AdminOrderUpload} from '@/api/api.js'
+	import {AdminOrderPriceSelect,selectTag,AdminOrderTagAdd,AdminOrderItemAdd,ApiTagSelectList,AdminOrderAdd,AdminOrderUpload,SchoolOrederDetailsAdd} from '@/api/api.js'
 import { forEach } from 'jszip'
 
 	export default {
@@ -314,7 +315,6 @@ import { forEach } from 'jszip'
             },
             // 年级
             changeSub(index,id){
-
                 this.orderItemList[index].classId = id
                 let className = ''
                 this.tagList.grade.forEach(element=>{
@@ -380,79 +380,95 @@ import { forEach } from 'jszip'
                         continue
                     }else{
                         let item = this.orderItemList[i]
-                        for(var a=0;a<item.childrenName.length;a++){
-                            if(item.childrenName[a] == '语文'){
-                                this.orderList.push({
-                                    "name":item.yearName + item.className + item.testName + item.childrenName[a] ,
-                                    "children":[item.year,item.classId,item.test,item.children[a],this.chineseId],
-                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName],
-                                    "updateNum":item.updateNum,
-                                    "total_price":item.total   
-                                })
-                            }else if(item.childrenName[a] == '数学'){
-                                this.orderList.push({
-                                    "name":item.yearName + item.className +item.testName + item.childrenName[a] ,
-                                    "children":[item.year,item.classId,item.test,item.children[a],this.mathId],
-                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName],
-                                    "updateNum":item.updateNum,
-                                    "total_price":item.total,
-                                    "uploadFile":''  
-                                })
-                            }else if(item.childrenName[a] == '英语'){
-                                this.orderList.push({
-                                    "name":item.yearName + item.className + item.testName + item.childrenName[a] ,
-                                    "children":[item.year,item.classId,item.test,item.children[a],this.englishId],
-                                    "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName],
-                                    "updateNum":item.updateNum,
-                                    "total_price":item.total,
-                                    "uploadFile":''
-                                })
-                            } 
-                        }
                         // for(var a=0;a<item.childrenName.length;a++){
                         //     if(item.childrenName[a] == '语文'){
-                        //         for(let k=0;k<this.chinesemMinCount;k++){
-                        //             this.orderList.push({
-                        //                 "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[k].text,
-                        //                 "children":[item.year,item.classId,item.test,item.children[a],this.chineseId,this.tagList.element_test[k].id],
-                        //                 "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName,this.tagList.element_test[k].text],
-                        //                 "updateNum":item.updateNum,
-                        //                 "total_price":item.total,
-                                        
-                        //             })
-                        //         }
+                        //         this.orderList.push({
+                        //             "name":item.yearName + item.className + item.testName + item.childrenName[a] ,
+                        //             "children":[item.year,item.classId,item.test,item.children[a],this.chineseId],
+                        //             "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName],
+                        //             "updateNum":item.updateNum,
+                        //             "total_price":item.total   
+                        //         })
                         //     }else if(item.childrenName[a] == '数学'){
-                        //         for(let j=0;j<this.mathMinCount;j++){
-                        //             this.orderList.push({
-                        //                 "name":item.yearName + item.className +item.testName + item.childrenName[a] + this.tagList.element_test[j].text,
-                        //                 "children":[item.year,item.classId,item.test,item.children[a],this.mathId,this.tagList.element_test[j].id],
-                        //                 "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName,this.tagList.element_test[j].text],
-                        //                 "updateNum":item.updateNum,
-                        //                 "total_price":item.total,
-                        //                 "uploadFile":''
-                                        
-                        //             })
-                        //         }
-                                
-
+                        //         this.orderList.push({
+                        //             "name":item.yearName + item.className +item.testName + item.childrenName[a] ,
+                        //             "children":[item.year,item.classId,item.test,item.children[a],this.mathId],
+                        //             "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName],
+                        //             "updateNum":item.updateNum,
+                        //             "total_price":item.total,
+                        //             "uploadFile":''  
+                        //         })
                         //     }else if(item.childrenName[a] == '英语'){
-                        //         for(let l=0;l<this.englishMinCount;l++){
-                        //             this.orderList.push({
-                        //                 "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[l].text,
-                        //                 "children":[item.year,item.classId,item.test,item.children[a],this.englishId,this.tagList.element_test[l].id],
-                        //                 "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName,this.tagList.element_test[l].text],
-                        //                 "updateNum":item.updateNum,
-                        //                 "total_price":item.total,
-                        //                 "uploadFile":''
-                        //             })
-                        //         }
+                        //         this.orderList.push({
+                        //             "name":item.yearName + item.className + item.testName + item.childrenName[a] ,
+                        //             "children":[item.year,item.classId,item.test,item.children[a],this.englishId],
+                        //             "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName],
+                        //             "updateNum":item.updateNum,
+                        //             "total_price":item.total,
+                        //             "uploadFile":''
+                        //         })
                         //     } 
                         // }
+                        for(var a=0;a<item.childrenName.length;a++){
+                            if(item.childrenName[a] == '语文'){
+                                for(let k=0;k<this.chinesemMinCount;k++){
+                                    this.orderList.push({
+                                        "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[k].text,
+                                        "children":[item.year,item.classId,item.test,item.children[a],this.chineseId,this.tagList.element_test[k].id],
+                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.chineseName,this.tagList.element_test[k].text],
+                                        "updateNum":item.updateNum,
+                                        "total_price":item.total,
+                                        
+                                    })
+                                }
+                            }else if(item.childrenName[a] == '数学'){
+                                for(let j=0;j<this.mathMinCount;j++){
+                                    this.orderList.push({
+                                        "name":item.yearName + item.className +item.testName + item.childrenName[a] + this.tagList.element_test[j].text,
+                                        "children":[item.year,item.classId,item.test,item.children[a],this.mathId,this.tagList.element_test[j].id],
+                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.mathName,this.tagList.element_test[j].text],
+                                        "updateNum":item.updateNum,
+                                        "total_price":item.total,
+                                        "uploadFile":''
+                                        
+                                    })
+                                }
+                                
+
+                            }else if(item.childrenName[a] == '英语'){
+                                for(let l=0;l<this.englishMinCount;l++){
+                                    this.orderList.push({
+                                        "name":item.yearName + item.className + item.testName + item.childrenName[a] + this.tagList.element_test[l].text,
+                                        "children":[item.year,item.classId,item.test,item.children[a],this.englishId,this.tagList.element_test[l].id],
+                                        "childrenName":[item.yearName,item.className,item.testName,item.childrenName[a],this.englishName,this.tagList.element_test[l].text],
+                                        "updateNum":item.updateNum,
+                                        "total_price":item.total,
+                                        "uploadFile":''
+                                    })
+                                }
+                            } 
+                        }
                         this.Allsubscriptions =this.Allsubscriptions +  this.orderItemList[i].updateNum
                         this.Alltotalmoney = this.Alltotalmoney +  this.orderItemList[i].total
                     }
                 }
-                console.log(this.orderList)
+               
+
+                this.detailsList = []
+                for(var k=0;k<this.tagList.grade.length;k++){
+                    if(this.Allmoney[k] == undefined ||  this.Allmoney[k] ==0){
+                        continue
+                    }else{
+                        this.detailsList.push({
+                            "class":this.tagList.grade[k].text,
+                            "subject":this.subject[k],
+                            "Allmoney":this.Allmoney[k],
+                            "updateNum":this.orderItemList[k].updateNum
+                        })
+                        
+                    }
+                }
+                // console.log(this.detailsList)
                 this.dialogTableVisible = false
             },
             // 新建订单项
@@ -531,8 +547,6 @@ import { forEach } from 'jszip'
                         "tag_list":tag_list      
                     })
                 }
-                
-               
                 AdminOrderAdd({
                     "count":this.Allsubscriptions,
                     "style_count":this.orderList.length,
@@ -542,17 +556,94 @@ import { forEach } from 'jszip'
                     "total_price":this.Alltotalmoney,
                     "orderItems":orderItems
                 }).then(res=>{
-                    loading.close();
                     if(res.data.result){
+                        let id = res.data.data.id
+                        let sn = res.data.data.sn
+                        let orderItems = res.data.data.orderItems
+                        // console.log(orderItems)
+                        let one = ''
+                        let two = ''
+                        let three = ''
+                        let four = ''
+                        let five = ''
+                        let six = ''
+                        for(var b=0;b<orderItems.length;b++){
+                            // console.log(orderItems)
+                            if(orderItems[b].title.indexOf("一年级" ) != -1){
+                                
+                                one = orderItems[b].id
+                            }else if(orderItems[b].title.indexOf("二年级" ) != -1){
+                                two = orderItems[b].id
+                            }else if(orderItems[b].title.indexOf("三年级" ) != -1){
+                                three = orderItems[b].id
+                            }
+                            else if(orderItems[b].title.indexOf("四年级" ) != -1){
+                                four = orderItems[b].id
+                            }
+                            else if(orderItems[b].title.indexOf("五年级" ) != -1){
+                                five = orderItems[b].id
+                            }
+                            else if(orderItems[b].title.indexOf("六年级" ) != -1){
+                                six = orderItems[b].id
+                            }
+                            
+                        }
+                      
+                        // console.log(one)
+                        // console.log(two)
+                        for(var a=0;a<this.detailsList.length;a++){
+                            // let order_item_ids = ''
+                            if(this.detailsList[a].class == '一年级'){
+                                this.getDetailsList(this.detailsList[a],id,sn,one)
+                            }else if(this.detailsList[a].class == '二年级'){
+                                this.getDetailsList(this.detailsList[a],id,sn,two)
+                            }else if(this.detailsList[a].class == '三年级'){
+                                this.getDetailsList(this.detailsList[a],id,sn,three)
+                            }
+                            else if(this.detailsList[a].class == '四年级'){
+                                this.getDetailsList(this.detailsList[a],id,sn,four)
+                            }else if(this.detailsList[a].class == '五年级'){
+                                this.getDetailsList(this.detailsList[a],id,sn,five)
+                            }
+                            else if(this.detailsList[a].class == '六年级'){
+                                this.getDetailsList(this.detailsList[a],id,sn,six)
+                            }
+                        }
                         this.$message.success('提交成功')
-                        this.$router.push('/order_school');
+                        this.$router.push('/order_school')
+                        loading.close();
+                        
                     }else{
                         this.$message.error(res.data.message)
                     }
                 }).catch(()=>{
-                     loading.close();
+                    loading.close();
+                })
+            },
+            async getDetailsList(item,id,sn,order_item_ids){
+                await this.detailsPromise(item,id,sn,order_item_ids)
+            },
+            detailsPromise(item,id,sn,order_item_ids){
+                return new Promise((resolve,reject)=>{
+                    SchoolOrederDetailsAdd({
+                        "order_id": id,
+                        "order_sn": sn,
+                        "classes":item.class,
+                        "subject":JSON.stringify(item.subject),
+                        "total_price":item.Allmoney,
+                        "count":item.updateNum,
+                        "order_item_ids":order_item_ids
+                    }).then(res=>{
+                        if(res.data.result){
+                            resolve(res)
+                        }else{
+                            this.$message.error(res.data.message)
+                        }
+                        
+                    })
                 })
             }
+
 		},
 		mounted() {
 			this.color = user().color;

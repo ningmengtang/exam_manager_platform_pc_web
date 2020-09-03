@@ -145,7 +145,7 @@
 				</el-select>
 				<div class="student-box" style="max-height: 580px;overflow: auto;">
 					<el-table :data="tableData" @selection-change="handleSelectionChange">
-						<el-table-column type="selection" width="55">
+						<el-table-column type="selection" width="120">
 						</el-table-column>
 						<el-table-column label="学号" prop="code">
 						</el-table-column>
@@ -171,22 +171,24 @@
 		<!-- 弹窗2 -->
 		<el-dialog title="时间设置" :visible.sync="dialogTableVisible2">
 			<div>
-							<span class="demonstration" style="margin-right: 20px;">开始时间</span><el-date-picker class="selectTime" 
-		                             v-model="startTime"
-		                             type="datetime"
-		                             value-format="yyyy-MM-dd HH:mm:ss"
-		                             placeholder="选择日期时间">
-		                         </el-date-picker>
+							<span class="demonstration" style="margin-right: 20px;">开始时间</span>
+							<el-date-picker
+								class="selectTime"
+								v-model="startTime"
+								type="datetime"
+								value-format="yyyy-MM-dd HH:mm:ss"
+								placeholder="选择日期时间">
+							</el-date-picker>
 		 </div>
 		 <div>
 		                         <span class="demonstration" style="margin-right: 20px;">结束时间</span>
-		 <el-date-picker
-		                             class="selectTime"
-		                             v-model="overTime"
-		                             type="datetime"
-		                              value-format="yyyy-MM-dd HH:mm:ss"
-		                             placeholder="选择日期时间">
-		                         </el-date-picker>
+		 						<el-date-picker
+									class="selectTime"
+									v-model="overTime"
+									type="datetime"
+									value-format="yyyy-MM-dd HH:mm:ss"
+									placeholder="选择日期时间">
+								</el-date-picker>
 		 </div>
 			 <div slot="footer" class="dialog-footer">
 			 	<el-button type="primary" @click="getDownloadTime" >立即设置</el-button>
@@ -199,6 +201,7 @@
 <script>
 	import user from '../../common/user';
 	import {
+		apiCommonExamUpdateTime,
 		selectTag,
 		ApiTagSelectList,
 		paperWithTag,
@@ -500,19 +503,22 @@
 				})
 			},
 			getDownloadTime(){
-				console.log(this.overTime)
-				CommonExamUpdateTime({
-					id:this.downloadId,
-					overTime: this.overTime,
-					startTime:this.startTime
+				// console.log(this.overTime)
+				// console.log(this.startTime)
+				apiCommonExamUpdateTime({
+					"id":this.downloadId,
+					"overTime": this.overTime,
+					"startTime":this.startTime
 				}).then(res=>{
-					schoolStudentAllow(id, {}).then(res => {
+					
+					schoolStudentAllow(this.downloadId, {}).then(res => {
 						if (res.data.result) {
 							this.$message.success('操作成功')
 							selectSchoolTag({
 								"pageSize": this.pageSize,
 								"pageNum": this.pageNum,
 							}).then(res => {
+								this.dialogTableVisible2 =false
 								this.papers = res.data.data.list
 								this.total = res.data.data.total
 								this.currentPage = res.data.data.pageNum
