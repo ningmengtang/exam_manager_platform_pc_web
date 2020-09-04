@@ -19,17 +19,26 @@ export function get(url, params) {
         }).then(res => {
 
             if (res.data.stateCode == 300033) {
-                // console.log(res)
+                console.log(res)
 
-                // Message({
-                //     message: '账号已登录，请重新登录！',
-                //     type: 'warning'
-                // });
-                // setTimeout(() => {
-                //     localStorage.clear()
-                //     window.location.href = '/login'
-                // }, 500)
+            //     Message({
+            //         message: '账号已登录，请重新登录！',
+            //         type: 'warning'
+            //     });
+            //     setTimeout(() => {
+            //         localStorage.clear()
+            //         window.location.href = '/login'
+            //     }, 500)
 
+            // }else if(res.data.stateCode == 300055){
+            //     Message({
+            //         message: '用户已登录,请重新登录。',
+            //         type: 'warning'
+            //     });
+            //     setTimeout(() => {
+            //         localStorage.clear()
+            //         window.location.href = '/login'
+            //     }, 500)
             }
             resolve(res)
         }).catch(err => {
@@ -79,18 +88,25 @@ export function post(url, data) {
                 "Authorization": loginToken == null ? undefined : authStr_hex
             }
         }).then(res => {
-            if (res.data.stateCode == 300033) {
-                // Message({
-                //     message: '账号已登录，请重新登录！',
-                //     type: 'warning'
-                // });
-                // setTimeout(() => {
-                //     localStorage.clear()
-                //     window.location.href = '/login'
-                // }, 500)
-
-
-            }
+            // if (res.data.stateCode == 300033) {
+            //     Message({
+            //         message: '登录异常！',
+            //         type: 'warning'
+            //     });
+            //     setTimeout(() => {
+            //         localStorage.clear()
+            //         window.location.href = '/login'
+            //     }, 500)
+            // }else if(res.data.stateCode == 300055){
+            //     Message({
+            //         message: '用户已登录,请重新登录。',
+            //         type: 'warning'
+            //     });
+            //     setTimeout(() => {
+            //         localStorage.clear()
+            //         window.location.href = '/login'
+            //     }, 500)
+            // }
             resolve(res)
         }).catch(err => {
             console.log(err)

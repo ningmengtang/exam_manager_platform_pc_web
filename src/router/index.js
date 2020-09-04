@@ -350,6 +350,12 @@ export default new Router({
             meta: { title: '学生-登录' }
         },
         {
+            path: '/vueCanvas',
+            component: () =>
+                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/vueCanvas.vue'),
+            meta: { title: '试卷下载' }
+        },
+        {
             path: '/404',
             component: resolve => require(['../components/page/404.vue'], resolve)
         },
