@@ -81,19 +81,21 @@
 					</div>
 				</div>
 			</div> -->
-			<el-table :data="li" :height="tableHeight" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
-				<el-table-column prop="id" sortable label="ID" width="180" >
+			<el-table :data="li" :height="tableHeight" style="width: 100%;"  element-loading-background="rgba(0, 0, 0, .3)"
+			 highlight-current-row   lazy  v-loading="loading"  >
+				<el-table-column prop="id" sortable label="ID" width="180">
 				</el-table-column>
-				<el-table-column prop="name"  sortable :label="(typeStatus=='student'?'学生姓名':typeStatus=='teacher'?'教师姓名':typeStatus=='school'?'学校名称':typeStatus=='user'?'专家姓名':'管理员姓名')">
+				<el-table-column prop="name" sortable :label="(typeStatus=='student'?'学生姓名':typeStatus=='teacher'?'教师姓名':typeStatus=='school'?'学校名称':typeStatus=='user'?'专家姓名':'管理员姓名')">
 				</el-table-column>
 				<el-table-column prop="idCard" sortable label="身份证号码" width="180" v-if="typeStatus=='student'">
 				</el-table-column>
-				<el-table-column sortable :prop="(typeStatus=='user'||typeStatus=='admin')?'mobilePhone':'mobile'" v-else label="手机号码" width="180">
+				<el-table-column sortable :prop="(typeStatus=='user'||typeStatus=='admin')?'mobilePhone':'mobile'" v-else label="手机号码"
+				 width="180">
 				</el-table-column>
 				<el-table-column sortable prop="schoolName" label="学校" width="180" v-if="typeStatus=='student'||typeStatus=='teacher'">
 				</el-table-column>
 				//学生年级班级
-				<el-table-column  prop="classes.grade" sortable v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
+				<el-table-column prop="classes.grade" sortable v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
 				</el-table-column>
 				<el-table-column prop="classes.name" sortable v-if="typeStatus=='student'" label="班级" width="180" :key="Math.random()">
 				</el-table-column>
@@ -112,6 +114,12 @@
 				<el-table-column prop="teacher_num" v-if="typeStatus=='school'" sortable label="老师数量">
 				</el-table-column>
 				<el-table-column prop="student_num" v-if="typeStatus=='school'" sortable label="学生数量">
+				</el-table-column>
+				//管理员角色
+				<el-table-column prop="teacher_num" v-if="typeStatus=='admin'" sortable label="管理员角色">
+					<template slot-scope="scope" v-if="typeStatus=='admin'">
+						<div v-for="(data, i) in scope.row.role_list" :key="data.i" :style="{color:color}">{{data.name}}</div>
+					</template>
 				</el-table-column>
 				<el-table-column prop="createDate" sortable label="创建时间">
 				</el-table-column>
@@ -178,6 +186,7 @@
 				array_nav4: [],
 				array_nav5: [],
 				search: '',
+				loading: '',
 				value1: '',
 				deleteID: '',
 				deleteAffirm: false,
@@ -224,18 +233,23 @@
 				switch (this.typeStatus) {
 					case 'student':
 						this.selectSql(5);
+						this.li = []
 						break;
 					case 'teacher':
 						this.selectSql(4);
+						this.li = []
 						break;
 					case 'school':
 						this.selectSql(3);
+						this.li = []
 						break;
 					case 'user':
 						this.selectSql(1);
+						this.li = []
 						break;
 					case 'admin':
 						this.selectSql(2);
+						this.li = []
 						break;
 
 				}
@@ -381,7 +395,15 @@
 		margin: 0 20px;
 		color: #999999;
 	}
-/* 
+/* 	.box /deep/ .el-table__row>td{
+		border: none;
+	}
+	.box /deep/ .el-table::before {
+		height: 0px;
+		padding: 10px;
+	} */
+
+	/* 
 	.box /deep/ .el-table {
 		border-radius: 8px;
 	}

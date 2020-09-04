@@ -249,10 +249,10 @@
 									this.$message.error('密码错误')
 									break;
 								case 300014:
-									this.$message.error('用户名不存在')
+									this.$message.error('用户名不存在');
+								default:
+									this.$message.error('用户名不存在或者密码错误');
 							}
-
-
 							console.log(wd);
 						}).catch(error => {
 							console.log(error);
@@ -297,17 +297,17 @@
 		mounted() {
 			let loginUserType = localStorage.getItem('loginUserType');
 			// this.setCookie('p',65);
-			let HistoryUserType=this.getCookie('HistoryUserType');
+			let HistoryUserType = this.getCookie('HistoryUserType');
 			if (!loginUserType) {
-				if(HistoryUserType){
+				if (HistoryUserType) {
 					localStorage.setItem('loginUserType', HistoryUserType);
-				}else{
+				} else {
 					localStorage.setItem('loginUserType', this.type);
 				}
-				
+
 			}
-			if(HistoryUserType){
-				this.value=HistoryUserType;
+			if (HistoryUserType) {
+				this.value = HistoryUserType;
 				this.identity(HistoryUserType)
 			}
 
