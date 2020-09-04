@@ -10,6 +10,7 @@
 									<div class="card-t">全部试卷</div>
 									<div class="num">
 										<ICountUp :endVal="Alltotal" />
+										
 									</div>
 								</div>
 							</div>
