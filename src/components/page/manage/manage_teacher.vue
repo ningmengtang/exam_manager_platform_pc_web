@@ -147,19 +147,23 @@
 			</div> -->
 			<div class="li" v-for="(data,i) in papers" :key="data.i">
 				<!-- <img src="../../../assets/img/img.jpg" class="user-img" /> -->
-				<div class="teacher-name">{{ data.teacher }}</div>
+				<div class="teacher-name">{{ data.operator_name }}</div>
 				<div class="title-box">
 					<div class="title">{{ data.title }}</div>
 					<div class="synopsis">{{data.examExplain}}</div>
 				</div>
-				<div class="time">{{ data.time }}</div>
+				<div class="title-box" style="margin: 0 20px;">
+					<div class="time">创建时间：{{data.createDate}}</div>
+					<div class="time">试卷类型：{{data.affix == true?'图片试卷':'在线组卷'}}</div>
+				</div>
 				<div class="label-box">
-					<div class="label" v-for="i in data.tag_list">{{i.text}}</div>
+					<div class="label" v-for="i in data.tag_list">{{i.text }}</div>
 				</div>
 				<div class="right">
 					<i class="icon el-icon-time"></i>
 					<div class="status" >{{data.putInto == '0'?'入库失败':data.putInto == '1'?'入库成功':data.putInto == '2'?'正在入库':''}}</div>
-					<!-- <el-button type="text" class="download" v-if="data.putInto == 1" >立即下载</el-button> -->
+					<!-- <el-button type="text" class="error" v-if="data.putInto == 1" @click="cancelData(data)">取消入库</el-button>
+					<el-button type="text" class="warning" v-if="data.putInto == 0" @click="againData(data)">重新入库</el-button> -->
 					<el-button type="text" class="download"  v-if="data.putInto == 1" @click="teachDownloadList(data)">立即下载</el-button>
 				</div>
 				<!-- <div class="right">
@@ -202,7 +206,7 @@
                         @selection-change="handleSelectionChange">
                         <el-table-column
                             type="selection"
-                            width="55">
+                            width="120">
                         </el-table-column>
                         <el-table-column
                             label="学号"
@@ -266,7 +270,8 @@
 		selectStudentWithPaperAllotByTeacherIdAndPaperId,
 		schoolSelectTeacher,
 		ApiClassSelectListByOptions,
-		apicommonExamGetFile
+		apicommonExamGetFile,
+		apiCommonExamSelectUpdate
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -448,6 +453,8 @@
 				}
 				
 			},
+		
+
 			// 选择人员
 			handleSelectionChange(val){
 				this.papaerType = val
@@ -530,7 +537,12 @@
 	.right .download {
 		background-color: #2bbb61;
 	}
-
+	.right .error{
+		background-color: #F56C6C;
+	}
+	.right .warning{
+		background-color: #E6A23C;
+	}
 	.status {
 		color: #2bbb61;
 	}

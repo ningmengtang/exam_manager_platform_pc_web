@@ -239,7 +239,7 @@
 									this.$message.success('登录成功')
 									this.$router.push(`/index_${type}`)
 									break;
-								case 300033:
+								case 300055:
 									this.$message.error('用户已登录')
 									break;
 								case 300020:

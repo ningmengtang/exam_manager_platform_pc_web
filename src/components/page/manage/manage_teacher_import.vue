@@ -30,11 +30,12 @@
 				drag action=""  
 				:show-file-list="false"
                 :http-request="uploadFild">
-					<i class="el-icon-upload"></i>
+					<i class="el-icon-upload" v-if="!uploadFile"></i>
 					<div class="el-upload__text"  v-if="!uploadFile">
 						将文件拖到此处，或
 						<em>点击上传</em>
 					</div>
+					<i class="el-icon-check" v-if="uploadFile"></i>
 					<div class="el-upload__text" v-if="uploadFile">
 							已上传文件
 					</div>
@@ -313,7 +314,21 @@ export default {
 			this.uploadFile.append('file',file)
 			this.$message.success('导入成功')
 		},
-		
+		getStudentExamListPromise(examId,id){
+			return new Promise((resolve, reject) => {
+				studentStudentExamAdd({
+					"examinationId":examId,
+					"studentId":id
+				}).then(res=>{
+					resolve(res)
+					
+				})
+			})
+		},
+		async getStudentExamList(examId,id){
+			await this.getStudentExamListPromise(examId,id)
+		},
+
 		parperAddPic(){
 
 			if(this.paperType == '图片试卷'){
@@ -330,19 +345,21 @@ export default {
 									// 有绑定学生
 									for(var i=0;i<this.selectStudentList.length;i++){
 										// 绑定学生
-										studentStudentExamAdd({
-											"examinationId":examId,
-											"studentId":this.selectStudentList[i].id
-										}).then(res=>{
+										this.getStudentExamList(examId,this.selectStudentList[i].id)
+										// studentStudentExamAdd({
+										// 	"examinationId":examId,
+										// 	"studentId":this.selectStudentList[i].id
+										// }).then(res=>{
 											
-											if(res.data.result){
+										// 	if(res.data.result){
 
-											}else{
-												this.$message.error(res.data.message)
-											}
-										})
+										// 	}else{
+										// 		this.$message.error(res.data.message)
+										// 	}
+										// })
 									}
-									this.$message.success('操作成功')								
+									this.$message.success('操作成功')	
+									this.$router.push('/manage_teacher')							
 								}else{
 									this.$message.success('操作完成，未绑定学生')
 									this.$router.push('/manage_teacher')
