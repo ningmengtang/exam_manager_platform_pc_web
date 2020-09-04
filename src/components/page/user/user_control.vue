@@ -11,36 +11,6 @@
 					</div>
 				</div>
 			</div>
-			<!-- <div class="group">
-				<div class="row-group">
-					<div class="th-group">用户状态</div>
-					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav2" @change="getValue()">
-							<el-checkbox-button v-for="(d,k) in userState" :label="d" :key="city">{{ d }}</el-checkbox-button>
-						</el-checkbox-group>
-					</div>
-				</div>
-			</div>
-			<div class="group">
-				<div class="row-group">
-					<div class="th-group">年级</div>
-					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav3" @change="getValue()">
-							<el-checkbox-button v-for="(d,k) in grade" :label="d" :key="city">{{ d }}</el-checkbox-button>
-						</el-checkbox-group>
-					</div>
-				</div>
-			</div>
-			<div class="group">
-				<div class="row-group">
-					<div class="th-group">班级</div>
-					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav4" @change="getValue()">
-							<el-checkbox-button v-for="(d,k) in classNum" :label="d" :key="city">{{ d }}</el-checkbox-button>
-						</el-checkbox-group>
-					</div>
-				</div>
-			</div> -->
 			<div class="search">
 				<!-- <el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button> -->
@@ -58,31 +28,8 @@
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
-			<!-- 			<div class="li" v-for="(data, i) in li" :key="data.i">
-				<div class="teacher-name">ID:{{ data.id }}</div>
-				<div class="title-box">
-					<div class="synopsis">{{ data.name }}</div>
-				</div>
-				<div class="other">{{data.sex}}</div>
-				<div class="other" v-if="typeStatus=='student'">{{data.idCard}}</div>
-				<div class="other" v-else-if="typeStatus=='user'||typeStatus=='admin'">{{data.mobilePhone}}</div>
-				<div class="other" v-else>{{data.mobile}}</div>
-				<div class="other"><span v-for="(role,i) in data.adminRoles" :key="role.i" class="teacher-name" style="width: 140px;">角色：{{role.roleName}}</span></div>
-				<div class="other" v-if="typeStatus=='admin'">{{data.schoolName}}</div>
-				<div class="time">{{ data.createDate }}</div>
-				<div class="right">
-					<div class="ii">
-						<div class="status_box">
-							<i class="icon el-icon-check ii"></i>
-							<span class="text ii">正常使用</span>
-							<i class="icon i el-icon-edit-outline ii" style="cursor: pointer;" @click="adminChange(data.id)"></i>
-							<i class="icon i el-icon-close  ii" style="cursor: pointer;" @click="deleteLi(data.id);dialogVisible=true"></i>
-						</div>
-					</div>
-				</div>
-			</div> -->
-			<el-table :data="li" :height="tableHeight" style="width: 100%;"  element-loading-background="rgba(0, 0, 0, .3)"
-			 highlight-current-row   lazy  v-loading="loading"  >
+			<el-table :data="li" :height="tableHeight" style="width: 100%;" element-loading-background="rgba(0, 0, 0, .3)"
+			 highlight-current-row lazy v-loading="loading">
 				<el-table-column prop="id" sortable label="ID" width="180">
 				</el-table-column>
 				<el-table-column prop="name" sortable :label="(typeStatus=='student'?'学生姓名':typeStatus=='teacher'?'教师姓名':typeStatus=='school'?'学校名称':typeStatus=='user'?'专家姓名':'管理员姓名')">
@@ -182,9 +129,6 @@
 				tableHeight: 680,
 				array_nav: [], //存储el-chckbox数组
 				array_nav2: [], //存储el-chckbox数组
-				array_nav3: [],
-				array_nav4: [],
-				array_nav5: [],
 				search: '',
 				loading: '',
 				value1: '',
@@ -212,10 +156,6 @@
 						type: 'admin'
 					}
 				],
-				userState: ['全部', '正常', '冻结', '注销'],
-				grade: ['全部', '一班', '二班', '三班'],
-				classNum: ['全部', '一班', '二班', '三班'],
-				checkboxGroup2: ['上海'],
 				li: [],
 				dialogTableVisible: false,
 				dialogFormVisible: false,
@@ -253,10 +193,6 @@
 						break;
 
 				}
-			},
-			// 新增教师
-			goAddTeach() {
-
 			},
 			handleSizeChange(val) {
 				// console.log(`每页 ${val} 条`);
@@ -341,8 +277,6 @@
 					this.deleteID = id;
 
 				}
-
-
 			},
 			//修改
 			adminChange(data) {
@@ -395,36 +329,4 @@
 		margin: 0 20px;
 		color: #999999;
 	}
-/* 	.box /deep/ .el-table__row>td{
-		border: none;
-	}
-	.box /deep/ .el-table::before {
-		height: 0px;
-		padding: 10px;
-	} */
-
-	/* 
-	.box /deep/ .el-table {
-		border-radius: 8px;
-	}
-
-	.box /deep/ .el-table th {
-		text-align: center;
-		background-color: #FFFFFF !important;
-		padding: 20px;
-	}
-
-
-	.box /deep/ .el-table th.is-leaf {
-		text-align: center;
-
-	}
-
-	.box /deep/ .el-table td {
-		color: #333;
-	}
-
-	.icon+.icon {
-		margin-left: 4px;
-	} */
 </style>
