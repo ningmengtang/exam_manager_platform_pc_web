@@ -75,7 +75,7 @@
 							<!-- <div class="" v-if=""></div> -->
 						</div>
 					</div>
-					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="!item.status" >分配试卷</el-button>
+					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="item.status == 0" >分配试卷</el-button>
 					<el-button type="success" size="small" @click="addPaper(item)" style="float:right" v-if="item.status == 1" >已分配</el-button>
 				</div>
 			</div>
@@ -353,12 +353,14 @@
 
 					this.dialogTableVisible = false
 					this.innerVisible = false
+					
 					if(this.orderType == 1){
 						apiAdminOrderItemList({
 							"order_id":this.adminAffirmData.id
 						}).then(res=>{
 							if(res.data.data.list){
 								this.papers = res.data.data.list
+								 this.$forceUpdate();
 							}else{
 								this.$message.error('查询不到订单项')
 							}
@@ -369,6 +371,7 @@
 						}).then(res=>{
 							if(res.data.data.list){
 								this.papers = res.data.data.list
+								this.$forceUpdate();
 							}else{
 								this.$message.error('查询不到订单项')
 							}
@@ -461,6 +464,7 @@
 								}).then(res=>{
 									if(res.data.data.list){
 										this.papers = res.data.data.list
+										this.$forceUpdate();
 									}else{
 										this.$message.error('查询不到订单项')
 									}
@@ -489,6 +493,7 @@
 								}).then(res=>{
 									if(res.data.data.list){
 										this.papers = res.data.data.list
+										this.$forceUpdate();
 									}else{
 										this.$message.error('查询不到订单项')
 									}

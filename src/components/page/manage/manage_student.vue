@@ -235,7 +235,7 @@
 				console.log(val)
 				this.pageSize = val
 				paperWithTag({
-					"id": this.id,
+					"id": this.obj,
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {
@@ -248,6 +248,7 @@
 				console.log(val)
 				this.pageNum = val;
 				paperWithTag({
+					"id": this.obj,
 					"pageNum": this.pageNum,
 					"pageSize": this.pageSize
 				}).then(res => {
@@ -309,6 +310,7 @@
 							"text": '全部'
 						}]
 						let children = all.concat(res.data.data.list)
+						
 						switch (tagType.text) {
 							case '学期':
 								this.SemesterList = children
@@ -332,8 +334,6 @@
 								this.PurposeList = children
 								break;
 						}
-
-
 						resolve(res)
 					})
 				})
@@ -430,19 +430,20 @@
 		},
 		mounted() {
 			this.color = user().color;
-			console.log(this.$route.params.id)
 			this.TagTypeList = [];
 			ApiTagSelectList({
 				"parentId": 0,
 				"pageSize": 999,
 				"pageNum": 1
 			}).then(res => {
+				console.log(res)
 				this.TagType = res.data.data.list
-				console.log(this.TagType)
+				// console.log(this.TagType)
 				var arr = []
 				for (var i = 0; i < this.TagType.length; i++) {
 					this.getTypeList(this.TagType[i], i)
 				}
+
 			})
 			// 全部试卷查询
 			paperWithTag({
@@ -450,10 +451,10 @@
 				"pageNum": this.pageNum,
 				"pageSize": this.pageSize
 			}).then(res => {
+				console.log(res)
 				this.paperList = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
-				console.log(res)
 			})
 		}
 
