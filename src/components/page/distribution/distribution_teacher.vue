@@ -16,7 +16,7 @@
 				
 					<el-button type="danger"  plain v-if="data.putInto == 1" @click="cancelData(data)" style="float:right">取消入库</el-button>
 					<el-button type="warning"  plain v-if="data.putInto == 0" @click="againData(data)" style="float:right">重新入库</el-button>
-					<el-button type="warning" plain @click="cleanbution(data.id)" style="float:right">重置分发</el-button>
+					<!-- <el-button type="warning" plain @click="cleanbution(data.id)" style="float:right">重置分发</el-button> -->
 					<el-button type="success" plain @click="distribution(data.id)" style="float:right">立即分发</el-button>
 					
 				
