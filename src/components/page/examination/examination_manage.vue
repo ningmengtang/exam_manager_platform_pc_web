@@ -1,6 +1,6 @@
 <template>
 	<div class="box">
-<!-- 		<div class="group">
+		<!-- 		<div class="group">
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">年份</div>
 				<div class="td-group">
@@ -74,16 +74,16 @@
 		</div> -->
 		<div class="particular">
 			<div class="li" v-for="(item,i) in paperList" :key="item.i">
-				<div class="teacher-name">{{item.operator_name}}</div>
+<!-- 				<div class="teacher-name">{{item.operator_name}}</div> -->
+				<div class="tag"><el-tag effect="dark" size="medium">{{item.operator_name}}</el-tag></div>
+				<!-- <div class="user-img">开始考试</div> -->
 
 				<div class="title-box">
 					<div class="title">{{item.title}}</div>
-					<div class="synopsis">{{item.examExplain}}</div>
+					<div :class="'font-i3'" class="synopsis" >{{item.examExplain}}</div>
 				</div>
 				<div class="title-box" style="margin: 0 20px;">
-					<div class="time">创建时间：{{item.createDate}}</div>
-					<div class="time">开始下载：{{item.startTime}}</div>
-					<div class="time" style="color: #fb4919;">失效时间：{{item.overTime}}</div>
+					<div class="time">上传时间：{{item.createDate}}</div>
 				</div>
 
 				<div class="label-box">
@@ -127,11 +127,53 @@
 				status: '',
 				papers: {},
 				dialogVisible: false,
-				paperList:[
-					{operator_name:123,status:0,tag_list:[{text:'k'},{text:'k'},{text:'k'}]},
-					{operator_name:123,status:1,tag_list:[{text:'k'},{text:'k'},{text:'k'}]},
-					{operator_name:123,status:2,tag_list:[{text:'k'},{text:'k'},{text:'k'}]},
-					{operator_name:123}
+				paperList: [{
+						operator_name: '开始考试',
+						status: 0,
+						title:'2019年人教版第一单元测验',
+						examExplain:'examExplain',
+						status:0,
+						tag_list: [{
+							text: 'k'
+						}, {
+							text: 'k'
+						}, {
+							text: 'k'
+						}, {
+							text: 'k'
+						}, {
+							text: 'k'
+						}, {
+							text: 'k'
+						}, {
+							text: 'k'
+						}]
+					},
+					{
+						operator_name: 123,
+						status: 1,
+						tag_list: [{
+							text: 'k'
+						}, {
+							text: 'k'
+						}, {
+							text: 'k'
+						}]
+					},
+					{
+						operator_name: 123,
+						status: 2,
+						tag_list: [{
+							text: 'k'
+						}, {
+							text: 'k'
+						}, {
+							text: 'k'
+						}]
+					},
+					{
+						operator_name: 123
+					}
 				]
 			}
 		},
@@ -143,7 +185,7 @@
 
 			},
 			//查询标签
-			getQuery(){},
+			getQuery() {},
 
 		},
 		mounted() {
