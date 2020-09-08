@@ -6,6 +6,20 @@
   "description": "饿了吗element 额外tu'b",
   "glyphs": [
     {
+      "icon_id": "7964507",
+      "name": "试卷管理",
+      "font_class": "shijuanguanli",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "9591221",
+      "name": "试卷",
+      "font_class": "shijuan",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
       "icon_id": "7765185",
       "name": "学校_班级",
       "font_class": "xuexiao_banji",

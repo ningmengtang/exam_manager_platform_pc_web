@@ -1,21 +1,11 @@
 <template>
 	<div class="box">
 		<div class="group">
-			<!-- <div class="row-group">
-				<div class="th-group">分发状态</div>
-				<div class="td-group" change>
-					<el-radio-group v-model="disStatus" @change="getQuery">
-						<el-radio-button v-for="(item,index) in DisStatusList" :label="item.id">
-							{{item.text}}
-						</el-radio-button>
-					</el-radio-group>
-				</div>
-			</div> -->
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">年份</div>
 				<div class="td-group">
 					<el-radio-group v-model="years" @change="getQuery">
-						<el-radio-button v-for="(item,index) in YearsList" :label="item.id">
+						<el-radio-button v-for="(item,index) in YearsList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -25,7 +15,7 @@
 				<div class="th-group">教材版本</div>
 				<div class="td-group">
 					<el-radio-group v-model="version" @change="getQuery">
-						<el-radio-button v-for="(item,index) in VersionList" :label="item.id">
+						<el-radio-button v-for="(item,index) in VersionList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -35,7 +25,7 @@
 				<div class="th-group">学习科目</div>
 				<div class="td-group">
 					<el-radio-group v-model="subject" @change="getQuery">
-						<el-radio-button v-for="(item,index) in SubjectList" :label="item.id">
+						<el-radio-button v-for="(item,index) in SubjectList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -45,7 +35,7 @@
 				<div class="th-group">学习年级</div>
 				<div class="td-group">
 					<el-radio-group v-model="grade" @change="getQuery">
-						<el-radio-button v-for="(item,index) in GradeList" :label="item.id">
+						<el-radio-button v-for="(item,index) in GradeList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -55,7 +45,7 @@
 				<div class="th-group">学期</div>
 				<div class="td-group">
 					<el-radio-group v-model="semester" @change="getQuery">
-						<el-radio-button v-for="(item,index) in SemesterList" :label="item.id">
+						<el-radio-button v-for="(item,index) in SemesterList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -65,7 +55,7 @@
 				<div class="th-group">单元测试</div>
 				<div class="td-group">
 					<el-radio-group v-model="elementTest" @change="getQuery">
-						<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id">
+						<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -75,7 +65,7 @@
 				<div class="th-group">试卷用途</div>
 				<div class="td-group">
 					<el-radio-group v-model="purpose" @change="getQuery">
-						<el-radio-button v-for="(item,index) in PurposeList" :label="item.id">
+						<el-radio-button v-for="(item,index) in PurposeList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -88,9 +78,8 @@
 				 <el-button type="primary" @click="" class="buttom" >搜索</el-button>
 			</div> -->
 		</div>
-
 		<div class="particular">
-			<div class="li" v-for="item in paperList">
+			<div class="li" v-for="(item,index) in paperList" :key="item.index" >
 				<div class="teacher-name">{{item.operator_name}}</div>
 				
 				<div class="title-box">
@@ -104,7 +93,7 @@
 				</div>
 
 				<div class="label-box">
-					<div class="label" v-for="i in item.tag_list">
+					<div class="label" v-for="(i,k) in item.tag_list" :key="i.k">
 						{{i.text}}
 					</div>
 				</div>
@@ -116,39 +105,6 @@
 					<el-button type="primary" disabled v-else style="background-color: #999999;">立即下载</el-button>
 				</div>
 			</div>
-			<!-- <el-table :data="paperList" :height="tableHeight" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
-				<el-table-column prop="id" label="ID" width="180">
-				</el-table-column>
-				<el-table-column prop="operator_name" label="组卷人" width="180">
-					<template slot-scope="scope">
-						<div class="teacher-name i">{{scope.row.operator_name}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="title" label="试卷标题" width="240">
-				</el-table-column>
-				<el-table-column prop="examExplain" label="试卷简介" width="240">
-					<template slot-scope="scope">
-						<div class="font-i">{{scope.row.examExplain}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column prop="createDate" label="创建时间">
-					<template slot-scope="scope">
-						<div class="font-i">{{scope.row.createDate}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column label="操作">
-					<template slot-scope="scope">
-						<div class="table-icon">
-							<el-button class="icon i el-icon-edit-outline ii" :style="{'cursor':'pointer','color':color}" @click="adminChange(scope.row.id)"
-							 type="text" size="small">
-							</el-button>
-							<el-button class="icon i el-icon-close  ii" :style="{'cursor':'pointer','color':color}" @click="deleteLi(scope.row.id);dialogVisible=true"
-							 type="text" size="small"></el-button>
-						</div>
-					</template>
-
-				</el-table-column>
-			</el-table> -->
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
