@@ -209,7 +209,7 @@
 	import Schart from 'vue-schart'
 	import ICountUp from 'vue-countup-v2'
 	import user from '../../common/user'
-	import {AdminOrderPriceSelect,selectTag,AdminOrderTagAdd,AdminOrderItemAdd,ApiTagSelectList,AdminOrderAdd,AdminOrderUpload,SchoolOrederDetailsAdd} from '@/api/api.js'
+	import {SchoolOrderAdd,AdminOrderPriceSelect,selectTag,AdminOrderTagAdd,AdminOrderItemAdd,ApiTagSelectList,AdminOrderAdd,AdminOrderUpload,SchoolOrederDetailsAdd} from '@/api/api.js'
 import { forEach } from 'jszip'
 
 	export default {
@@ -547,7 +547,7 @@ import { forEach } from 'jszip'
                         "tag_list":tag_list      
                     })
                 }
-                AdminOrderAdd({
+                SchoolOrderAdd({
                     "count":this.Allsubscriptions,
                     "style_count":this.orderList.length,
                     "contact_phone":this.form.contact_phone,

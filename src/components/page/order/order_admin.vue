@@ -1,5 +1,9 @@
 <template>
-	<div class="box">
+	<div class="box" 
+		 v-loading="load"
+		element-loading-text="正在导出"
+		element-loading-spinner="el-icon-loading"
+		element-loading-background="rgba(255, 255, 255, 0.8)">
 		<div class="top">
 			<div class="group">
 				<div class="row-group">
@@ -25,10 +29,12 @@
 					</div>
 				</div>
 			</div>
-			<div style="margin: 15px 15px 0px 15px">
+			<div style="margin: 15px 15px 0px 15px" class="orderAdd">
 				<el-button size="medium" type="success" @click="clickEndOrder">新建期末考试订单</el-button>
 				<el-button size="medium" type="success" @click="clickOrder">新建普通考试订单</el-button>
+				<el-button size="medium" type="success" @click="downloadTable">导出报表</el-button>
 			</div>
+		
 			
 		</div>
 		<!-- 管理 -->
@@ -90,7 +96,10 @@
 		apiAdminOrderEndOfTermUpdate,
 		AdminOrderEndOfTermDelAll,
 		AdminlOrderEndOfTermGetFile,
-		AdminOrderEndOfTermUploadFile
+		AdminOrderEndOfTermUploadFile,
+		AdminOrderDel,
+		AdminOrderDetailsList,
+		AdminOrderEndOfTermDetailsList
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -100,6 +109,7 @@
 				pageNum:1,
 				currentPage:1,
 				orderType:1,
+				load:false,
 				total:0,
 				color: '',
 				checkAll: false,
@@ -381,7 +391,224 @@
 			},
 			goAdd(){
 				this.$router.push('order_admin_add')
-			}
+			},
+			// 导出报表
+			downloadTable(){
+				this.tabelDownloadList = []
+				for(var i=0;i<this.orderList.length;i++){
+					this.getTableList(this.orderList[i],i)
+				}
+				this.load = true
+				setTimeout(()=>{
+					this.getDownloadList()
+				},1000)
+			},
+			getDownloadList(){
+				let allOrderTable = []
+				for(let a=0;a<this.tabelDownloadList.length;a++){
+					let data = this.tabelDownloadList[a].data
+					let orderTable = {
+						"order_status":this.tabelDownloadList[a].order_status,
+						"schoolCode":this.tabelDownloadList[a].schoolCode,
+						"schoolName":this.tabelDownloadList[a].schoolName,
+						"create_date":this.tabelDownloadList[a].create_date,
+						"chinens_1":'',
+						"math_1":'',
+						"eng_1":'',
+						"poper_1":'',
+						"money_1":'',
+						"chinens_2":'',
+						"math_2":'',
+						"eng_2":'',
+						"poper_2":'',
+						"money_2":'',
+						"chinens_3":'',
+						"math_3":'',
+						"eng_3":'',
+						"poper_3":'',
+						"money_3":'',
+						"chinens_4":'',
+						"math_4":'',
+						"eng_4":'',
+						"poper_4":'',
+						"money_4":'',
+						"chinens_5":'',
+						"math_5":'',
+						"eng_5":'',
+						"poper_5":'',
+						"money_5":'',
+						"chinens_6":'',
+						"math_6":'',
+						"eng_6":'',
+						"poper_6":'',
+						"money_6":'',
+						"allpoper":'',
+						"allmoney":'',
+						"memo":''
+					}
+					for( let b=0;b<data.length;b++){
+						// console.log((data[b].subject)
+						let subject = JSON.parse(data[b].subject)
+						if(data[b].classes == '一年级'){
+							orderTable.poper_1 = data[b].count
+							orderTable.money_1 = data[b].total_price
+							subject.forEach(element => {
+								if(element == '语文'){
+									orderTable.chinens_1 =  data[b].count
+								}else if(element == '英语'){
+									orderTable.math_1 = data[b].count
+								}else if(element == '数学'){
+									orderTable.eng_1 =  data[b].count
+								}
+							});
+						}else if(data[b].classes == '二年级'){
+							orderTable.poper_2 = data[b].count
+							orderTable.money_2 = data[b].total_price
+							subject.forEach(element => {
+								if(element == '语文'){
+									orderTable.chinens_2 =  data[b].count
+								}else if(element == '英语'){
+									orderTable.math_2 =  data[b].count
+								}else if(element == '数学'){
+									orderTable.eng_2 =  data[b].count
+								}
+							});
+						}else if(data[b].classes == '三年级'){
+							orderTable.poper_3 = data[b].count
+							orderTable.money_3 = data[b].total_price
+							subject.forEach(element => {
+								if(element == '语文'){
+									orderTable.chinens_3 =  data[b].count
+								}else if(element == '英语'){
+									orderTable.math_3 = data[b].count
+								}else if(element == '数学'){
+									orderTable.eng_3 = data[b].count
+								}
+							});
+						}else if(data[b].classes == '四年级'){
+							orderTable.poper_4 = data[b].count
+							orderTable.money_4 = data[b].total_price
+							subject.forEach(element => {
+								if(element == '语文'){
+									orderTable.chinens_4 = data[b].count
+								}else if(element == '英语'){
+									orderTable.math_4 = data[b].count
+								}else if(element == '数学'){
+									orderTable.eng_4 =  data[b].count
+								}
+							});
+						}else if(data[b].classes == '五年级'){
+							orderTable.poper_5 = data[b].count
+							orderTable.money_5 = data[b].total_price
+							subject.forEach(element => {
+								if(element == '语文'){
+									orderTable.chinens_5 =  data[b].count
+								}else if(element == '英语'){
+									orderTable.math_5 =  data[b].count
+								}else if(element == '数学'){
+									orderTable.eng_5 = data[b].count
+								}
+							});
+						}else if(data[b].classes == '六年级'){
+							orderTable.poper_6 = data[b].count
+							orderTable.money_6 = data[b].total_price
+							subject.forEach(element => {
+								if(element == '语文'){
+									orderTable.chinens_6 = data[b].count
+								}else if(element == '英语'){
+									orderTable.math_6 = data[b].count
+								}else if(element == '数学'){
+									orderTable.eng_6 = data[b].count
+								}
+							});
+						}
+					}
+					allOrderTable.push(orderTable)
+					for(var c=0;c<allOrderTable.length;c++){
+						let allmoney = ''
+						let allpoper = ''
+						let item = allOrderTable[c]
+						allOrderTable[c].allmoney = item.money_1 + item.money_2+item.money_3+item.money_4+item.money_5+item.money_6
+						allOrderTable[c].allpoper = item.poper_1 +  item.poper_2+item.poper_3+item.poper_4+item.poper_5+item.poper_6
+					}
+				}
+				setTimeout(()=>{
+					this.handleDownload(allOrderTable)
+					this.load = false
+				},500)
+			},
+			handleDownload(allOrderTable){
+				const {export_json_to_excel} = require('./Export2Excel2'); //引入文件
+				const multiHeader = [['代码', '学校', '订单日期', '订单状态', '一年级', '', '', '', '','二年级', '', '', '', '','三年级', '', '', '', '','四年级', '', '', '', '','五年级', '', '', '', '','六年级', '', '', '', '','总人数','总费用','备注']] //对应表格输出的title
+				const multiHeader2 = [['', '', '', '', '一年级', '一年级', '一年级',  '一年级',  '一年级','二年级', '二年级', '二年级', '二年级', '二年级','三年级', '三年级', '三年级', '三年级', '三年级','四年级', '四年级', '四年级', '四年级', '四年级','五年级', '五年级', '五年级', '五年级', '五年级','六年级', '六年级', '六年级', '六年级', '六年级','','','']] //对应表格输出的title
+
+				const tHeader = [['', '', '', '', '语文', '数学', '英语', '人数', '费用','语文', '数学', '英语', '人数', '费用','语文', '数学', '英语', '人数', '费用','语文', '数学', '英语', '人数', '费用','语文', '数学', '英语', '人数', '费用','语文', '数学', '英语', '人数', '费用', '','','']] //对应表格输出的title
+				const filterVal = ['schoolCode','schoolName','create_date','order_status','chinens_1','math_1','eng_1','poper_1','money_1','chinens_2','math_2','eng_2','poper_2','money_2','chinens_3','math_3','eng_3','poper_3','money_3','chinens_4','math_4','eng_4','poper_4','money_4','chinens_5','math_5','eng_5','poper_5','money_5','chinens_6','math_6','eng_6','poper_6','money_6','allpoper','allmoney','memo']
+				const header = []
+				//进行所有表头的单元格合并，建议一行一行来，不然容易整乱
+				const merges = [
+					"A1:A3",
+					"B1:B3",
+					"C1:C3",
+					"D1:D3",
+					"E1:I1",
+					"J1:N1",
+					"O1:S1",
+					"T1:X1",
+					"Y1:AC1",
+					"AD1:AH1",
+					"AI1:AI3",
+					"AJ1:AJ3",
+					"AK1:AK3"
+				];
+				
+				const list = allOrderTable
+				const data = this.formatJson(filterVal,list)
+				export_json_to_excel(multiHeader, tHeader,multiHeader2, data, '试卷订购统计表', merges)
+			},
+			formatJson(filterVal, jsonData) {
+				console.log(jsonData.map(v => filterVal.map(j => v[j])))
+				return jsonData.map(v => filterVal.map(j => v[j]))
+			},
+			async getTableList(list,index){
+				await this.tabelPromise(list,index)
+			},
+			
+			tabelPromise(list,index){
+				if(this.orderType == 1){
+					return new Promise((resolve,reject)=>{
+						AdminOrderDetailsList({
+							"order_id":list.id
+						}).then(res=>{
+							let data = res.data.data.list
+							this.tabelDownloadList.push({
+								"schoolCode":list.school_code,
+								"order_status":list.status ==0?'待缴费':list.status == 1?'已缴费':list.status == 2?'已分发':list.status == 3?'已取消':'暂无',
+								"schoolName":list.school_name,
+								"create_date":list.create_date,
+								"data":data
+							})
+							resolve(res)
+						})
+					})	
+				}else{
+					return new Promise((resolve,reject)=>{
+						AdminOrderEndOfTermDetailsList({
+							"order_id":list.id
+						}).then(res=>{
+							let data = res.data.data.list
+							this.tabelDownloadList.push({
+								"schoolCode":list.school_code,
+								"order_status":list.status ==0?'待缴费':list.status == 1?'已缴费':list.status == 2?'已分发':list.status == 3?'已取消':'暂无',
+								"schoolName":list.school_name,
+								"create_date":list.create_date,
+								"data":data
+							})
+							resolve(res)
+						})
+					})
+				}
+			},
 		},
 		mounted() {
 			this.color = user().color;
@@ -398,3 +625,4 @@
 </script>
 
 <style scoped src="../../../assets/css/order.css"></style>
+
