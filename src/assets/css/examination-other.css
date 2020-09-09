@@ -1,0 +1,48 @@
+.box{color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;height: 100%;padding: 36px;display: flex;}
+
+.left-box{width: 40%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;min-height: 620px;min-width: 330px;}
+.left-box .user-img{width: 90px;height: 90px;border-radius: 50%;}
+.left-box .card-top{display: flex;align-items: center;justify-content: center;flex-direction: column;}
+.left-box .user-top{width: 100%;margin-top: 30px;}
+.left-box .username{}
+.left-box .name{font-size: 20px;}
+.left-box .user-id{font-size: 18px;color: rgba(128, 128, 128, 1);margin-top: 12px;}
+.left-box .ii{font-size: 25px;font-weight: bold;color: rgba(128, 128, 128, 1);margin-left: auto;cursor: pointer;}
+.left-box .identity{font-size: 20px;color: #FFFFFF;background-color: #19ADFB;display: inline-block;padding: 10px 46px;border-radius: 4px;margin: 12px 0;}
+.left-box .school{font-size: 20px;font-weight: bold;}
+.left-box .message{margin-left: auto;font-size: 20px;color: #333333;}
+.left-box .grade{margin-top: 12px;color: #999999;font-size: 20px;}
+.left-box .exam-box{margin-top: 30px;}
+.left-box .exam-box .e-title{font-size: 20px;font-weight: bold;}
+.left-box .exam-box .e-particular{margin-top: 12px;font-size: 20px;color: #999999;}
+
+
+.left-box .change-box{margin-top: 90px;display: flex;}
+.left-box .li{padding: 15px 14px;display: flex;align-items: center;flex-direction: column;justify-content: space-around;width: 100%;cursor: pointer;}
+.left-box .icon{font-size: 60px;color: #2bbb61;}
+.left-box .name-change{font-size: 22px;margin-top: 12px;}
+.left-box .particular-change{font-size: 16px;color: rgba(153, 153, 153, 1);margin-left: 18px;}
+.left-box .icon2{font-size: 25px;font-weight: bold;color: rgba(153, 153, 153, 1);margin-left: auto;}
+
+.right-box{width: 60%;padding: 0 34px;margin-left: 60px;min-width: 900px;min-height: 620px;background-color: #FFFFFF;}
+/* 试卷首页 */
+.right-box .process{padding: 40px;display: flex;justify-content: center;flex-wrap: wrap;}
+.right-box .process .ts{font-size: 18px;display: flex;align-items: center;justify-content: center;color: #333333;width: 100%;}
+.right-box .process .ts-time{color: #FA4B1B;font-size: 48px;font-weight: bold;display: flex;justify-content: center;align-items: center;margin:20px 0;width: 100%;}
+.right-box .process .ts-a-box{margin-top: 44px;display: flex;justify-content: center;align-items: center;flex-direction: column;line-height: 2;border-bottom: 1px solid #999999 ;padding-bottom: 20px;width: 100%;}
+.right-box .process .ts-a-box .t1{font-size: 18px;font-weight: bold;}
+.right-box .process .ts-a-box .t2{font-size: 14px;color: #999999;}
+.right-box .process .ts-a-box .t3{font-size: 14px;color: #19ADFA;}
+.right-box .process .go-box{width: 100%;margin-top: 20px;display: flex;justify-content: center;flex-wrap: wrap;}
+.right-box .process .go:first-child{margin-left: 0;}
+.right-box .process .go{width: 24.25%;height: 400px;margin-left: 1%;display: flex;flex-direction: column;}
+.right-box .process .go .ts{display: flex;justify-content: center;margin: 6px 0;font-size: 14px;font-weight: bold;}
+.right-box .process .go .buttom{background-color: #FB4B1B;color: #FFFFFF;border-radius: 4px;font-size: 16px;font-weight: bold;padding: 20px;margin: 5px 0;}
+.right-box .process .go .ts1{margin: 5px 0;line-height: 1.8;}
+.right-box .process .go .ts1 p{color: #999999;font-size: 14px;}
+
+
+
+
+/* 分页 */
+.page{display: flex;justify-content: center;align-items: center;margin: 20px;}

@@ -1,5 +1,5 @@
 .box{padding: 20px;border-radius: 8px;width: auto;height: 100%;overflow-y: scroll;-webkit-box-sizing: border-box;box-sizing: border-box;color: #333333;font-size: 14px;}
-.group{margin: 10px 0;background-color: #FFFFFF;padding: 20px;border-radius: 8px;background-image: url(../img/bg-bird.png);background-repeat: no-repeat;background-position: calc( 100% - 20px ) 20px;}
+.group{margin: 10px 0;background-color: #FFFFFF;padding: 20px;border-radius: 8px;background-image: url(../img/bg-bird.png);background-repeat: no-repeat;background-position: calc( 100% - 20px ) 20px;min-width: 1420px;}
 .row-group{width: 100%;display: flex;align-items: center;}
 .row-group .th-group{font-size: 14px;margin-right: 38px;width: 60px;}
 
@@ -34,7 +34,8 @@
 .teacher-name.i{margin: 0;}
 .title-box{margin-left: 20px;}
 .title{font-size: 20px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 400px;}
-.synopsis{font-size: 18px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 400px;}
+/* .synopsis{font-size: 18px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 400px;} */
+.synopsis{font-size: 15px;color: rgba(153, 153, 153, 1);width: 400px;}
 .time{font-size: 14px;;color: rgba(166, 166, 166, 1);margin-left: 10px;width: 200px;overflow: hidden;}
 .label-box{display: flex;margin:  0 12px 0 0;flex-wrap: wrap;min-width: 443px;max-width: 560px;}
 .label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}
@@ -44,8 +45,8 @@
 
 .label+.label{margin-left: 15px;}
 .right{margin-left: auto;display: flex;align-items: center;min-width: 240px;}
-.icon{font-size: 25px;color: rgba(67, 207, 124, 1);font-weight: bold;}
-.right .status{margin-left: 16px;font-size: 16px;margin-right: 20px;}
+.icon{font-size: 25px;color: rgba(67, 207, 124, 1);}
+.right .status{margin-left: 15px;font-size: 16px;margin-right: 20px;}
 .right .status.i{margin-right: 0;font-size: 14px;}
 .right .hover{color: #fb4919;}
 .right .download{display: flex;justify-content: center;align-items: center;color: #FFFFFF;border-radius: 4px;background-color:rgba(166, 166, 166, 1);font-size:16px;padding: 12px 20px ;}
@@ -53,6 +54,9 @@
 .right .download.hover{background-color:#FFFFFF;color: #fb4919;border: 1px solid #fb4919;}
 .right .error{display: flex;justify-content: center;align-items: center;color: #FFFFFF;border-radius: 4px;background-color:rgba(166, 166, 166, 1);font-size:16px;padding: 12px 20px ;}
 .right .warning{display: flex;justify-content: center;align-items: center;color: #FFFFFF;border-radius: 4px;background-color:rgba(166, 166, 166, 1);font-size:16px;padding: 12px 20px ;}
+.right .buttom{margin-left: 10px;}
+.right .buttom.i{background-color: #FFFFFF;color: #FB4919;border: 1px solid #FB4919;}
+.right .buttom.i:focus{color: #FB4919;border: 1px solid #FB4919;}
 
 .right .ii{display: flex;align-items: center;flex-direction: column;color: #2BBB61;}
 .right .ii .text{margin-left: 10px;}

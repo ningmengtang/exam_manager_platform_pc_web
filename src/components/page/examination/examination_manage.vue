@@ -1,11 +1,11 @@
 <template>
 	<div class="box">
-		<!-- 		<div class="group">
+		<div class="group">
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">年份</div>
 				<div class="td-group">
 					<el-radio-group v-model="years" @change="getQuery">
-						<el-radio-button v-for="(item,index) in YearsList" :label="item.id">
+						<el-radio-button v-for="(item,index) in YearsList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -15,7 +15,7 @@
 				<div class="th-group">教材版本</div>
 				<div class="td-group">
 					<el-radio-group v-model="version" @change="getQuery">
-						<el-radio-button v-for="(item,index) in VersionList" :label="item.id">
+						<el-radio-button v-for="(item,index) in VersionList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -25,7 +25,7 @@
 				<div class="th-group">学习科目</div>
 				<div class="td-group">
 					<el-radio-group v-model="subject" @change="getQuery">
-						<el-radio-button v-for="(item,index) in SubjectList" :label="item.id">
+						<el-radio-button v-for="(item,index) in SubjectList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -35,7 +35,7 @@
 				<div class="th-group">学习年级</div>
 				<div class="td-group">
 					<el-radio-group v-model="grade" @change="getQuery">
-						<el-radio-button v-for="(item,index) in GradeList" :label="item.id">
+						<el-radio-button v-for="(item,index) in GradeList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -45,7 +45,7 @@
 				<div class="th-group">学期</div>
 				<div class="td-group">
 					<el-radio-group v-model="semester" @change="getQuery">
-						<el-radio-button v-for="(item,index) in SemesterList" :label="item.id">
+						<el-radio-button v-for="(item,index) in SemesterList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -55,7 +55,7 @@
 				<div class="th-group">单元测试</div>
 				<div class="td-group">
 					<el-radio-group v-model="elementTest" @change="getQuery">
-						<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id">
+						<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
@@ -65,22 +65,29 @@
 				<div class="th-group">试卷用途</div>
 				<div class="td-group">
 					<el-radio-group v-model="purpose" @change="getQuery">
-						<el-radio-button v-for="(item,index) in PurposeList" :label="item.id">
+						<el-radio-button v-for="(item,index) in PurposeList" :label="item.id" :key="item.index">
 							{{item.text}}
 						</el-radio-button>
 					</el-radio-group>
 				</div>
 			</div>
-		</div> -->
+		</div>
 		<div class="particular">
 			<div class="li" v-for="(item,i) in paperList" :key="item.i">
-<!-- 				<div class="teacher-name">{{item.operator_name}}</div> -->
-				<div class="tag"><el-tag effect="dark" size="medium">{{item.operator_name}}</el-tag></div>
+				<!-- 				<div class="teacher-name">{{item.operator_name}}</div> -->
+				<div class="tag">
+					<el-tag effect="dark" size="medium">{{item.operator_name}}</el-tag>
+				</div>
 				<!-- <div class="user-img">开始考试</div> -->
 
 				<div class="title-box">
 					<div class="title">{{item.title}}</div>
-					<div :class="'font-i3'" class="synopsis" >{{item.examExplain}}</div>
+					<!-- <div :class="(item.status=1,item.status==0)?'font-i3':item.status==3?'font-i1':'font-i'"  class="synopsis">{{item.examExplain}} 结束时间：{{item.overTime}}</div> -->
+					<div :class="'font-i3'" class="synopsis" v-if="item.status==0">{{item.examExplain}} 结束时间：{{item.overTime}}</div>
+					<div :class="'font-i'" class="synopsis" v-else-if="item.status==1">考试时间：10:00至12：00，请做好准备</div>
+					<div :class="'font-i'" class="synopsis" v-else-if="item.status==2">你的试卷正在紧锣密鼓的批阅当中，请耐心等待</div>
+					<div :class="'font-i1'" class="synopsis" v-else-if="item.status==3">最终得分：60分（120分），要好好学习，天天向上哦！</div>
+					<div :class="'font-i'" class="synopsis" v-else-if="item.status==4">考试取消！详细请联系班主任或者科目老师</div>
 				</div>
 				<div class="title-box" style="margin: 0 20px;">
 					<div class="time">上传时间：{{item.createDate}}</div>
@@ -92,18 +99,18 @@
 					</div>
 				</div>
 				<div class="right">
-					<i class="icon el-icon-time"></i>
-					<div class="status">{{item.status==0 && item.putInto == 1?'可以下载':'不允许下载'}}</div>
-
-					<el-button type="primary" v-if="item.status==0 && item.putInto == 1 " @click="downloadFile(item)">立即下载</el-button>
-					<el-button type="primary" disabled v-else style="background-color: #999999;">立即下载</el-button>
+					<i class="icon" :class="(item.status==0)?'el-icon-caret-right font-i3':(item.status==1||item.status==2)?'el-icon-time font-i':item.status==3?'el-icon-check font-i1':'el-icon-close font-i'"></i>
+					<div class="status" :class="item.status==0?'font-i3':(item.status==1||item.status==2||item.status==4)?'font-i':'font-i1'">{{item.status==0 && item.putInto == 1?'开始考试':item.status==1?'准备考试':item.status==2?'正在批阅':item.status==3?'考试完成':'考试取消'}}</div>
+					<el-button type="primary" plain v-if="item.status==0 && item.putInto == 1 " size="medium" class="buttom i" @click="goExam(item.id)">立即进入</el-button>
+					<el-button type="primary" v-else-if="item.status==3" style="background-color: #19ADFB;" size="medium" @click="goGrade()">查看</el-button>
+					<el-button type="primary" disabled v-else style="background-color: #999999;" size="medium">查看</el-button>
 				</div>
 			</div>
 		</div>
 		<!-- 分页 -->
 		<div class="page">
 			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			 :current-page.sync="currentPage" :page-size="page.pageSize" :total="page.total">
+			 :current-page.sync="currentPage" :page-size="page.pageSize" :total="total">
 			</el-pagination>
 		</div>
 	</div>
@@ -112,7 +119,10 @@
 <script>
 	import {
 		studentIndex,
-		apicommonExamGetFile
+		apicommonExamGetFile,
+		selectTag,
+		ApiTagSelectList,
+		paperWithTag,
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -120,77 +130,154 @@
 				total: 0,
 				page: {
 					pageNum: 1,
-					pageSize: 0
+					pageSize: 10
 				},
 				currentPage: 1,
 				loading: false,
-				status: '',
 				papers: {},
 				dialogVisible: false,
-				paperList: [{
-						operator_name: '开始考试',
-						status: 0,
-						title:'2019年人教版第一单元测验',
-						examExplain:'examExplain',
-						status:0,
-						tag_list: [{
-							text: 'k'
-						}, {
-							text: 'k'
-						}, {
-							text: 'k'
-						}, {
-							text: 'k'
-						}, {
-							text: 'k'
-						}, {
-							text: 'k'
-						}, {
-							text: 'k'
-						}]
-					},
-					{
-						operator_name: 123,
-						status: 1,
-						tag_list: [{
-							text: 'k'
-						}, {
-							text: 'k'
-						}, {
-							text: 'k'
-						}]
-					},
-					{
-						operator_name: 123,
-						status: 2,
-						tag_list: [{
-							text: 'k'
-						}, {
-							text: 'k'
-						}, {
-							text: 'k'
-						}]
-					},
-					{
-						operator_name: 123
-					}
-				]
+				years: 0,
+				YearsList: [],
+				version: 0,
+				VersionList: [],
+				subject: 0,
+				SubjectList: [],
+				grade: 0,
+				GradeList: [],
+				semester: 0,
+				SemesterList: [],
+				elementTest: 0,
+				ElementTextList: [],
+				purpose: 0,
+				PurposeList: [],
+				TagType: [],
+				paperList: []
 			}
 		},
 		methods: {
-			//分页
-			handleSizeChange(val) {},
-			// 分页2
-			handleCurrentChange() {
+			//---分页
+			handleSizeChange(val) {
 
 			},
-			//查询标签
-			getQuery() {},
+			//---分页2
+			handleCurrentChange(val) {
+				this.page.pageNum = val
+				this.selectPaper();
+			},
+			//---查询标签
+			getQuery() {
+				this.obj = []
+				if (this.semester != 0 && this.semester) {
+					this.obj.push(this.semester)
+				}
+				if (this.elementTest != 0 && this.elementTest) {
+					this.obj.push(this.elementTest)
+				}
+				if (this.purpose != 0 && this.purpose) {
+					this.obj.push(this.purpose)
+				}
+				if (this.subject != 0 && this.subject) {
+					this.obj.push(this.subject)
+				}
+				if (this.grade != 0 && this.grade) {
+					this.obj.push(this.grade)
+				}
+				if (this.version != 0 && this.version) {
+					this.obj.push(this.version)
+				}
+				if (this.years != 0 && this.years) {
+					this.obj.push(this.years)
+				}
+				this.selectPaper(this.obj)
+			},
+			TagTypePromise(tagType, index) {
+				return new Promise((resolve, reject) => {
+					ApiTagSelectList({
+						"pageSize": 999,
+						"pageNum": 1,
+						"parentId": tagType.id
+					}).then(res => {
+						let all = [{
+							"id": 0,
+							"sn": 0,
+							"text": '全部'
+						}]
+						let children = all.concat(res.data.data.list)
 
+						switch (tagType.text) {
+							case '学期':
+								this.SemesterList = children
+								break;
+							case '年份':
+								this.YearsList = children
+								break;
+							case '教材版本':
+								this.VersionList = children
+								break;
+							case '学习科目':
+								this.SubjectList = children
+								break;
+							case '学习年级':
+								this.GradeList = children
+								break;
+							case '单元测试':
+								this.ElementTextList = children
+								break;
+							case '试卷用途':
+								this.PurposeList = children
+								break;
+						}
+						resolve(res)
+					})
+				})
+			},
+			async getTypeList(tagType, index) {
+				await this.TagTypePromise(tagType, index)
+				// return n 
+			},
+			// ---跳转考试页面
+			goExam(id) {
+				this.$router.push({name:'examination_process',query:{'id':id}})
+			},
+			// ---跳转考试成绩页面
+			goGrade(id) {
+                this.$router.push('examination_feedback')
+			},
+			//---查询全部标签
+			selectAllTag() {
+				ApiTagSelectList({
+					"pageNum": 1,
+					"pageSize": 999
+				}).then(res => {
+					// console.log(this.TagType)
+					this.TagType = res.data.data.list
+					var arr = []
+					for (var i = 0; i < this.TagType.length; i++) {
+						this.getTypeList(this.TagType[i], i)
+					}
+
+				})
+			},
+			//---全部试卷查询
+			selectPaper(id) {
+				paperWithTag({
+					"id": id,
+					"pageNum": this.page.pageNum,
+					"pageSize": this.page.pageSize
+				}).then(res => {
+					console.log(res)
+					this.paperList = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				})
+			}
 		},
 		mounted() {
 			this.loading = true
-
+			this.TagTypeList = [];
+			this.selectAllTag();
+			// 全部试卷查询
+			this.selectPaper()
 		},
 	};
 </script>
