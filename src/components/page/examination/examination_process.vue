@@ -118,17 +118,57 @@
 				this.selectPaper();
 			},
 			// ---跳转有答题卡--
-			goScantronHas(){
-				this.$router.push({name:'examination_scantronHas',query:{id:this.examId}})
+			goScantronHas() {
+				if(this.getCookie('examTime')==''){
+					this.setCookie('examTime', new Date())
+				}
+				this.$router.push({
+					name: 'examination_scantronHas',
+					query: {
+						id: this.examId
+					}
+				})
 			},
 			//---跳转无答题卡---
-			goScantronNone(){
-				this.$router.push({name:'examination_scantronNone',query:{id:this.examId}})
+			goScantronNone() {
+				this.$router.push({
+					name: 'examination_scantronNone',
+					query: {
+						id: this.examId
+					}
+				})
 			},
 			//---跳转人脸---
-			goFaceRecognition(){
-				this.$router.push({name:'examination_faceRecognition',query:{id:this.examId}})
+			goFaceRecognition() {
+				this.$router.push({
+					name: 'examination_faceRecognition',
+					query: {
+						id: this.examId
+					}
+				})
 			},
+			// 获取cookie
+			getCookie(name) {
+				var strCookie = document.cookie;
+				//cookie的保存格式是 分号加空格 "; "  
+				var arrCookie = strCookie.split("; ");
+				for (var i = 0; i < arrCookie.length; i++) {
+					var arr = arrCookie[i].split("=");
+					if (arr[0] == name) {
+						return unescape(arr[1]);
+					}
+				}
+				return "";
+			},
+			//设置cookie时间 value是时间
+			setCookie(name, value) {
+				if (value) {
+					var Days = 1;
+					var exp = new Date();
+					exp.setTime(exp.getTime() + Days * 2 * 60 * 60 * 1000);
+					document.cookie = name + "=" + escape(value.setTime(value.getTime()+ 2*60*60*1000)) + ";expires=" + exp.toGMTString();
+				}
+			}
 			//---跳转图片试卷---
 		},
 		mounted() {

@@ -1,11 +1,12 @@
 <template>
 	<div class="box">
+
 		<!-- 左边 -->
 		<div class="left-box">
 			<div class="box-card">
 				<div class="answer">
 					<div class="ts">距离考试结束还有</div>
-					<div class="ts-time">01:50:55</div>
+					<div class="ts-time">{{ResidueTime}}</div>
 					<div class="all-topic-box">
 						<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
 							 :format="format"></el-progress>
@@ -13,13 +14,13 @@
 						<div class="li">
 							<div class="at-title">第一大题、选择题</div>
 							<div class="at-number">
-								<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule">
+								<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule('choice')">
 									<el-checkbox-button v-for="(d,i) in topic" :label="d" :key="d.i">{{d}}</el-checkbox-button>
 								</el-checkbox-group>
 							</div>
 							<div class="at-title">第二大题、综合题</div>
 							<div class="at-number">
-								<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule">
+								<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule('synthesize')">
 									<el-checkbox-button v-for="(d,i) in topic2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
 								</el-checkbox-group>
 							</div>
@@ -39,30 +40,47 @@
 				<div class="content-b">
 					<div class="c-title">请问唧唧复唧唧的下一句是什么？</div>
 				</div>
-				<el-radio-group v-model="choiceKey" class="choice">
-					<el-radio-button label="A">A.备选项</el-radio-button>
-					<el-radio-button label="B">B.备选项</el-radio-button>
-					<el-radio-button label="C">C.备选项</el-radio-button>
-					<el-radio-button label="D">D.备选项</el-radio-button>
-				</el-radio-group>
-				<div class="userChoice">你已选择：<span style="color: #1AAEFB;font-weight: bold;">{{choiceKey}}</span></div>
-				<div style="display: flex;justify-content: center;">
-					<el-button class="reset">清空本题答案</el-button>
+				<div class="content-c">
+					<div v-if="stateType=='choice'">
+						<el-radio-group v-model="choiceKey" class="choice">
+							<el-radio-button label="A">A.备选项</el-radio-button>
+							<el-radio-button label="B">B.备选项</el-radio-button>
+							<el-radio-button label="C">C.备选项</el-radio-button>
+							<el-radio-button label="D">D.备选项</el-radio-button>
+						</el-radio-group>
+						<div class="userChoice"><span>你已选择： </span><span class="i">{{choiceKey}}</span></div>
+						<div style="display: flex;justify-content: center;">
+							<el-button class="reset" @click="choiceKey=''">清空本题答案</el-button>
+						</div>
+					</div>
+					<div v-else>
+							<el-image :src="'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'" lazy class="img-box" ></el-image>
+					</div>
 				</div>
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">上传日志</div>
 				<div class="questions-img">
-					<div v-for="url in urls" :key="url" style="text-align: center;">
-						<el-image :src="url" lazy :preview-src-list="srcList" style="width: 180px;margin: 0 10px;"></el-image>
-						<span>5545</span>
+					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
+						<div class="img-box-i">
+							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
+							<transition name="el-zoom-in-top">
+								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
+									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
+									<i class="icon el-icon-delete-solid "></i>
+								</div>
+							</transition>
+						</div>
+						<span class="i">5545</span>
 					</div>
 
 				</div>
 			</div>
 		</div>
+		<el-image-viewer v-if="bigImg" :initial-index="bigIndex" :on-close="closeViewer" :url-list="srcList" />
 	</div>
 </template>
 
 <script>
+	import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 	import {
 		studentIndex,
 		apicommonExamGetFile,
@@ -70,7 +88,9 @@
 		apiCommonExamSelectById
 	} from '@/api/api.js'
 	export default {
-		name: 'index_student',
+		components: {
+			ElImageViewer
+		},
 		data() {
 			return {
 				total: 0,
@@ -89,10 +109,17 @@
 				dialogVisible: false,
 				percentage: 0,
 				customColor: '#409eff',
-				topicDefault: [],
+				topicDefault: ['第1题'],
 				topic: ['第1题', '第2题', '第3题', '第4题', '第5题'],
 				topic2: ['第7题', '第8题', '第9题', '第10题', '第11题', '第12题', '第13题', '第14题'],
 				choiceKey: '',
+				bigImg: false,
+				imgShade: false,
+				imgShadeIndex: '',
+				bigIndex: 0,
+				ResidueTime: '00:00:00',
+				timer: '',
+				stateType:'',
 				urls: [
 					'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
 					'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
@@ -132,40 +159,95 @@
 				}
 				return percentage === 100 ? '已完成' : `${percentage}%`;
 			},
-			// 计算完成度
-			schedule() {
-				let arr = this.topic.concat(this.topic2).length
-				let choice = this.topicDefault.length
-				this.percentage = parseInt(choice / arr * 100)
-			},
-			// ---跳转有答题卡--
-			goScantronHas() {
-				this.$router.push({
-					name: 'examination_scantronHas',
-					query: {
-						id: this.examId
+			// ---计算完成度---
+			schedule(type) {
+				
+				switch (type){
+					case 'choice' :
+					this.stateType='choice'
+					if (this.choiceKey != '') {
+						let arr = this.topic.concat(this.topic2).length
+						let choice = this.topicDefault.length
+						this.percentage = parseInt(choice / arr * 100)
 					}
-				})
+					break;
+					case 'synthesize':
+					this.stateType='synthesize'
+					break;
+				}
 			},
-			//---跳转无答题卡---
-			goScantronNone() {
-				this.$router.push({
-					name: 'examination_scantronNone',
-					query: {
-						id: this.examId
+			// 图片遮罩
+			img_shade(index) {
+				this.imgShade = true;
+				this.imgShadeIndex = index
+			},
+			//---开控制预览大图片---
+			openViewer(index) {
+				this.bigImg = true
+				this.bigIndex = this.imgShadeIndex
+			},
+
+			//---关闭控制预览大图片---
+			closeViewer() {
+				this.bigImg = false
+			},
+			// 获取cookie
+			getCookie(name) {
+				var strCookie = document.cookie;
+				//cookie的保存格式是 分号加空格 "; "  
+				var arrCookie = strCookie.split("; ");
+				for (var i = 0; i < arrCookie.length; i++) {
+					var arr = arrCookie[i].split("=");
+					if (arr[0] == name) {
+						return unescape(arr[1]);
 					}
-				})
+				}
+				return "";
 			},
-			//---跳转人脸---
-			goFaceRecognition() {
-				this.$router.push({
-					name: 'examination_faceRecognition',
-					query: {
-						id: this.examId
-					}
-				})
+			//  删除cookie
+			clearCookie(name, value) {
+				var exp = new Date();
+				exp.setTime(exp.getTime() - 1);
+				// 这里需要判断一下cookie是否存在
+				var c = this.getCookie(name);
+				if (c != null) {
+					document.cookie = name + "=" + c + ";expires=" + exp.toGMTString();
+				}
 			},
-			//---跳转图片试卷---
+			//根据时间戳生成的时间对象
+			getLocalTime(nS) {
+				var d = new Date(nS);
+				var date =
+					(d.getHours() - 8) + ":" +
+					(d.getMinutes()) + ":" +
+					(d.getSeconds());
+				return date;
+			},
+			//计算考试剩余时间
+			getResidueTime() {
+				let ResidueTime
+				let newTime = new Date().getTime();
+				let timeDifference = this.getCookie('examTime') - newTime;
+				if (timeDifference <= 0) {
+					this.$alert('这是一段内容', '标题名称', {
+						confirmButtonText: '确定',
+						callback: action => {
+							this.$message({
+								type: 'info',
+								message: `action: ${ action }`
+							});
+						}
+					});
+					// 清除计时器
+					clearInterval(this.timer)
+					// 清除时间cookic
+					clearCookie('examTime')
+					ResidueTime = '00:00:00'
+
+				}
+				ResidueTime = this.getLocalTime(timeDifference)
+				return ResidueTime;
+			}
 		},
 		mounted() {
 			this.loading = true,
@@ -174,6 +256,9 @@
 					this.examTitle = res.data.data.title
 					this.examParticular = res.data.data.examExplain
 				})
+			this.timer = setInterval(x => {
+				this.ResidueTime = this.getResidueTime()
+			}, 0)
 		},
 	};
 </script>
