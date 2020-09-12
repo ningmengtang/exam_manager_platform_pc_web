@@ -130,7 +130,7 @@
                 <span class="span_question_part_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="testPaperObj.items.length <= 1" @click="delTestPaperQuestionPartItem(questionPartItemIndex)">删除本部分</el-button></span>
               </div>
               <div class="layout_question_part_header_content" :style="testPaperAnwserSheetStyle">
-                <myQuillEditor :contentData.sync="questionPartItem.topic_text" :classUniqueId.sync="questionPartItem.uniqueId" v-if="questionPartItem.isEditing"></myQuillEditor>
+                <myWangEditor :contentData.sync="questionPartItem.topic_text" :classUniqueId.sync="questionPartItem.uniqueId" v-if="questionPartItem.isEditing"></myWangEditor>
                 <div class="ql-editor" v-html="questionPartItem.topic_text" v-if="!questionPartItem.isEditing" style="width:100%"></div>
                 <div class="ql-editor" v-if="!questionPartItem.isEditing" style="width:100%">
                     <div v-if="null == questionPartItem.topic_text || questionPartItem.topic_text == ''">【空】</div>
@@ -200,7 +200,7 @@
                     @blur="onEditorBlur($event)"
                     @change="onEditorChange($event)">
                   </quill-editor>-->
-                  <myQuillEditor :contentData.sync="questionBigItem.topic_text" :classUniqueId.sync="questionBigItem.uniqueId" v-if="questionBigItem.isEditing"></myQuillEditor>
+                  <myWangEditor :contentData.sync="questionBigItem.topic_text" :classUniqueId.sync="questionBigItem.uniqueId" v-if="questionBigItem.isEditing"></myWangEditor>
                   <div class="ql-editor" v-html="questionBigItem.topic_text" v-if="!questionBigItem.isEditing" style="width:100%"></div>
                   <div class="ql-editor" v-if="!questionBigItem.isEditing" style="width:100%">
                     <div v-if="null == questionBigItem.topic_text || questionBigItem.topic_text == ''">【空】</div>
@@ -238,7 +238,7 @@
                       @blur="onEditorBlur($event)"
                       @change="onEditorChange($event)">
                     </quill-editor> -->
-                    <myQuillEditor :contentData.sync="questionItem.topic_text" :classUniqueId.sync="questionItem.uniqueId" v-if="questionItem.isEditing"></myQuillEditor>
+                    <myWangEditor :contentData.sync="questionItem.topic_text" :classUniqueId.sync="questionItem.uniqueId" v-if="questionItem.isEditing"></myWangEditor>
                     <div class="ql-editor" v-html="questionItem.topic_text" v-if="!questionItem.isEditing" style="width:100%"></div>
                     <div class="ql-editor" v-if="!questionItem.isEditing" style="width:100%">
                     <div v-if="null == questionItem.topic_text || questionItem.topic_text == ''">【空】</div>
@@ -272,7 +272,7 @@
                       @blur="onEditorBlur($event)"
                       @change="onEditorChange($event)">
                     </quill-editor> -->
-                    <myQuillEditor :contentData.sync="questionItem.anwserSheet.topic_text" :classUniqueId.sync="'anwserSheet_'+questionItem.uniqueId" v-if="questionItem.anwserSheet.isEditing"></myQuillEditor>
+                    <myWangEditor :contentData.sync="questionItem.anwserSheet.topic_text" :classUniqueId.sync="'anwserSheet_'+questionItem.uniqueId" v-if="questionItem.anwserSheet.isEditing"></myWangEditor>
                     <div class="ql-editor" v-html="questionItem.anwserSheet.topic_text" v-if="!questionItem.anwserSheet.isEditing" style="width:100%;border:2px solid #000;"></div>
                   </div>
                   <!-- 编辑工具栏 -->
@@ -300,7 +300,7 @@
                       @blur="onEditorBlur($event)"
                       @change="onEditorChange($event)">
                     </quill-editor> -->
-                    <myQuillEditor :contentData.sync="questionItem.anwser.answer_text" :classUniqueId.sync="'anwser_'+questionItem.uniqueId" v-if="questionItem.anwser.isEditing"></myQuillEditor>
+                    <myWangEditor :contentData.sync="questionItem.anwser.answer_text" :classUniqueId.sync="'anwser_'+questionItem.uniqueId" v-if="questionItem.anwser.isEditing"></myWangEditor>
                     <div class="ql-editor" v-html="questionItem.anwser.answer_text" v-if="!questionItem.anwser.isEditing" style="width:100%"></div>
                   </div>
                   <!-- 编辑工具栏 -->
@@ -332,7 +332,7 @@
                     <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="questionItem.items.length <= 1" @click="delNewTestPaperChoiceQuestionOptionsItem(questionItem,questionOptionItemIndex)">删除选项</el-button></span>
                   </div>
                   <div class="layout_question_anwser_sheet_content" :style="testPaperAnwserSheetStyle">
-                    <myQuillEditor :contentData.sync="questionOptionItem.topic_text" :classUniqueId.sync="questionOptionItem.uniqueId" v-if="questionOptionItem.isEditing"></myQuillEditor>
+                    <myWangEditor :contentData.sync="questionOptionItem.topic_text" :classUniqueId.sync="questionOptionItem.uniqueId" v-if="questionOptionItem.isEditing"></myWangEditor>
                     <div class="ql-editor" v-html="questionOptionItem.topic_text" v-if="!questionOptionItem.isEditing" style="width:100%"></div>
                     <!-- <quill-editor
                       class="layout_question_anwser_sheet_content_input"
@@ -412,7 +412,7 @@
                           <p style="text-align:right;">第{{questionPartItemIndex + 1}}部分、</p>
                           <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,null,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                       </td> -->
-                      <td width="580px">
+                      <td width="100%">
                         <div v-html="questionPartItem.topic_text">
                         </div>
                       </td>
@@ -429,7 +429,7 @@
                           <p style="text-align:right;">第{{questionBigItemIndex + 1}}大题、</p>
                           <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                       </td> -->
-                      <td width="580px">
+                      <td width="100%">
                         <div v-html="questionBigItem.topic_text">
                         </div>
                       </td>
@@ -449,7 +449,7 @@
                           </div>
                         </td>
                         <td width="70px">
-                            <p style="text-align:right;">第{{questionItem.no}}小题、</p>
+                            <p style="text-align:center;">第{{questionItem.no}}小题</p>
                             <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                         </td>
                         </tr>
@@ -552,7 +552,7 @@
                         <table>
                           <tr>
                             <td width="70px">
-                                <p style="text-align:right;">第{{questionItem.no}}小题、</p>
+                                <p style="text-align:center;">第{{questionItem.no}}小题</p>
                                 <vue-qr :id="'qr_'+questionItem.uniqueId" :text="'layout_question_anwser_sheet_'+questionItem.uniqueId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                             </td>
                             <td width="480px" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
@@ -723,9 +723,13 @@
 
 <script>
 import axios from 'axios'
-import { quillEditor } from 'vue-quill-editor'
-import myQuillEditor from './myEditor'
+// import { quillEditor } from 'vue-quill-editor'
+// import myQuillEditor from './myEditor'
 import vueQr from 'vue-qr'
+
+//引入wangeditor
+import myWangEditor from './myWangEditor'
+
 //引入pdf
 import "pdfmake/build/pdfmake"
 import "pdfmake/build/vfs_fonts"
@@ -743,9 +747,10 @@ axios.defaults.responseType = 'json'
 export default {
   name: 'testPaperMaker',
   components:{
-     quillEditor,
-     myQuillEditor,
-     vueQr
+    //  quillEditor,
+    //  myQuillEditor,
+     vueQr,
+     myWangEditor
   },
   data () {
     return {
@@ -1399,7 +1404,9 @@ export default {
       newObj.paperId = paperId
       newObj.qPartId = qPartId
       newObj.qBigId = qBigId
-      newObj.qId = qId
+      //newObj.qId = qId
+      newObj.qIdArr = []
+      newObj.qIdArr.push[qId]
 
       return JSON.stringify(newObj)
 

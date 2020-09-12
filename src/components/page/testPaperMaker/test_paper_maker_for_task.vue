@@ -151,7 +151,7 @@
                           </div>
                         </td>
                         <td width="70px">
-                            <p style="text-align:right;">第{{questionItem.no}}小题、</p>
+                            <p style="text-align:center;">第{{questionItem.no}}小题</p>
                             <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                         </td>
                         </tr>
@@ -173,7 +173,7 @@
                             </div>
                           </td>
                           <td width="70px">
-                              <p style="text-align:right;">第{{questionItem.no}}小题、</p>
+                              <p style="text-align:center;">第{{questionItem.no}}小题</p>
                               <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                           </td>
                         </tr>
@@ -277,7 +277,7 @@
                         <table>
                           <tr>
                             <td width="70px">
-                                <p style="text-align:right;">第{{questionItem.no}}小题、</p>
+                                <p style="text-align:center;">第{{questionItem.no}}小题</p>
                                 <vue-qr :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                             </td>
                             <td width="480px">
@@ -293,7 +293,7 @@
                         <table>
                           <tr>
                             <td width="70px">
-                                <p style="text-align:right;">第{{questionItem.no}}小题、</p>
+                                <p style="text-align:center;">第{{questionItem.no}}小题</p>
                                 <vue-qr :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                             </td>
                             <!-- 输出小题选项 -->
@@ -519,8 +519,8 @@
 
 <script>
 import axios from 'axios'
-import { quillEditor } from 'vue-quill-editor'
-import myQuillEditor from './myEditor'
+// import { quillEditor } from 'vue-quill-editor'
+// import myQuillEditor from './myEditor'
 import vueQr from 'vue-qr'
 //引入pdf
 import "pdfmake/build/pdfmake"
@@ -539,8 +539,8 @@ axios.defaults.responseType = 'json'
 export default {
   name: 'testPaperMakerForTask',
   components:{
-     quillEditor,
-     myQuillEditor,
+    //  quillEditor,
+    //  myQuillEditor,
      vueQr
   },
   data () {
