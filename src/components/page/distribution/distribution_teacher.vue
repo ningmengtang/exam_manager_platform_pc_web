@@ -13,12 +13,13 @@
 				<div class="label-box">
 					<div class="label" v-for="i in data.tag_list">{{i.text}}</div>
 				</div>
-				<div class="right">
-			
-					<span   style="display: contents;">
-						<el-button type="text" class="download hover"  @click="distribution(data.id)" >立即分发</el-button>
-					</span>
-				</div>
+				
+					<el-button type="danger"  plain v-if="data.putInto == 1" @click="cancelData(data)" style="float:right">取消入库</el-button>
+					<el-button type="warning"  plain v-if="data.putInto == 0" @click="againData(data)" style="float:right">重新入库</el-button>
+					<el-button type="warning" plain @click="cleanbution(data.id)" style="float:right">重置分发</el-button>
+					<el-button type="success" plain @click="distribution(data.id)" style="float:right">立即分发</el-button>
+					
+				
 				</div>
 			<div class="page">
 				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -141,7 +142,8 @@
 		schoolSelectTeacher,
 		ApiClassSelectListByOptions,
 		apiCommonExamSelectList,
-		apiCommonExamUpdateTime
+		apiCommonExamUpdateTime,
+		apiCommonExamSelectUpdate
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -254,6 +256,80 @@
 			},
 			setCurrent(row) {
 			    this.$refs.singleTable.setCurrentRow(row);
+			},
+			// 重置分发
+			cleanbution(id){
+				studentStudentExamAdd({
+					"examinationId":id,
+					"studentId":[]
+				}).then(res=>{
+					console.log(res)
+				})
+			},
+			// 取消下载
+			againData(data){
+				this.$confirm('是否重新入库', '提示', {
+        		  confirmButtonText: '确定',
+        		  cancelButtonText: '取消',
+        		  type: 'warning'
+        		}).then(() => {
+        		apiCommonExamSelectUpdate({
+					"putInto":1,
+                    "id":data.id
+				}).then(res=>{
+					if(res.data.result){
+						apiCommonExamSelectList({
+							"pageSize":this.pageSize,
+							"pageNum":this.pageNum,
+							'operator_id':this.userID,
+							"operator_type":localStorage.getItem('loginUserType')
+						}).then(res=>{
+							// console.log(res)
+							this.papers = res.data.data.list
+							this.total = res.data.data.total
+							this.pageSize=res.data.data.pageSize
+							this.currentPage = res.data.data.pageNum
+						})
+						this.$message.success('操作成功')
+					}else{
+						this.$message.error('操作失败')
+					}
+				})
+        		}).catch(() => {       
+        		});	
+			},
+
+			// 重新入库
+			cancelData(data){
+				this.$confirm('是否取消入库', '提示', {
+        		  confirmButtonText: '确定',
+        		  cancelButtonText: '取消',
+        		  type: 'warning'
+        		}).then(() => {
+        		apiCommonExamSelectUpdate({
+					"putInto":0,
+                    "id":data.id
+				}).then(res=>{
+					if(res.data.result){
+						apiCommonExamSelectList({
+							"pageSize":this.pageSize,
+							"pageNum":this.pageNum,
+							'operator_id':this.userID,
+							"operator_type":localStorage.getItem('loginUserType')
+						}).then(res=>{
+							// console.log(res)
+							this.papers = res.data.data.list
+							this.total = res.data.data.total
+							this.pageSize=res.data.data.pageSize
+							this.currentPage = res.data.data.pageNum
+						})
+						this.$message.success('操作成功')
+					}else{
+						this.$message.error('操作失败')
+					}
+				})
+        		}).catch(() => {       
+        		});	
 			},
 			// 查询分发试卷id
 			distribution(id){

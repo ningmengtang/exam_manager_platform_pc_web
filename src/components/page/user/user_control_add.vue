@@ -240,7 +240,7 @@
 			},
 			// 选择班级事件
 			classList() {
-				if (this.form.class == '') {
+				if (this.form.class=='') {
 					this.$message.error('请先选择学校')
 				}
 			},

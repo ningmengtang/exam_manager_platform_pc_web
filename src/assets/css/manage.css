@@ -46,6 +46,9 @@
 .right .download{display: flex;justify-content: center;align-items: center;color: #FFFFFF;border-radius: 4px;background-color:rgba(166, 166, 166, 1);font-size:16px;padding: 12px 20px ;}
 .right .download.i{font-size: 14px;}
 .right .download.hover{background-color:#FFFFFF;color: #fb4919;border: 1px solid #fb4919;}
+.right .error{display: flex;justify-content: center;align-items: center;color: #FFFFFF;border-radius: 4px;background-color:rgba(166, 166, 166, 1);font-size:16px;padding: 12px 20px ;}
+.right .warning{display: flex;justify-content: center;align-items: center;color: #FFFFFF;border-radius: 4px;background-color:rgba(166, 166, 166, 1);font-size:16px;padding: 12px 20px ;}
+
 .right .ii{display: flex;align-items: center;flex-direction: column;color: #2BBB61;}
 .right .ii .text{margin-left: 10px;}
 .right .wait{color: #a6a6a6;}

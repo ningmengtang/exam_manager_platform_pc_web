@@ -32,34 +32,27 @@
 								<i class="icon el-icon-thirdyanzhengmatianchong"></i>
 							</span>
 							<el-input size="medium" placeholder="验证码" v-model="param.code" class="i"></el-input>
-							<img class="main_content_login_img_vcode" style="height:32px;width:100px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);"
-							 :src="vcodeimg" alt="验证码" @click="vcodeRefresh">
+							<img class="main_content_login_img_vcode" style="width: 100px;height:32px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);display: flex;"
+							  :src="vcodeimg" alt="验证码" @click="vcodeRefresh">
 						</el-form-item>
 						<el-select v-model="value" placeholder="请选择" class="select" @change="identity">
 							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
-						<el-button type="primary" @click="submitForm()" class="submit">登录</el-button>
+						<el-button type="primary" @click="submitForm()" class="submit" native-type="submitForm">登录</el-button>
 					</el-form>
 					<!-- <div class="forget">
 						<router-link to="/index_student" class="i">忘记了密码</router-link>
 					</div> -->
 				</div>
 			</div>
-			<!-- <div class="right-nav">
-				<div class="navigation" @click="identity('admin')">管理员登录</div>
-				<div class="navigation" @click="identity('user')">专家登录</div>
-				<div class="navigation" @click="identity('school')">学校登录</div>
-				<div class="navigation" @click="identity('teacher')">教师登录</div>
-				<div class="navigation" @click="identity('student')">学生登录</div>
-			</div> -->
 		</div>
 	</div>
 </template>
 
 <script>
 	import md5 from 'js-md5';
-	import axios from 'axios';
+	import flex from '@/assets/js/flex.js'
 	import {
 		userCode,
 		userLogin
@@ -219,7 +212,6 @@
 							switch (wd.stateCode) {
 								case 200:
 									//存登录数据
-
 									localStorage.setItem('loginToken', wd.data.token)
 									localStorage.setItem('userID', wd.data.id)
 									localStorage.setItem('userName', wd.data.name)
@@ -239,7 +231,7 @@
 									this.$message.success('登录成功')
 									this.$router.push(`/index_${type}`)
 									break;
-								case 300033:
+								case 300055:
 									this.$message.error('用户已登录')
 									break;
 								case 300020:
@@ -249,10 +241,10 @@
 									this.$message.error('密码错误')
 									break;
 								case 300014:
-									this.$message.error('用户名不存在')
+									this.$message.error('用户名不存在');
+								default:
+									this.$message.error('用户名不存在或者密码错误');
 							}
-
-
 							console.log(wd);
 						}).catch(error => {
 							console.log(error);
@@ -292,26 +284,42 @@
 					document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString;
 					// document.cookie.Expires = DateTime.Now.AddDays(1)
 				}
+			},
+			// 判断是否手机
+			mobilePhone(){
+				let screenWidth=document.body.offsetWidth;
+				if(screenWidth<=750){
+					// 加载自适应
+					flex();
+				}
+			}
+		},
+        created(){
+			// 判断手机
+			// window.onresize = () => {
+			
+			// }
+			this.screenWidth = document.documentElement.getBoundingClientRect().width
+			if(this.screenWidth<=750){
+				flex();
 			}
 		},
 		mounted() {
 			let loginUserType = localStorage.getItem('loginUserType');
 			// this.setCookie('p',65);
-			let HistoryUserType=this.getCookie('HistoryUserType');
+			let HistoryUserType = this.getCookie('HistoryUserType');
 			if (!loginUserType) {
-				if(HistoryUserType){
+				if (HistoryUserType) {
 					localStorage.setItem('loginUserType', HistoryUserType);
-				}else{
+				} else {
 					localStorage.setItem('loginUserType', this.type);
 				}
-				
+
 			}
-			if(HistoryUserType){
-				this.value=HistoryUserType;
+			if (HistoryUserType) {
+				this.value = HistoryUserType;
 				this.identity(HistoryUserType)
 			}
-
-			// userCode().then(res => this.vcodeimg = window.URL.createObjectURL(res.data))
 		}
 	};
 </script>
@@ -512,5 +520,10 @@
 
 	.slectColor {
 		background-color: #409EFF;
+	}
+	@media screen and (max-width: 750px){
+		.employ{width: 100%;padding: 20px;}
+		.form-login{width: 100%;}
+		
 	}
 </style>

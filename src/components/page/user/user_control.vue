@@ -11,36 +11,6 @@
 					</div>
 				</div>
 			</div>
-			<!-- <div class="group">
-				<div class="row-group">
-					<div class="th-group">用户状态</div>
-					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav2" @change="getValue()">
-							<el-checkbox-button v-for="(d,k) in userState" :label="d" :key="city">{{ d }}</el-checkbox-button>
-						</el-checkbox-group>
-					</div>
-				</div>
-			</div>
-			<div class="group">
-				<div class="row-group">
-					<div class="th-group">年级</div>
-					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav3" @change="getValue()">
-							<el-checkbox-button v-for="(d,k) in grade" :label="d" :key="city">{{ d }}</el-checkbox-button>
-						</el-checkbox-group>
-					</div>
-				</div>
-			</div>
-			<div class="group">
-				<div class="row-group">
-					<div class="th-group">班级</div>
-					<div class="td-group" change>
-						<el-checkbox-group v-model="array_nav4" @change="getValue()">
-							<el-checkbox-button v-for="(d,k) in classNum" :label="d" :key="city">{{ d }}</el-checkbox-button>
-						</el-checkbox-group>
-					</div>
-				</div>
-			</div> -->
 			<div class="search">
 				<!-- <el-input placeholder="请输入内容" v-model="search"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-button type="primary" @click="searchO" :style="{ 'background-color': color, 'border-color': color }" class="go">搜索</el-button> -->
@@ -58,42 +28,20 @@
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
-			<!-- 			<div class="li" v-for="(data, i) in li" :key="data.i">
-				<div class="teacher-name">ID:{{ data.id }}</div>
-				<div class="title-box">
-					<div class="synopsis">{{ data.name }}</div>
-				</div>
-				<div class="other">{{data.sex}}</div>
-				<div class="other" v-if="typeStatus=='student'">{{data.idCard}}</div>
-				<div class="other" v-else-if="typeStatus=='user'||typeStatus=='admin'">{{data.mobilePhone}}</div>
-				<div class="other" v-else>{{data.mobile}}</div>
-				<div class="other"><span v-for="(role,i) in data.adminRoles" :key="role.i" class="teacher-name" style="width: 140px;">角色：{{role.roleName}}</span></div>
-				<div class="other" v-if="typeStatus=='admin'">{{data.schoolName}}</div>
-				<div class="time">{{ data.createDate }}</div>
-				<div class="right">
-					<div class="ii">
-						<div class="status_box">
-							<i class="icon el-icon-check ii"></i>
-							<span class="text ii">正常使用</span>
-							<i class="icon i el-icon-edit-outline ii" style="cursor: pointer;" @click="adminChange(data.id)"></i>
-							<i class="icon i el-icon-close  ii" style="cursor: pointer;" @click="deleteLi(data.id);dialogVisible=true"></i>
-						</div>
-					</div>
-				</div>
-			</div> -->
-			<el-table :data="li" :height="tableHeight" style="width: 100%" element-loading-background="rgba(0, 0, 0, .3)">
-				<el-table-column prop="id" sortable label="ID" width="180" >
+			<el-table :data="li" :height="tableHeight" style="width: 100%;" highlight-current-row lazy v-loading="loading">
+				<el-table-column prop="id" sortable label="ID" width="180">
 				</el-table-column>
-				<el-table-column prop="name"  sortable :label="(typeStatus=='student'?'学生姓名':typeStatus=='teacher'?'教师姓名':typeStatus=='school'?'学校名称':typeStatus=='user'?'专家姓名':'管理员姓名')">
+				<el-table-column prop="name" sortable :label="(typeStatus=='student'?'学生姓名':typeStatus=='teacher'?'教师姓名':typeStatus=='school'?'学校名称':typeStatus=='user'?'专家姓名':'管理员姓名')">
 				</el-table-column>
 				<el-table-column prop="idCard" sortable label="身份证号码" width="180" v-if="typeStatus=='student'">
 				</el-table-column>
-				<el-table-column sortable :prop="(typeStatus=='user'||typeStatus=='admin')?'mobilePhone':'mobile'" v-else label="手机号码" width="180">
+				<el-table-column sortable :prop="(typeStatus=='user'||typeStatus=='admin')?'mobilePhone':'mobile'" v-else label="手机号码"
+				 width="180">
 				</el-table-column>
 				<el-table-column sortable prop="schoolName" label="学校" width="180" v-if="typeStatus=='student'||typeStatus=='teacher'">
 				</el-table-column>
 				//学生年级班级
-				<el-table-column  prop="classes.grade" sortable v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
+				<el-table-column prop="classes.grade" sortable v-if="typeStatus=='student'" label="年级" width="180" :key="Math.random()">
 				</el-table-column>
 				<el-table-column prop="classes.name" sortable v-if="typeStatus=='student'" label="班级" width="180" :key="Math.random()">
 				</el-table-column>
@@ -112,6 +60,12 @@
 				<el-table-column prop="teacher_num" v-if="typeStatus=='school'" sortable label="老师数量">
 				</el-table-column>
 				<el-table-column prop="student_num" v-if="typeStatus=='school'" sortable label="学生数量">
+				</el-table-column>
+				//管理员角色
+				<el-table-column prop="teacher_num" v-if="typeStatus=='admin'" sortable label="管理员角色">
+					<template slot-scope="scope" v-if="typeStatus=='admin'">
+						<div v-for="(data, i) in scope.row.role_list" :key="data.i" :style="{color:color}">{{data.name}}</div>
+					</template>
 				</el-table-column>
 				<el-table-column prop="createDate" sortable label="创建时间">
 				</el-table-column>
@@ -172,12 +126,11 @@
 				checkAll: false,
 				isIndeterminate: true,
 				tableHeight: 680,
+				loading: false,
 				array_nav: [], //存储el-chckbox数组
 				array_nav2: [], //存储el-chckbox数组
-				array_nav3: [],
-				array_nav4: [],
-				array_nav5: [],
 				search: '',
+				loading: '',
 				value1: '',
 				deleteID: '',
 				deleteAffirm: false,
@@ -203,10 +156,6 @@
 						type: 'admin'
 					}
 				],
-				userState: ['全部', '正常', '冻结', '注销'],
-				grade: ['全部', '一班', '二班', '三班'],
-				classNum: ['全部', '一班', '二班', '三班'],
-				checkboxGroup2: ['上海'],
 				li: [],
 				dialogTableVisible: false,
 				dialogFormVisible: false,
@@ -224,25 +173,26 @@
 				switch (this.typeStatus) {
 					case 'student':
 						this.selectSql(5);
+						this.li = []
 						break;
 					case 'teacher':
 						this.selectSql(4);
+						this.li = []
 						break;
 					case 'school':
 						this.selectSql(3);
+						this.li = []
 						break;
 					case 'user':
 						this.selectSql(1);
+						this.li = []
 						break;
 					case 'admin':
 						this.selectSql(2);
+						this.li = []
 						break;
 
 				}
-			},
-			// 新增教师
-			goAddTeach() {
-
 			},
 			handleSizeChange(val) {
 				// console.log(`每页 ${val} 条`);
@@ -288,7 +238,6 @@
 			},
 			//删除
 			deleteLi(id) {
-
 				if (this.deleteAffirm) {
 					this.deleteAffirm = false;
 					switch (this.typeStatus) {
@@ -325,10 +274,7 @@
 					}
 				} else {
 					this.deleteID = id;
-
 				}
-
-
 			},
 			//修改
 			adminChange(data) {
@@ -345,12 +291,14 @@
 			//数据查询
 			selectSql(id) {
 				// "1.专家2.管理员3.学校4.教师5.学生"
+				this.loading = true;
 				adminSelectRoleType({
 					userType: id,
 					pageSize: this.page.pageSize,
 					pageNum: this.page.pageNum,
 				}).then(res => {
-					res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
+					res.data ? (this.loading = false, this.li = res.data.data.list, this.total = res.data.data.total, console.log(
+						res)) : this.$message.error(
 						'查询超时,请刷新重新查询！')
 				})
 			}
@@ -381,28 +329,4 @@
 		margin: 0 20px;
 		color: #999999;
 	}
-/* 
-	.box /deep/ .el-table {
-		border-radius: 8px;
-	}
-
-	.box /deep/ .el-table th {
-		text-align: center;
-		background-color: #FFFFFF !important;
-		padding: 20px;
-	}
-
-
-	.box /deep/ .el-table th.is-leaf {
-		text-align: center;
-
-	}
-
-	.box /deep/ .el-table td {
-		color: #333;
-	}
-
-	.icon+.icon {
-		margin-left: 4px;
-	} */
 </style>
