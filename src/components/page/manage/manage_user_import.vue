@@ -715,6 +715,8 @@ export default {
 								//此时已经结束，关闭屏蔽层
 								if(questionItem.items.length <= 0)
 								{
+									//重新分组一次，将有id的分组保存起来，与组卷工具同步修改
+									this.$options.methods.testPaperQuestionCreateAutoNo.bind(this)()
 									apiAdminExamUpdate({id:this.testPaperObj.id,elementTest:JSON.stringify(this.testPaperObj)}).then(res =>{
 									if(!res.data.result)
 									{
@@ -825,6 +827,87 @@ export default {
 			this.$router.push(`/test_paper_maker`)
 			//this.$router.push({path: '/test_paper_maker', query: {title: this.form.title , examExplain:this.form.examExplain, examTime : this.form.examTime}})
 			//window.open(newPage.href,'_blank')
+		},
+		/**
+		 * 小题序号顺序编码器 并对题型进行分组
+		 */
+		testPaperQuestionCreateAutoNo()
+		{
+		
+		if(null == this.testPaperObj.items)
+		{
+			//console.log("试卷为空，无法为每一个小题添加试卷中的小题序号")
+			return
+		}
+		console.log("为每一个小题添加试卷中的小题序号，并且进行分组")
+		//循环输出试卷部分================================================================================================
+		this.testPaperObj.items.forEach(questionPartItem => {
+
+			//循环输出大题================================================================================================
+			questionPartItem.items.forEach(questionBigItem => {
+			//console.log("开始编码 >>>>> " + this.previewQuestionNum)
+
+			//为不同题型进行分组，方便在答题卡内对其进行分组处理
+			let groupQuestionType = null
+			let groupQuestionArr = []
+			let firstQuestionItem = null
+
+			//循环输出小题================================================================================================
+			questionBigItem.items.forEach(questionItem => {
+				
+				questionItem.no = this.previewQuestionNum++
+
+				//先把分组信息准备好
+				if(null!=questionItem.question_type)
+				{
+				//如果是新的题型
+				if(questionItem.question_type != groupQuestionType)
+				{
+					//对旧的分组第一个值进行赋值
+					if(null != firstQuestionItem)
+					{
+					//深拷贝赋值
+					firstQuestionItem.groupQuestionArr = JSON.parse(JSON.stringify(groupQuestionArr)) 
+					// console.log("题型分组完成")
+					// console.log(firstQuestionItem)
+
+					}
+					//重置并保存新题型分组数据
+					groupQuestionArr = []
+					//保存当前的问题
+					groupQuestionArr.push(questionItem)
+
+					groupQuestionType = questionItem.question_type
+					// console.log("新的题型分组 >>>>> "+ questionItem.question_type)
+					
+					//保存当前分组第一个的题目
+					firstQuestionItem = questionItem
+				}
+				else{
+					//添加当前题目进去分组
+					//保存当前的问题
+					groupQuestionArr.push(questionItem)
+					//清空当前题目旧的数据
+					questionItem.groupQuestionArr = null
+				}
+				}
+				
+				
+			})
+			//处理最后一组的题型分组数据
+			//深拷贝赋值
+			firstQuestionItem.groupQuestionArr = JSON.parse(JSON.stringify(groupQuestionArr)) 
+			// console.log("题型分组完成")
+			// console.log(lastQuestionItem)
+
+			//循环输出小题，完成================================================================================================
+
+			})
+			//循环输出大题，完成================================================================================================
+
+		})
+		//循环输出试卷部分，完成================================================================================================
+		console.log("小题序号顺序编码完成 <<<<< ")
 		},
 	},
 	mounted() {

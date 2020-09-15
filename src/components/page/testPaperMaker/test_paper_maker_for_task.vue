@@ -100,10 +100,10 @@
                 <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;text-align:center;">
                   <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span><span v-if="downloadForPreview">(仅供预览，勿作他用)</span>
                 </div>
-                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学校名称</span><span style="margin-left:10px;display:inline-block;width:180px;">北京某某小学</span></div>
-                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">班级名称</span><span style="margin-left:10px;display:inline-block;width:160px;">2020级1班</span></div>
-                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">李某某</span></div>
-                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">440XXXXXXXXXXXXX88</span></div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学校名称</span><span style="margin-left:10px;display:inline-block;width:180px;">{{testPaperObjItem.studentInfo.schoolName}}</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">班级名称</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObjItem.studentInfo.className}}</span></div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">{{testPaperObjItem.studentInfo.name}}</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObjItem.studentInfo.idCard}}</span></div>
                 
                 <div style="float:left;width:580px;line-height:30px;border:1px solid #000;font-size:10px;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">注<br>意<br>事<br>项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
               
@@ -227,10 +227,10 @@
                 <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;text-align:center;">
                   <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span><span v-if="downloadForPreview">(仅供预览，勿作他用)</span>
                 </div>
-                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学校名称</span><span style="margin-left:10px;display:inline-block;width:180px;">北京某某小学</span></div>
-                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">班级名称</span><span style="margin-left:10px;display:inline-block;width:160px;">2020级1班</span></div>
-                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">李某某</span></div>
-                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">440XXXXXXXXXXXXX88</span></div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学校名称</span><span style="margin-left:10px;display:inline-block;width:180px;">{{testPaperObjItem.studentInfo.schoolName}}</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">班级名称</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObjItem.studentInfo.className}}</span></div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">{{testPaperObjItem.studentInfo.name}}</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObjItem.studentInfo.idCard}}</span></div>
                 
                 <div style="float:left;width:580px;line-height:30px;border:1px solid #000;font-size:10px;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">注<br>意<br>事<br>项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
               
@@ -282,31 +282,30 @@
                               
                             </td>
 
-                            <!-- 输出小题选项 -->
-                              <!-- ============================================================================================================ -->
-
+                            <!-- 最左边的定位块 结束 -->
                               <td width="510px" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
+
                                 <!-- 最上面的定位块 -->
 
-                                <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" style="float:left;height:18px;margin-top:5px;margin-left:10px;">
+                                <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" style="float:left;height:15px;margin-top:5px;margin-left:10px;">
                                   
                                   <div style="width:100%;" v-if="questionItemGroupIndex < 2">
-                                    <span v-if="questionItemGroupIndex == 0 " style="display: inline-block;text-align:right;border:2px solid #FFF;text-align:center;font-weight:bold;font-size:10px;height:18px;width:30px;background-color:#FFF;"></span>
+                                    <span v-if="questionItemGroupIndex == 0 " style="display: inline-block;text-align:right;border:2px solid #FFF;text-align:center;font-weight:bold;font-size:12px;height:13px;width:25px;background-color:#FFF;"></span>
 
-                                    <span v-if="questionItemGroupIndex < 2 " style="display: inline-block;text-align:right;border:2px solid #FFF;text-align:center;font-weight:bold;margin-left:10px;font-size:10px;height:18px;width:30px;background-color:#FFF;"></span>
+                                    <span v-if="questionItemGroupIndex < 2 " style="display: inline-block;text-align:right;border:2px solid #FFF;text-align:center;font-weight:bold;margin-left:10px;font-size:12px;height:13px;width:25px;background-color:#FFF;"></span>
                                     
-                                    <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;text-align:right;border:2px solid black;text-align:center;font-weight:bold;margin-left:10px;font-size:10px;height:18px;width:30px;background-color:#000;"></span>
+                                    <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;text-align:right;border:2px solid black;text-align:center;font-weight:bold;margin-left:10px;font-size:12px;height:13px;width:25px;background-color:#000;"></span>
                                   </div>
                                 </div>
 
                                 <!-- 最上面的定位块 结束 -->
                                 <div style="clear:both;"></div>
-                                <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" style="float:left;height:18px;margin-top:5px;margin-left:10px;">
+                                <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" style="float:left;height:15px;margin-top:5px;margin-left:10px;">
                                   <div style="clear:both;"></div>
-                                  <span v-if="questionItemGroupIndex == 0 || questionItemGroupIndex % 2 == 0" style="display: inline-block;vertical-align: middle;text-align:right;height:18px;width:30px;background-color:#000;"></span>
+                                  <div v-if="questionItemGroupIndex == 0 || questionItemGroupIndex % 2 == 0" style="display: inline-block;vertical-align: middle;text-align:right;height:13px;width:25px;background-color:#000;"></div>
 
-                                  <span style="display: inline-block;vertical-align: middle;height:18px;width:30px;text-align:right;margin-left:10px;">{{questionItem.groupQuestionArr[questionItemGroupIndex].no}}.</span>
-                                  <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;vertical-align: middle;text-align:right;border:2px solid #ab3b42;text-align:center;font-weight:bold;margin-left:10px;border-radius: 10px;font-size:10px;height:18px;width:30px;color:#ab3b42;">{{enCharArr[questionOptionItemIndex]}}</span>
+                                  <div style="display: inline-block;vertical-align: middle;font-size:12px;height:13px;width:25px;text-align:right;margin-left:10px;">{{questionItem.groupQuestionArr[questionItemGroupIndex].no}}.</div>
+                                  <div v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;vertical-align: middle;text-align:right;border:2px solid #ab3b42;text-align:center;font-weight:bold;margin-left:10px;border-radius: 6px;font-size:12px;height:13px;width:25px;line-height:10px;color:#ab3b42;">{{enCharArr[questionOptionItemIndex]}}</div>
                                 </div>
                                 <div style="clear:both;width:100%;height:5px;"><!-- --></div>
                               </td>
@@ -2623,6 +2622,9 @@ export default {
       studentIdArr.forEach(studentItem => {
         studentItem.items = []
         let newTestPaperObj = this.$options.methods.copyPojo.bind(this)(this.testPaperObj)
+        //添加考生属性到试卷当中
+        newTestPaperObj.studentInfo = studentItem.info
+
         studentItem.items.push(newTestPaperObj)
       });
       console.log("学生分配试卷完毕")
