@@ -14,8 +14,8 @@ import 'babel-polyfill';
 import './assets/icon/iconfont.css';
 import Vue2OrgTree from 'vue2-org-tree'
 //富文本编辑器
-import quillEditor from 'vue-quill-editor'
-import 'quill/dist/quill.snow.css' // 富文本编辑器外部引用样式  三种样式三选一引入即可
+// import quillEditor from 'vue-quill-editor'
+// import 'quill/dist/quill.snow.css' // 富文本编辑器外部引用样式  三种样式三选一引入即可
 // import * as Quill from 'quill'  //引入编辑器
 // import ImagePaste from 'quill-yang-image-paste';
 // Quill.register('modules/imagePaste', ImagePaste);
@@ -23,12 +23,11 @@ import 'quill/dist/quill.snow.css' // 富文本编辑器外部引用样式  三�
 // import ImagePaste from 'quill-image-paste-module';
 // Quill.register('modules/imagePaste', ImagePaste);
 // require styles
-import 'vant/lib/index.css';
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.bubble.css'
-import '@/components/Vant'
+// import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.bubble.css'
+
 //富文本编辑器
-Vue.use(quillEditor)
+// Vue.use(quillEditor)
 
 Vue.config.productionTip = false;
 Vue.use(VueI18n);

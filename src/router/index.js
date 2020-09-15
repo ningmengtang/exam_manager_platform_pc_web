@@ -328,14 +328,14 @@ export default new Router({
                     name: 'test_paper_maker',
                     path: '/test_paper_maker',
                     component: () =>
-                        import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/testPaperMaker/test_paper_maker.vue'),
+                        import ( /* webpackChunkName: "test_paper_maker" */ '../components/page/testPaperMaker/test_paper_maker.vue'),
                     meta: { title: '组卷工具' }
                 },
                 {
                     name: 'test_paper_maker_for_task',
                     path: '/test_paper_maker_for_task',
                     component: () =>
-                        import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/testPaperMaker/test_paper_maker_for_task.vue'),
+                        import ( /* webpackChunkName: "test_paper_maker_for_task" */ '../components/page/testPaperMaker/test_paper_maker_for_task.vue'),
                     meta: { title: '试卷下载' }
                 },
                 {
@@ -369,6 +369,50 @@ export default new Router({
                     meta: { title: '教师-阅卷管理-批阅' }
                 },
                 
+				{
+				    name: 'examination_manage',
+				    path: '/examination_manage',
+				    component: () =>
+				        import ( /* webpackChunkName: "examination_manage" */ '../components/page/examination/examination_manage'),
+				    meta: { title: '学生-考试管理' }
+				},
+				{
+				    name: 'examination_process',
+				    path: '/examination_process',
+				    component: () =>
+				        import ( /* webpackChunkName: "examination_process" */ '../components/page/examination/examination_process'),
+				    meta: { title: '学生-考试-首页' }
+				},
+				{
+				    name: 'examination_faceRecognition',
+				    path: '/examination_faceRecognition',
+				    component: () =>
+				        import ( /* webpackChunkName: "examination_faceRecognition" */ '../components/page/examination/examination_faceRecognition'),
+				    meta: { title: '学生-考试-人脸识别' }
+				},
+				{
+				    name: 'examination_scantronNone',
+				    path: '/examination_scantronNone',
+				    component: () =>
+				        import ( /* webpackChunkName: "examination_scantronNone" */ '../components/page/examination/examination_scantronNone'),
+				    meta: { title: '学生-考试-无答题卡' }
+				},
+				{
+				    name: 'examination_scantronHas',
+				    path: '/examination_scantronHas',
+				    component: () =>
+				        import ( /* webpackChunkName: "examination_scantronHas" */ '../components/page/examination/examination_scantronHas'),
+				    meta: { title: '学生-考试-有答题卡' }
+				},
+				{
+				    name: 'examination_feedback',
+				    path: '/examination_feedback',
+				    component: () =>
+				        import ( /* webpackChunkName: "examination_feedback" */ '../components/page/examination/examination_feedback'),
+				    meta: { title: '学生-考试-考后反馈-查看' }
+				},
+				
+				
 
 
 

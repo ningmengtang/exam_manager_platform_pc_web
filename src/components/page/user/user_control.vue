@@ -28,8 +28,7 @@
 		</div>
 		<!-- 管理 -->
 		<div class="particular">
-			<el-table :data="li" :height="tableHeight" style="width: 100%;" element-loading-background="rgba(0, 0, 0, .3)"
-			 highlight-current-row lazy v-loading="loading">
+			<el-table :data="li" :height="tableHeight" style="width: 100%;" highlight-current-row lazy v-loading="loading">
 				<el-table-column prop="id" sortable label="ID" width="180">
 				</el-table-column>
 				<el-table-column prop="name" sortable :label="(typeStatus=='student'?'学生姓名':typeStatus=='teacher'?'教师姓名':typeStatus=='school'?'学校名称':typeStatus=='user'?'专家姓名':'管理员姓名')">
@@ -127,6 +126,7 @@
 				checkAll: false,
 				isIndeterminate: true,
 				tableHeight: 680,
+				loading: false,
 				array_nav: [], //存储el-chckbox数组
 				array_nav2: [], //存储el-chckbox数组
 				search: '',
@@ -238,7 +238,6 @@
 			},
 			//删除
 			deleteLi(id) {
-
 				if (this.deleteAffirm) {
 					this.deleteAffirm = false;
 					switch (this.typeStatus) {
@@ -275,7 +274,6 @@
 					}
 				} else {
 					this.deleteID = id;
-
 				}
 			},
 			//修改
@@ -293,12 +291,14 @@
 			//数据查询
 			selectSql(id) {
 				// "1.专家2.管理员3.学校4.教师5.学生"
+				this.loading = true;
 				adminSelectRoleType({
 					userType: id,
 					pageSize: this.page.pageSize,
 					pageNum: this.page.pageNum,
 				}).then(res => {
-					res.data ? (this.li = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message.error(
+					res.data ? (this.loading = false, this.li = res.data.data.list, this.total = res.data.data.total, console.log(
+						res)) : this.$message.error(
 						'查询超时,请刷新重新查询！')
 				})
 			}
