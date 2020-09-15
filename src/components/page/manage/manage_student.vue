@@ -337,7 +337,7 @@
 												"idCard":list.idCard,
 												"schoolName":list.schoolName,
 												"name":list.name,
-												"classname":list.classes.name
+												"className":list.classes.name
 											}
 								          }
 								        ],
@@ -386,7 +386,7 @@
 												"idCard":list.idCard,
 												"schoolName":list.schoolName,
 												"name":list.name,
-												"classname":list.classes.name
+												"className":list.classes.name
 											}
 								          }
 								        ],

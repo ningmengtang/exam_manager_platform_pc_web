@@ -139,7 +139,7 @@ export default {
                             "idCard":localStorage.getItem('userID'),
                             "schoolName":'专家',
                             "name":'专家',
-                            "classname":'专家'
+                            "className":'专家'
                         }
 			          }
 			        ]

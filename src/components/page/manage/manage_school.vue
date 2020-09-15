@@ -498,7 +498,7 @@
 							"idCard":this.papaerType[i].idCard,
 							"schoolName":this.papaerType[i].schoolName,
 							"name":this.papaerType[i].name,
-							"classname":this.papaerType[i].classes.name
+							"className":this.papaerType[i].classes.name
 						}
 					})
 				}

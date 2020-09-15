@@ -279,7 +279,7 @@ export default {
 							"idCard":localStorage.getItem('userID'),
 							"schoolName":'管理员',
 							"name":'管理员',
-							"classname":'管理员'
+							"className":'管理员'
 						}
 			          }
 			        ]
