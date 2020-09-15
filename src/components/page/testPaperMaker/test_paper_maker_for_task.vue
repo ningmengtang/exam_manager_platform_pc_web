@@ -93,51 +93,43 @@
             </div>
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;"><!-- 临时去掉v-if="qustionPreviewMode && !qustionPreviewImgMode" -->
-            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
+            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:580px;">
+              
+              <!-- 标题部分 -->
               <div style="width:100%" :class="'layout_test_paper_header_'+studentItem.uid">
-                <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
-                  <span class="font_question_big" style="color:#000;">{{testPaperObjItem.title}}</span><span v-if="downloadForPreview">(仅供预览，勿作他用)</span>
+                <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;text-align:center;">
+                  <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span><span v-if="downloadForPreview">(仅供预览，勿作他用)</span>
                 </div>
-                <div class="layout_question_part_header_title" style="font-size:18px;line-height:30px;text-align:center;">
-                  {{testPaperObjItem.examExplain}}
-                </div>
-                <div class="layout_question_part_header_title" style="font-size:16px;line-height:20px;text-align:center;">
-                  作答时间：{{testPaperObjItem.examTime}}分钟
-                </div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学校名称</span><span style="margin-left:10px;display:inline-block;width:180px;">北京某某小学</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">班级名称</span><span style="margin-left:10px;display:inline-block;width:160px;">2020级1班</span></div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">李某某</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">440XXXXXXXXXXXXX88</span></div>
+                
+                <div style="float:left;width:580px;line-height:30px;border:1px solid #000;font-size:10px;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">注<br>意<br>事<br>项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
+              
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;vertical-align: middle;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">缺考标志</div><div style="margin-left:10px;margin-top:6px;display:inline-block;width:30px;height:18px;border:2px solid #000;float:left;"></div><div style="margin-left:10px;display:inline-block;height:30px;line-height:30px;float:left;">本栏由监考人员填写！</div></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">作答时间</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObj.examTime}}分钟</span></div>
+                <div style="clear:both;width:100%;height:10px;"></div>
               </div>
+              
+              <!-- 标题部分 结束 -->
               <!-- 输出部分 -->
               <!-- ============================================================================================================ -->
               <div v-for="(questionPartItem,questionPartItemIndex) in testPaperObjItem.items" class="layout_question_topic_text ql-editor" :style="testPaperPreviewStyle">
                 <div :class="'layout_question_topic_text_'+studentItem.uid+'_'+questionPartItem.uniqueId">
-                  <table>
-                    <tr>
-                      <!-- <td width="70px">
-                          <p style="text-align:right;">第{{questionPartItemIndex + 1}}部分、</p>
-                          <vue-qr v-if="testPaperObjItem.id" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,null,null,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                      </td> -->
-                      <td width="580px">
+
                         <div v-html="questionPartItem.topic_text">
                         </div>
-                      </td>
-                    </tr>
-                  </table>
+
                 </div>
                 <!-- 输出大题 -->
                 <!-- ============================================================================================================ -->
                 <div v-for="(questionBigItem,questionBigItemIndex) in questionPartItem.items" class="layout_question_topic_text">
                   <div :class="'layout_question_topic_text_'+studentItem.uid+'_'+questionBigItem.uniqueId">
-                    <table>
-                      <tr>
-                      <!-- <td width="70px">
-                          <p style="text-align:right;">第{{questionBigItemIndex + 1}}大题、</p>
-                          <vue-qr v-if="testPaperObjItem.id" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,null,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                      </td> -->
-                      <td width="580px">
+
                         <div v-html="questionBigItem.topic_text">
                         </div>
-                      </td>
-                      </tr>
-                    </table>
+
                   </div>
                   <!-- 输出小题（其他题） -->
                   <!-- ============================================================================================================ -->
@@ -151,8 +143,8 @@
                           </div>
                         </td>
                         <td width="70px">
-                            <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                            <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                            <p style="text-align:center;">第{{questionItem.no}}小题</p>
+                            <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                         </td>
                         </tr>
                       </table>
@@ -173,8 +165,8 @@
                             </div>
                           </td>
                           <td width="70px">
-                              <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                              <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                              <p style="text-align:center;">第{{questionItem.no}}小题</p>
+                              <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                           </td>
                         </tr>
                       </table>
@@ -229,18 +221,25 @@
             </div>
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;"><!-- 暂时屏蔽 v-if="qustionPreviewMode && !qustionPreviewImgMode" -->
-            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
+            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:580px;">
+              <!-- 标题部分 -->
               <div style="width:100%" :class="'layout_test_paper_header_'+studentItem.uid">
-                <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
-                  <span class="font_question_big" style="color:#000;">{{testPaperObjItem.title}}</span><span v-if="downloadForPreview">(仅供预览，勿作他用)</span>
+                <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;text-align:center;">
+                  <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span><span v-if="downloadForPreview">(仅供预览，勿作他用)</span>
                 </div>
-                <div class="layout_question_part_header_title" style="font-size:18px;line-height:30px;text-align:center;">
-                  {{testPaperObjItem.examExplain}}
-                </div>
-                <div class="layout_question_part_header_title" style="font-size:16px;line-height:20px;text-align:center;">
-                  作答时间：{{testPaperObjItem.examTime}}分钟
-                </div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学校名称</span><span style="margin-left:10px;display:inline-block;width:180px;">北京某某小学</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">班级名称</span><span style="margin-left:10px;display:inline-block;width:160px;">2020级1班</span></div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">李某某</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">440XXXXXXXXXXXXX88</span></div>
+                
+                <div style="float:left;width:580px;line-height:30px;border:1px solid #000;font-size:10px;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">注<br>意<br>事<br>项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
+              
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;vertical-align: middle;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">缺考标志</div><div style="margin-left:10px;margin-top:6px;display:inline-block;width:30px;height:18px;border:2px solid #000;float:left;"></div><div style="margin-left:10px;display:inline-block;height:30px;line-height:30px;float:left;">本栏由监考人员填写！</div></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">作答时间</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObj.examTime}}分钟</span></div>
+                <div style="clear:both;width:100%;height:10px;"></div>
               </div>
+              
+              <!-- 标题部分 结束 -->
               <!-- 输出部分 -->
               <!-- ============================================================================================================ -->
               <div v-for="(questionPartItem,questionPartItemIndex) in testPaperObjItem.items" class="layout_question_topic_text ql-editor" :style="testPaperPreviewStyle">
@@ -271,46 +270,64 @@
                   </div> -->
                     <!-- 输出小题 -->
                     <!-- ============================================================================================================ -->
-                    <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text">
+                    <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text" v-if="questionItem.groupQuestionArr">
                       <!-- 输出小题（其他题） -->
-                      <div style="border:2px solid black;" :class="'layout_question_anwser_sheet_'+studentItem.uid+'_'+questionItem.uniqueId" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
+                      <div style="border:2px solid black;" :class="'layout_question_anwser_sheet_'+studentItem.uid+'_'+questionItem.uniqueId">
                         <table>
                           <tr>
-                            <td width="70px">
-                                <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                                <vue-qr :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                            </td>
-                            <td width="480px">
-                              <div v-html="questionItem.anwserSheet.topic_text">
+                            <td width="510px" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
+
+                              <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" v-html="questionItem.groupQuestionArr[questionItemGroupIndex].anwserSheet.topic_text">
                               </div>
+                              
                             </td>
+
+                            <!-- 输出小题选项 -->
+                              <!-- ============================================================================================================ -->
+
+                              <td width="510px" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
+                                <!-- 最上面的定位块 -->
+
+                                <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" style="float:left;height:18px;margin-top:5px;margin-left:10px;">
+                                  
+                                  <div style="width:100%;" v-if="questionItemGroupIndex < 2">
+                                    <span v-if="questionItemGroupIndex == 0 " style="display: inline-block;text-align:right;border:2px solid #FFF;text-align:center;font-weight:bold;font-size:10px;height:18px;width:30px;background-color:#FFF;"></span>
+
+                                    <span v-if="questionItemGroupIndex < 2 " style="display: inline-block;text-align:right;border:2px solid #FFF;text-align:center;font-weight:bold;margin-left:10px;font-size:10px;height:18px;width:30px;background-color:#FFF;"></span>
+                                    
+                                    <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;text-align:right;border:2px solid black;text-align:center;font-weight:bold;margin-left:10px;font-size:10px;height:18px;width:30px;background-color:#000;"></span>
+                                  </div>
+                                </div>
+
+                                <!-- 最上面的定位块 结束 -->
+                                <div style="clear:both;"></div>
+                                <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" style="float:left;height:18px;margin-top:5px;margin-left:10px;">
+                                  <div style="clear:both;"></div>
+                                  <span v-if="questionItemGroupIndex == 0 || questionItemGroupIndex % 2 == 0" style="display: inline-block;vertical-align: middle;text-align:right;height:18px;width:30px;background-color:#000;"></span>
+
+                                  <span style="display: inline-block;vertical-align: middle;height:18px;width:30px;text-align:right;margin-left:10px;">{{questionItem.groupQuestionArr[questionItemGroupIndex].no}}.</span>
+                                  <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;vertical-align: middle;text-align:right;border:2px solid #ab3b42;text-align:center;font-weight:bold;margin-left:10px;border-radius: 10px;font-size:10px;height:18px;width:30px;color:#ab3b42;">{{enCharArr[questionOptionItemIndex]}}</span>
+                                </div>
+                                <div style="clear:both;width:100%;height:5px;"><!-- --></div>
+                              </td>
+                              <!-- ============================================================================================================ -->
+                              <!-- 输出小题选项 完成-->
+
+                            <!-- 二维码 -->
+                            
+                            <td width="70px">
+                                <p style="text-align:center;font-size:10px;" v-if="questionItem.groupQuestionArr.length > 1">第{{questionItem.groupQuestionArr[0].no}}-{{questionItem.groupQuestionArr[questionItem.groupQuestionArr.length-1].no}}题</p>
+                                <p style="text-align:center;font-size:10px;" v-if="questionItem.groupQuestionArr.length <= 1">第{{questionItem.no}}题</p>
+                                <vue-qr v-if="questionItem.groupQuestionArr" :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                            </td>
+                            <!-- 二维码 结束 -->
+
+
                           </tr>
                         </table>
                       </div>
                       <!-- 输出小题（其他题） 完成-->
-                      <!-- 输出小题（选择题） -->
-                      <div style="border:2px solid black;" :class="'layout_question_anwser_sheet_'+studentItem.uid+'_'+questionItem.uniqueId" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
-                        <table>
-                          <tr>
-                            <td width="70px">
-                                <p style="text-align:right;">第{{questionItem.no}}小题、</p>
-                                <vue-qr :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                            </td>
-                            <!-- 输出小题选项 -->
-                            <!-- ============================================================================================================ -->
-                            <td v-if="questionItem.question_type != questionType.comprehensive_topic.id">
-                              <div>
-                                <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="text-align:right;border:2px solid black;text-align:center;font-weight:bold;margin-left:10px;margin-top:30px;">&nbsp;&nbsp;&nbsp;{{enCharArr[questionOptionItemIndex]}}&nbsp;&nbsp;&nbsp;</span>
-                              </div>
-                            </td>
-                            <!-- ============================================================================================================ -->
-                            <!-- 输出小题选项 完成-->
-                          </tr>
-                        </table>
-                      </div>
-                      <div style="clear:both;"></div>
-                      <!-- ============================================================================================================ -->
-                      <!-- 输出小题（选择题） 完成-->
+                      
                     </div>
                     <!-- ============================================================================================================ -->
                   <!-- 输出小题 完成-->
@@ -342,7 +359,7 @@
             </div>
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;"><!-- 临时屏蔽  v-if="qustionPreviewMode && !qustionPreviewImgMode"-->
-            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
+            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:580px;">
               <div style="width:100%" class="layout_question_topic_text ql-editor" :style="testPaperPreviewStyle">
                 <img :src="testPaperObjItem.imgFile" />
               </div>
@@ -412,7 +429,7 @@
             </div>
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;"><!-- 暂时屏蔽 v-if="qustionPreviewMode && !qustionPreviewImgMode" -->
-            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
+            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:580px;">
               <div style="width:100%" class="layout_question_topic_text ql-editor" :style="testPaperPreviewStyle">
                 <img :src="testPaperObjItem.imgFile" />
               </div>
@@ -519,8 +536,8 @@
 
 <script>
 import axios from 'axios'
-import { quillEditor } from 'vue-quill-editor'
-import myQuillEditor from './myEditor'
+// import { quillEditor } from 'vue-quill-editor'
+// import myQuillEditor from './myEditor'
 import vueQr from 'vue-qr'
 //引入pdf
 import "pdfmake/build/pdfmake"
@@ -539,8 +556,8 @@ axios.defaults.responseType = 'json'
 export default {
   name: 'testPaperMakerForTask',
   components:{
-     quillEditor,
-     myQuillEditor,
+    //  quillEditor,
+    //  myQuillEditor,
      vueQr
   },
   data () {
@@ -1384,7 +1401,7 @@ export default {
             // let newStudentIdArrObj = JSON.parse(JSON.stringify(studentIdArr))
             // console.log(newStudentIdArrObj)
             //开始批量打包
-            this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdfPromise.bind(this)(studentIdArr).then(res =>{
+             this.$options.methods.multiDownloadTestPaperAndAnwserSheetPdfPromise.bind(this)(studentIdArr).then(res =>{
               //resolve(true)
 
               //关闭加载
@@ -1411,7 +1428,14 @@ export default {
     /**
      * 获取二维码信息用于防伪
      */
-    createQrInfo(paperId,qPartId,qBigId,qId,sId) {
+    createQrInfo(paperId,qPartId,qBigId,qId,groupQuestionArr,sId) {
+
+      if(!groupQuestionArr)
+      {
+        //console.log("groupQuestionArr为空，qPartId["+qPartId+"],qBigId["+qPartId+"]")
+        //return 'null'
+      }
+
       //深拷贝
 
       let objString = JSON.stringify(this.qrInfoObj)
@@ -1421,10 +1445,34 @@ export default {
       newObj.qPartId = qPartId
       newObj.qBigId = qBigId
       newObj.qId = qId
+      newObj.qIdArr = []
+      newObj.qNoArr = []
       newObj.uid = this.qrInfoObj.uid
       newObj.sId = sId
       newObj.utype = this.qrInfoObj.utype
 
+      //console.log(JSON.parse(JSON.stringify(groupQuestionArr[0])))
+      if(groupQuestionArr)
+      {
+        groupQuestionArr.forEach(groupQuestionElement => {
+          // console.log("开始处理groupQuestionElement >>>>> ")
+          // console.log(groupQuestionElement)
+          //组卷工具，没有id，用模拟的,即no
+          // let qidForQr = null
+          // let qNoForQr = null
+          // if(groupQuestionElement.id)
+          // {
+          //   qidForQr = groupQuestionElement.id
+          // }
+          // else{
+          //   qNoForQr = groupQuestionElement.no
+          // }
+          //console.log("qidForQr:"+JSON.parse(JSON.stringify(qidForQr)))
+          newObj.qIdArr.push(groupQuestionElement.id)
+          newObj.qNoArr.push(groupQuestionElement.no)
+        });
+      }
+      
       return JSON.stringify(newObj)
 
     },
@@ -1998,63 +2046,68 @@ export default {
           }
 
           selectorImgArr.forEach((selectorImgElement,selectorImgElementIndex) => {
-            //console.log("开始输出 >>>>> "+selectorImgElement)
-            //创建一个生成图片任务
-            let promiseForCreateImg = new Promise((resolve, reject) => {
-              //扩大分辨率，提高清晰度设置===============
-              var doc = window.document;
-              var width = 0; 
-              var height = 0; 
-              var newCanvas = document.createElement("canvas"); 
-              var context = newCanvas.getContext("2d");
-              var scale = 2; 
-              width = selectorImgElement.offsetWidth * scale; 
-              height = selectorImgElement.offsetHeight * scale;
-              newCanvas.width = width * scale;
-              newCanvas.height = height * scale;
-              newCanvas.getContext("2d").scale(scale, scale); 
-            
-              var opts = {
-                    scale: scale, 
-                    canvas: newCanvas,
-                    useCORS: true, 
-                    logging: true, 
-                    width: width, 
-                    height: height 
-                };
-              //扩大分辨率，提高清晰度设置，完成===============
+            //如果选择器内容为空，则跳过插入
+            if(null != selectorImgElement){
+              //console.log("开始输出 >>>>> "+selectorImgElement)
+              //创建一个生成图片任务
+              let promiseForCreateImg = new Promise((resolve, reject) => {
+                //扩大分辨率，提高清晰度设置===============
+                var doc = window.document;
+                var width = 0; 
+                var height = 0; 
+                var newCanvas = document.createElement("canvas"); 
+                var context = newCanvas.getContext("2d");
+                var scale = 1.2; 
+                width = selectorImgElement.offsetWidth * scale; 
+                height = selectorImgElement.offsetHeight * scale;
+                newCanvas.width = width * scale;
+                newCanvas.height = height * scale;
+                newCanvas.getContext("2d").scale(scale, scale); 
+              
+                var opts = {
+                      scale: scale, 
+                      canvas: newCanvas,
+                      useCORS: true, 
+                      logging: true, 
+                      width: width, 
+                      height: height 
+                  };
+                //扩大分辨率，提高清晰度设置，完成===============
 
-              //转化为图片并粘帖
-              html2canvas(selectorImgElement,opts).then(canvas => {
-                let dataURL = canvas.toDataURL("image/png")
-                //console.log(dataURL)
-                //赋值给试题对象
-                if(selectorImgElementIndex == 0)
-                {
-                  //试题部分
-                  questionObj.imgFile = dataURL
-                  //console.log("保存试题部分的图片 >>>>> "+questionObj.imgFile)
-                }
-                else if(selectorImgElementIndex == 1)
-                {
-                  //试题答题卡部分
-                  questionObj.anwserSheet.imgFile = dataURL
-                  //console.log("保存答题卡部分的图片 >>>>> "+questionObj.anwserSheet.imgFile)
-                }
-                
-                
-                resolve(true);
+                //转化为图片并粘帖
+                html2canvas(selectorImgElement,opts).then(canvas => {
+                  let dataURL = canvas.toDataURL("image/png")
+                  //console.log(dataURL)
+                  //赋值给试题对象
+                  if(selectorImgElementIndex == 0)
+                  {
+                    //试题部分
+                    questionObj.imgFile = dataURL
+                    //console.log("保存试题部分的图片 >>>>> "+questionObj.imgFile)
+                  }
+                  else if(selectorImgElementIndex == 1)
+                  {
+                    //试题答题卡部分
+                    questionObj.anwserSheet.imgFile = dataURL
+                    //console.log("保存答题卡部分的图片 >>>>> "+questionObj.anwserSheet.imgFile)
+                  }
+                  
+                  
+                  resolve(true);
+                })
+                //.catch(err => {
+                //  reject(false)
+                //})
               })
-              //.catch(err => {
-              //  reject(false)
-              //})
-            })
 
-            //加入输出队列
-            questionObj.items.forEach(questionObjItem => {
-              promiseArrForCreateImg.push(promiseForCreateImg)
-            });
-
+              //加入输出队列
+              questionObj.items.forEach(questionObjItem => {
+                promiseArrForCreateImg.push(promiseForCreateImg)
+              });
+            }
+            else{
+              console.log("selectorImgElement为空，跳过输出")
+            }
           });
 
           //按顺序返回结果
@@ -2107,7 +2160,7 @@ export default {
       var height = 0; 
       var newCanvas = document.createElement("canvas"); 
       var context = newCanvas.getContext("2d");
-      var scale = 2; 
+      var scale = 1.2; 
       width = testPaperHeaderImgItem.offsetWidth * scale; 
       height = testPaperHeaderImgItem.offsetHeight * scale;
       newCanvas.width = width * scale;
@@ -2145,7 +2198,7 @@ export default {
         var height = 0; 
         var newCanvas = document.createElement("canvas"); 
         var context = newCanvas.getContext("2d");
-        var scale = 2; 
+        var scale = 1.2; 
         width = questionPartItemImgItem.offsetWidth * scale; 
         height = questionPartItemImgItem.offsetHeight * scale;
         //console.log("questionPartItemImgItem.offsetWidth"+questionPartItemImgItem.offsetWidth)
@@ -2186,7 +2239,7 @@ export default {
           var height = 0; 
           var newCanvas = document.createElement("canvas"); 
           var context = newCanvas.getContext("2d");
-          //var scale = 2; 
+          //var scale = 1.2; 
           width = questionBigItemImgItem.offsetWidth * scale; 
           height = questionBigItemImgItem.offsetHeight * scale;
           //console.log("questionBigItemImgItem.offsetWidth"+questionBigItemImgItem.offsetWidth)
@@ -2225,7 +2278,7 @@ export default {
             var height = 0; 
             var newCanvas = document.createElement("canvas"); 
             var context = newCanvas.getContext("2d");
-            //var scale = 2; 
+            //var scale = 1.2; 
             width = questionItemImgItem.offsetWidth * scale; 
             height = questionItemImgItem.offsetHeight * scale;
             //console.log("questionItemImgItem.offsetWidth"+questionItemImgItem.offsetWidth)
@@ -2254,7 +2307,8 @@ export default {
 
             //循环输出小题答题卡选项================================================================================================
             //获取每个试题答题卡的预览html
-            var questionAnwserSheetItemImgItem=document.querySelector('.layout_question_anwser_sheet_'+questionItem.uniqueId)
+            //var questionAnwserSheetItemImgItem=document.querySelector('.layout_question_anwser_sheet_'+questionItem.uniqueId)
+            var questionAnwserSheetItemImgItem=document.querySelector('.layout_question_anwser_sheet_'+studentId+'_'+questionObj.uniqueId)
             //console.log("questionAnwserSheetItemImgItem")
             //console.log(questionAnwserSheetItemImgItem)
             //扩大分辨率，提高清晰度设置===============
@@ -2263,7 +2317,7 @@ export default {
             var height = 0; 
             var newCanvas = document.createElement("canvas"); 
             var context = newCanvas.getContext("2d");
-            //var scale = 2; 
+            //var scale = 1.2; 
             width = questionAnwserSheetItemImgItem.offsetWidth * scale; 
             height = questionAnwserSheetItemImgItem.offsetHeight * scale;
 
@@ -2301,7 +2355,7 @@ export default {
               var height = 0; 
               var newCanvas = document.createElement("canvas"); 
               var context = newCanvas.getContext("2d");
-              //var scale = 2; 
+              //var scale = 1.2; 
               width = questionOptionsItemImgItem.offsetWidth * scale; 
               height = questionOptionsItemImgItem.offsetHeight * scale;
               //console.log("questionOptionsItemImgItem.offsetWidth"+questionOptionsItemImgItem.offsetWidth)
@@ -2474,7 +2528,7 @@ export default {
       //console.log("小题序号顺序编码完成 <<<<< ")
     },
     /**
-     * 小题序号顺序编码器
+     * 小题序号顺序编码器 并对题型进行分组
      */
     testPaperQuestionCreateAutoNo()
     {
@@ -2484,7 +2538,7 @@ export default {
         //console.log("试卷为空，无法为每一个小题添加试卷中的小题序号")
         return
       }
-      //console.log("为每一个小题添加试卷中的小题序号")
+      console.log("为每一个小题添加试卷中的小题序号，并且进行分组")
       //循环输出试卷部分================================================================================================
       this.testPaperObj.items.forEach(questionPartItem => {
 
@@ -2492,12 +2546,59 @@ export default {
         questionPartItem.items.forEach(questionBigItem => {
           //console.log("开始编码 >>>>> " + this.previewQuestionNum)
 
+          //为不同题型进行分组，方便在答题卡内对其进行分组处理
+          let groupQuestionType = null
+          let groupQuestionArr = []
+          let firstQuestionItem = null
+
           //循环输出小题================================================================================================
           questionBigItem.items.forEach(questionItem => {
             
-              questionItem.no = this.previewQuestionNum++
+            questionItem.no = this.previewQuestionNum++
+
+            //先把分组信息准备好
+            if(null!=questionItem.question_type)
+            {
+              //如果是新的题型
+              if(questionItem.question_type != groupQuestionType)
+              {
+                //对旧的分组第一个值进行赋值
+                if(null != firstQuestionItem)
+                {
+                  //深拷贝赋值
+                  firstQuestionItem.groupQuestionArr = JSON.parse(JSON.stringify(groupQuestionArr)) 
+                  // console.log("题型分组完成")
+                  // console.log(firstQuestionItem)
+
+                }
+                //重置并保存新题型分组数据
+                groupQuestionArr = []
+                //保存当前的问题
+                groupQuestionArr.push(questionItem)
+
+                groupQuestionType = questionItem.question_type
+                // console.log("新的题型分组 >>>>> "+ questionItem.question_type)
+                
+                //保存当前分组第一个的题目
+                firstQuestionItem = questionItem
+              }
+              else{
+                //添加当前题目进去分组
+                //保存当前的问题
+                groupQuestionArr.push(questionItem)
+                //清空当前题目旧的数据
+                questionItem.groupQuestionArr = null
+              }
+            }
+            
             
           })
+          //处理最后一组的题型分组数据
+          //深拷贝赋值
+          firstQuestionItem.groupQuestionArr = JSON.parse(JSON.stringify(groupQuestionArr)) 
+          // console.log("题型分组完成")
+          // console.log(lastQuestionItem)
+
           //循环输出小题，完成================================================================================================
 
         })
@@ -2505,7 +2606,7 @@ export default {
 
       })
       //循环输出试卷部分，完成================================================================================================
-      //console.log("小题序号顺序编码完成 <<<<< ")
+      console.log("小题序号顺序编码完成 <<<<< ")
     },
     /**
      * 快速跳转至顶端
@@ -3211,10 +3312,16 @@ export default {
 
         //生成试卷pdf内容
         let dd_content = this.$options.methods.getTestPaperAllQuestionAnwserSheetPreviewImgByStudentTestPaperObj.bind(this)(testPaperObj)
-        let docDefinition = { content: dd_content };
+        let docDefinition = { 
+
+          header: { canvas: [ { type: 'rect', x: 40, y: 20, w: 20, h: 20 , color:'#000'},{ type: 'rect', x: 285, y: 20, w: 20, h: 20 , color:'#000'},{ type: 'rect', x: 530, y: 20, w: 20, h: 20 , color:'#000'} ] },
+          content: dd_content ,
+          footer: { canvas: [ { type: 'rect', x: 40, y: 0, w: 20, h: 20 , color:'#000'},{ type: 'rect', x: 530, y: 0, w: 20, h: 20 , color:'#000'} ] },
+
+        };
 
         const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-            pdfDocGenerator.getBlob((blob) => {
+          pdfDocGenerator.getBlob((blob) => {
               //console.log(blob)
             pdfBlobForZipList.push({name:'试卷答题卡_'+studentId+'.pdf',data:blob})
 
@@ -3491,10 +3598,13 @@ export default {
       testPaperObj.items.forEach(questionPartItem => {
 
         //试卷部分
-        previewImgArrOfQuestion.push({
-          image: questionPartItem.imgFile,
-          width: this.pdfPrintA4PaperSizeWidth,
-        })
+        if(questionPartItem.imgFile && questionPartItem.imgFile != "data:,")
+        {
+          previewImgArrOfQuestion.push({
+            image: questionPartItem.imgFile,
+            width: this.pdfPrintA4PaperSizeWidth,
+          })
+        }
         // console.log("插入"+(previewImgArrOfQuestion.length)+"张图片")
         // console.log(questionPartItem)
         // console.log(previewImgArrOfQuestion)
@@ -3503,11 +3613,13 @@ export default {
         questionPartItem.items.forEach(questionBigItem => {
 
           //大题
-          previewImgArrOfQuestion.push({
-            image: questionBigItem.imgFile,
-            width: this.pdfPrintA4PaperSizeWidth, 
-          })
-
+          if(questionBigItem.imgFile && questionBigItem.imgFile != "data:,")
+          {
+            previewImgArrOfQuestion.push({
+              image: questionBigItem.imgFile,
+              width: this.pdfPrintA4PaperSizeWidth, 
+            })
+          }
           // console.log("插入"+(previewImgArrOfQuestion.length)+"张图片")
           // console.log(questionBigItem)
           // console.log(previewImgArrOfQuestion)
@@ -3515,14 +3627,16 @@ export default {
           //循环输出小题================================================================================================
           questionBigItem.items.forEach(questionItem => {
             
+            if(questionItem.imgFile && questionItem.imgFile != "data:,")
+            {
               previewImgArrOfQuestion.push({
                 image: questionItem.imgFile,
                 width: this.pdfPrintA4PaperSizeWidth,
               })
-
-              // console.log("插入"+(previewImgArrOfQuestion.length)+"张图片")
-              // console.log(questionItem)
-              // console.log(previewImgArrOfQuestion)
+            }
+            // console.log("插入"+(previewImgArrOfQuestion.length)+"张图片")
+            // console.log(questionItem)
+            // console.log(previewImgArrOfQuestion)
 
             //循环输出小题选项================================================================================================
             questionItem.items.forEach(questionOptionItem => {
@@ -3530,15 +3644,16 @@ export default {
                 //tempP = questionOptionItem.topic_text
                 //console.log(questionOptionItem)
                 //console.log(tempP)
-
-                previewImgArrOfQuestion.push({
-                  image: questionOptionItem.imgFile,
-                  width: this.pdfPrintA4PaperSizeWidth,
-                })
-
-                console.log("插入"+(previewImgArrOfQuestion.length)+"张图片")
-                console.log(questionOptionItem)
-                console.log(previewImgArrOfQuestion)
+                if(questionOptionItem.imgFile && questionOptionItem.imgFile != "data:,")
+                {
+                  previewImgArrOfQuestion.push({
+                    image: questionOptionItem.imgFile,
+                    width: this.pdfPrintA4PaperSizeWidth,
+                  })
+                }
+                // console.log("插入"+(previewImgArrOfQuestion.length)+"张图片")
+                // console.log(questionOptionItem)
+                // console.log(previewImgArrOfQuestion)
             })
             //循环输出小题选项，完成================================================================================================
 
@@ -3552,8 +3667,8 @@ export default {
       //循环输出试卷部分，完成================================================================================================
       
       console.log("获取所有试卷部分、大题、小题图片完成 <<<<< ")
-      console.log(previewImgArrOfQuestion)
-      console.log(testPaperObj)
+      // console.log(previewImgArrOfQuestion)
+      // console.log(testPaperObj)
       return previewImgArrOfQuestion
     },
     /**
@@ -3665,19 +3780,39 @@ export default {
         image: testPaperObj.imgFile,
         width: this.pdfPrintA4PaperSizeWidth,
       })
+      let isFirstAnwserSheet = true
       testPaperObj.items.forEach(questionPartItem => {
 
+        if(isFirstAnwserSheet)
+        {
+          isFirstAnwserSheet = false
+          previewImgArr.push({
+            canvas: [ { type: 'rect', x: 0, y: 0, w: 20, h: 20 , color:'#000'},{ type: 'rect', x: 245, y: 0, w: 20, h: 20 , color:'#000'},{ type: 'rect', x: 490, y: 0, w: 20, h: 20 , color:'#000'} ] ,
+      
+          })
+        }
+        
         //循环输出大题================================================================================================
         questionPartItem.items.forEach(questionBigItem => {
 
           //循环输出小题================================================================================================
+          
           questionBigItem.items.forEach(questionItem => {
+
             
+            
+            if(null != questionItem.anwserSheet.imgFile)
+            {//如果答题卡被分组合并了，是没有imgFile的，这时候跳过合并
               previewImgArr.push({
                 image:questionItem.anwserSheet.imgFile,
                 width: this.pdfPrintA4PaperSizeWidth,
               })
-
+            }
+            else{
+              console.log("questionItem没有imgFile >>>>> ")
+              console.log(questionItem)
+              console.log("questionItem没有imgFile <<<<< ")
+            }
             //循环输出小题选项================================================================================================
             /*questionItem.items.forEach(questionOptionItem => {
               
