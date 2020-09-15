@@ -32,10 +32,10 @@
 .user-img{width: 50px;height: 50px;border-radius: 50%;display: flex;justify-content: center;align-items: center;color: #FFFFFF;background-color:rgb(25, 174, 251);}
 .teacher-name{display: flex;justify-content: center;align-items: center;font-size: 14px;color: #19aefb;margin: 0 0 0 20px;min-width: 42px; }
 .teacher-name.i{margin: 0;}
-.title-box{margin-left: 20px;}
-.title{font-size: 20px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 400px;}
+.title-box{margin-left: 20px;width: 400px;}
+.title{font-size: 20px;margin-bottom: 4px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 /* .synopsis{font-size: 18px;color: rgba(153, 153, 153, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 400px;} */
-.synopsis{font-size: 15px;color: rgba(153, 153, 153, 1);width: 400px;}
+.synopsis{font-size: 15px;color: rgba(153, 153, 153, 1);}
 .time{font-size: 14px;;color: rgba(166, 166, 166, 1);margin-left: 10px;width: 200px;overflow: hidden;}
 .label-box{display: flex;margin:  0 12px 0 0;flex-wrap: wrap;min-width: 443px;max-width: 560px;}
 .label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}

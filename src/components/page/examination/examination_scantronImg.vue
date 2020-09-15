@@ -1,88 +1,16 @@
 <template>
 	<div class="box">
-		<!-- 左边 -->
-		<div class="left-box">
-			<div class="answer">
-				<div class="ts">距离考试结束还有</div>
-				<div class="ts-time">{{ResidueTime}}</div>
-				<div class="all-topic-box">
-					<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
-						 :format="format"></el-progress>
-					</div>
-					<div class="li">
-						<div class="at-title">第一大题、选择题</div>
-						<div class="at-number">
-							<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule('choice')">
-								<el-checkbox-button v-for="(d,i) in topic" :label="d.id" :key="d.i">{{d.name}}</el-checkbox-button>
-							</el-checkbox-group>
-						</div>
-						<div class="at-title">第二大题、综合题</div>
-						<div class="at-number">
-							<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule('synthesize')">
-								<el-checkbox-button v-for="(d,i) in topic2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
-							</el-checkbox-group>
-						</div>
-					</div>
-				</div>
-				<div class="affirm">
-					<el-button class="previous">确认，上一题</el-button>
-					<el-button class="next" style="background-color: #19AEFB;">确认，下一题</el-button>
-					<div class="bottom-ts">注意核实个人信息和考试信息，如有不符立刻联系老师</div>
-				</div>
-			</div>
-		</div>
-		<!-- 右边 -->
-		<div class="right-box">
-			<div class="questions">
-				<div class="message-top">
-					<div>{{this.topicDefault[this.topicDefault.length-1]}}</div>
-					<el-tag effect="dark" class="tag">有答题卡作答</el-tag>
-				</div>
-				<div class="content-b">
-					<div class="c-title">请问唧唧复唧唧的下一句是什么？</div>
-					<div class="ewm">
-						<el-image :src="ewm"></el-image>
-						<div class="l">扫码快速上传</div>
-					</div>
-				</div>
-				<div class="content-c">
-					<div v-if="stateType=='choice'">
-						<el-radio-group v-model="choiceKey" class="choice">
-							<el-radio-button label="A">A.备选项</el-radio-button>
-							<el-radio-button label="B">B.备选项</el-radio-button>
-							<el-radio-button label="C">C.备选项</el-radio-button>
-							<el-radio-button label="D">D.备选项</el-radio-button>
-						</el-radio-group>
-						<div class="userChoice"><span>你已选择： </span><span class="i">{{choiceKey}}</span></div>
-						<div style="display: flex;justify-content: center;">
-							<el-button class="reset" @click="choiceKey=''">清空本题答案</el-button>
-						</div>
-					</div>
-					<div v-else-if="stateType=='synthesize'">
-						<div class="content-cc">
-							<el-image :src="problemImg" class="cc-img"></el-image>
-							<div class="font-i" style="margin-bottom: 10px;">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下识别的结果，如果修改了答案，请重新上传。</div>
-						</div>
-					</div>
+		<div class="big-box">
+			<div class="header-top">
+				<div class="time">
+					<div>距离考试结束还有</div>
+					<div>01:50:55</div>
 				</div>
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">上传日志</div>
-				<div class="questions-img">
-					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
-						<div class="img-box-i">
-							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
-							<transition name="el-zoom-in-top">
-								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
-									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
-									<i class="icon el-icon-delete-solid "></i>
-								</div>
-							</transition>
-						</div>
-						<span class="i">5545</span>
-					</div>
-				</div>
+				<div></div>
+				<div></div>
 			</div>
 		</div>
-		<el-image-viewer v-if="bigImg" :initial-index="bigIndex" :on-close="closeViewer" :url-list="srcList" />
 	</div>
 </template>
 
@@ -256,31 +184,29 @@
 				let newTime = new Date().getTime();
 				let timeDifference = this.getCookie('examTime') - newTime;
 				if (timeDifference <= 0) {
-					ResidueTime = '00:00:00'
-					this.$alert('考试时间结束！', '提醒', {
+					this.$alert('这是一段内容', '标题名称', {
 						confirmButtonText: '确定',
 						callback: action => {
-							this.goTopic()
+							// this.$message({
+							// 	type: 'info',
+							// 	message: `action: ${ action }`
+							// });
 						}
 					});
 					// 清除计时器
 					clearInterval(this.timer)
 					// 清除时间cookic
-					this.clearCookie('examTime')
+					clearCookie('examTime')
 					localStorage.removeItem('topic')
-				}
+					ResidueTime = '00:00:00'
 
+				}
 				ResidueTime = this.getLocalTime(timeDifference)
 				return ResidueTime;
 			},
 			// 题目跳转
 			goTopic() {
-				this.$router.push({
-					name: 'examination_process',
-					query: {
-						id: this.examId
-					}
-				})
+
 			}
 		},
 		mounted() {
@@ -296,7 +222,6 @@
 			apiCommonExamSeleElementTestById(this.examId).then(res => {
 				console.log(res.data.data.elementTest)
 			})
-			// ---定时器计算剩余时间
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 0)
@@ -306,7 +231,7 @@
 
 <style scoped src="../../../assets/css/examination-other.css"></style>
 // 修改element 自带样式
-<style scoped>
+<style>
 	.el-pagination button:disabled {
 		background-color: #f5f5f5;
 	}

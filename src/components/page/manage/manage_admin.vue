@@ -183,7 +183,6 @@ export default {
 			})
 		},
 		handleSizeChange(val) {
-			console.log(val)
 			this.pageSize = val
 			ExamSelectPapersWithTagsForAllPapers({
 				"tag_list":this.obj,
@@ -196,7 +195,7 @@ export default {
 			})
 		},
 		handleCurrentChange(val) {
-			console.log(val)
+							
 			this.pageNum = val;
 			ExamSelectPapersWithTagsForAllPapers({
 				"pageNum":this.pageNum,
