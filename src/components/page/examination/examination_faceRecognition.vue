@@ -1,104 +1,60 @@
 <template>
 	<div class="box">
-		<div class="message-row">
-			<el-row :gutter="20" type="flex">
-				<el-col :span="8">
-					<router-link :to="{path:'manage_student'}">
-					<div class="grid-content bg-purple">
-						<div class="card-left">
-							<div class="card-c">全部试卷</div>
-							<div class="card-cc">
-								<ICountUp :endVal="total" />
+		<!-- 左边 -->
+		<div class="left-box">
+			<div class="box-card">
+				<div class="card-top">
+					<img src="../../../assets/img/img.jpg" class="user-img" />
+					<div class="user-top">
+						<div class="username">
+							<div class="name">{{userName}}</div>
+							<div class="user-id">ID:{{userID}}</div>
+							<div class="identity">学生</div>
+							<div class="message">
+								<div class="school">{{userSchoolName}}</div>
+								<div class="grade">年级：{{userGrade}}</div>
+								<div class="grade">班级：{{classes}}</div>
+							</div>
+							<div class="exam-box">
+								<div class="e-title">{{examTitle}}</div>
+								<div class="e-particular">{{examParticular}}</div>
 							</div>
 						</div>
-						<div class="card-right"></div>
 					</div>
-					</router-link>
-				</el-col>
-				<el-col :span="8">
-					<router-link :to="{path:'manage_student'}">
-					<div class="grid-content bg-purple" :style="style.card_2">
-						<div class="card-left">
-							<div class="card-c">可以下载</div>
-							<div class="card-cc">
-								<ICountUp :endVal="download" />
-							</div>
-						</div>
-						<div class="card-right" :style="style.cardRight_2"></div>
-					</div>
-					</router-link>
-				</el-col>
-				<el-col :span="8">
-					<router-link :to="{path:'manage_student'}">
-					<div class="grid-content bg-purple" :style="style.card_3">
-						<div class="card-left">
-							<div class="card-c">下载失效</div>
-							<div class="card-cc">
-								<ICountUp :endVal="disabled" />
-							</div>
-						</div>
-						<div class="card-right" :style="style.cardRight_3"></div>
-					</div>
-					</router-link>
-				</el-col>
-			</el-row>
-		</div>
-		<div class="papers-box" v-loading="loading">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi" @click="downloadFile(d)" style="cursor: pointer">
-				<div class="p-icon-box">
-					<div class="p-icon"></div>
-				</div>
-				<div class="p-particula">
-					<div class="top-box">
-						<!-- <div class="subject">{{d.subject}}</div> -->
-						<div class="grade">{{d.gradeClass}}</div>
-					</div>
-					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.modifyDate}}</div>
-					<div class="p-time">
-						开始下载时间：{{d.startTime}}
-					</div>
-					<div class="p-time">
-						结束下载时间：{{d.overTime}}
-					</div>
-					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0 && d.putInto == 1?'可以下载':'不允许下载'}}</div>
-					<i  class="p-status-icon el-icon-download" v-if="d.status == 0 && d.putInto == 1">
-						
-					</i>
-					<i  class="p-status-icon   el-icon-close " style="color: rgb(242, 94, 67);"   v-if="d.status == 1 || d.putInto == 0"  >
-						
-					</i>
-
 				</div>
 			</div>
 		</div>
-		<!-- 分页 -->
-		<div class="page">
-			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
-			</el-pagination>
+		<!-- 右边 -->
+		<div class="right-box">
+			<div class="face-box">
+				<div class="ts">请对准摄像头</div>
+				<div class="ts2">进入考试前必须录入人脸</div>
+				<div class="face-img">
+					<el-upload class="upload-demo" drag accept=".jpg,.png" action="https://jsonplaceholder.typicode.com/posts/"
+					 :before-upload="beforeUpload" multiple>
+						<i class="el-icon-upload"></i>
+						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+						<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2m</div>
+					</el-upload>
+				</div>
+				<div class="bottom-box">
+					<el-button class="photograph"><i class="el-icon-camera-solid" style="margin-right: 8px;"></i>拍照</el-button>
+					<el-button class="black" @click="goProcess()">确认进入考试</el-button>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-	import Schart from 'vue-schart'
-	import bus from '../../common/bus'
-	import ICountUp from 'vue-countup-v2'
-	import {
-		handleSizeChange,
-		handleCurrentChange,
-		studentIndexData,
-		
-	} from '@/assets/js/index.js'
 	import {
 		studentIndex,
-		apicommonExamGetFile
+		apicommonExamGetFile,
+		apiStudentAccountSelectById,
+		apiCommonExamSelectById,
 	} from '@/api/api.js'
 	export default {
-		name: 'index_student',
 		data() {
-			this.colors = ['#67C23A', '#409EFF', '#F56C6C']
 			return {
 				total: 0,
 				pageSize: 9,
@@ -106,131 +62,76 @@
 				currentPage: 1,
 				download: 0,
 				disabled: 0,
-				loading:false,
+				loading: false,
 				status: '',
-				style: {
-					card_2: 'background-color: #41dde3;',
-					card_3: 'background-color: #e35841;',
-					cardRight_2: {
-						backgroundImage: 'url(' + require('../../../assets/img/bg-2.png') + ')'
-					},
-					cardRight_3: {
-						backgroundImage: 'url(' + require('../../../assets/img/bg-3.png') + ')'
-					},
-					pLi: {
-						backgroundImage: 'url(' + require('../../../assets/img/fail-download.png') + ')'
-					},
-					pStatus: 'color:#e2633b'
-				},
+				userName: localStorage.getItem('userName'),
+				userID: localStorage.getItem('userID'),
+				userSchoolName: localStorage.getItem('userSchoolName'),
+				userGrade: localStorage.getItem('userGrade'),
+				examId: this.$route.query.id,
+				examTitle: '',
+				examParticular: '',
 				papers: {},
+				classes: '',
 				dialogVisible: false,
 			}
 		},
-		components: {
-			Schart,
-			ICountUp
-		},
 		methods: {
-			handleSizeChange,handleCurrentChange,studentIndexData
-			,
-			downloadFile(item){
-				if(item.status == 0){
-					if(item.startTime && item.overTime){
-					let arr = this.isDuringDate(item.startTime,item.overTime)
-					if(arr){
-						if(item.affix){
-							apicommonExamGetFile(item.id).then(res=>{
-								// console.log(res)
-								var headers = res.headers['content-disposition']
-								// console.log(headers)
-								headers = headers.substring(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
-								const blob = new Blob([res.data],{type:''})
-								let link = document.createElement('a');
-								let objectUrl = URL.createObjectURL(blob);
-								link.setAttribute("href",objectUrl);
-								link.setAttribute("download",headers); 
-								link.click();
-								//释放内存
-								window.URL.revokeObjectURL(link.href)
-							})
-						}else{
-							let  createTestPaperInfoObj = {
-						 		testPaperId:item.id,
-						        students:[
-						          {
-						            uid:localStorage.getItem('userID'),
-									utype:"student",
-				          			items:[]
-						          }
-						        ]
-						      }
-							this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
-						}
-						
-					}else{
-						this.$message.warning('未到下载时间，不允许下载')
+			// ---回去--
+			goProcess() {
+				this.$router.push({
+					name: 'examination_process',
+					query: {
+						id: this.examId,
 					}
-					}else{
-						if(item.affix){
-							apicommonExamGetFile(item.id).then(res=>{
-								// console.log(res)
-								var headers = res.headers['content-disposition']
-								// console.log(headers)
-								headers = headers.substring(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
-								const blob = new Blob([res.data],{type:''})
-								let link = document.createElement('a');
-								let objectUrl = URL.createObjectURL(blob);
-								link.setAttribute("href",objectUrl);
-								link.setAttribute("download",headers); 
-								link.click();
-								//释放内存
-								window.URL.revokeObjectURL(link.href)
-							})
-						}else{
-							let  createTestPaperInfoObj = {
-							 		testPaperId:item.id,
-							        students:[
-							          {
-							            uid:localStorage.getItem('userID'),
-										utype:"student",
-				          				items:[]
-							          }
-							        ]
-							      }
-							this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
-						}
-					}
-				}
+				})
 			},
-			isDuringDate(beginDateStr,endDateStr){
-				var curDate = new Date()
-				var	beginDate = new Date(beginDateStr)
-				var endDate = new Date(endDateStr)
-				
-				if(curDate >= beginDate && curDate <=endDate){
-					return true
+			// 上传控制
+			beforeUpload(file) {
+				console.log(file)
+				var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+				const extension = testmsg === 'png'
+				const extension2 = testmsg === 'jpg'
+				const isLt2M = file.size / 1024 / 1024 < 2           
+				if (!extension && !extension2) {
+					this.$message({
+						message: '上传文件只能是 xls、xlsx格式!',
+						type: 'warning'
+					});
 				}
-				return false
-			}
+				if(!isLt2M) {           
+				    this.$message({           
+				        message: '上传文件大小不能超过 2MB!',            
+				        type: 'warning'            
+				    });           
+				}            
+				return extension || extension2 && isLt2M            
+			},
+
 		},
 		mounted() {
-			this.loading = true
-			let that =this;
-			// 统计数据全部数据
-			that.studentIndexData()
-			this.loading = false
+			this.loading = true,
+				// ---查询班级---
+				apiStudentAccountSelectById(this.userID).then(res => {
+					this.classes = res.data.data.classes.name
+				})
+			// ---查询试卷---
+			apiCommonExamSelectById(this.examId).then(res => {
+				this.examTitle = res.data.data.title
+				this.examParticular = res.data.data.examExplain
+			})
 		},
 	};
 </script>
 
-<style scoped src="../../../assets/css/index.css"></style>
-// 修改element 自带样式
-<style>
-	.el-pagination button:disabled {
-		background-color: #f5f5f5;
+<style scoped src="../../../assets/css/examination-other.css"></style>
+<style scoped>
+	.box /deep/ .upload-demo,
+	.box /deep/ .el-upload-dragger,
+	.box /deep/ .el-upload {
+		width: 100%;
+		height: 430px;
 	}
 
-	.el-pager li.active {
-		background-color: #f5f5f5;
-	}
+	.box /deep/ .el-upload-dragger .el-icon-upload {line-height: 250px;}
 </style>

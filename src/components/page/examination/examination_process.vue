@@ -27,8 +27,10 @@
 		<!-- 右边 -->
 		<div class="right-box">
 			<div class="process">
-				<div class="ts">距离考试结束还有</div>
-				<div class="ts-time">01:50:55</div>
+				<!-- <div class="ts">距离考试结束还有</div> -->
+				<!-- <div class="ts-time">01:50:55</div> -->
+				<div class="ts">考试时长</div>
+				<div class="ts-time">{{examTime}}分钟</div>
 				<div class="ts-a-box">
 					<div class="t1">欢迎使用在线考试辅助系统</div>
 					<div class="t2">修正程序错误的第一步是要重现这个错误</div>
@@ -37,7 +39,8 @@
 				<div class="go-box">
 					<div class="go">
 						<div class="ts">我有打印机</div>
-						<el-button class="buttom" @click="goScantronHas()">使用答题卡辅助作答</el-button>
+						<el-button class="buttom" v-if="FaceRecognition==true&&isexamImg==false" @click="goScantronHas()">使用答题卡辅助作答</el-button>
+						<el-button class="buttom font-i2" v-else disabled   @click="goScantronHas()">使用答题卡辅助作答</el-button>
 						<div class="ts1">
 							<p>1、进入系统下载答题卡</p>
 							<p>2、打印答题卡</p>
@@ -47,15 +50,17 @@
 						</div>
 					</div>
 					<div class="go">
-						<div class="ts">在线试卷</div>
-						<el-button class="buttom" @click="goFaceRecognition()">人脸录入</el-button>
+						<div class="ts">人脸识别</div>
+						<el-button class="buttom" v-if="FaceRecognition==true" @click="goFaceRecognition()">人脸识别</el-button>
+						<el-button class="buttom" v-else  @click="goFaceRecognition()">人脸录入</el-button>
 						<div class="ts1">
 							<p>1.进入考试前必须进行人脸录入</p>
 						</div>
 					</div>
 					<div class="go">
 						<div class="ts">我没有办法打印</div>
-						<el-button class="buttom" @click="goScantronNone()">在线考试辅助</el-button>
+						<el-button class="buttom" v-if="FaceRecognition==true&&isexamImg==false"  @click="goScantronNone()">在线考试辅助</el-button>
+						<el-button class="buttom font-i2" v-else disabled   @click="goScantronNone()">在线考试辅助</el-button>
 						<div class="ts1">
 							<p>1、进入在线考试系统</p>
 							<p>2、在线完成选择题的作答</p>
@@ -65,7 +70,8 @@
 					</div>
 					<div class="go">
 						<div class="ts">图片试卷</div>
-						<el-button class="buttom i">图片试卷上传答案</el-button>
+						<el-button class="buttom i" v-if="FaceRecognition==true&&isexamImg==true" @click="goScantronImg()">图片试卷上传答案</el-button>
+						<el-button class="buttom font-i2" v-else disabled   @click="goScantronImg()">使用答题卡辅助作答</el-button>
 						<div class="ts1">
 							<p>1、适用于图片试卷上传答案图片</p>
 						</div>
@@ -81,10 +87,9 @@
 		studentIndex,
 		apicommonExamGetFile,
 		apiStudentAccountSelectById,
-		apiCommonExamSelectById
+		apiCommonExamSelectById,
 	} from '@/api/api.js'
 	export default {
-		name: 'index_student',
 		data() {
 			return {
 				total: 0,
@@ -100,11 +105,14 @@
 				userSchoolName: localStorage.getItem('userSchoolName'),
 				userGrade: localStorage.getItem('userGrade'),
 				examId: this.$route.query.id,
+				examTime:this.$route.query.examTime,
 				examTitle: '',
 				examParticular: '',
 				papers: {},
 				classes: '',
 				dialogVisible: false,
+				FaceRecognition:false,
+				isexamImg:false,
 			}
 		},
 		methods: {
@@ -118,17 +126,68 @@
 				this.selectPaper();
 			},
 			// ---跳转有答题卡--
-			goScantronHas(){
-				this.$router.push({name:'examination_scantronHas',query:{id:this.examId}})
+			goScantronHas() {
+				if(this.getCookie('examTime')==''){
+					this.setCookie('examTime', new Date())
+				}
+				this.$router.push({
+					name: 'examination_scantronHas',
+					query: {
+						id: this.examId,
+						examTime:this.examTime
+					}
+				})
 			},
 			//---跳转无答题卡---
-			goScantronNone(){
-				this.$router.push({name:'examination_scantronNone',query:{id:this.examId}})
+			goScantronNone() {
+				this.$router.push({
+					name: 'examination_scantronNone',
+					query: {
+						id: this.examId
+					}
+				})
 			},
 			//---跳转人脸---
-			goFaceRecognition(){
-				this.$router.push({name:'examination_faceRecognition',query:{id:this.examId}})
+			goFaceRecognition() {
+				this.$router.push({
+					name: 'examination_faceRecognition',
+					query: {
+						id: this.examId
+					}
+				})
 			},
+			// ---跳转图片试卷---
+			goScantronImg(){
+				this.$router.push({
+					name: 'examination_scantronImg',
+					query: {
+						id: this.examId,
+						examTime:this.examTime
+					}
+				})
+			},
+			// 获取cookie
+			getCookie(name) {
+				var strCookie = document.cookie;
+				//cookie的保存格式是 分号加空格 "; "  
+				var arrCookie = strCookie.split("; ");
+				for (var i = 0; i < arrCookie.length; i++) {
+					var arr = arrCookie[i].split("=");
+					if (arr[0] == name) {
+						return unescape(arr[1]);
+					}
+				}
+				return "";
+			},
+			//设置cookie时间 value是时间
+			setCookie(name, value) {
+				if (value) {
+					var Days = 1;
+					var exp = new Date();
+					exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+					document.cookie = name + "=" + escape(value.setTime(value.getTime()+ 1*this.examTime*60*1000)) + ";expires=" + exp.toGMTString();
+				}
+			}
 			//---跳转图片试卷---
 		},
 		mounted() {
@@ -136,11 +195,25 @@
 				// ---查询班级---
 				apiStudentAccountSelectById(this.userID).then(res => {
 					this.classes = res.data.data.classes.name
+					// 判断是否有人脸录入
+					if(res.data.data.hasOwnProperty('headImg')){
+						this.FaceRecognition=true;
+					}else{
+						this.FaceRecognition=false;
+					}
 				})
+				console.log(this.examId)
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
+				this.examTime=res.data.data.examTime
 				this.examTitle = res.data.data.title
 				this.examParticular = res.data.data.examExplain
+				if(res.data.data.hasOwnProperty('affix')){
+					this.isexamImg=true
+				}else{
+					this.isexamImg=false
+				}
+				
 			})
 		},
 	};
@@ -155,5 +228,8 @@
 
 	.el-pager li.active {
 		background-color: #f5f5f5;
+	}
+	.font-i2{
+		background-color: #999999!important;
 	}
 </style>

@@ -290,6 +290,7 @@
         			  type: 'warning'
         			}).then(() => {
 						AdminOrderDel(data.id).then(res=>{
+							console.log(res)
 							if(res.data.result){
 								this.$message.success('删除成功')
 								this.getOrderList()

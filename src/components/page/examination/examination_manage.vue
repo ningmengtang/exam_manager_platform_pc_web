@@ -83,8 +83,8 @@
 				<div class="title-box">
 					<div class="title">{{item.title}}</div>
 					<!-- <div :class="(item.status=1,item.status==0)?'font-i3':item.status==3?'font-i1':'font-i'"  class="synopsis">{{item.examExplain}} 结束时间：{{item.overTime}}</div> -->
-					<div :class="'font-i3'" class="synopsis" v-if="item.status==0">{{item.examExplain}} 结束时间：{{item.overTime}}</div>
-					<div :class="'font-i'" class="synopsis" v-else-if="item.status==1">考试时间：10:00至12：00，请做好准备</div>
+					<div :class="'font-i3'" class="synopsis" v-if="item.status==0">考试已经开始，将于<br>{{item.overTime}}结束<br>考试时长{{item.examTime}}分钟，请尽快提交试卷</div>
+					<div :class="'font-i'" class="synopsis" v-else-if="item.status==1">考试时间：{{item.startTime}}至{{item.overTime}}<br>考试时长{{item.examTime}}分钟，请做好准备</div>
 					<div :class="'font-i'" class="synopsis" v-else-if="item.status==2">你的试卷正在紧锣密鼓的批阅当中，请耐心等待</div>
 					<div :class="'font-i1'" class="synopsis" v-else-if="item.status==3">最终得分：60分（120分），要好好学习，天天向上哦！</div>
 					<div :class="'font-i'" class="synopsis" v-else-if="item.status==4">考试取消！详细请联系班主任或者科目老师</div>
@@ -101,7 +101,7 @@
 				<div class="right">
 					<i class="icon" :class="(item.status==0)?'el-icon-caret-right font-i3':(item.status==1||item.status==2)?'el-icon-time font-i':item.status==3?'el-icon-check font-i1':'el-icon-close font-i'"></i>
 					<div class="status" :class="item.status==0?'font-i3':(item.status==1||item.status==2||item.status==4)?'font-i':'font-i1'">{{item.status==0 && item.putInto == 1?'开始考试':item.status==1?'准备考试':item.status==2?'正在批阅':item.status==3?'考试完成':'考试取消'}}</div>
-					<el-button type="primary" plain v-if="item.status==0 && item.putInto == 1 " size="medium" class="buttom i" @click="goExam(item.id)">立即进入</el-button>
+					<el-button type="primary" plain v-if="item.status==0 && item.putInto == 1 " size="medium" class="buttom i" @click="goExam(item.id,item.examTime)">立即进入</el-button>
 					<el-button type="primary" v-else-if="item.status==3" style="background-color: #19ADFB;" size="medium" @click="goGrade()">查看</el-button>
 					<el-button type="primary" disabled v-else style="background-color: #999999;" size="medium">查看</el-button>
 				</div>
@@ -148,7 +148,7 @@
 				SemesterList: [],
 				elementTest: 0,
 				ElementTextList: [],
-				purpose: 0,
+				purpose: 6,
 				PurposeList: [],
 				TagType: [],
 				paperList: []
@@ -224,7 +224,7 @@
 								this.ElementTextList = children
 								break;
 							case '试卷用途':
-								this.PurposeList = children
+								this.PurposeList = [{id:6,text:"考试"}]
 								break;
 						}
 						resolve(res)
@@ -236,8 +236,8 @@
 				// return n 
 			},
 			// ---跳转考试页面
-			goExam(id) {
-				this.$router.push({name:'examination_process',query:{'id':id}})
+			goExam(id,examTime) {
+				this.$router.push({name:'examination_process',query:{'id':id,'examTime':examTime}})
 			},
 			// ---跳转考试成绩页面
 			goGrade(id) {
@@ -277,7 +277,7 @@
 			this.TagTypeList = [];
 			this.selectAllTag();
 			// 全部试卷查询
-			this.selectPaper()
+			this.selectPaper([6])
 		},
 	};
 </script>

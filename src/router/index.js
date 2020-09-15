@@ -405,6 +405,13 @@ export default new Router({
 				    meta: { title: '学生-考试-有答题卡' }
 				},
 				{
+				    name: 'examination_scantronImg',
+				    path: '/examination_scantronImg',
+				    component: () =>
+				        import ( /* webpackChunkName: "examination_scantronImg" */ '../components/page/examination/examination_scantronImg'),
+				    meta: { title: '学生-考试-图片试卷' }
+				},
+				{
 				    name: 'examination_feedback',
 				    path: '/examination_feedback',
 				    component: () =>

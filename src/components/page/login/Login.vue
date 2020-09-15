@@ -52,7 +52,7 @@
 
 <script>
 	import md5 from 'js-md5';
-	import flex from '@/assets/js/flex.js'
+	import mobile from '@/assets/js/mobile.js'
 	import {
 		userCode,
 		userLogin
