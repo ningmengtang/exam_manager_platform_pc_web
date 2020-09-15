@@ -31,7 +31,7 @@
 				<div class="ts2">进入考试前必须录入人脸</div>
 				<div class="face-img">
 					<el-upload class="upload-demo" drag accept=".jpg,.png" action="https://jsonplaceholder.typicode.com/posts/"
-					 :before-upload="beforeUpload" multiple>
+					 :before-upload="beforeUpload" :on-success="successUpload" multiple>
 						<i class="el-icon-upload"></i>
 						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 						<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2m</div>
@@ -92,21 +92,26 @@
 				var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
 				const extension = testmsg === 'png'
 				const extension2 = testmsg === 'jpg'
-				const isLt2M = file.size / 1024 / 1024 < 2           
+				const isLt2M = file.size / 1024 / 1024 < 2
 				if (!extension && !extension2) {
 					this.$message({
 						message: '上传文件只能是 xls、xlsx格式!',
 						type: 'warning'
 					});
 				}
-				if(!isLt2M) {           
-				    this.$message({           
-				        message: '上传文件大小不能超过 2MB!',            
-				        type: 'warning'            
-				    });           
-				}            
-				return extension || extension2 && isLt2M            
+				if (!isLt2M) {
+					this.$message({
+						message: '上传文件大小不能超过 2MB!',
+						type: 'warning'
+					});
+				}
+				return extension || extension2 && isLt2M
 			},
+			// 上传成功
+			successUpload(res) {
+				console.log(res)
+				this.$message.success('图片上传成功')
+			}
 
 		},
 		mounted() {
@@ -133,5 +138,7 @@
 		height: 430px;
 	}
 
-	.box /deep/ .el-upload-dragger .el-icon-upload {line-height: 250px;}
+	.box /deep/ .el-upload-dragger .el-icon-upload {
+		line-height: 250px;
+	}
 </style>
