@@ -883,4 +883,23 @@ export function apiAdminUseManageSelect(data){
 	return result;
 }
 
-
+// 新增教师阅卷任务
+export function TeacherTaskAdd(data){
+    const result =post('/api/teacher/task/insert' ,data)
+	return result;
+}
+// 教师阅卷任务列表
+export function TeacherTaskList(data){
+    const result =post('/api/teacher/task/select' ,data)
+	return result;
+}
+// 通过标签查询教师阅卷任务列表
+export function TeacherTaskSelectTask(data){
+    const result =post('/api/teacher/task/selectTask' ,data)
+	return result;
+}
+// 通过标签查询教师阅卷任务列表详情
+export function TeacherQuestionExamList(data){
+    const result =post('/api/teacher/question/examManagement' ,data)
+	return result;
+}

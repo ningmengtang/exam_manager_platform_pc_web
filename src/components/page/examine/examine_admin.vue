@@ -193,17 +193,27 @@ export default {
 					window.URL.revokeObjectURL(link.href)
 				})
 			}else{
+
 				let  createTestPaperInfoObj = {
 			 		testPaperId:row.id,
 			        students:[
 			          {
 			            uid:localStorage.getItem('userID'),
 						utype:"admin",
-			  			items:[]
+              			items:[],
+                        info:{
+                            "idCard":localStorage.getItem('userID'),
+                            "schoolName":'试卷题库管理员',
+                            "name":'试卷题库管理员',
+                            "classname":'试卷题库管理员'
+                        }
 			          }
-			        ]
+                    ],
+                    info:[
+                        
+                    ]
 			      }
-				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				this.$router.push({name :'test_paper_maker_for_task',params:{createTestPaperInfoObj:createTestPaperInfoObj}})
 			}
         }
     }

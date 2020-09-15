@@ -4,8 +4,8 @@
       <canvas 
         id="canvas" 
         class="fl" 
-        width="600" 
-        height="400" 
+        width="700" 
+        height="500" 
         @mousedown="canvasDown($event)" 
         @mouseup="canvasUp($event)"
         @mousemove="canvasMove($event)"
@@ -15,7 +15,7 @@
       >
       </canvas>
       <div id="control" class="fl">
-        <!--画笔颜色-->
+
         <div id="canvas-color">
           <h5>
             画笔颜色</h5>
@@ -28,16 +28,19 @@
             ></li>
           </ul>
         </div>
-        <!--画笔-->
+
         <div id="canvas-brush">
           <h5>画笔大小</h5>
           <span 
             v-for="pen in brushs" 
+            
             :class="[pen.className,{'active': config.lineWidth === pen.lineWidth}]"
             @click="setBrush(pen.lineWidth)"
-          ></span>
+          >
+          <i class="el-icon-edit"></i>
+          </span>
         </div>
-        <!--操作-->
+   
         <div id="canvas-control">
           <h5>操作</h5>
           <span 
@@ -45,12 +48,21 @@
             :title="control.title" 
             :class="control.className" 
             @click="controlCanvas(control.action)"
-          ></span>
+          >
+
+          </span>
         </div>
-        <!-- 生成图像-->
-        <div id="canvas-drawImage">
+ 
+        <!-- <div id="canvas-drawImage">
           <h5>生成图像</h5>
           <button class="drawImage" @click="getImage()">预览</button>
+        </div> -->
+        <div>
+          <el-radio-group v-model="radio" size="mini">
+            <el-radio label="1" border style="display:block;margin:8px 0px">优秀试卷</el-radio>
+            <el-radio label="2" border style="display:block;margin:8px 0px">典型精题</el-radio>
+            <el-radio label="2" border style="display:block;margin:8px 0px">异常卷</el-radio>
+          </el-radio-group>
         </div>
       </div>
     </div>
@@ -61,8 +73,10 @@
         <span class="fa fa-close" @click="removeImg(src)"></span>
       </div>
     </div>
+
+
     <div style="display:none">
-        <img ref="conf0" src="./login-bg.jpg">
+        <img ref="conf0" src="./img1.jpg">
     </div>
   </div>
 </template>
@@ -133,7 +147,7 @@
     margin: 5px;
   }
   .wrap{
-    width: 740px;
+    /* width: 740px; */
     border: 1px #585858 solid;
     overflow: hidden;
   }
@@ -146,7 +160,7 @@
     cursor: crosshair;
   }
   #control{
-    width: 130px;
+    width: 180px;
     height: 400px;
     margin-left: 4px;
   }
@@ -199,6 +213,18 @@
   #canvas-brush .active {
     color: #f2849e;
   }
+  .fa-reply{
+    background-image: url('../../assets/img/last.png');
+    background-repeat: no-repeat;
+  }
+  .fa-share{
+    background-image: url('../../assets/img/back.png');
+    background-repeat: no-repeat;
+  }
+  .fa-trash{
+    background-image: url('../../assets/img/clean.png');
+    background-repeat: no-repeat;
+  }
   .drawImage {
     width: 100px;
     height: 30px;
@@ -208,9 +234,11 @@
 </style>
 
 <script>
+import IconVue from './Icon.vue'
   export default {
     data () {
       return {
+        radio:'',
         colors: ['#fef4ac', '#0018ba', '#ffc200', '#f32f15', '#cccccc', '#5ab639'],
         brushs: [{
           className: 'small fa fa-paint-brush',
@@ -224,7 +252,7 @@
         }],
         context: {},
         imgUrl: [],
-        canvasMoveUse: true,
+        canvasMoveUse: false,
         // 存储当前表面状态数组-上一步
         preDrawAry: [],
         // 存储当前表面状态数组-下一步
@@ -236,7 +264,8 @@
           lineWidth: 1,
           lineColor: '#f2849e',
           shadowBlur: 2
-        }
+        },
+        img:require('./img1.jpg')
       }
     },
     created () {
@@ -244,15 +273,30 @@
 
     },
     mounted () {
-        
+        var that = this
         const canvas = document.querySelector('#canvas')
-        this.context = canvas.getContext('2d')
-        var img = this.$refs.conf0
-        img.onload = ()=>{
-            this.context.drawImage(img, 0, 0)
+        that.context = canvas.getContext('2d')
+
+        var cW = document.getElementById('canvas').width
+        var cH = document.getElementById('canvas').height
+        console.log(cW)
+        console.log(cH)
+        var imgObj = new Image()
+        imgObj.src = this.img
+        var imgW = ""
+        var imgH = ""
+        imgObj.onload = function(){
+            imgW = imgObj.width
+            imgH = imgObj.height
+            that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
         }
+        // var img = this.$refs.conf0
+        // img.onload = ()=>{
+        //     this.context.drawImage(img, 0, 0)
+        // }
         this.initDraw()
         this.setCanvasStyle()
+        
         document.querySelector('#footer').classList.add('hide-footer')
         document.querySelector('body').classList.add('fix-body')
     },
@@ -265,7 +309,7 @@
         return [{
           title: '上一步',
           action: 'prev',
-          className: this.preDrawAry.length ? 'active fa fa-reply' : 'fa fa-reply'
+          className: this.preDrawAry.length ? 'active fa fa-reply' : 'fa fa-reply',
         }, {
           title: '下一步',
           action: 'next',
@@ -294,7 +338,7 @@
         this.imgUrl = this.imgUrl.filter(item => item !== src)
       },
       initDraw () {
-        const preData = this.context.getImageData(0, 0, 600, 400)
+        const preData = this.context.getImageData(0, 0, 700, 500)
         // 空绘图表面进栈
         this.middleAry.push(preData)
       },
@@ -305,11 +349,11 @@
           let canvasX
           let canvasY
           if (this.isPc()) {
-            canvasX = e.clientX - t.parentNode.offsetLeft
-            canvasY = e.clientY - t.parentNode.offsetTop
+            canvasX = e.clientX - t.parentNode.offsetLeft -250
+            canvasY = e.clientY - t.parentNode.offsetTop - 100
           } else {
-            canvasX = e.changedTouches[0].clientX - t.parentNode.offsetLeft
-            canvasY = e.changedTouches[0].clientY - t.parentNode.offsetTop
+            canvasX = e.changedTouches[0].clientX - t.parentNode.offsetLeft -250
+            canvasY = e.changedTouches[0].clientY - t.parentNode.offsetTop - 100
           }
           this.context.lineTo(canvasX, canvasY)
           this.context.stroke()
@@ -325,11 +369,12 @@
       // mouseup
       canvasUp (e) {
         console.log('canvasUp')
-        const preData = this.context.getImageData(0, 0, 600, 400)
+        const preData = this.context.getImageData(0, 0, 700, 500)
         if (!this.nextDrawAry.length) {
           // 当前绘图表面进栈
           this.middleAry.push(preData)
         } else {
+          // console.log(this.preDrawAry)
           this.middleAry = []
           this.middleAry = this.middleAry.concat(this.preDrawAry)
           this.middleAry.push(preData)
@@ -343,15 +388,18 @@
         this.canvasMoveUse = true
         // client是基于整个页面的坐标
         // offset是cavas距离顶部以及左边的距离
-        const canvasX = e.clientX - e.target.parentNode.offsetLeft
-        const canvasY = e.clientY - e.target.parentNode.offsetTop
+
+        const canvasX = e.clientX - e.target.parentNode.offsetLeft - 250
+        const canvasY = e.clientY - e.target.parentNode.offsetTop  -100
+        console.log(e.clientX)
+        console.log(e.clientY)
         this.setCanvasStyle()
         // 清除子路径
         this.context.beginPath()
         this.context.moveTo(canvasX, canvasY)
         console.log('moveTo', canvasX, canvasY)
         // 当前绘图表面状态
-        const preData = this.context.getImageData(0, 0, 600, 400)
+        const preData = this.context.getImageData(0, 0, 700, 500)
         // 当前绘图表面进栈
         this.preDrawAry.push(preData)
       },
@@ -365,6 +413,7 @@
       },
       // 操作
       controlCanvas (action) {
+        console.log(action)
         switch (action) {
           case 'prev':
             if (this.preDrawAry.length) {
@@ -393,13 +442,19 @@
       // 生成图片
       getImage () {
         const canvas = document.querySelector('#canvas')
-        const src = canvas.toDataURL('image/png')
-        this.imgUrl.push(src)
-        if (!this.isPc()) {
-          // window.open(`data:text/plain,${src}`)
-          window.location.href = src
-        }
+        // var ctx=canvas.getContext("2d"); 
+        // ctx.fillStyle="#E992B9";
+        // ctx.lineWidth=1;
+        // var str = "假如生活欺骗了你，请不要悲伤！thank you!"
+        // ctx.fillText(str,0,20); 
+        // const src = canvas.toDataURL('image/png')
+        // this.imgUrl.push(src)
+        // if (!this.isPc()) {
+        //   // window.open(`data:text/plain,${src}`)
+        //   window.location.href = src
+        // }
       },
+
       // 设置绘画配置
       setCanvasStyle () {
         this.context.lineWidth = this.config.lineWidth

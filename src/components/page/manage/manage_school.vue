@@ -486,18 +486,25 @@
 				this.dialogTableVisible = false
 				let createTestPaperInfoObj = {
 					testPaperId: this.testPaperId,
-					students: []
+					students: [],
 				}
+				console.log(this.papaerType)
 				for (var i = 0; i < this.papaerType.length; i++) {
 					createTestPaperInfoObj.students.push({
 						"uid": this.papaerType[i].id,
 						"utype": "student",
-						"items": []
+						"items": [],
+						"info":{
+							"idCard":this.papaerType[i].idCard,
+							"schoolName":this.papaerType[i].schoolName,
+							"name":this.papaerType[i].name,
+							"classname":this.papaerType[i].classes.name
+						}
 					})
 				}
 				this.$router.push({
 					name: 'test_paper_maker_for_task',
-					query: {
+					params: {
 						createTestPaperInfoObj: createTestPaperInfoObj
 					}
 				})

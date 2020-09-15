@@ -134,11 +134,17 @@ export default {
 			          {
 			            uid:localStorage.getItem('userID'),
 						utype:"user",
-			  			items:[]
+              			items:[],
+                        info:{
+                            "idCard":localStorage.getItem('userID'),
+                            "schoolName":'专家',
+                            "name":'专家',
+                            "classname":'专家'
+                        }
 			          }
 			        ]
 			      }
-				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				this.$router.push({name :'test_paper_maker_for_task',params:{createTestPaperInfoObj:createTestPaperInfoObj}})
 			}
 //             let  createTestPaperInfoObj = {
 //                  testPaperId:row.id,

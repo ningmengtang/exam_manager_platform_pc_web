@@ -472,16 +472,22 @@
 					 	testPaperId:this.testPaperId,
 					    students:[]
 					}
-				// console.log(this.papaerType)
+				console.log(this.papaerType)
 				for(var i=0;i<this.papaerType.length;i++){
 					createTestPaperInfoObj.students.push({
 						"uid":this.papaerType[i].student.id,
 						"utype":"student",
-						"items":[]
+						"items":[],
+						"info":{
+							"idCard":this.papaerType[i].student.idCard,
+							"schoolName":this.papaerType[i].student.schoolName,
+							"name":this.papaerType[i].student.name,
+							"classname":this.papaerType[i].student.classes.name
+						}
 					})
 				}
 				// console.log(createTestPaperInfoObj)
-				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				this.$router.push({name :'test_paper_maker_for_task',params:{createTestPaperInfoObj:createTestPaperInfoObj}})
 			}
 		},
 		mounted() {

@@ -23,9 +23,10 @@ import 'quill/dist/quill.snow.css' // 富文本编辑器外部引用样式  三�
 // import ImagePaste from 'quill-image-paste-module';
 // Quill.register('modules/imagePaste', ImagePaste);
 // require styles
+import 'vant/lib/index.css';
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.bubble.css'
-
+import '@/components/Vant'
 //富文本编辑器
 Vue.use(quillEditor)
 
