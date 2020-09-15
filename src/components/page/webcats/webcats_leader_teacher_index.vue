@@ -103,8 +103,8 @@
 					<div class="synopsis">{{data.status == 0?'考试准备开始,请做好准备。':data.status == 1?'考试已结束，尽快导入答题卡':data.status == 2?'等待批阅':data.status==3?'考试已结束，请注意审批试卷':data.strus==4?'考试已经批阅完成':data.status == 5?'本次考试取消':'' }}</div>
 				</div>
 				<div class="title-box" style="margin: 0 20px;">
-					<div class="time">{{data.start_time}}</div>
-					<div class="time">{{data.over_time}}</div>
+					<div class="time">开始时间：{{data.start_time}}</div>
+					<div class="time">结束时间：{{data.over_time}}</div>
 				</div>
 				<div class="label-box">
 					<div class="label" v-for="i in data.examinationPaper.tag_list">{{i.text }}</div>
@@ -278,13 +278,8 @@
 	</div>
 </template>
 <script>
-	import user from '../../common/user';
-	import {
-		handleSizeChange,
-		handleCurrentChangeTask,
-		handleClose,
-	} from '@/assets/js/manage.js'
-	import {
+import user from '../../common/user';
+import {
 		selectTag,
 		ApiTagSelectList,
 		paperWithTag,
@@ -390,28 +385,34 @@
 		methods: {
 			handleSizeChange(val) {
 				this.pageSize = val
-				teacherSelectTag({
+				TeacherQuestionExamList({
 					"id": this.obj,
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {
-					// console.log(res)
-					this.papers = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
+					if(res.data.data){
+						this.papers = res.data.data.list
+						this.total = res.data.data.total
+						this.currentPage = res.data.data.pageNum
+					}else{
+						this.papers = []
+					}
 				})
 			},
 			handleCurrentChangeTask(val) {
 				this.pageNum = val
-				teacherSelectTag({
+				TeacherQuestionExamList({
 					"id": this.obj,
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {
-					// console.log(res)
-					this.papers = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
+					if(res.data.data){
+						this.papers = res.data.data.list
+						this.total = res.data.data.total
+						this.currentPage = res.data.data.pageNum
+					}else{
+						this.papers = []
+					}
 				})
 			},
 			handleSizeChange1(val){
@@ -469,10 +470,13 @@
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {
-					console.log(res)
-					this.papers = res.data.data.list
-					this.total = res.data.data.total
-					this.currentPage = res.data.data.pageNum
+					if(res.data.data){
+						this.papers = res.data.data.list
+						this.total = res.data.data.total
+						this.currentPage = res.data.data.pageNum
+					}else{
+						this.papers = []
+					}
 				})
 			},
 			getQuery_task() {
@@ -585,7 +589,6 @@
 			},
 			// 确定新建
 			onSubmit(){
-				console.log(this.ParperType )
 				if(this.ParperType && this.overTime && this.startTime){
 					TeacherTaskAdd({
 						"paper_id": this.ParperType.id,
@@ -599,15 +602,22 @@
 							this.$message.success('操作成功')
 							this.dialogTableVisible = false
 							this.innerVisible = false
-							TeacherTaskSelectTask({
-								"tag_list": [],
-								"pageSize": 4,
-								"pageNum":1
+							this.pageNum = 1
+							this.pageSize = 4
+							this.status = ''
+							TeacherQuestionExamList({
+								"id": [],
+								"status":this.status,
+								"pageSize": this.pageSize,
+								"pageNum":this.pageNum
 							}).then(res => {
-								// console.log(res)
-								this.papers = res.data.data.list
-								this.total = res.data.data.total
-								this.currentPage = res.data.data.pageNum
+							if(res.data.data){
+									this.papers = res.data.data.list
+									this.total = res.data.data.total
+									this.currentPage = res.data.data.pageNum
+								}else{
+									this.papers = []
+								}
 							})
 						}else{
 							this.$message.error(res.data.message)
@@ -641,9 +651,14 @@
 				"pageSize": this.pageSize,
 				"pageNum": this.pageNum
 			}).then(res => {
-				this.papers = res.data.data.list
-				this.total = res.data.data.total
-				this.currentPage = res.data.data.pageNum
+				if(res.data.data){
+					this.papers = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+				}else{
+					this.papers = []
+				}
+				
 			})
 			
 			

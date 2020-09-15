@@ -87,7 +87,8 @@
 </template>
 <script>
 import {
-	schoolSelectTeacher
+    schoolSelectTeacher,
+    apiCommonExamSeleElementTestById
 	} from '@/api/api.js'
 export default {
     data(){
@@ -106,8 +107,7 @@ export default {
             data: generateData(),
             value: [1, 4],
             teacherList:[],
-
-
+            paperId:'',
             selectTeacher:[],
             importPaper:'',
             startTime:'',
@@ -127,10 +127,27 @@ export default {
     mounted(){
         let importPaper = JSON.parse(sessionStorage.getItem("importPaper"))
         if(importPaper){
+            
             this.importPaper = importPaper
+            console.log(this.importPaper)
+            this.paperId = this.importPaper.examinationPaper.id
+            apiCommonExamSeleElementTestById(this.paperId).then(res=>{
+                this.elementTest = JSON.parse(res.data.data.elementTest)
+                // console.log(this.elementTest)
+                // 分部分
+                let elementTestItems = this.elementTest.items
+                console.log(elementTestItems)
+                // for(var i=0;i<elementTestItems.length;i++){
+                //     // 分
+                //     let item = elementTestItems[i].items[0].items
+                // }
+            })
         }else{
             this.$message.warning('无试卷数据')
         }
+
+
+        
         schoolSelectTeacher({
             "id":localStorage.getItem('userID')
         }).then(res=>{
