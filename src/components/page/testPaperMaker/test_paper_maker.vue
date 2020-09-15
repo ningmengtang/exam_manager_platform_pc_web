@@ -131,8 +131,8 @@
               </div>
               <div class="layout_question_part_header_content" :style="testPaperAnwserSheetStyle">
                 <myWangEditor :contentData.sync="questionPartItem.topic_text" :classUniqueId.sync="questionPartItem.uniqueId" v-if="questionPartItem.isEditing"></myWangEditor>
-                <div class="ql-editor" v-html="questionPartItem.topic_text" v-if="!questionPartItem.isEditing" style="width:100%"></div>
-                <div class="ql-editor" v-if="!questionPartItem.isEditing" style="width:100%">
+                <div class="ql-editor" v-html="questionPartItem.topic_text" v-if="!questionPartItem.isEditing" style="width:580px;"></div>
+                <div class="ql-editor" v-if="!questionPartItem.isEditing" style="width:580px;">
                     <div v-if="null == questionPartItem.topic_text || questionPartItem.topic_text == ''">【空】</div>
                   </div>
                 <!--<quill-editor
@@ -201,8 +201,8 @@
                     @change="onEditorChange($event)">
                   </quill-editor>-->
                   <myWangEditor :contentData.sync="questionBigItem.topic_text" :classUniqueId.sync="questionBigItem.uniqueId" v-if="questionBigItem.isEditing"></myWangEditor>
-                  <div class="ql-editor" v-html="questionBigItem.topic_text" v-if="!questionBigItem.isEditing" style="width:100%"></div>
-                  <div class="ql-editor" v-if="!questionBigItem.isEditing" style="width:100%">
+                  <div class="ql-editor" v-html="questionBigItem.topic_text" v-if="!questionBigItem.isEditing" style="width:580px;"></div>
+                  <div class="ql-editor" v-if="!questionBigItem.isEditing" style="width:580px;">
                     <div v-if="null == questionBigItem.topic_text || questionBigItem.topic_text == ''">【空】</div>
                   </div>
                 </div>
@@ -229,7 +229,7 @@
                     <span>分值<el-input-number size="mini" :min="1" :max="1000" v-model="questionItem.score"></el-input-number></span>
                     <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="questionBigItem.items.length <=1" @click="delTestPaperQuestionItem(questionBigItem,questionItemIndex)">删除本小题</el-button></span>
                   </div>
-                  <div class="layout_question_content" :style="testPaperAnwserSheetStyle">
+                  <div class="layout_question_content" :style="testPaperQuestionStyle">
                     <!-- <quill-editor
                       class="layout_question_topic_input"
                       v-model="questionItem.topic_text"
@@ -239,8 +239,8 @@
                       @change="onEditorChange($event)">
                     </quill-editor> -->
                     <myWangEditor :contentData.sync="questionItem.topic_text" :classUniqueId.sync="questionItem.uniqueId" v-if="questionItem.isEditing"></myWangEditor>
-                    <div class="ql-editor" v-html="questionItem.topic_text" v-if="!questionItem.isEditing" style="width:100%"></div>
-                    <div class="ql-editor" v-if="!questionItem.isEditing" style="width:100%">
+                    <div class="ql-editor" v-html="questionItem.topic_text" v-if="!questionItem.isEditing" style="width:504px;"></div>
+                    <div class="ql-editor" v-if="!questionItem.isEditing" style="width:504px;">
                     <div v-if="null == questionItem.topic_text || questionItem.topic_text == ''">【空】</div>
                   </div>
                   </div>
@@ -263,7 +263,7 @@
                     <i class="el-icon-document-checked"></i>答题卡显示内容
 
                   </div>
-                  <div class="layout_question_anwser_sheet_content" :style="testPaperAnwserSheetStyle">
+                  <div class="layout_question_anwser_sheet_content" :style="testPaperQuestionStyle">
                     <!-- <quill-editor
                       class="layout_question_anwser_sheet_content_input"
                       v-model="questionItem.anwserSheet.topic_text"
@@ -273,7 +273,7 @@
                       @change="onEditorChange($event)">
                     </quill-editor> -->
                     <myWangEditor :contentData.sync="questionItem.anwserSheet.topic_text" :classUniqueId.sync="'anwserSheet_'+questionItem.uniqueId" v-if="questionItem.anwserSheet.isEditing"></myWangEditor>
-                    <div class="ql-editor" v-html="questionItem.anwserSheet.topic_text" v-if="!questionItem.anwserSheet.isEditing" style="width:100%;border:2px solid #000;"></div>
+                    <div class="ql-editor" v-html="questionItem.anwserSheet.topic_text" v-if="!questionItem.anwserSheet.isEditing" style="width:504px;border:2px solid #000;"></div>
                   </div>
                   <!-- 编辑工具栏 -->
                   <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
@@ -301,7 +301,7 @@
                       @change="onEditorChange($event)">
                     </quill-editor> -->
                     <myWangEditor :contentData.sync="questionItem.anwser.answer_text" :classUniqueId.sync="'anwser_'+questionItem.uniqueId" v-if="questionItem.anwser.isEditing"></myWangEditor>
-                    <div class="ql-editor" v-html="questionItem.anwser.answer_text" v-if="!questionItem.anwser.isEditing" style="width:100%"></div>
+                    <div class="ql-editor" v-html="questionItem.anwser.answer_text" v-if="!questionItem.anwser.isEditing" style="width:580px;"></div>
                   </div>
                   <!-- 编辑工具栏 -->
                   <div class="layout_question_part_header_content_side_tool_bar" style="float:left;width:100px;margin-left:10px;">
@@ -331,9 +331,9 @@
                     <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain @click="addNewTestPaperChoiceQuestionOptionsItem(questionItem)">增加选项</el-button></span>
                     <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="questionItem.items.length <= 1" @click="delNewTestPaperChoiceQuestionOptionsItem(questionItem,questionOptionItemIndex)">删除选项</el-button></span>
                   </div>
-                  <div class="layout_question_anwser_sheet_content" :style="testPaperAnwserSheetStyle">
+                  <div class="layout_question_anwser_sheet_content" :style="testPaperQuestionStyle">
                     <myWangEditor :contentData.sync="questionOptionItem.topic_text" :classUniqueId.sync="questionOptionItem.uniqueId" v-if="questionOptionItem.isEditing"></myWangEditor>
-                    <div class="ql-editor" v-html="questionOptionItem.topic_text" v-if="!questionOptionItem.isEditing" style="width:100%"></div>
+                    <div class="ql-editor" v-html="questionOptionItem.topic_text" v-if="!questionOptionItem.isEditing" style="width:504px;"></div>
                     <!-- <quill-editor
                       class="layout_question_anwser_sheet_content_input"
                       v-model="questionOptionItem.topic_text"
@@ -390,51 +390,44 @@
             </div>
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && !qustionPreviewImgMode"><!-- 临时去掉v-if="qustionPreviewMode && !qustionPreviewImgMode" -->
-            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
+            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:580px;">
+              <!-- 标题部分 -->
               <div style="width:100%" class="layout_test_paper_header">
                 <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
                   <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span>
                 </div>
-                <div class="layout_question_part_header_title" style="font-size:18px;line-height:30px;text-align:center;">
-                  {{testPaperObj.examExplain}}
-                </div>
-                <div class="layout_question_part_header_title" style="font-size:16px;line-height:20px;text-align:center;">
-                  作答时间：{{testPaperObj.examTime}}分钟
-                </div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学校名称</span><span style="margin-left:10px;display:inline-block;width:180px;">北京某某小学</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">班级名称</span><span style="margin-left:10px;display:inline-block;width:160px;">2020级1班</span></div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">李某某</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">440XXXXXXXXXXXXX88</span></div>
+                
+                <div style="float:left;width:580px;line-height:30px;border:1px solid #000;font-size:10px;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">注<br>意<br>事<br>项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
+              
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;vertical-align: middle;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">缺考标志</div><div style="margin-left:10px;margin-top:6px;display:inline-block;width:30px;height:18px;border:2px solid #000;float:left;"></div><div style="margin-left:10px;display:inline-block;height:30px;line-height:30px;float:left;">本栏由监考人员填写！</div></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">作答时间</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObj.examTime}}分钟</span></div>
+                <div style="clear:both;width:100%;height:10px;"></div>
               </div>
+              
+              <!-- 标题部分 结束 -->
+              
               <!-- 输出部分 -->
               <!-- ============================================================================================================ -->
               <div v-for="(questionPartItem,questionPartItemIndex) in testPaperObj.items" class="layout_question_topic_text ql-editor" :style="testPaperPreviewStyle">
                 <div :class="'layout_question_topic_text_'+questionPartItem.uniqueId">
-                  <table>
-                    <tr>
-                      <!-- <td width="70px">
-                          <p style="text-align:right;">第{{questionPartItemIndex + 1}}部分、</p>
-                          <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,null,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                      </td> -->
-                      <td width="100%">
+
+                    
                         <div v-html="questionPartItem.topic_text">
                         </div>
-                      </td>
-                    </tr>
-                  </table>
+
                 </div>
                 <!-- 输出大题 -->
                 <!-- ============================================================================================================ -->
                 <div v-for="(questionBigItem,questionBigItemIndex) in questionPartItem.items" class="layout_question_topic_text">
                   <div :class="'layout_question_topic_text_'+questionBigItem.uniqueId">
-                    <table>
-                      <tr>
-                      <!-- <td width="70px">
-                          <p style="text-align:right;">第{{questionBigItemIndex + 1}}大题、</p>
-                          <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,null)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                      </td> -->
-                      <td width="100%">
+
                         <div v-html="questionBigItem.topic_text">
                         </div>
-                      </td>
-                      </tr>
-                    </table>
+
                   </div>
                   <!-- 输出小题 -->
                   <!-- 输出小题（其他题） -->
@@ -450,7 +443,7 @@
                         </td>
                         <td width="70px">
                             <p style="text-align:center;">第{{questionItem.no}}小题</p>
-                            <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                            <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                         </td>
                         </tr>
                       </table>
@@ -505,18 +498,31 @@
             </div>
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && !qustionPreviewImgMode">
-            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
+            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:580px;">
+              
+              <!-- 标题部分 -->
               <div style="width:100%" class="layout_test_paper_header">
+                <div class="layout_question_part_header_title layout_question_part_header_title_pos_top_rect" style="font-size:18px;line-height:30px;text-align:center;">
+                  <div style="background-color:#000;height:20px;width:20px;float:left;"></div>
+                  <div style="background-color:#000;height:20px;width:20px;float:left;margin-left:260px;"></div>
+                  <div style="background-color:#000;height:20px;width:20px;float:left;margin-left:260px;"></div>
+                </div>
                 <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
                   <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span>
                 </div>
-                <div class="layout_question_part_header_title" style="font-size:18px;line-height:30px;text-align:center;">
-                  {{testPaperObj.examExplain}}
-                </div>
-                <div class="layout_question_part_header_title" style="font-size:16px;line-height:20px;text-align:center;">
-                  作答时间：{{testPaperObj.examTime}}分钟
-                </div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学校名称</span><span style="margin-left:10px;display:inline-block;width:180px;">北京某某小学</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">班级名称</span><span style="margin-left:10px;display:inline-block;width:160px;">2020级1班</span></div>
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">李某某</span></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">440XXXXXXXXXXXXX88</span></div>
+                
+                <div style="float:left;width:580px;line-height:30px;border:1px solid #000;font-size:10px;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">注<br>意<br>事<br>项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
+              
+                <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;vertical-align: middle;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">缺考标志</div><div style="margin-left:10px;margin-top:6px;display:inline-block;width:30px;height:18px;border:2px solid #000;float:left;"></div><div style="margin-left:10px;display:inline-block;height:30px;line-height:30px;float:left;">本栏由监考人员填写！</div></div>
+                <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:10px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">作答时间</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObj.examTime}}分钟</span></div>
+                <div style="clear:both;width:100%;height:10px;"></div>
               </div>
+              
+              <!-- 标题部分 结束 -->
               <!-- 输出部分 -->
               <!-- ============================================================================================================ -->
               <div v-for="(questionPartItem,questionPartItemIndex) in testPaperObj.items" class="layout_question_topic_text ql-editor" :style="testPaperPreviewStyle">
@@ -547,28 +553,55 @@
                   </div> -->
                     <!-- 输出小题（其他题） -->
                     <!-- ============================================================================================================ -->
-                    <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text">
+                    <div v-for="(questionItem,questionItemIndex) in questionBigItem.items" class="layout_question_topic_text" v-if="questionItem.groupQuestionArr">
                       <div style="border:2px solid black;" :class="'layout_question_anwser_sheet_'+questionItem.uniqueId">
                         <table>
                           <tr>
-                            <td width="70px">
-                                <p style="text-align:center;">第{{questionItem.no}}小题</p>
-                                <vue-qr :id="'qr_'+questionItem.uniqueId" :text="'layout_question_anwser_sheet_'+questionItem.uniqueId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
-                            </td>
-                            <td width="480px" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
-                              <div v-html="questionItem.anwserSheet.topic_text">
+
+                            <td width="510px" v-if="questionItem.question_type == questionType.comprehensive_topic.id">
+
+                              <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" v-html="questionItem.groupQuestionArr[questionItemGroupIndex].anwserSheet.topic_text">
                               </div>
                               
                             </td>
+                            
                             <!-- 输出小题选项 -->
                               <!-- ============================================================================================================ -->
-                              <td width="480px" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
-                                <div>
-                                  <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="text-align:right;border:2px solid black;text-align:center;font-weight:bold;margin-left:10px;margin-top:30px;">&nbsp;&nbsp;&nbsp;{{enCharArr[questionOptionItemIndex]}}&nbsp;&nbsp;&nbsp;</span>
+
+                              <td width="510px" v-if="questionItem.question_type != questionType.comprehensive_topic.id">
+                                <!-- 最上面的定位块 -->
+
+                                <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" style="float:left;height:18px;margin-top:5px;margin-left:10px;">
+                                  
+                                  <div style="width:100%;" v-if="questionItemGroupIndex < 2">
+                                    <span v-if="questionItemGroupIndex == 0 " style="display: inline-block;text-align:right;border:2px solid #FFF;text-align:center;font-weight:bold;font-size:10px;height:18px;width:30px;background-color:#FFF;"></span>
+
+                                    <span v-if="questionItemGroupIndex < 2 " style="display: inline-block;text-align:right;border:2px solid #FFF;text-align:center;font-weight:bold;margin-left:10px;font-size:10px;height:18px;width:30px;background-color:#FFF;"></span>
+                                    
+                                    <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;text-align:right;border:2px solid black;text-align:center;font-weight:bold;margin-left:10px;font-size:10px;height:18px;width:30px;background-color:#000;"></span>
+                                  </div>
                                 </div>
+
+                                <!-- 最上面的定位块 结束 -->
+                                <div style="clear:both;"></div>
+                                <div v-for="(questionGroupItem,questionItemGroupIndex) in questionItem.groupQuestionArr" style="float:left;height:18px;margin-top:5px;margin-left:10px;">
+                                  <div style="clear:both;"></div>
+                                  <span v-if="questionItemGroupIndex == 0 || questionItemGroupIndex % 2 == 0" style="display: inline-block;vertical-align: middle;text-align:right;height:18px;width:30px;background-color:#000;"></span>
+
+                                  <span style="display: inline-block;vertical-align: middle;height:18px;width:30px;text-align:right;margin-left:10px;">{{questionItem.groupQuestionArr[questionItemGroupIndex].no}}.</span>
+                                  <span v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;vertical-align: middle;text-align:right;border:2px solid #ab3b42;text-align:center;font-weight:bold;margin-left:10px;border-radius: 10px;font-size:10px;height:18px;width:30px;color:#ab3b42;">{{enCharArr[questionOptionItemIndex]}}</span>
+                                </div>
+                                <div style="clear:both;width:100%;height:5px;"><!-- --></div>
                               </td>
                               <!-- ============================================================================================================ -->
                               <!-- 输出小题选项 完成-->
+
+                              <td width="70px">
+                                <p style="text-align:center;font-size:10px;" v-if="questionItem.groupQuestionArr.length > 1">第{{questionItem.groupQuestionArr[0].no}}-{{questionItem.groupQuestionArr[questionItem.groupQuestionArr.length-1].no}}题</p>
+                                <p style="text-align:center;font-size:10px;" v-if="questionItem.groupQuestionArr.length <= 1">第{{questionItem.no}}题</p>
+                                <vue-qr v-if="questionItem.groupQuestionArr" :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                            </td>
+
                           </tr>
                         </table>
                         
@@ -584,8 +617,11 @@
               </div>
               <!-- ============================================================================================================ -->
               <!-- 输出部分 完成 -->
+              <div class="layout_question_part_header_title layout_question_part_header_title_bot_pos_rect" style="font-size:18px;line-height:30px;text-align:center;">
+                <div style="background-color:#000;height:20px;width:20px;float:left;"></div>
+                <div style="background-color:#000;height:20px;width:20px;float:left;margin-left:540px;"></div>
+              </div>
             </div>
-
             <div class="layout_padding_footer" style="float:left;height:50px;width:100%;text-align:center;color:#999999;line-height:50px;">-所有题目答题卡预览完了-</div>
             <div style="clear:both"></div>
           </div>
@@ -600,7 +636,7 @@
             </div>
           </div>
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && qustionPreviewImgMode">
-            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:600px;">
+            <div class="layout_question_preview_layout_content ql-container ql-snow" style="float:left;margin-left:100px;width:580px;">
               <div style="width:100%" class="layout_test_paper_header">
                 <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
                   <span class="font_question_big" style="color:#000;">{{testPaperObj.title}}</span>
@@ -1179,9 +1215,13 @@ export default {
           placeholder: '请输入内容'
       },
       /**
+       * 试卷问卷小题区域的样式
+       */
+      testPaperQuestionStyle:"float:left;width:544px;",
+      /**
        * 试卷有效作答区域的样式
        */
-      testPaperAnwserSheetStyle:"float:left;width:510px;",
+      testPaperAnwserSheetStyle:"float:left;width:620px;",
       /**
        * 预览宽度
        */
@@ -1272,7 +1312,7 @@ export default {
                         "id": null,//int
                         "sn": null,//"string"
                         "create_date": null,//"2020-08-16T02:37:04.456Z"
-                        "topic_text": "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>",//"<div><span>揽</span><span>洗</span></div><div><span>直上中天（</span><span style=\"width: 26.25px; text-indent: 0px;\"></span><span>）日月</span></div><div><span>欲倾东海（</span><span style=\"width: 26.25px; text-indent: 0px;\"></span><span>）乾坤</span></div>",
+                        "topic_text": "<p>XX、<span>___________________________________________________</span></p>",//"<div><span>揽</span><span>洗</span></div><div><span>直上中天（</span><span style=\"width: 26.25px; text-indent: 0px;\"></span><span>）日月</span></div><div><span>欲倾东海（</span><span style=\"width: 26.25px; text-indent: 0px;\"></span><span>）乾坤</span></div>",
                         "question_id": null,//int
                         "question_sn": null,//"202008160086835652937646080"
                         //辅助属性段，用来辅助前端绑定小题
@@ -1308,13 +1348,16 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      this.resetTestPaperObj()
+      
       if(localStorage.getItem('testPaperCache')!=null)
       {
         this.testPaperObj = JSON.parse(localStorage.getItem('testPaperCache'))
         this.$message.success('成功读取上次组卷的历史记录！')
         console.log("已读取上次组卷的历史记录 ")
         this.$forceUpdate();
+      }
+      else{
+        this.resetTestPaperObj()
       }
       if(localStorage.getItem('newTestPaperInfo')!=null)
       {
@@ -1395,7 +1438,14 @@ export default {
     /**
      * 获取二维码信息用于防伪
      */
-    createQrInfo(paperId,qPartId,qBigId,qId) {
+    createQrInfo(paperId,qPartId,qBigId,qId,groupQuestionArr) {
+
+      if(!groupQuestionArr)
+      {
+        //console.log("groupQuestionArr为空，qPartId["+qPartId+"],qBigId["+qPartId+"]")
+        //return 'null'
+      }
+
       //深拷贝
 
       let objString = JSON.stringify(this.qrInfoObj)
@@ -1404,10 +1454,30 @@ export default {
       newObj.paperId = paperId
       newObj.qPartId = qPartId
       newObj.qBigId = qBigId
-      //newObj.qId = qId
+      newObj.qId = qId
       newObj.qIdArr = []
-      newObj.qIdArr.push[qId]
-
+      newObj.qNoArr = []
+      //console.log(JSON.parse(JSON.stringify(groupQuestionArr[0])))
+      if(groupQuestionArr)
+      {
+        groupQuestionArr.forEach(groupQuestionElement => {
+          // console.log("开始处理groupQuestionElement >>>>> ")
+          // console.log(groupQuestionElement)
+          //组卷工具，没有id，用模拟的,即no
+          // let qidForQr = null
+          // if(groupQuestionElement.id)
+          // {
+          //   qidForQr = groupQuestionElement.id
+          // }
+          // else{
+          //   qidForQr = groupQuestionElement.no
+          // }
+          //console.log("qidForQr:"+JSON.parse(JSON.stringify(qidForQr)))
+          newObj.qIdArr.push(groupQuestionElement.id)
+          newObj.qNoArr.push(groupQuestionElement.no)
+        });
+      }
+      // console.log(newObj.qIdArr)
       return JSON.stringify(newObj)
 
     },
@@ -1457,12 +1527,12 @@ export default {
         "sn": null,//"string"
         "status": null,//int
         "subject": null,//"string"
-        "title": "新建试卷",//"string"
+        "title": this.testPaperObj.title,//"string"
         "versions": null,//int
         "years": null,//"string"
         "score": null,//"string"
-        "examExplain": null,//"string"
-        "examTime": null,//int
+        "examExplain": this.testPaperObj.examExplain,//"string"
+        "examTime": this.testPaperObj.examTime,//int
         //辅助属性段，用来辅助前端绑定小题
         "uniqueId": this.$options.methods.createUuid.bind(this)(),//string,前端标识元素使用
         "imgFile":null,//imgFile,用于保存上传的文件使用
@@ -1526,7 +1596,7 @@ export default {
                         "id": null,//int
                         "sn": null,//"string"
                         "create_date": null,//"2020-08-16T02:37:04.456Z"
-                        "topic_text": "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>",//"<div><span>揽</span><span>洗</span></div><div><span>直上中天（</span><span style=\"width: 26.25px; text-indent: 0px;\"></span><span>）日月</span></div><div><span>欲倾东海（</span><span style=\"width: 26.25px; text-indent: 0px;\"></span><span>）乾坤</span></div>",
+                        "topic_text": "<p>XX、<span>___________________________________________________</span></p>",//"<div><span>揽</span><span>洗</span></div><div><span>直上中天（</span><span style=\"width: 26.25px; text-indent: 0px;\"></span><span>）日月</span></div><div><span>欲倾东海（</span><span style=\"width: 26.25px; text-indent: 0px;\"></span><span>）乾坤</span></div>",
                         "question_id": null,//int
                         "question_sn": null,//"202008160086835652937646080"
                         //辅助属性段，用来辅助前端绑定小题
@@ -1559,6 +1629,8 @@ export default {
       }
       this.$options.methods.testPaperUpdateScore.bind(this)()
       this.qustionPreviewMode = false
+      localStorage.removeItem('testPaperCache');
+      localStorage.setItem('testPaperCache', JSON.stringify(this.testPaperObj) )
       //重置完成
     },
     /**
@@ -1649,7 +1721,7 @@ export default {
       // newQuestionBigItem.topic_text = "<p>请问大题题目是什么？</p>"
       newQuestionAnwserItem.answer_text = "<p>参考答案：略</p>"
       newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
-      newQuestionAnwserSheetItem.topic_text = "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>"
+      newQuestionAnwserSheetItem.topic_text = "<p>XX、<span>___________________________________________________</span></p>"
 
       //嵌套成为完整的部分
       newQuestionItem.anwser = newQuestionAnwserItem
@@ -1701,7 +1773,7 @@ export default {
         // newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
         newQuestionAnwserItem.answer_text = "<p>参考答案：略</p>"
         newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
-        newQuestionAnwserSheetItem.topic_text = "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>"
+        newQuestionAnwserSheetItem.topic_text = "<p>XX、<span>___________________________________________________</span></p>"
 
         //嵌套成为完整的部分
         newQuestionItem.anwser = newQuestionAnwserItem
@@ -1750,9 +1822,12 @@ export default {
         newQuestionItem.questionTypeName = this.questionType.single_choice.name
         // newQuestionItem.topic_text = "<p>请问题目是什么？</p>"
         newQuestionAnwserItem.analysis_text = "<p>解题思路：略</p>"
-        newQuestionAnwserSheetItem.topic_text = "<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>"
+        newQuestionAnwserSheetItem.topic_text = "<p>XX、<span>___________________________________________________</span></p>"
         
-        this.$options.methods.addNewTestPaperChoiceQuestionOptionsItem.bind(this)(newQuestionItem)
+        for(let i=0;i<4;i++)
+        {
+          this.$options.methods.addNewTestPaperChoiceQuestionOptionsItem.bind(this)(newQuestionItem)
+        }
 
         //嵌套成为完整的部分
         newQuestionItem.anwser = newQuestionAnwserItem
@@ -1923,7 +1998,7 @@ export default {
       var height = 0; 
       var newCanvas = document.createElement("canvas"); 
       var context = newCanvas.getContext("2d");
-      var scale = 2; 
+      var scale = 1.2; 
       width = testPaperHeaderImgItem.offsetWidth * scale; 
       height = testPaperHeaderImgItem.offsetHeight * scale;
       newCanvas.width = width * scale;
@@ -1961,7 +2036,7 @@ export default {
         var height = 0; 
         var newCanvas = document.createElement("canvas"); 
         var context = newCanvas.getContext("2d");
-        var scale = 2; 
+        var scale = 1.2; 
         width = questionPartItemImgItem.offsetWidth * scale; 
         height = questionPartItemImgItem.offsetHeight * scale;
         //console.log("questionPartItemImgItem.offsetWidth"+questionPartItemImgItem.offsetWidth)
@@ -2002,7 +2077,7 @@ export default {
           var height = 0; 
           var newCanvas = document.createElement("canvas"); 
           var context = newCanvas.getContext("2d");
-          //var scale = 2; 
+          //var scale = 1.2; 
           width = questionBigItemImgItem.offsetWidth * scale; 
           height = questionBigItemImgItem.offsetHeight * scale;
           //console.log("questionBigItemImgItem.offsetWidth"+questionBigItemImgItem.offsetWidth)
@@ -2041,7 +2116,7 @@ export default {
             var height = 0; 
             var newCanvas = document.createElement("canvas"); 
             var context = newCanvas.getContext("2d");
-            //var scale = 2; 
+            //var scale = 1.2; 
             width = questionItemImgItem.offsetWidth * scale; 
             height = questionItemImgItem.offsetHeight * scale;
             //console.log("questionItemImgItem.offsetWidth"+questionItemImgItem.offsetWidth)
@@ -2079,7 +2154,7 @@ export default {
             var height = 0; 
             var newCanvas = document.createElement("canvas"); 
             var context = newCanvas.getContext("2d");
-            //var scale = 2; 
+            //var scale = 1.2; 
             width = questionAnwserSheetItemImgItem.offsetWidth * scale; 
             height = questionAnwserSheetItemImgItem.offsetHeight * scale;
 
@@ -2117,7 +2192,7 @@ export default {
               var height = 0; 
               var newCanvas = document.createElement("canvas"); 
               var context = newCanvas.getContext("2d");
-              //var scale = 2; 
+              //var scale = 1.2; 
               width = questionOptionsItemImgItem.offsetWidth * scale; 
               height = questionOptionsItemImgItem.offsetHeight * scale;
               //console.log("questionOptionsItemImgItem.offsetWidth"+questionOptionsItemImgItem.offsetWidth)
@@ -2225,7 +2300,7 @@ export default {
       //console.log("小题序号顺序编码完成 <<<<< ")
     },
     /**
-     * 小题序号顺序编码器
+     * 小题序号顺序编码器 并对题型进行分组
      */
     testPaperQuestionCreateAutoNo()
     {
@@ -2235,7 +2310,7 @@ export default {
         //console.log("试卷为空，无法为每一个小题添加试卷中的小题序号")
         return
       }
-      //console.log("为每一个小题添加试卷中的小题序号")
+      console.log("为每一个小题添加试卷中的小题序号，并且进行分组")
       //循环输出试卷部分================================================================================================
       this.testPaperObj.items.forEach(questionPartItem => {
 
@@ -2243,12 +2318,59 @@ export default {
         questionPartItem.items.forEach(questionBigItem => {
           //console.log("开始编码 >>>>> " + this.previewQuestionNum)
 
+          //为不同题型进行分组，方便在答题卡内对其进行分组处理
+          let groupQuestionType = null
+          let groupQuestionArr = []
+          let firstQuestionItem = null
+
           //循环输出小题================================================================================================
           questionBigItem.items.forEach(questionItem => {
             
-              questionItem.no = this.previewQuestionNum++
+            questionItem.no = this.previewQuestionNum++
+
+            //先把分组信息准备好
+            if(null!=questionItem.question_type)
+            {
+              //如果是新的题型
+              if(questionItem.question_type != groupQuestionType)
+              {
+                //对旧的分组第一个值进行赋值
+                if(null != firstQuestionItem)
+                {
+                  //深拷贝赋值
+                  firstQuestionItem.groupQuestionArr = JSON.parse(JSON.stringify(groupQuestionArr)) 
+                  // console.log("题型分组完成")
+                  // console.log(firstQuestionItem)
+
+                }
+                //重置并保存新题型分组数据
+                groupQuestionArr = []
+                //保存当前的问题
+                groupQuestionArr.push(questionItem)
+
+                groupQuestionType = questionItem.question_type
+                // console.log("新的题型分组 >>>>> "+ questionItem.question_type)
+                
+                //保存当前分组第一个的题目
+                firstQuestionItem = questionItem
+              }
+              else{
+                //添加当前题目进去分组
+                //保存当前的问题
+                groupQuestionArr.push(questionItem)
+                //清空当前题目旧的数据
+                questionItem.groupQuestionArr = null
+              }
+            }
+            
             
           })
+          //处理最后一组的题型分组数据
+          //深拷贝赋值
+          firstQuestionItem.groupQuestionArr = JSON.parse(JSON.stringify(groupQuestionArr)) 
+          // console.log("题型分组完成")
+          // console.log(lastQuestionItem)
+
           //循环输出小题，完成================================================================================================
 
         })
@@ -2256,7 +2378,7 @@ export default {
 
       })
       //循环输出试卷部分，完成================================================================================================
-      //console.log("小题序号顺序编码完成 <<<<< ")
+      console.log("小题序号顺序编码完成 <<<<< ")
     },
     /**
      * 快速跳转至顶端
@@ -2441,8 +2563,8 @@ export default {
     autoSaveTestPaperTempCache(autoSaveTimeInterval){
       setInterval(() => {
         localStorage.setItem('testPaperCache', JSON.stringify(this.testPaperObj) )
-      this.$message.success('已经自动保存当前组卷数据！')
-      console.log("已经自动保存当前组卷数据！ ")
+        this.$message.success('已经自动保存当前组卷数据！')
+        console.log("已经自动保存当前组卷数据！ ")
       }, autoSaveTimeInterval);
     },
     /**

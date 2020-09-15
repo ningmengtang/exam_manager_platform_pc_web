@@ -18,8 +18,8 @@
         <!--富文本编辑器组件-->
        <el-row v-loading="editorUpdateImg">
         <div
-                :class="'editor_'+classUniqueId"
-                ref="myWangEditor"
+            :class="'editor_'+classUniqueId"
+            ref="myWangEditor"
         >
         </div>
        </el-row>
