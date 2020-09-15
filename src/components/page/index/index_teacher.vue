@@ -215,17 +215,24 @@
 					window.URL.revokeObjectURL(link.href)
 				})
 				}else{
+
 					let  createTestPaperInfoObj = {
 					 		testPaperId:item.pid,
 					        students:[
 					          {
 					            uid:localStorage.getItem('userID'),
 								utype:"teacher",
-			          			items:[]
+			          			items:[],
+								info:{
+									"idCard":localStorage.getItem('userID'),
+									"schoolName":'教师',
+									"name":'教师',
+									"classname":'教师'
+								}
 					          }
 					        ]
 					      }
-					this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+					this.$router.push({name :'test_paper_maker_for_task',params:{createTestPaperInfoObj:createTestPaperInfoObj}})
 				}
 				
 			}

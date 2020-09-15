@@ -140,7 +140,8 @@
 		selectTag,
 		ApiTagSelectList,
 		paperWithTag,
-		apicommonExamGetFile
+		apicommonExamGetFile,
+		StudentAccountInfo
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -320,18 +321,30 @@
 								window.URL.revokeObjectURL(link.href)
 							})
 						} else {
-							let createTestPaperInfoObj = {
-								testPaperId: item.id,
-								students: [{
-									uid: localStorage.getItem('userID'),
-									utype: "student",
-									items: []
-								}]
-							}
-							this.$router.push({
-								name: 'test_paper_maker_for_task',
-								query: {
-									createTestPaperInfoObj: createTestPaperInfoObj
+							StudentAccountInfo({
+								"id":localStorage.getItem('userID')
+							}).then(res=>{
+								if(res.data.data.list){
+									let list = res.data.data.list[0]
+									let  createTestPaperInfoObj = {
+								 		testPaperId:item.id,
+								        students:[
+								          {
+								            uid:localStorage.getItem('userID'),
+											utype:"student",
+						          			items:[],
+											info:{
+												"idCard":list.idCard,
+												"schoolName":list.schoolName,
+												"name":list.name,
+												"classname":list.classes.name
+											}
+								          }
+								        ],
+							      	}
+									this.$router.push({name :'test_paper_maker_for_task',params:{createTestPaperInfoObj:createTestPaperInfoObj}})
+								}else{
+									this.$message.warning('查询不到用户信息')
 								}
 							})
 						}
@@ -357,21 +370,34 @@
 								window.URL.revokeObjectURL(link.href)
 							})
 						}else{
-							let  createTestPaperInfoObj = {
-							 		testPaperId:item.id,
-							        students:[
-							          {
-							            uid:localStorage.getItem('userID'),
-										utype:"student",
-				          				items:[]
-							          }
-							        ]
-							      }
-							this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+							StudentAccountInfo({
+								"id":localStorage.getItem('userID')
+							}).then(res=>{
+								if(res.data.data.list){
+									let list = res.data.data.list[0]
+									let  createTestPaperInfoObj = {
+								 		testPaperId:item.id,
+								        students:[
+								          {
+								            uid:localStorage.getItem('userID'),
+											utype:"student",
+						          			items:[],
+											info:{
+												"idCard":list.idCard,
+												"schoolName":list.schoolName,
+												"name":list.name,
+												"classname":list.classes.name
+											}
+								          }
+								        ],
+							      	}
+									this.$router.push({name :'test_paper_maker_for_task',params:{createTestPaperInfoObj:createTestPaperInfoObj}})
+								}else{
+									this.$message.warning('查询不到用户信息')
+								}
+							})
 						}
 				}
-
-
 			},
 			isDuringDate(beginDateStr, endDateStr) {
 				var curDate = new Date()

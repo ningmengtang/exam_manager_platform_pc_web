@@ -18,8 +18,8 @@ export function get(url, params) {
             }
         }).then(res => {
 
-            if (res.data.stateCode == 300033) {
-                console.log(res)
+            // if (res.data.stateCode == 300033) {
+               
 
             //     Message({
             //         message: '账号已登录，请重新登录！',
@@ -39,7 +39,7 @@ export function get(url, params) {
             //         localStorage.clear()
             //         window.location.href = '/login'
             //     }, 500)
-            }
+            // }
             resolve(res)
         }).catch(err => {
             reject(err)

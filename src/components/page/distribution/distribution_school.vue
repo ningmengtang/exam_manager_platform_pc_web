@@ -147,6 +147,7 @@
                 this.testPaperId = id
             },
             onSubmit(){
+				console.log(this.papaerType)
                 this.dialogTableVisible = false
 				let  createTestPaperInfoObj = {
 					 	testPaperId:this.testPaperId,
@@ -159,7 +160,7 @@
 						"items":[]
 					})
 				}
-				this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+				this.$router.push({name :'test_paper_maker_for_task',params:{createTestPaperInfoObj:createTestPaperInfoObj}})
                 
             },
 			handleSizeChange(val) {

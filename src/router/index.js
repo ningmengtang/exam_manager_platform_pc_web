@@ -338,6 +338,37 @@ export default new Router({
                         import ( /* webpackChunkName: "test_paper_maker_for_task" */ '../components/page/testPaperMaker/test_paper_maker_for_task.vue'),
                     meta: { title: '试卷下载' }
                 },
+                {
+                    path: '/webcats_leader_teacher_index',
+                    component: () =>
+                        import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_leader_teacher_index.vue'),
+                    meta: { title: '教师-阅卷管理' }
+                },
+                {
+                    path: '/webcats_teacher_import',
+                    component: () =>
+                        import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_teacher_import.vue'),
+                    meta: { title: '教师-阅卷管理-导入答题卡' }
+                },
+                {
+                    path: '/webcats_teacher_allocation',
+                    component: () =>
+                        import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_teacher_allocation.vue'),
+                    meta: { title: '教师-阅卷管理-分配老师' }
+                },
+                {
+                    path: '/webcats_teacher_redeoverlist',
+                    component: () =>
+                        import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_teacher_redeoverlist.vue'),
+                    meta: { title: '教师-阅卷管理-查看进度' }
+                },
+                {
+                    path: '/webcats_teacher_redeover',
+                    component: () =>
+                        import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_teacher_redeover.vue'),
+                    meta: { title: '教师-阅卷管理-批阅' }
+                },
+                
 				{
 				    name: 'examination_manage',
 				    path: '/examination_manage',
@@ -406,6 +437,16 @@ export default new Router({
                 import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/vueCanvas.vue'),
             meta: { title: '试卷下载' }
         },
+
+
+        // mobile
+        {
+            path: '/mobile_teacherIndex',
+            component: () =>
+                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/teacher/mobile_teacherIndex.vue'),
+            meta: { title: '手机教师首页' }
+        },
+
         {
             path: '/404',
             component: resolve => require(['../components/page/404.vue'], resolve)

@@ -1173,11 +1173,11 @@ export default {
       this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
       // console.log(this.$route.query.createTestPaperInfoObj)
       
-      // console.log(this.$router.params.createTestPaperInfoObj)
-      if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)
+      console.log(this.$route.params.createTestPaperInfoObj)
+      if(null != this.$route.params && null != this.$route.params.createTestPaperInfoObj)
       {
         //进入批量生产模式
-        this.createTestPaperInfoObj = this.$route.query.createTestPaperInfoObj
+        this.createTestPaperInfoObj = this.$route.params.createTestPaperInfoObj
 
         //临时预览下载模式，用于组卷中途预览自己的卷子，此时卷子没提交到数据库
         if(this.createTestPaperInfoObj.isTempTestPaper){

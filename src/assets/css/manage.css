@@ -10,7 +10,10 @@
 .group .card-other-i{background-color: #FB4B1B;color: #FFFFFF;padding: 12px 60px;border-radius: 4px;font-size: 20px;font-weight: bold;cursor: pointer;}
 .group .card-other-i.o{background-color: #2BBB61;}
 .group .card-other-ii{color: #000000;margin-top: 8px;font-size: 14px;letter-spacing: 2px;cursor: pointer;}
-
+.ts-select .group{
+    background-image: none;
+    padding: 5px;
+}
 .search{height: 50px;background-color: #FFFFFF;border-radius: 8px;display: flex;align-items: center;padding: 0 20px ;margin-top: 25px;}
 .search /deep/ .el-input{width:auto;}
 .search /deep/ .el-input__inner{width: 400px;height: 36px;line-height: 36px;}
@@ -89,3 +92,138 @@
 .box /deep/ .el-table th.is-leaf {text-align: center;}
 .box /deep/ .el-table td {color: #333;}
 .icon+.icon {margin-left: 4px;}
+/* 弹窗 */
+
+.ts-select .t-title {
+    display: inline-block;
+    border-left: 8px solid #2BBB61;
+    padding-left: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.ts-table .t-title {
+    display: inline-block;
+    border-left: 8px solid #2BBB61;
+    padding-left: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.ts-select .t-box {
+    display: flex;
+    margin-top: 10px;
+}
+
+.ts-select .t-left {
+    width: 50%;
+}
+
+.ts-select .upload-demo {
+    margin: 20px 0;
+}
+
+.ts-select .choice {
+    margin-top: 5px;
+}
+
+.ts-select .i {
+    color: #2BBB61;
+}
+
+.ts-select .lead {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.ts-select .t-right {
+    width: 50%;
+    margin-left: 20px;
+}
+
+.t-right .log {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+.t-right .other {
+    text-align: justify;
+    letter-spacing: 1.5px;
+    line-height: 1.8;
+}
+
+.ts-select .t-content {
+    margin-top: 8px;
+}
+
+.ts-select .arr {
+    margin-left: 18px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.ts-select .arr span {
+    color: #999999;
+}
+
+.ts-select .arr span:nth-child(2) {
+    color: #2BBB61;
+}
+
+.ts-select .student-box {
+    margin-top: 10px;
+}
+
+.ts-select .student-name {
+    margin: 0 10px;
+    white-space: nowrap;
+}
+
+.box /deep/ .el-table th {
+    text-align: center;
+}
+.box .left-box /deep/ .el-select{
+    display: block;
+}
+.box /deep/ .el-table td,
+.el-table th.is-leaf {
+    text-align: center;
+}
+
+.box /deep/.el-date-editor .el-range-separator {
+    padding: 0;
+}
+
+.ts-select .block-time {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ts-select .block-a {
+    color: #FFFFFF;
+}
+
+.ts-select .out {
+    padding: 14px 20px;
+    background-color: #2BBB61;
+    color: #FFFFFF;
+    border-radius: 4px;
+}
+
+.ts-select .affirm {
+    padding: 14px 20px;
+    background-color: #FB4919;
+    color: #FFFFFF;
+    border-radius: 4px;
+}

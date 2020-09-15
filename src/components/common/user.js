@@ -38,7 +38,12 @@ export default function usertype() {
 				icon: 'el-icon-s-custom',
 				index: `manage_${loginUserType}_subordinate`,
 				title: '学生管理'
-			})
+			},{
+				icon: 'el-icon-tickets',
+				index: `webcats_leader_teacher_index`,
+				title: '阅卷管理'
+			}
+			)
 			color = '#2BBB61'
 			type = '教师'
 			break;

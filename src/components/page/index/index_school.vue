@@ -194,8 +194,9 @@
 				apiAdminOrderList({
 					"pageNum": this.pageNum,
 					"pageSize": this.pageSize,
-					"operator_id":localStorage.getItem('userID'),
-					"operator_type":localStorage.getItem('loginUserType'),
+					"school_id": localStorage.getItem('userID'),
+					// "operator_id":localStorage.getItem('userID'),
+					// "operator_type":localStorage.getItem('loginUserType'),
 				}).then(res => {
 					this.papers = res.data.data.list
 					this.AlltotalOrder= res.data.data.total
@@ -207,8 +208,7 @@
 				apiAdminOrderList({
 					"pageNum": this.pageNum,
 					"pageSize": this.pageSize,
-					"operator_id":localStorage.getItem('userID'),
-					"operator_type":localStorage.getItem('loginUserType'),
+					"school_id": localStorage.getItem('userID'),
 				}).then(res => {
 					this.papers = res.data.data.list
 					this.AlltotalOrder = res.data.data.total
@@ -223,8 +223,7 @@
 				this.AlltotalOrder = 0
 				// 统计数据（订购）
 				apiAdminOrderList({
-					"operator_id":localStorage.getItem('userID'),
-					"operator_type":localStorage.getItem('loginUserType'),
+					"school_id": localStorage.getItem('userID'),
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {

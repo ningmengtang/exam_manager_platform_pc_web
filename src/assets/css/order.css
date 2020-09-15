@@ -77,3 +77,7 @@
 .ts-box .ii{font-size: 28px;color: rgba(67, 207, 124, 1);width: 100%;text-align: center;margin-top: 28px;}
 .box /deep/.el-dialog{display: flex;flex-direction: column;margin:0 !important;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}  
 .box /deep/  .el-dialog .el-dialog__body{flex:1;overflow: auto;}
+.box .orderAdd /deep/ .el-button--success{
+    background-color: #2BBB61;
+    border-color: #2BBB61
+}

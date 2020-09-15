@@ -306,11 +306,17 @@
 				          {
 				            uid:localStorage.getItem('userID'),
 							utype:localStorage.getItem('loginUserType'),
-				          	items:[]
+				          	items:[],
+							info:{
+								"idCard":localStorage.getItem('userID'),
+								"schoolName":'管理员',
+								"name":'管理员',
+								"classname":'管理员'
+							}
 				          }
 				        ]
 				      }
-					this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+					this.$router.push({name :'test_paper_maker_for_task',params:{createTestPaperInfoObj:createTestPaperInfoObj}})
 				}
 			}
 

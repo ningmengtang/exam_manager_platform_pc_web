@@ -138,7 +138,11 @@ export function AdminOrderAdd(data) {
 	const result = post('/api/admin/order/insert', data)
 	return result;
 }
-
+// 新建订单
+export function SchoolOrderAdd(data) {
+	const result = post('/api/school/order/insert', data)
+	return result;
+}
 // 新建期末考试订单
 export function AdminOrderEndOfTermAdd(data) {
 	const result = post('/api/school/orderEndOfTerm/insert', data)
@@ -764,7 +768,7 @@ export function SchoolOrederDetailsAdd(data){
 }
 // 订购申请详情
 export function AdminOrederDetailsAdd(data){
-    const result =post('/api/admin/order/details/list'+'?d=' + new Date() * 1 ,data)
+    const result =post('/api/admin/order/details/insert'+'?d=' + new Date() * 1 ,data)
 	return result;
 }
 
@@ -774,11 +778,26 @@ export function SchoolOrederDetailsList(data){
     const result =post('/api/school/order/details/list'+'?d=' + new Date() * 1 ,data)
 	return result;
 }
-
+// 订购申请取消
+export function SchoolOrederDel(id,data){
+    const result =get('/api/school/order/delete/'+id+'?d=' + new Date() * 1 ,data)
+	return result;
+}
 
 // 订购申请查询(期末)
 export function SchoolOrderEndOfTermDetailsList(data){
     const result =post('/api/school/orderEndOfTerm/details/list'+'?d=' + new Date() * 1 ,data)
+	return result;
+} 
+// 订购申请详情管理员列表
+export function AdminOrderDetailsList(data){
+    const result =post('/api/admin/order/details/list'+'?d=' + new Date() * 1 ,data)
+	return result;
+} 
+
+// 订购申请期末详管理员列表
+export function AdminOrderEndOfTermDetailsList(data){
+    const result =post('/api/admin/orderEndOfTerm/details/list'+'?d=' + new Date() * 1 ,data)
 	return result;
 } 
 
@@ -787,6 +806,7 @@ export function AdminOrederEndOfTermDetailsAdd(data){
     const result =post('/api/admin/orderEndOfTerm/details/insert'+'?d=' + new Date() * 1 ,data)
 	return result;
 }
+
 // 订购申请详情（期末）
 export function SchoolOrederEndOfTermDetailsAdd(data){
     const result =post('/api/school/orderEndOfTerm/details/insert'+'?d=' + new Date() * 1 ,data)
@@ -863,4 +883,23 @@ export function apiAdminUseManageSelect(data){
 	return result;
 }
 
-
+// 新增教师阅卷任务
+export function TeacherTaskAdd(data){
+    const result =post('/api/teacher/task/insert' ,data)
+	return result;
+}
+// 教师阅卷任务列表
+export function TeacherTaskList(data){
+    const result =post('/api/teacher/task/select' ,data)
+	return result;
+}
+// 通过标签查询教师阅卷任务列表
+export function TeacherTaskSelectTask(data){
+    const result =post('/api/teacher/task/selectTask' ,data)
+	return result;
+}
+// 通过标签查询教师阅卷任务列表详情
+export function TeacherQuestionExamList(data){
+    const result =post('/api/teacher/question/examManagement' ,data)
+	return result;
+}
