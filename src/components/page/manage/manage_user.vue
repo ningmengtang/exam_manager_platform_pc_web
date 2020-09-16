@@ -17,7 +17,7 @@
 						<div class="th-group">年份</div>
 						<div class="td-group">
 							<el-radio-group v-model="years"   @change="getQuery">
-								<el-radio-button v-for="(item,index) in YearsList" :label="item.id" :key="item.index">
+								<el-radio-button v-for="(item,index) in YearsList" :label="item.id" :key="index">
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
@@ -27,7 +27,7 @@
 						<div class="th-group">教材版本</div>
 						<div class="td-group">
 							<el-radio-group v-model="version"  @change="getQuery">
-								<el-radio-button v-for="(item,index) in VersionList" :label="item.id" :key="item.index">
+								<el-radio-button v-for="(item,index) in VersionList" :label="item.id" :key="index">
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
@@ -37,7 +37,7 @@
 						<div class="th-group">学习科目</div>
 						<div class="td-group">
 							<el-radio-group v-model="subject"   @change="getQuery">
-								<el-radio-button v-for="(item,index) in SubjectList" :label="item.id" :key="item.index">
+								<el-radio-button v-for="(item,index) in SubjectList" :label="item.id" :key="index">
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
@@ -47,7 +47,7 @@
 						<div class="th-group">学习年级</div>
 						<div class="td-group">
 							<el-radio-group v-model="grade"   @change="getQuery">
-								<el-radio-button v-for="(item,index) in GradeList" :label="item.id" :key="item.index">
+								<el-radio-button v-for="(item,index) in GradeList" :label="item.id" :key="index">
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
@@ -57,7 +57,7 @@
 						<div class="th-group">学期</div>
 						<div class="td-group">
 							<el-radio-group v-model="semester" @change="getQuery">
-								<el-radio-button v-for="(item,index) in SemesterList" :label="item.id" :key="item.index">
+								<el-radio-button v-for="(item,index) in SemesterList" :label="item.id" :key="index">
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
@@ -67,7 +67,7 @@
 						<div class="th-group">单元测试</div>
 						<div class="td-group">
 							<el-radio-group v-model="elementTest"  @change="getQuery">
-								<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id" :key="item.index">
+								<el-radio-button v-for="(item,index) in ElementTextList" :label="item.id" :key="index">
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
@@ -77,7 +77,7 @@
 						<div class="th-group">试卷用途</div>
 						<div class="td-group">
 							<el-radio-group v-model="purpose"   @change="getQuery">
-								<el-radio-button v-for="(item,index) in PurposeList" :label="item.index" :key="item.index" >
+								<el-radio-button v-for="(item,index) in PurposeList" :label="item.id" :key="index" >
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
@@ -105,7 +105,7 @@
 				</div>
 				<div class="time">{{ data.createDate }}</div>
 				<div class="label-box" >
-					<div class="label"     v-for="(card,i) in data.tag_list"  v-if="card" :key="card,i">{{card.text}}</div>
+					<div class="label"     v-for="(card,i) in data.tag_list"  v-if="card" :key="card.i">{{card.text}}</div>
 
 				</div>
 				<div class="right">	

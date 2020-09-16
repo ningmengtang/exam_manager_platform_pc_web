@@ -30,15 +30,18 @@
 				<div class="ts">请对准摄像头</div>
 				<div class="ts2">进入考试前必须录入人脸</div>
 				<div class="face-img">
-					<el-upload class="upload-demo" drag accept=".jpg,.png" action="https://jsonplaceholder.typicode.com/posts/"
-					 :before-upload="beforeUpload" :on-success="successUpload" multiple>
-						<i class="el-icon-upload"></i>
-						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-						<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2m</div>
+					<el-upload class="upload-demo" drag action="" accept=".jpg,.png" :http-request="uploadFild" :before-upload="beforeUpload"
+					 :on-success="successUpload" :show-file-list="false" multiple>
+						<div v-if="!uploadFile">
+							<i class="el-icon-upload"></i>
+							<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+							<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2m</div>
+						</div>
+						<el-image :src="uploadBlackimgscr" v-else v-loading="loading"></el-image>
 					</el-upload>
 				</div>
 				<div class="bottom-box">
-					<el-button class="photograph"><i class="el-icon-camera-solid" style="margin-right: 8px;"></i>拍照</el-button>
+					<!-- <el-button class="photograph"><i class="el-icon-camera-solid" style="margin-right: 8px;"></i>拍照</el-button> -->
 					<el-button class="black" @click="goProcess()">确认进入考试</el-button>
 				</div>
 			</div>
@@ -52,6 +55,7 @@
 		apicommonExamGetFile,
 		apiStudentAccountSelectById,
 		apiCommonExamSelectById,
+		faceInsert
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -62,7 +66,7 @@
 				currentPage: 1,
 				download: 0,
 				disabled: 0,
-				loading: false,
+				loading: true,
 				status: '',
 				userName: localStorage.getItem('userName'),
 				userID: localStorage.getItem('userID'),
@@ -74,6 +78,8 @@
 				papers: {},
 				classes: '',
 				dialogVisible: false,
+				uploadFile: '',
+				uploadBlackimgscr:''
 			}
 		},
 		methods: {
@@ -86,16 +92,28 @@
 					}
 				})
 			},
+			uploadFild(param) {
+				var that = this
+				// console.log(param)
+				var file = param.file
+				this.uploadFile = new FormData()
+				this.uploadFile.append('file', file)
+				faceInsert(this.uploadFile).then(res => {
+					this.uploadBlackimgscr=res.data.data.headImg
+					this.loading = false
+				})
+				this.$message.success('导入成功')
+			},
 			// 上传控制
 			beforeUpload(file) {
-				console.log(file)
+				// console.log(file)
 				var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
 				const extension = testmsg === 'png'
 				const extension2 = testmsg === 'jpg'
 				const isLt2M = file.size / 1024 / 1024 < 2
 				if (!extension && !extension2) {
 					this.$message({
-						message: '上传文件只能是 xls、xlsx格式!',
+						message: '上传文件只能是 png、jpg格式!',
 						type: 'warning'
 					});
 				}
@@ -109,13 +127,13 @@
 			},
 			// 上传成功
 			successUpload(res) {
-				console.log(res)
+				// console.log(res)
 				this.$message.success('图片上传成功')
 			}
 
 		},
 		mounted() {
-			this.loading = true,
+			
 				// ---查询班级---
 				apiStudentAccountSelectById(this.userID).then(res => {
 					this.classes = res.data.data.classes.name
@@ -135,7 +153,11 @@
 	.box /deep/ .el-upload-dragger,
 	.box /deep/ .el-upload {
 		width: 100%;
-		height: 430px;
+		height: 100%;
+		min-height: 430px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.box /deep/ .el-upload-dragger .el-icon-upload {

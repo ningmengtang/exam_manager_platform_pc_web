@@ -9,24 +9,27 @@
 					<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
 						 :format="format"></el-progress>
 					</div>
-					<div class="li">
-						<div class="at-title">第一大题、选择题</div>
-						<div class="at-number">
-							<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule('choice')">
-								<el-checkbox-button v-for="(d,i) in topic" :label="d.id" :key="d.i">{{d.name}}</el-checkbox-button>
-							</el-checkbox-group>
+					<div class="li" >
+						<div  class="li-i" v-for="(d,i) in topic" :key="i">
+							<div class="at-title" >第{{i+1}}部分</div>
+							<div class="at-title-i" v-for="(d2,k) in d.items" :key="k">第{{k+1}}道大题</div>
+							<div class="at-number">
+								<el-checkbox-group v-model="topicDefault" size="medium">
+									<el-checkbox-button :label="k">{{k}}</el-checkbox-button>
+								</el-checkbox-group>
 						</div>
-						<div class="at-title">第二大题、综合题</div>
+						</div>
+						<!-- <div class="at-title">第二大题、综合题</div>
 						<div class="at-number">
-							<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule('synthesize')">
+							<el-checkbox-group v-model="topicDefault" size="medium" >
 								<el-checkbox-button v-for="(d,i) in topic2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
 							</el-checkbox-group>
-						</div>
+						</div> -->
 					</div>
 				</div>
 				<div class="affirm">
-					<el-button class="previous">确认，上一题</el-button>
-					<el-button class="next" style="background-color: #19AEFB;">确认，下一题</el-button>
+					<el-button class="previous" @click="goTopic('previous')">确认，上一题</el-button>
+					<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">确认，下一题</el-button>
 					<div class="bottom-ts">注意核实个人信息和考试信息，如有不符立刻联系老师</div>
 				</div>
 			</div>
@@ -61,7 +64,7 @@
 					<div v-else-if="stateType=='synthesize'">
 						<div class="content-cc">
 							<el-image :src="problemImg" class="cc-img"></el-image>
-							<div class="font-i" style="margin-bottom: 10px;">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下识别的结果，如果修改了答案，请重新上传。</div>
+							<div class="font-i" style="margin-bottom: 20px;">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下识别的结果，如果修改了答案，请重新上传。</div>
 						</div>
 					</div>
 				</div>
@@ -183,25 +186,27 @@
 			// ---计算完成度---
 			schedule(type) {
 				localStorage.setItem('topic', JSON.stringify(this.topicDefault))
-
-				switch (type) {
-					case 'choice':
-						this.stateType = 'choice'
-						if (this.choiceKey != '') {
-							let arr = this.topic.concat(this.topic2).length
-							let choice = this.topicDefault.length
-							this.percentage = parseInt(choice / arr * 100)
-						}
-						break;
-					case 'synthesize':
-						this.stateType = 'synthesize'
-						if (this.problemImg != '') {
-							let arr = this.topic.concat(this.topic2).length
-							let choice = this.topicDefault.length
-							this.percentage = parseInt(choice / arr * 100)
-						}
-						break;
-				}
+				let arr = this.topic.concat(this.topic2).length
+				let choice = this.topicDefault.length
+				this.percentage = parseInt(choice / arr * 100)
+				// switch (type) {
+				// 	case 'choice':
+				// 		this.stateType = 'choice'
+				// 		if (this.choiceKey != '') {
+				// 			let arr = this.topic.concat(this.topic2).length
+				// 			let choice = this.topicDefault.length
+				// 			this.percentage = parseInt(choice / arr * 100)
+				// 		}
+				// 		break;
+				// 	case 'synthesize':
+				// 		this.stateType = 'synthesize'
+				// 		if (this.problemImg != '') {
+				// 			let arr = this.topic.concat(this.topic2).length
+				// 			let choice = this.topicDefault.length
+				// 			this.percentage = parseInt(choice / arr * 100)
+				// 		}
+				// 		break;
+				// }
 			},
 			// 图片遮罩
 			img_shade(index) {
@@ -256,11 +261,10 @@
 				let newTime = new Date().getTime();
 				let timeDifference = this.getCookie('examTime') - newTime;
 				if (timeDifference <= 0) {
-					ResidueTime = '00:00:00'
-					this.$alert('考试时间结束！', '提醒', {
+					this.$alert('考试时间结束！将自动提交试卷。', '提醒', {
 						confirmButtonText: '确定',
 						callback: action => {
-							this.goTopic()
+							this.finish()
 						}
 					});
 					// 清除计时器
@@ -268,15 +272,26 @@
 					// 清除时间cookic
 					this.clearCookie('examTime')
 					localStorage.removeItem('topic')
+					return ResidueTime = '00:00:00';
 				}
-
 				ResidueTime = this.getLocalTime(timeDifference)
 				return ResidueTime;
+
 			},
 			// 题目跳转
-			goTopic() {
+			goTopic(type) {
+				this.schedule();
+				console.log(this.topicDefault)
+				if (type == 'previous') {
+
+				} else if (type == 'next') {
+
+				}
+			},
+			// 考试完成
+			finish() {
 				this.$router.push({
-					name: 'examination_process',
+					name: 'examination_finish',
 					query: {
 						id: this.examId
 					}
@@ -294,12 +309,17 @@
 			})
 			// ---查看试卷试题---
 			apiCommonExamSeleElementTestById(this.examId).then(res => {
-				console.log(res.data.data.elementTest)
+				let d = JSON.parse(res.data.data.elementTest);
+				console.log(d)
+				this.topic = d.items
+				console.log(this.topic)
+
 			})
 			// ---定时器计算剩余时间
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
-			}, 0)
+			}, 1000)
+
 		},
 	};
 </script>

@@ -47,7 +47,11 @@ export function ApiTagSelectList(data) {
 	const result = post('/api/tag/selectSelective', data)
 	return result;
 }
-
+// 人脸录入
+export function faceInsert(data){
+	const result = post ('/api/face/insert',data)
+	return result;
+}
 //教师首页状态查询
 export function teacherIndexStatus(data) {
 	const result = get('/api/teacher/teacherExam/selectTeacherPapersCountByTeacherIdAndPutInto', data)
