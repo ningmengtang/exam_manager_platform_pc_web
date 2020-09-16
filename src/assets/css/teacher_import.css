@@ -234,6 +234,11 @@
     background: #2BBB61;
     color: #fff;
 }
+.select{
+    border-color: #2BBB61;
+    background: #fff;
+    color: #2BBB61;
+}
 .select_topic{
     margin-bottom: 8px;
 }
