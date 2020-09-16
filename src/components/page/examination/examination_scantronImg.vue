@@ -4,11 +4,43 @@
 			<div class="header-top">
 				<div class="time">
 					<div>距离考试结束还有</div>
-					<div>01:50:55</div>
+					<div class="ts-time">{{ResidueTime}}</div>
 				</div>
-				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">上传日志</div>
-				<div></div>
-				<div></div>
+				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">
+					<div class="i1">{{examTitle}}</div>
+					<div class="i2">{{examParticular}}</div>
+				</div>
+				<div>
+					<el-button class="buttom">交卷</el-button>
+				</div>
+				<div class="other-box">
+					<div class="status">图片试卷上传答案</div>
+					<div class="ewm">
+						<el-image :src="ewm"></el-image>
+						<div class="l">扫码快速上传</div>
+					</div>
+				</div>
+			</div>
+			<div class="content-b">
+				<div class="message-top">上传一览</div>
+				<div class="ts">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下上传的结果，如果上传了错误的答案，请重新上传，请不要重复上传同样的题目答案。</div>
+				<div class="questions-img">
+					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
+						<div class="img-box-i">
+							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
+							<transition name="el-zoom-in-top">
+								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
+									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
+									<i class="icon el-icon-delete-solid "></i>
+								</div>
+							</transition>
+						</div>
+						<span class="i">5545</span>
+					</div>
+				</div>
+				<div class="exam-img">
+					<img :src="affix" lazy class="img" @click="img_shade(i)"></img>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -21,7 +53,7 @@
 		apicommonExamGetFile,
 		apiStudentAccountSelectById,
 		apiCommonExamSelectById,
-		apiCommonExamSeleElementTestById
+		apiCommonExamSeleElementTestById,
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -76,6 +108,8 @@
 					'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
 					'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
 					'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
+					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg',
+					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg',
 					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
 				],
 				srcList: [
@@ -87,7 +121,8 @@
 					'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
 					'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
 					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
-				]
+				],
+				affix:''
 			}
 		},
 		methods: {
@@ -184,7 +219,7 @@
 				let newTime = new Date().getTime();
 				let timeDifference = this.getCookie('examTime') - newTime;
 				if (timeDifference <= 0) {
-					this.$alert('这是一段内容', '标题名称', {
+					this.$alert('考试时间到了！', '提示', {
 						confirmButtonText: '确定',
 						callback: action => {
 							// this.$message({
@@ -194,7 +229,7 @@
 						}
 					});
 					// 清除计时器
-					clearInterval(this.timer)
+					this.clearInterval(this.timer)
 					// 清除时间cookic
 					clearCookie('examTime')
 					localStorage.removeItem('topic')
@@ -217,11 +252,18 @@
 			apiCommonExamSelectById(this.examId).then(res => {
 				this.examTitle = res.data.data.title
 				this.examParticular = res.data.data.examExplain
+				// this.affix=res.data.data.affix
+			})
+			// 返回图片试卷
+			apicommonExamGetFile(this.examId).then(res=>{
+				let blob = new Blob([res.data]);
+				let url = window.URL.createObjectURL(blob);
+			     this.affix=url
 			})
 			// ---查看试卷试题---
-			apiCommonExamSeleElementTestById(this.examId).then(res => {
-				console.log(res.data.data.elementTest)
-			})
+			// apiCommonExamSeleElementTestById(this.examId).then(res => {
+			// 	console.log(res.data.data.elementTest)
+			// })
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 0)

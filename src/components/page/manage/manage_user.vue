@@ -77,7 +77,7 @@
 						<div class="th-group">试卷用途</div>
 						<div class="td-group">
 							<el-radio-group v-model="purpose"   @change="getQuery">
-								<el-radio-button v-for="(item,index) in PurposeList" :label="item.id"  :key="index">
+								<el-radio-button v-for="(item,index) in PurposeList" :label="item.id" :key="index" >
 									{{item.text}}
 								</el-radio-button>
 							</el-radio-group>
