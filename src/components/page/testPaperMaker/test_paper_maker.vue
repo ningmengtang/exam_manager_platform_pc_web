@@ -328,8 +328,8 @@
                       active-color="#13ce66"
                       inactive-color="#ff4949">
                     </el-switch>
-                    <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain @click="addNewTestPaperChoiceQuestionOptionsItem(questionItem)">增加选项</el-button></span>
-                    <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="questionItem.items.length <= 1" @click="delNewTestPaperChoiceQuestionOptionsItem(questionItem,questionOptionItemIndex)">删除选项</el-button></span>
+                    <!-- <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="success" size="mini" plain @click="addNewTestPaperChoiceQuestionOptionsItem(questionItem)">增加选项</el-button></span>
+                    <span class="span_question_big_toolbar" style="margin-left:10px;"><el-button type="danger" size="mini" plain :disabled="questionItem.items.length <= 1" @click="delNewTestPaperChoiceQuestionOptionsItem(questionItem,questionOptionItemIndex)">删除选项</el-button></span> -->
                   </div>
                   <div class="layout_question_anwser_sheet_content" :style="testPaperQuestionStyle">
                     <myWangEditor :contentData.sync="questionOptionItem.topic_text" :classUniqueId.sync="questionOptionItem.uniqueId" v-if="questionOptionItem.isEditing"></myWangEditor>
@@ -603,8 +603,8 @@
                                   <div style="clear:both;"></div>
                                   <div v-if="questionItemGroupIndex == 0 || questionItemGroupIndex % 2 == 0" style="display: inline-block;vertical-align: middle;text-align:right;height:13px;width:25px;background-color:#000;"></div>
 
-                                  <div style="display: inline-block;vertical-align: middle;font-size:12px;height:13px;width:25px;text-align:right;margin-left:10px;">{{questionItem.groupQuestionArr[questionItemGroupIndex].no}}.</div>
-                                  <div v-for="(questionOptionItem,questionOptionItemIndex) in questionItem.items" style="display: inline-block;vertical-align: middle;text-align:right;border:2px solid #ab3b42;text-align:center;font-weight:bold;margin-left:10px;border-radius: 6px;font-size:12px;height:13px;width:25px;line-height:10px;color:#ab3b42;">{{enCharArr[questionOptionItemIndex]}}</div>
+                                  <div style="display: inline-block;vertical-align: middle;font-size:12px;height:13px;width:25px;text-align:right;margin-left:10px;">{{questionGroupItem.no}}.</div>
+                                  <div v-for="(questionOptionItem,questionOptionItemIndex) in questionGroupItem.items" style="display: inline-block;vertical-align: middle;text-align:right;border:2px solid #ab3b42;text-align:center;font-weight:bold;margin-left:10px;border-radius: 6px;font-size:12px;height:13px;width:25px;line-height:10px;color:#ab3b42;">{{enCharArr[questionOptionItemIndex]}}</div>
                                 </div>
                                 <div style="clear:both;width:100%;height:5px;"><!-- --></div>
                               </td>
@@ -1873,6 +1873,12 @@ export default {
         //console.log("没有items部分，初始化为[]")
         questionItem.items = []
       }
+      let questionOptionMaxSize = 7
+      if(questionItem.items.length >= questionOptionMaxSize)
+      {
+        this.$message.warning("选择题选项数量不能超过"+questionOptionMaxSize)
+        return
+      }
 
       //深拷贝一个实体类对象
 
@@ -1892,6 +1898,11 @@ export default {
      * 为一个试卷的小题目（选择题目），删除一个选项
      */
     delNewTestPaperChoiceQuestionOptionsItem (questionItem,questionOptionItemIndex) {
+      if(!questionItem.items || questionItem.items.length <=2)
+      {
+        this.$message.warning("选择题选项数量不能少于2个")
+        return
+      }
       questionItem.items.splice(questionOptionItemIndex,1)
         
     },
