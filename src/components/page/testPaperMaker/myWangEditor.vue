@@ -103,6 +103,8 @@ export default {
             this.detailContent = newHtml
             this.$options.methods.onEditorChange.bind(this)()
         }
+        //屏蔽自带样式
+        editor.customConfig.pasteFilterStyle = true
         // 创建编辑器
         editor.create()
 
