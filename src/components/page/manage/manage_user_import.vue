@@ -659,6 +659,12 @@ export default {
 							//此时已经结束，关闭屏蔽层
 							if(questionItem.items.length <= 0)
 							{
+								console.log("试卷准备重新分组")
+								console.log(this.testPaperObj)
+								//重新分组一次，将有id的分组保存起来，与组卷工具同步修改
+								this.$options.methods.testPaperQuestionCreateAutoNo.bind(this)()
+								console.log("试卷重新分组完毕")
+								console.log(this.testPaperObj)
 								apiAdminExamUpdate({id:this.testPaperObj.id,elementTest:JSON.stringify(this.testPaperObj)}).then(res =>{
 									if(!res.data.result)
 									{
@@ -715,8 +721,12 @@ export default {
 								//此时已经结束，关闭屏蔽层
 								if(questionItem.items.length <= 0)
 								{
+									console.log("试卷准备重新分组")
+									console.log(this.testPaperObj)
 									//重新分组一次，将有id的分组保存起来，与组卷工具同步修改
 									this.$options.methods.testPaperQuestionCreateAutoNo.bind(this)()
+									console.log("试卷重新分组完毕")
+									console.log(this.testPaperObj)
 									apiAdminExamUpdate({id:this.testPaperObj.id,elementTest:JSON.stringify(this.testPaperObj)}).then(res =>{
 									if(!res.data.result)
 									{
@@ -833,7 +843,7 @@ export default {
 		 */
 		testPaperQuestionCreateAutoNo()
 		{
-		
+		let previewQuestionNum = 1
 		if(null == this.testPaperObj.items)
 		{
 			//console.log("试卷为空，无法为每一个小题添加试卷中的小题序号")
@@ -845,7 +855,7 @@ export default {
 
 			//循环输出大题================================================================================================
 			questionPartItem.items.forEach(questionBigItem => {
-			//console.log("开始编码 >>>>> " + this.previewQuestionNum)
+			//console.log("开始编码 >>>>> " + previewQuestionNum)
 
 			//为不同题型进行分组，方便在答题卡内对其进行分组处理
 			let groupQuestionType = null
@@ -855,7 +865,7 @@ export default {
 			//循环输出小题================================================================================================
 			questionBigItem.items.forEach(questionItem => {
 				
-				questionItem.no = this.previewQuestionNum++
+				questionItem.no = previewQuestionNum++
 
 				//先把分组信息准备好
 				if(null!=questionItem.question_type)
