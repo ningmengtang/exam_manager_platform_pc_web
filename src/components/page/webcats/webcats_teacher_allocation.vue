@@ -56,7 +56,7 @@
         <div class="right_box">
             <div class="right_box_top">
                 <div class="select_topic" v-for="(item,index) in topicList ">
-                    <h4 class="title">第{{index + 1}}大题</h4>
+                    <h4 class="title">第{{index + 1}}部分</h4>
                     <el-button class="select_topic_btn" v-for="i in item"  :class="getClass(i.no)" >
                         第{{i.no}}题
                     </el-button>
@@ -106,6 +106,7 @@ export default {
         return{
             topicList:[],
             selectTopicList:[],
+            selectIndex:0,
             data: generateData(),
             value: [1, 4],
             teacherList:[],
@@ -134,15 +135,27 @@ export default {
             this.paperId = this.importPaper.examinationPaper.id
             apiCommonExamSeleElementTestById(this.paperId).then(res=>{
                 this.elementTest = JSON.parse(res.data.data.elementTest)
-                console.log(this.elementTest)
                 let elementTestItems = this.elementTest.items
 
+
+                // 所有题目
                 this.topicList= []
                 for(var i=0;i<elementTestItems.length;i++){
-                    
-                    let item = elementTestItems[i].items[0].items
-                    this.topicList.push(item)
+                    let item  = elementTestItems[i].items
+                    let arry = []
+                    for(var k=0;k<item.length;k++){
+                        let groupQuestionArr = item[k].items
+                        groupQuestionArr.forEach(element => {
+                            if(element.questionTypeName == '综合题'){
+                                arry.push(element)
+                            }
+                        });
+                        // arry = arry.concat(item[k].items)
+                    }
+                    this.topicList.push(arry)
                 }
+                console.log(this.topicList)
+                // 当前分配题目
                 this.selectTopicList = []
                 for(var k=0;k<this.topicList.length;k++){
                     this.topicList[k].forEach(ele => {
@@ -151,13 +164,11 @@ export default {
                         }
                     });
                 }
+                console.log(this.selectTopicList)
 
                 // 读当前的第一题
-                let firstItem =  this.selectTopicList[0]
 
-                // for(var a=0;a<firstItem.length;a++){
-
-                // }
+                let firstItem =  this.selectTopicList[this.selectIndex]
                 this.NowSlectItem = []
                 firstItem.groupQuestionArr.forEach(ele => {
                     this.NowSlectItem.push({
@@ -166,7 +177,7 @@ export default {
                     })
                 });
                 console.log(this.NowSlectItem)
-                
+
             })
         }else{
             this.$message.warning('无试卷数据')
@@ -217,15 +228,29 @@ export default {
         nextTopic(){
             // console.log(this.selectTeacher.length>0)
             if(this.selectTeacher.length>0){
-                this.NowSlectItem.forEach(ele => {
-                //    for(var )
-                });
-                console.log(this.NowSlectItem)
-                console.log(this.selectTeacher)
+                this.selectIndex++
+                if(this.selectIndex >= this.selectTopicList.length ){
+                    console.log('最后一题')
+
+                }else{
+                    let firstItem =  this.selectTopicList[this.selectIndex]
+                    this.NowSlectItem = []
+                    firstItem.groupQuestionArr.forEach(ele => {
+                        this.NowSlectItem.push({
+                            "no":ele.no,
+                            "id":""
+                        })
+                        // this.getClass(ele.no)
+                    });
+                    this.$forceUpdate();
+                    this.selectTeacher = []
+                }
+
             }else{
                  this.$message.warning('请分配老师')
             }
-        }
+        },
+        
     }
 }
 </script>
