@@ -76,7 +76,7 @@
 
 
     <div style="display:none">
-        <img ref="conf0" src="./img1.jpg">
+        <img ref="conf0" src="./X-3.jpg">
     </div>
   </div>
 </template>
@@ -265,7 +265,7 @@ import IconVue from './Icon.vue'
           lineColor: '#f2849e',
           shadowBlur: 2
         },
-        img:require('./img1.jpg')
+        img:require('./X-3.jpg')
       }
     },
     created () {

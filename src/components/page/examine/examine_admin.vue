@@ -205,7 +205,7 @@ export default {
                             "idCard":localStorage.getItem('userID'),
                             "schoolName":'试卷题库管理员',
                             "name":'试卷题库管理员',
-                            "classname":'试卷题库管理员'
+                            "className":'试卷题库管理员'
                         }
 			          }
                     ],

@@ -55,17 +55,16 @@
         </div>
         <div class="right_box">
             <div class="right_box_top">
-                <div class="select_topic" v-for="item in topic ">
-                    <h4 class="title">{{item.title}}</h4>
-                    
-                    <el-button class="select_topic_btn" v-for="i in item.item" >
-                        第{{i}}题
+                <div class="select_topic" v-for="(item,index) in topicList ">
+                    <h4 class="title">第{{index + 1}}部分</h4>
+                    <el-button class="select_topic_btn" v-for="i in item"  :class="getClass(i.no)" >
+                        第{{i.no}}题
                     </el-button>
                 </div>
             </div>
 
             <div class="right_box_content">
-                <h3 class="title">正在分配【第3大题（6、7、8小题）】的阅卷老师</h3>
+                <h3 class="title">正在分配【 第 <span v-for="(item,i) in NowSlectItem" v-html="i==NowSlectItem.length-1?item.no:item.no+'、'"></span> 小题 】的阅卷老师</h3>
                 <el-transfer 
                     v-model="selectTeacher"
                     :data="teacherList"
@@ -78,7 +77,7 @@
 
             <div class="right_box_bottom">
                 <el-button class="right_box_bottom_btn last">上一题</el-button>
-                <el-button class="right_box_bottom_btn next">下一题</el-button>
+                <el-button class="right_box_bottom_btn next" @click="nextTopic">下一题</el-button>
                 <el-button class="right_box_bottom_btn reset">重置所有分配方案</el-button>
                 <el-button class="right_box_bottom_btn affirm">确认分配方案</el-button>
             </div>
@@ -87,8 +86,10 @@
 </template>
 <script>
 import {
-	schoolSelectTeacher
+    schoolSelectTeacher,
+    apiCommonExamSeleElementTestById
 	} from '@/api/api.js'
+import { forEach } from 'jszip';
 export default {
     data(){
         const generateData = _ => {
@@ -103,11 +104,13 @@ export default {
         return data
         };
         return{
+            topicList:[],
+            selectTopicList:[],
+            selectIndex:0,
             data: generateData(),
             value: [1, 4],
             teacherList:[],
-
-
+            paperId:'',
             selectTeacher:[],
             importPaper:'',
             startTime:'',
@@ -121,13 +124,61 @@ export default {
                 item:[1,2,3,4,5,6]
             },
             
-            ]
+            ],
+            allTaskList:[]
         }
     },
     mounted(){
         let importPaper = JSON.parse(sessionStorage.getItem("importPaper"))
         if(importPaper){
             this.importPaper = importPaper
+            this.paperId = this.importPaper.examinationPaper.id
+            apiCommonExamSeleElementTestById(this.paperId).then(res=>{
+                this.elementTest = JSON.parse(res.data.data.elementTest)
+                let elementTestItems = this.elementTest.items
+
+
+                // 所有题目
+                this.topicList= []
+                for(var i=0;i<elementTestItems.length;i++){
+                    let item  = elementTestItems[i].items
+                    let arry = []
+                    for(var k=0;k<item.length;k++){
+                        let groupQuestionArr = item[k].items
+                        groupQuestionArr.forEach(element => {
+                            if(element.questionTypeName == '综合题'){
+                                arry.push(element)
+                            }
+                        });
+                        // arry = arry.concat(item[k].items)
+                    }
+                    this.topicList.push(arry)
+                }
+                console.log(this.topicList)
+                // 当前分配题目
+                this.selectTopicList = []
+                for(var k=0;k<this.topicList.length;k++){
+                    this.topicList[k].forEach(ele => {
+                        if(ele.groupQuestionArr){
+                            this.selectTopicList.push(ele)
+                        }
+                    });
+                }
+                console.log(this.selectTopicList)
+
+                // 读当前的第一题
+
+                let firstItem =  this.selectTopicList[this.selectIndex]
+                this.NowSlectItem = []
+                firstItem.groupQuestionArr.forEach(ele => {
+                    this.NowSlectItem.push({
+                        "no":ele.no,
+                        "id":""
+                    })
+                });
+                console.log(this.NowSlectItem)
+
+            })
         }else{
             this.$message.warning('无试卷数据')
         }
@@ -154,16 +205,52 @@ export default {
                         this.$message.warning('无分配老师数据')
                     }
                 })
-            }else{
-                
-            } 
+            }
         })
     },
     methods:{
         // 改变老师
         handleChangeTeacher(){
             console.log(this.selectTeacher)
-        }
+        },
+
+        getClass(no){
+            for(var i=0;i<this.NowSlectItem.length;i++){
+                if(no == this.NowSlectItem[i].no ){
+                    return 'select'
+                }
+            }
+            // return ''
+        },
+
+
+        // 下一题
+        nextTopic(){
+            // console.log(this.selectTeacher.length>0)
+            if(this.selectTeacher.length>0){
+                this.selectIndex++
+                if(this.selectIndex >= this.selectTopicList.length ){
+                    console.log('最后一题')
+
+                }else{
+                    let firstItem =  this.selectTopicList[this.selectIndex]
+                    this.NowSlectItem = []
+                    firstItem.groupQuestionArr.forEach(ele => {
+                        this.NowSlectItem.push({
+                            "no":ele.no,
+                            "id":""
+                        })
+                        // this.getClass(ele.no)
+                    });
+                    this.$forceUpdate();
+                    this.selectTeacher = []
+                }
+
+            }else{
+                 this.$message.warning('请分配老师')
+            }
+        },
+        
     }
 }
 </script>

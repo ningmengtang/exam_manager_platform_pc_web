@@ -482,7 +482,7 @@
 							"idCard":this.papaerType[i].student.idCard,
 							"schoolName":this.papaerType[i].student.schoolName,
 							"name":this.papaerType[i].student.name,
-							"classname":this.papaerType[i].student.classes.name
+							"className":this.papaerType[i].student.classes.name
 						}
 					})
 				}

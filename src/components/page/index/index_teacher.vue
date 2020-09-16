@@ -227,7 +227,7 @@
 									"idCard":localStorage.getItem('userID'),
 									"schoolName":'教师',
 									"name":'教师',
-									"classname":'教师'
+									"className":'教师'
 								}
 					          }
 					        ]

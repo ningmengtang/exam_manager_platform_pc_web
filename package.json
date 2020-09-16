@@ -38,7 +38,7 @@
     "vuedraggable": "^2.17.0",
     "wangeditor": "^3.1.1",
     "webpack": "^4.44.1",
-    "xlsx": "^0.16.5",
+    "xlsx": "^0.16.7",
     "xlsx-style": "^0.8.13"
   },
   "devDependencies": {

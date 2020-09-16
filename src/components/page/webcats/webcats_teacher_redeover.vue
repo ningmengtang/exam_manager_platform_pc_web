@@ -116,7 +116,7 @@ export default {
     data(){
         return{
             importPaper:'',
-            isOver:true
+            isOver:false
         }
     },
     mounted(){
