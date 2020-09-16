@@ -903,3 +903,30 @@ export function TeacherQuestionExamList(data){
     const result =post('/api/teacher/question/examManagement' ,data)
 	return result;
 }
+
+//----------------------------------------------------------------
+//二维码操作方法
+
+/**
+ * 新增二维码
+ */
+export function basicQrcInsert(data){
+    const result =post('/api/basic/qrc/insert' ,data)
+	return result;
+}
+
+/**
+ * 删除二维码
+ */
+export function basicQrcDelete(data){
+    const result =get('/api/basic/qrc/delete/'+data+'?d=' + new Date() * 1)
+	return result;
+}
+
+/**
+ * 查询二维码，一般不会修改二维码内容，所以直接缓存使用就行
+ */
+export function basicQrcSelectByPrimaryKey(data){
+    const result =get('/api/basic/qrc/selectByPrimaryKey/ '+data)
+	return result;
+}
