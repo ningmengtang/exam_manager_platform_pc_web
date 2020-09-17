@@ -1,47 +1,16 @@
 <template>
 	<div class="box">
-		<div class="big-box">
-			<div class="header-top">
-				<div class="time">
-					<div>距离考试结束还有</div>
-					<div class="ts-time">{{ResidueTime}}</div>
-				</div>
-				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">
-					<div class="i1">{{examTitle}}</div>
-					<div class="i2">{{examParticular}}</div>
-				</div>
-				<div>
-					<el-button class="buttom">交卷</el-button>
-				</div>
-				<div class="other-box">
-					<div class="status">图片试卷上传答案</div>
-					<div class="ewm">
-						<el-image :src="ewm"></el-image>
-						<div class="l">扫码快速上传</div>
-					</div>
-				</div>
+		<div class="finish-box">
+            <div class="time-box">
+				<div class="ts">距离考试结束还有</div>
+				<div class="ts-time">{{ResidueTime}}</div>
 			</div>
-			<div class="content-b">
-				<div class="message-top">上传一览</div>
-				<div class="ts">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下上传的结果，如果上传了错误的答案，请重新上传，请不要重复上传同样的题目答案。</div>
-				<div class="questions-img">
-					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
-						<div class="img-box-i">
-							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
-							<transition name="el-zoom-in-top">
-								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
-									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
-									<i class="icon el-icon-delete-solid "></i>
-								</div>
-							</transition>
-						</div>
-						<span class="i">5545</span>
-					</div>
-				</div>
-				<div class="exam-img">
-					<img :src="affix"  class="img" @click="img_shade(i)"></img>
-				</div>
+			<div class="last">
+				<el-image :src="require('../../../assets/img/exam-finish.png')" class='img'></el-image>
+					<div class="ii">考试完成，真棒！</div>
+					<div class="iii">您已经按时完成了考试，并提交了试卷</div>
 			</div>
+			
 		</div>
 	</div>
 </template>
@@ -219,22 +188,25 @@
 				let newTime = new Date().getTime();
 				let timeDifference = this.getCookie('examTime') - newTime;
 				if (timeDifference <= 0) {
-					this.$alert('考试时间结束！将自动提交试卷。', '提醒', {
-						confirmButtonText: '确定',
-						callback: action => {
-							this.finish()
-						}
-					});
+					// this.$alert('考试时间到了！', '提示', {
+					// 	confirmButtonText: '确定',
+					// 	callback: action => {
+					// 		// this.$message({
+					// 		// 	type: 'info',
+					// 		// 	message: `action: ${ action }`
+					// 		// });
+					// 	}
+					// });
 					// 清除计时器
 					clearInterval(this.timer)
 					// 清除时间cookic
-					this.clearCookie('examTime')
+					clearCookie('examTime')
 					localStorage.removeItem('topic')
-					return ResidueTime = '00:00:00';
+					ResidueTime = '00:00:00'
+
 				}
 				ResidueTime = this.getLocalTime(timeDifference)
 				return ResidueTime;
-			
 			},
 			// 题目跳转
 			goTopic() {
@@ -244,23 +216,17 @@
 		mounted() {
 			this.loading = true,
 				localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
-
+            clearInterval(this.timer)
+            // 清除时间cookic
+            this.clearCookie('examTime')
+            localStorage.removeItem('topic')
+            // this.ResidueTime = '00:00:00'
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
 				this.examTitle = res.data.data.title
 				this.examParticular = res.data.data.examExplain
 				// this.affix=res.data.data.affix
 			})
-			// 返回图片试卷
-			apicommonExamGetFile(this.examId).then(res=>{
-				let blob = new Blob([res.data]);
-				let url = window.URL.createObjectURL(blob);
-			     this.affix=url
-			})
-			// ---查看试卷试题---
-			// apiCommonExamSeleElementTestById(this.examId).then(res => {
-			// 	console.log(res.data.data.elementTest)
-			// })
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 0)

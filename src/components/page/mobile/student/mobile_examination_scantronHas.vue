@@ -122,7 +122,6 @@
 				percentage: 0,
 				customColor: '#409eff',
 				topicDefault: [],
-				topicArr:[],
 				choice:["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
 				topic: [{
 						id: 1,
@@ -161,6 +160,7 @@
 					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
 				],
 				srcList: [
+
 					'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
 					'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
 					'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
@@ -281,8 +281,7 @@
 			// 题目跳转
 			goTopic(type) {
 				this.schedule();
-				// console.log(this.topicDefault)
-				
+				console.log(this.topicDefault)
 				if (type == 'previous') {
                     
 				} else if (type == 'next') {
@@ -307,23 +306,20 @@
 				apiCommonExamSelectById(this.examId).then(res => {
 					this.examTitle = res.data.data.title
 					this.examParticular = res.data.data.examExplain
-					// console.log(res.data.data)
+					console.log(res.data.data)
 				})
 			// ---查看试卷试题---
 			apiCommonExamSeleElementTestById(this.examId).then(res => {
-				let a,b,c=1
 				let d = JSON.parse(res.data.data.elementTest);
 				console.log(d)
 				this.topic = d.items
-				d.items.forEach((x,i) => {
-					x.items.map((y,o) => {
+				d.items.map(x => {
+					x.items.forEach(y => {
 						this.topicSum = this.topicSum + y.items.length
-						y.items.map((z,p)=>{
-							this.topicArr.push(`${i+1}.${o+1}.${p+1}`)
-						})
 					})
 				})
-				console.log(this.topicArr)
+				console.log(this.topicSum)
+
 			})
 			// ---定时器计算剩余时间
 			this.timer = setInterval(x => {
