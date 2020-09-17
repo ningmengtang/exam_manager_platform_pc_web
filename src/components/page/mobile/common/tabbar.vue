@@ -22,7 +22,7 @@ export default {
     },
     mounted(){
        this.type = localStorage.getItem('loginUserType')
-
+       console.log(this.type)
     }
 }
 </script>

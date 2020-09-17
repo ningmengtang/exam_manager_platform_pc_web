@@ -76,10 +76,10 @@
             </div>
 
             <div class="right_box_bottom">
-                <el-button class="right_box_bottom_btn last">上一题</el-button>
+                <el-button class="right_box_bottom_btn last" @click="lastTopic">上一题</el-button>
                 <el-button class="right_box_bottom_btn next" @click="nextTopic">下一题</el-button>
-                <el-button class="right_box_bottom_btn reset">重置所有分配方案</el-button>
-                <el-button class="right_box_bottom_btn affirm">确认分配方案</el-button>
+                <el-button class="right_box_bottom_btn reset" @click="resetTopic">重置所有分配方案</el-button>
+                <el-button class="right_box_bottom_btn affirm" @click="affirmPlan">确认分配方案</el-button>
             </div>
         </div>
     </div>
@@ -87,7 +87,8 @@
 <script>
 import {
     schoolSelectTeacher,
-    apiCommonExamSeleElementTestById
+    apiCommonExamSeleElementTestById,
+    TeacherQuestionAdd
 	} from '@/api/api.js'
 import { forEach } from 'jszip';
 export default {
@@ -125,14 +126,20 @@ export default {
             },
             
             ],
-            allTaskList:[]
+            allTaskList:[],
+            paperId:'',
+            taskId:''
         }
     },
     mounted(){
         let importPaper = JSON.parse(sessionStorage.getItem("importPaper"))
         if(importPaper){
             this.importPaper = importPaper
-            this.paperId = this.importPaper.examinationPaper.id
+
+            this.paperId = this.importPaper.paper_id
+            this.taskId = this.importPaper.id
+
+
             apiCommonExamSeleElementTestById(this.paperId).then(res=>{
                 this.elementTest = JSON.parse(res.data.data.elementTest)
                 let elementTestItems = this.elementTest.items
@@ -154,7 +161,7 @@ export default {
                     }
                     this.topicList.push(arry)
                 }
-                console.log(this.topicList)
+                // console.log(this.topicList)
                 // 当前分配题目
                 this.selectTopicList = []
                 for(var k=0;k<this.topicList.length;k++){
@@ -164,7 +171,7 @@ export default {
                         }
                     });
                 }
-                console.log(this.selectTopicList)
+                // console.log(this.selectTopicList)
 
                 // 读当前的第一题
 
@@ -173,11 +180,14 @@ export default {
                 firstItem.groupQuestionArr.forEach(ele => {
                     this.NowSlectItem.push({
                         "no":ele.no,
-                        "id":""
+                        "id":ele.id
                     })
                 });
-                console.log(this.NowSlectItem)
-
+              
+                this.selectTopicList.forEach(element => {
+                    this.allTaskList.push([])
+                });
+                console.log(this.allTaskList)
             })
         }else{
             this.$message.warning('无试卷数据')
@@ -200,7 +210,6 @@ export default {
                                 this.teacherList.push(list[i])
                             }
                         }
-                        // console.log(this.teacherList)
                     }else{
                         this.$message.warning('无分配老师数据')
                     }
@@ -220,37 +229,149 @@ export default {
                     return 'select'
                 }
             }
-            // return ''
         },
 
 
         // 下一题
         nextTopic(){
-            // console.log(this.selectTeacher.length>0)
             if(this.selectTeacher.length>0){
-                this.selectIndex++
                 if(this.selectIndex >= this.selectTopicList.length ){
-                    console.log('最后一题')
-
+                    this.selectIndex = this.selectTopicList.length
+                    this.$message.warning('当前任务已经分配完成，请确认所有分配方案')
                 }else{
-                    let firstItem =  this.selectTopicList[this.selectIndex]
-                    this.NowSlectItem = []
-                    firstItem.groupQuestionArr.forEach(ele => {
-                        this.NowSlectItem.push({
-                            "no":ele.no,
-                            "id":""
-                        })
-                        // this.getClass(ele.no)
-                    });
-                    this.$forceUpdate();
-                    this.selectTeacher = []
+                    // 模拟总份数 35
+
+                    let Allnum = 35 
+                    let allTaskList = []
+                    for(var i=0;i<this.NowSlectItem.length;i++){
+                        for(var a=0;a<this.selectTeacher.length;a++){
+                            // 处理最后一个
+                            if(a == this.selectTeacher.length -1){
+
+                                allTaskList.push({
+                                    "teacher_id":this.selectTeacher[a],
+                                    "question_id":this.NowSlectItem[i].id,
+                                    "count":Allnum -( parseInt(Allnum/this.selectTeacher.length) * a),
+                                    "paper_id":this.paperId,
+                                    "task_id":this.taskId
+                                })
+                            }else{
+                                allTaskList.push({
+                                    "teacher_id":this.selectTeacher[a],
+                                    "question_id":this.NowSlectItem[i].id,
+                                    "count":parseInt(Allnum/this.selectTeacher.length),
+                                    "paper_id":this.paperId,
+                                    "task_id":this.taskId
+                                })
+                            }
+                        }
+                    }
+
+                    this.allTaskList[this.selectIndex] = allTaskList
+                    this.selectIndex++
+                    // 初始化数据
+                    if(this.selectIndex >= this.selectTopicList.length ){
+                        this.selectIndex = this.selectTopicList.length
+                    }else{
+                        let firstItem =  this.selectTopicList[this.selectIndex]
+                    
+                        this.NowSlectItem = []
+                        firstItem.groupQuestionArr.forEach(ele => {
+                            this.NowSlectItem.push({
+                                "no":ele.no,
+                                "id":ele.id
+                            })
+                        });
+
+                        this.$forceUpdate();
+                       
+                        this.selectTeacher = []
+                        console.log(this.allTaskList)
+
+                    }
                 }
 
             }else{
                  this.$message.warning('请分配老师')
             }
         },
-        
+
+        // 上一题
+        lastTopic(){
+            this.selectIndex--
+            console.log(this.selectIndex)
+            if(this.selectIndex >= 0){
+                let firstItem = this.selectTopicList[this.selectIndex]
+                this.NowSlectItem = []
+                    firstItem.groupQuestionArr.forEach(ele => {
+                        this.NowSlectItem.push({
+                        "no":ele.no,
+                        "id":ele.id
+                    })
+                });
+                this.$forceUpdate();    
+                this.selectTeacher = []
+            }else{
+                this.selectIndex = 0
+                this.$message.warning('没有更多题目')
+            }
+        },
+
+
+        // 重置
+        resetTopic(){
+            // 读当前的第一题
+            this.selectIndex = 0
+            this.NowSlectItem = []
+            this.allTaskList = []
+            let firstItem =  this.selectTopicList[this.selectIndex]
+            firstItem.groupQuestionArr.forEach(ele => {
+                this.NowSlectItem.push({
+                    "no":ele.no,
+                    "id":ele.id
+                })
+            });
+            this.selectTopicList.forEach(element => {
+                this.allTaskList.push([])
+            });
+            this.selectTeacher = []
+            this.$forceUpdate();   
+        },
+        async getPlan(data,index){
+			await this.getPlanPromise(data,index)
+			// return n 
+        },
+        getPlanPromise(data,index){
+			return new Promise((resolve,reject)=>{
+                TeacherQuestionAdd(data).then(res=>{
+                    if(res.data.result){
+
+                    }else{
+                        this.$message.error(res.data.message)
+                    }
+                    resolve(res)
+                })
+			})
+		},
+        // 确认提交
+        affirmPlan(){
+            // console.log(this.allTaskList)
+            let taskList = []
+            for(var k=0;k<this.allTaskList.length;k++){
+                let array = this.allTaskList[k]
+                array.forEach(element => {
+                    // console.log(element)
+                    taskList.push(element)
+                });
+                // this.getPlan(this.allTaskList[k],k)
+            }
+            console.log(taskList)
+            for(var i=0;i<taskList.length;i++){
+                this.getPlan(taskList[i],i)
+            }
+            this.$message.success('操作成功')
+            
+        }
     }
 }
 </script>

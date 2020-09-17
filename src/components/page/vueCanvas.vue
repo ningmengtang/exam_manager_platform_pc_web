@@ -297,8 +297,8 @@ import IconVue from './Icon.vue'
         this.initDraw()
         this.setCanvasStyle()
         
-        document.querySelector('#footer').classList.add('hide-footer')
-        document.querySelector('body').classList.add('fix-body')
+        // document.querySelector('#footer').classList.add('hide-footer')
+        // document.querySelector('body').classList.add('fix-body')
     },
     destroyed () {
       document.querySelector('#footer').classList.remove('hide-footer')
