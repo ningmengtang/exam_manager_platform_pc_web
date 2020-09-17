@@ -58,14 +58,18 @@
 .left-box .answer .ts-time{color: #FA4B1B;font-size: 48px;font-weight: bold;display: flex;justify-content: center;align-items: center;margin:14px 0;width: 100%;}
 .left-box .answer .all-topic-box{width: 100%;}
 .left-box .answer .all-topic-box .li{overflow: auto;height: 440px;margin-top: 10px;width: 100%;}
+.left-box .answer .at-number .button{border-radius: 8px;background-color: #999999;color: #FFFFFF;padding: 10px 20px;}
+.left-box .answer .at-number .button.i{background-color: #19ADFB;}
 /* .left-box .answer .all-topic-box .li-i{display: flex;} */
 .left-box .answer .all-topic-box .at-top{text-align: left;font-size: 16px;font-weight: bold;margin-top: 10px;}
 .left-box .answer .at-title{margin: 14px 0;font-weight: bold;font-size: 18px;}
-.left-box .answer .at-title-i{font-size: 16px;font-weight: bold;text-align: left;}
-.left-box .answer .at-number{margin-bottom: 10px;}
+.left-box .answer .at-title-i{font-size: 16px;font-weight: bold;text-align: left;line-height: 36px;}
+.left-box .answer .at-number{margin: 10px 0;}
 .left-box .answer .affirm{align-self: flex-end;}
+
 .left-box .answer .previous,.next{padding: 24px;background-color: #999999;color: #FFFFFF;font-weight: bold;font-size: 20px;}
 .left-box .answer .bottom-ts{margin-top: 8px;font-size: 14px;color: #333333;}
+
 
 
 
@@ -108,7 +112,8 @@
 .right-box .questions .content-cc{min-height: 305px;margin-top: 10px;}
 .right-box .questions .content-cc .cc-img{margin-bottom: 10px;}
 .right-box .questions .content-c .img-box{max-height: 254px;overflow: auto;}
-.right-box .questions .c-title{/* margin-bottom: 22px; */}
+.right-box .questions .c-title{font-weight: bold;}
+.right-box .questions .cc-title{font-size: 18px;font-weight: bold;}
 .right-box .questions .choice{display: flex;justify-content: center;align-items: center;flex-direction: column;width: 100%;}
 .right-box .questions .userChoice{padding: 16px;color: #999999;display: flex;align-items: baseline;font-size: 16px;}
 .right-box .questions .userChoice .i{color: #1AAEFB;font-weight: bold;}
@@ -139,7 +144,7 @@
 .box /deep/ .el-checkbox-button{margin-left: 5px;margin-top: 10px;margin-right: 5px;}
 .box /deep/ .el-cascader-node>.el-radio, .el-radio{margin-top: 10px;font-size: 18px;padding: 20px;background-color: #999999;color: #FFFFFF;border-radius: 4px;}
 .box /deep/ .el-radio__label{font-size: 20px;}
-.box /deep/ .el-radio-button__inner{border: none;font-size: 18px;border-radius: 4px;margin-top: 10px;font-weight: bold;}
+.box /deep/ .el-radio-button__inner{border: none;font-size: 18px!important;border-radius: 4px;margin-top: 10px;font-weight: bold!important;display: flex;align-items: baseline;}
 .box /deep/ .el-cascader-node>.el-radio, .el-radio:last-child{margin-right: 30px;}
 /* 分页 */
 .page{display: flex;justify-content: center;align-items: center;margin: 20px;}

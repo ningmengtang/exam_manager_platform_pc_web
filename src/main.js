@@ -12,7 +12,10 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 import './assets/icon/iconfont.css';
+import 'vant/lib/index.css';
+import '@/components/Vant'
 import Vue2OrgTree from 'vue2-org-tree'
+
 //富文本编辑器
 // import quillEditor from 'vue-quill-editor'
 // import 'quill/dist/quill.snow.css' // 富文本编辑器外部引用样式  三种样式三选一引入即可
