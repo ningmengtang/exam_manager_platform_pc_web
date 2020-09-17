@@ -407,6 +407,7 @@ import {
 					"pageNum": this.pageNum
 				}).then(res => {
 					if(res.data.data){
+						
 						this.papers = res.data.data.list
 						this.total = res.data.data.total
 						this.currentPage = res.data.data.pageNum
@@ -652,6 +653,7 @@ import {
 				"pageNum": this.pageNum
 			}).then(res => {
 				if(res.data.data){
+					console.log(res.data.data)
 					this.papers = res.data.data.list
 					this.total = res.data.data.total
 					this.currentPage = res.data.data.pageNum

@@ -2,9 +2,9 @@
     <div class="home">
         <div class="index">
             <h4>2019年人教版一年级第一单元考试</h4>
-            <div class="left_box_tag">
+            <!-- <div class="left_box_tag">
                 <div class="label" v-for="card in tag_list">{{card.text}}</div>
-            </div>
+            </div> -->
         </div>
         <Tabbar /> 
     </div>

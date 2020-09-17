@@ -903,3 +903,13 @@ export function TeacherQuestionExamList(data){
     const result =post('/api/teacher/question/examManagement' ,data)
 	return result;
 }
+// 组长老师分配题目任务给教师
+export function TeacherQuestionAdd(data){
+    const result =post('/api/teacher/question/insert' ,data)
+	return result;
+}
+// 老师批阅阅卷
+export function TeacherQuestionList(data){
+    const result =post('/api/teacher/question/select' ,data)
+	return result;
+}
