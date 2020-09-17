@@ -143,12 +143,12 @@ export default {
             apiCommonExamSeleElementTestById(this.paperId).then(res=>{
                 this.elementTest = JSON.parse(res.data.data.elementTest)
                 let elementTestItems = this.elementTest.items
-
-
+                console.log
                 // 所有题目
                 this.topicList= []
                 for(var i=0;i<elementTestItems.length;i++){
                     let item  = elementTestItems[i].items
+                    console.log(item)
                     let arry = []
                     for(var k=0;k<item.length;k++){
                         let groupQuestionArr = item[k].items
@@ -161,7 +161,7 @@ export default {
                     }
                     this.topicList.push(arry)
                 }
-                // console.log(this.topicList)
+                console.log(this.topicList)
                 // 当前分配题目
                 this.selectTopicList = []
                 for(var k=0;k<this.topicList.length;k++){
@@ -171,7 +171,7 @@ export default {
                         }
                     });
                 }
-                // console.log(this.selectTopicList)
+                console.log(this.selectTopicList)
 
                 // 读当前的第一题
 
@@ -187,7 +187,6 @@ export default {
                 this.selectTopicList.forEach(element => {
                     this.allTaskList.push([])
                 });
-                console.log(this.allTaskList)
             })
         }else{
             this.$message.warning('无试卷数据')

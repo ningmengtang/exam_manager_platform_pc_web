@@ -1,4 +1,4 @@
-.box{
+/* .box{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -33,4 +33,31 @@
     height: 80px;
     border-radius: 80px;
     text-align: center;
+} */
+.home{
+    /* background: #fff; */
+}
+.index_paper_info{
+    text-align: center;
+    margin: 2vw auto;
+    width: 95%;
+    border-radius: 8px;
+    padding:1vw;
+    background: #fff;
+}
+.label-box{display: flex;margin:  0 1.5vw 0 0;flex-wrap: wrap; margin-top: 1vw;}
+.label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}
+.label:nth-child(1n+1){background-color: #fb4919;}
+.label:nth-child(2n+2){background-color: #19aefb;}
+.label:nth-child(3n+3){background-color: #2bbb61;}
+.index_paper_info .time{
+    text-align: center;
+    color: #343434;
+    margin-top: 10px;
+}
+.index_paper_info_p{
+    color: #E2643C;
+    font-size: 16px;
+    text-align: center;
+    margin: 30px auto;
 }
