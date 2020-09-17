@@ -158,6 +158,9 @@
 			},
 			// ---跳转图片试卷---
 			goScantronImg(){
+				if(this.getCookie('examTime')==''){
+					this.setCookie('examTime', new Date())
+				}
 				this.$router.push({
 					name: 'examination_scantronImg',
 					query: {

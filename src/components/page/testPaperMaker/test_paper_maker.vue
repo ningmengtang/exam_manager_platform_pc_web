@@ -443,7 +443,7 @@
                         </td>
                         <td width="70px">
                             <p style="text-align:center;">第{{questionItem.no}}小题</p>
-                            <vue-qr :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                            <vue-qr :correctLevel="3" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                         </td>
                         </tr>
                       </table>
@@ -614,7 +614,7 @@
                               <td width="70px">
                                 <p style="text-align:center;font-size:12px;" v-if="questionItem.groupQuestionArr.length > 1">第{{questionItem.groupQuestionArr[0].no}}-{{questionItem.groupQuestionArr[questionItem.groupQuestionArr.length-1].no}}题</p>
                                 <p style="text-align:center;font-size:12px;" v-if="questionItem.groupQuestionArr.length <= 1">第{{questionItem.no}}题</p>
-                                <vue-qr v-if="questionItem.groupQuestionArr" :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                                <vue-qr :correctLevel="3" v-if="questionItem.groupQuestionArr" :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                             </td>
 
                           </tr>
@@ -1493,8 +1493,9 @@ export default {
         });
       }
       // console.log(newObj.qIdArr)
-      return JSON.stringify(newObj)
-
+      //return JSON.stringify(newObj)
+      //模拟生成qrid
+      return "-1"
     },
     /**
      * uuid生成器

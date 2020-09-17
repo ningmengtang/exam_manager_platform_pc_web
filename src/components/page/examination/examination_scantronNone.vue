@@ -1,104 +1,105 @@
 <template>
 	<div class="box">
-		<div class="message-row">
-			<el-row :gutter="20" type="flex">
-				<el-col :span="8">
-					<router-link :to="{path:'manage_student'}">
-					<div class="grid-content bg-purple">
-						<div class="card-left">
-							<div class="card-c">全部试卷</div>
-							<div class="card-cc">
-								<ICountUp :endVal="total" />
-							</div>
-						</div>
-						<div class="card-right"></div>
+		<!-- 左边 -->
+		<div class="left-box">
+			<div class="answer">
+				<div class="ts">距离考试结束还有</div>
+				<div class="ts-time">{{ResidueTime}}</div>
+				<div class="all-topic-box">
+					<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
+						 :format="format"></el-progress>
 					</div>
-					</router-link>
-				</el-col>
-				<el-col :span="8">
-					<router-link :to="{path:'manage_student'}">
-					<div class="grid-content bg-purple" :style="style.card_2">
-						<div class="card-left">
-							<div class="card-c">可以下载</div>
-							<div class="card-cc">
-								<ICountUp :endVal="download" />
-							</div>
+					<div class="li">
+						<div class="at-title">第一大题、选择题</div>
+						<div class="at-number">
+							<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule('choice')">
+								<el-checkbox-button v-for="(d,i) in topic" :label="d.id" :key="d.i">{{d.name}}</el-checkbox-button>
+							</el-checkbox-group>
 						</div>
-						<div class="card-right" :style="style.cardRight_2"></div>
-					</div>
-					</router-link>
-				</el-col>
-				<el-col :span="8">
-					<router-link :to="{path:'manage_student'}">
-					<div class="grid-content bg-purple" :style="style.card_3">
-						<div class="card-left">
-							<div class="card-c">下载失效</div>
-							<div class="card-cc">
-								<ICountUp :endVal="disabled" />
-							</div>
+						<div class="at-title">第二大题、综合题</div>
+						<div class="at-number">
+							<el-checkbox-group v-model="topicDefault" size="medium" @change="schedule('synthesize')">
+								<el-checkbox-button v-for="(d,i) in topic2" :label="d" :key="d.i">{{d}}</el-checkbox-button>
+							</el-checkbox-group>
 						</div>
-						<div class="card-right" :style="style.cardRight_3"></div>
 					</div>
-					</router-link>
-				</el-col>
-			</el-row>
-		</div>
-		<div class="papers-box" v-loading="loading">
-			<div class="p-li" v-for="(d,i) in papers" :key="d.i" :style="d.status==0?(1):style.pLi" @click="downloadFile(d)" style="cursor: pointer">
-				<div class="p-icon-box">
-					<div class="p-icon"></div>
 				</div>
-				<div class="p-particula">
-					<div class="top-box">
-						<!-- <div class="subject">{{d.subject}}</div> -->
-						<div class="grade">{{d.gradeClass}}</div>
-					</div>
-					<div class="p-title">{{d.title}}</div>
-					<div class="p-time">{{d.modifyDate}}</div>
-					<div class="p-time">
-						开始下载时间：{{d.startTime}}
-					</div>
-					<div class="p-time">
-						结束下载时间：{{d.overTime}}
-					</div>
-					<div class="p-status" :style="d.status==0?(1):style.pStatus">{{d.status==0 && d.putInto == 1?'可以下载':'不允许下载'}}</div>
-					<i  class="p-status-icon el-icon-download" v-if="d.status == 0 && d.putInto == 1">
-						
-					</i>
-					<i  class="p-status-icon   el-icon-close " style="color: rgb(242, 94, 67);"   v-if="d.status == 1 || d.putInto == 0"  >
-						
-					</i>
-
+				<div class="affirm">
+					<el-button class="previous">确认，上一题</el-button>
+					<el-button class="next" style="background-color: #19AEFB;">确认，下一题</el-button>
+					<div class="bottom-ts">注意核实个人信息和考试信息，如有不符立刻联系老师</div>
 				</div>
 			</div>
 		</div>
-		<!-- 分页 -->
-		<div class="page">
-			<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
-			</el-pagination>
+		<!-- 右边 -->
+		<div class="right-box">
+			<div class="questions">
+				<div class="message-top">
+					<div>{{this.topicDefault[this.topicDefault.length-1]}}</div>
+					<el-tag effect="dark" class="tag">有答题卡作答</el-tag>
+				</div>
+				<div class="content-b">
+					<div class="c-title">请问唧唧复唧唧的下一句是什么？</div>
+					<div class="ewm">
+						<el-image :src="ewm"></el-image>
+						<div class="l">扫码快速上传</div>
+					</div>
+				</div>
+				<div class="content-c">
+					<div v-if="stateType=='choice'">
+						<el-radio-group v-model="choiceKey" class="choice">
+							<el-radio-button label="A">A.备选项</el-radio-button>
+							<el-radio-button label="B">B.备选项</el-radio-button>
+							<el-radio-button label="C">C.备选项</el-radio-button>
+							<el-radio-button label="D">D.备选项</el-radio-button>
+						</el-radio-group>
+						<div class="userChoice"><span>你已选择： </span><span class="i">{{choiceKey}}</span></div>
+						<div style="display: flex;justify-content: center;">
+							<el-button class="reset" @click="choiceKey=''">清空本题答案</el-button>
+						</div>
+					</div>
+					<div v-else-if="stateType=='synthesize'">
+						<div class="content-cc">
+							<el-image :src="problemImg" class="cc-img"></el-image>
+							<div class="font-i" style="margin-bottom: 20px;">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下识别的结果，如果修改了答案，请重新上传。</div>
+						</div>
+					</div>
+				</div>
+				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">上传日志</div>
+				<div class="questions-img">
+					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
+						<div class="img-box-i">
+							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
+							<transition name="el-zoom-in-top">
+								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
+									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
+									<i class="icon el-icon-delete-solid "></i>
+								</div>
+							</transition>
+						</div>
+						<span class="i">5545</span>
+					</div>
+				</div>
+			</div>
 		</div>
+		<el-image-viewer v-if="bigImg" :initial-index="bigIndex" :on-close="closeViewer" :url-list="srcList" />
 	</div>
 </template>
 
 <script>
-	import Schart from 'vue-schart'
-	import bus from '../../common/bus'
-	import ICountUp from 'vue-countup-v2'
-	import {
-		handleSizeChange,
-		handleCurrentChange,
-		studentIndexData,
-		
-	} from '@/assets/js/index.js'
+	import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 	import {
 		studentIndex,
-		apicommonExamGetFile
+		apicommonExamGetFile,
+		apiStudentAccountSelectById,
+		apiCommonExamSelectById,
+		apiCommonExamSeleElementTestById
 	} from '@/api/api.js'
 	export default {
-		name: 'index_student',
+		components: {
+			ElImageViewer
+		},
 		data() {
-			this.colors = ['#67C23A', '#409EFF', '#F56C6C']
 			return {
 				total: 0,
 				pageSize: 9,
@@ -106,126 +107,206 @@
 				currentPage: 1,
 				download: 0,
 				disabled: 0,
-				loading:false,
+				loading: false,
 				status: '',
-				style: {
-					card_2: 'background-color: #41dde3;',
-					card_3: 'background-color: #e35841;',
-					cardRight_2: {
-						backgroundImage: 'url(' + require('../../../assets/img/bg-2.png') + ')'
-					},
-					cardRight_3: {
-						backgroundImage: 'url(' + require('../../../assets/img/bg-3.png') + ')'
-					},
-					pLi: {
-						backgroundImage: 'url(' + require('../../../assets/img/fail-download.png') + ')'
-					},
-					pStatus: 'color:#e2633b'
-				},
+				examId: this.$route.query.id,
+				examTitle: '',
+				examParticular: '',
 				papers: {},
+				classes: '',
 				dialogVisible: false,
+				percentage: 0,
+				customColor: '#409eff',
+				topicDefault: [1],
+				topic: [{
+						id: 1,
+						name: '第一题'
+					}, {
+						id: 2,
+						name: '第二题',
+					},
+					{
+						id: 3,
+						name: '第三题'
+					}
+				],
+				topic2: ['第7题', '第8题', '第9题', '第10题', '第11题', '第12题', '第13题', '第14题'],
+				choiceKey: '',
+				bigImg: false,
+				imgShade: false,
+				imgShadeIndex: '',
+				bigIndex: 0,
+				ResidueTime: '00:00:00',
+				timer: '',
+				stateType: '',
+				problemImg: 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+				ewm: require("../../../assets/img/ewm.png"),
+				urls: [
+					'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+					'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
+					'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
+					'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
+					'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
+					'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
+					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
+				],
+				srcList: [
+
+					'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+					'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
+					'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
+					'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
+					'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
+					'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
+					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
+				]
 			}
 		},
-		components: {
-			Schart,
-			ICountUp
-		},
 		methods: {
-			handleSizeChange,handleCurrentChange,studentIndexData
-			,
-			downloadFile(item){
-				if(item.status == 0){
-					if(item.startTime && item.overTime){
-					let arr = this.isDuringDate(item.startTime,item.overTime)
-					if(arr){
-						if(item.affix){
-							apicommonExamGetFile(item.id).then(res=>{
-								// console.log(res)
-								var headers = res.headers['content-disposition']
-								// console.log(headers)
-								headers = headers.substring(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
-								const blob = new Blob([res.data],{type:''})
-								let link = document.createElement('a');
-								let objectUrl = URL.createObjectURL(blob);
-								link.setAttribute("href",objectUrl);
-								link.setAttribute("download",headers); 
-								link.click();
-								//释放内存
-								window.URL.revokeObjectURL(link.href)
-							})
-						}else{
-							let  createTestPaperInfoObj = {
-						 		testPaperId:item.id,
-						        students:[
-						          {
-						            uid:localStorage.getItem('userID'),
-									utype:"student",
-				          			items:[]
-						          }
-						        ]
-						      }
-							this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+			//---分页---
+			handleSizeChange(val) {
+
+			},
+			//---分页2---
+			handleCurrentChange(val) {
+				this.page.pageNum = val
+				this.selectPaper();
+			},
+			format(percentage) {
+				if (percentage == 100) {
+					this.customColor = '#5cb87a'
+				} else {
+					this.customColor = '#409eff'
+				}
+				return percentage === 100 ? '已完成' : `${percentage}%`;
+			},
+			// ---计算完成度---
+			schedule(type) {
+				localStorage.setItem('topic', JSON.stringify(this.topicDefault))
+
+				switch (type) {
+					case 'choice':
+						this.stateType = 'choice'
+						if (this.choiceKey != '') {
+							let arr = this.topic.concat(this.topic2).length
+							let choice = this.topicDefault.length
+							this.percentage = parseInt(choice / arr * 100)
 						}
-						
-					}else{
-						this.$message.warning('未到下载时间，不允许下载')
-					}
-					}else{
-						if(item.affix){
-							apicommonExamGetFile(item.id).then(res=>{
-								// console.log(res)
-								var headers = res.headers['content-disposition']
-								// console.log(headers)
-								headers = headers.substring(headers.indexOf('filename=\"')+'filename=\"'.length).split("\"")[0];
-								const blob = new Blob([res.data],{type:''})
-								let link = document.createElement('a');
-								let objectUrl = URL.createObjectURL(blob);
-								link.setAttribute("href",objectUrl);
-								link.setAttribute("download",headers); 
-								link.click();
-								//释放内存
-								window.URL.revokeObjectURL(link.href)
-							})
-						}else{
-							let  createTestPaperInfoObj = {
-							 		testPaperId:item.id,
-							        students:[
-							          {
-							            uid:localStorage.getItem('userID'),
-										utype:"student",
-				          				items:[]
-							          }
-							        ]
-							      }
-							this.$router.push({name :'test_paper_maker_for_task',query:{createTestPaperInfoObj:createTestPaperInfoObj}})
+						break;
+					case 'synthesize':
+						this.stateType = 'synthesize'
+						if (this.problemImg != '') {
+							let arr = this.topic.concat(this.topic2).length
+							let choice = this.topicDefault.length
+							this.percentage = parseInt(choice / arr * 100)
 						}
-					}
+						break;
 				}
 			},
-			isDuringDate(beginDateStr,endDateStr){
-				var curDate = new Date()
-				var	beginDate = new Date(beginDateStr)
-				var endDate = new Date(endDateStr)
-				
-				if(curDate >= beginDate && curDate <=endDate){
-					return true
+			// 图片遮罩
+			img_shade(index) {
+				this.imgShade = true;
+				this.imgShadeIndex = index
+			},
+			//---开控制预览大图片---
+			openViewer(index) {
+				this.bigImg = true
+				this.bigIndex = this.imgShadeIndex
+			},
+
+			//---关闭控制预览大图片---
+			closeViewer() {
+				this.bigImg = false
+			},
+			// 获取cookie
+			getCookie(name) {
+				var strCookie = document.cookie;
+				//cookie的保存格式是 分号加空格 "; "  
+				var arrCookie = strCookie.split("; ");
+				for (var i = 0; i < arrCookie.length; i++) {
+					var arr = arrCookie[i].split("=");
+					if (arr[0] == name) {
+						return unescape(arr[1]);
+					}
 				}
-				return false
+				return "";
+			},
+			//  删除cookie
+			clearCookie(name, value) {
+				var exp = new Date();
+				exp.setTime(exp.getTime() - 1);
+				// 这里需要判断一下cookie是否存在
+				var c = this.getCookie(name);
+				if (c != null) {
+					document.cookie = name + "=" + c + ";expires=" + exp.toGMTString();
+				}
+			},
+			//根据时间戳生成的时间对象
+			getLocalTime(nS) {
+				var d = new Date(nS);
+				var date =
+					(d.getHours() - 8) + ":" +
+					(d.getMinutes()) + ":" +
+					(d.getSeconds());
+				return date;
+			},
+			//计算考试剩余时间
+			getResidueTime() {
+				let ResidueTime
+				let newTime = new Date().getTime();
+				let timeDifference = this.getCookie('examTime') - newTime;
+				if (timeDifference <= 0) {
+					ResidueTime = '00:00:00'
+					this.$alert('考试时间结束！', '提醒', {
+						confirmButtonText: '确定',
+						callback: action => {
+							this.goTopic()
+						}
+					});
+					// 清除计时器
+					clearInterval(this.timer)
+					// 清除时间cookic
+					this.clearCookie('examTime')
+					localStorage.removeItem('topic')
+				}
+
+				ResidueTime = this.getLocalTime(timeDifference)
+				return ResidueTime;
+			},
+			// 题目跳转
+			goTopic() {
+				this.$router.push({
+					name: 'examination_process',
+					query: {
+						id: this.examId
+					}
+				})
 			}
 		},
 		mounted() {
-			this.loading = true
-			let that =this;
-			// 统计数据全部数据
-			that.studentIndexData()
-			this.loading = false
+			this.loading = true,
+				localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
+
+			// ---查询试卷---
+			apiCommonExamSelectById(this.examId).then(res => {
+				this.examTitle = res.data.data.title
+				this.examParticular = res.data.data.examExplain
+			})
+			// ---查看试卷试题---
+			apiCommonExamSeleElementTestById(this.examId).then(res => {
+				console.log(res.data.data.elementTest)
+			})
+			// ---定时器计算剩余时间
+			this.timer = setInterval(x => {
+				this.ResidueTime = this.getResidueTime()
+			}, 0)
 		},
 	};
 </script>
 
-<style scoped src="../../../assets/css/index.css"></style>
+<style scoped src="../../../assets/css/examination-other.css"></style>
 // 修改element 自带样式
-<style>
+<style scoped>
 	.el-pagination button:disabled {
 		background-color: #f5f5f5;
 	}

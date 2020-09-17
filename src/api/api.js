@@ -47,7 +47,11 @@ export function ApiTagSelectList(data) {
 	const result = post('/api/tag/selectSelective', data)
 	return result;
 }
-
+// 人脸录入
+export function faceInsert(data){
+	const result = post ('/api/face/insert',data)
+	return result;
+}
 //教师首页状态查询
 export function teacherIndexStatus(data) {
 	const result = get('/api/teacher/teacherExam/selectTeacherPapersCountByTeacherIdAndPutInto', data)
@@ -911,5 +915,32 @@ export function TeacherQuestionAdd(data){
 // 老师批阅阅卷
 export function TeacherQuestionList(data){
     const result =post('/api/teacher/question/select' ,data)
+	return result;
+}
+
+//----------------------------------------------------------------
+//二维码操作方法
+
+/**
+ * 新增二维码
+ */
+export function basicQrcInsert(data){
+    const result =post('/api/basic/qrc/insert' ,data)
+	return result;
+}
+
+/**
+ * 删除二维码
+ */
+export function basicQrcDelete(data){
+    const result =get('/api/basic/qrc/delete/'+data+'?d=' + new Date() * 1)
+	return result;
+}
+
+/**
+ * 查询二维码，一般不会修改二维码内容，所以直接缓存使用就行
+ */
+export function basicQrcSelectByPrimaryKey(data){
+    const result =get('/api/basic/qrc/selectByPrimaryKey/ '+data)
 	return result;
 }

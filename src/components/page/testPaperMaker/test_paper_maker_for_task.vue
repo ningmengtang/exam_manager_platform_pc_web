@@ -144,7 +144,7 @@
                         </td>
                         <td width="70px">
                             <p style="text-align:center;">第{{questionItem.no}}小题</p>
-                            <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                            <vue-qr :correctLevel="3" v-if="questionItem.qrId" :id="'qr_'+questionPartItem.uniqueId" :text="questionItem.qrId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                         </td>
                         </tr>
                       </table>
@@ -166,7 +166,7 @@
                           </td>
                           <td width="70px">
                               <p style="text-align:center;">第{{questionItem.no}}小题</p>
-                              <vue-qr v-if="studentItem" :id="'qr_'+questionPartItem.uniqueId" :text="createQrInfo(testPaperObjItem.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                              <vue-qr :correctLevel="3" v-if="questionItem.qrId" :id="'qr_'+questionPartItem.uniqueId" :text="questionItem.qrId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                           </td>
                         </tr>
                       </table>
@@ -317,7 +317,7 @@
                             <td width="70px">
                                 <p style="text-align:center;font-size:10px;" v-if="questionItem.groupQuestionArr.length > 1">第{{questionItem.groupQuestionArr[0].no}}-{{questionItem.groupQuestionArr[questionItem.groupQuestionArr.length-1].no}}题</p>
                                 <p style="text-align:center;font-size:10px;" v-if="questionItem.groupQuestionArr.length <= 1">第{{questionItem.no}}题</p>
-                                <vue-qr v-if="questionItem.groupQuestionArr" :id="'qr_'+questionItem.uniqueId" :text="createQrInfo(testPaperObj.id,questionPartItem.id,questionBigItem.id,questionItem.id,questionItem.groupQuestionArr,studentItem.uid)" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
+                                <vue-qr :correctLevel="3" v-if="questionItem.groupQuestionArr && questionItem.qrId" :id="'qr_'+questionItem.uniqueId" :text="questionItem.qrId" :margin="0" colorDark="#000" colorLight="#fff" :size="70"></vue-qr>
                             </td>
                             <!-- 二维码 结束 -->
 
@@ -547,7 +547,8 @@ import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import {
   apiCommonExamSeleElementTestById,
-	apiCommonExamSelectById
+  apiCommonExamSelectById,
+  basicQrcInsert
 
 } from '@/api/api.js'
 
@@ -1427,53 +1428,77 @@ export default {
     /**
      * 获取二维码信息用于防伪
      */
-    createQrInfo(paperId,qPartId,qBigId,qId,groupQuestionArr,sId) {
+    createQrInfo(questionItem,paperId,qPartId,qBigId,sId) {
 
-      if(!groupQuestionArr)
-      {
-        //console.log("groupQuestionArr为空，qPartId["+qPartId+"],qBigId["+qPartId+"]")
-        //return 'null'
-      }
+      let qId = questionItem.id
+			let groupQuestionArr = questionItem.groupQuestionArr
+			return new Promise((resolve, reject) => {
 
-      //深拷贝
+        if(!groupQuestionArr)
+        {
+          //console.log("groupQuestionArr为空，qPartId["+qPartId+"],qBigId["+qPartId+"]")
+          //return 'null'
+        }
 
-      let objString = JSON.stringify(this.qrInfoObj)
-      let newObj = JSON.parse(objString)
+        //深拷贝
+        console.log(this.qrInfoObj)
+        let objString = JSON.stringify(this.qrInfoObj)
+        let newObj = JSON.parse(objString)
 
-      newObj.paperId = paperId
-      newObj.qPartId = qPartId
-      newObj.qBigId = qBigId
-      newObj.qId = qId
-      newObj.qIdArr = []
-      newObj.qNoArr = []
-      newObj.uid = this.qrInfoObj.uid
-      newObj.sId = sId
-      newObj.utype = this.qrInfoObj.utype
+        newObj.paperId = paperId
+        newObj.qPartId = qPartId
+        newObj.qBigId = qBigId
+        newObj.qId = qId
+        newObj.qIdArr = []
+        newObj.qNoArr = []
+        newObj.uid = this.qrInfoObj.uid
+        newObj.sId = sId
+        newObj.utype = this.qrInfoObj.utype
 
-      //console.log(JSON.parse(JSON.stringify(groupQuestionArr[0])))
-      if(groupQuestionArr)
-      {
-        groupQuestionArr.forEach(groupQuestionElement => {
-          // console.log("开始处理groupQuestionElement >>>>> ")
-          // console.log(groupQuestionElement)
-          //组卷工具，没有id，用模拟的,即no
-          // let qidForQr = null
-          // let qNoForQr = null
-          // if(groupQuestionElement.id)
-          // {
-          //   qidForQr = groupQuestionElement.id
-          // }
-          // else{
-          //   qNoForQr = groupQuestionElement.no
-          // }
-          //console.log("qidForQr:"+JSON.parse(JSON.stringify(qidForQr)))
-          newObj.qIdArr.push(groupQuestionElement.id)
-          newObj.qNoArr.push(groupQuestionElement.no)
-        });
-      }
+        //console.log(JSON.parse(JSON.stringify(groupQuestionArr[0])))
+        if(groupQuestionArr)
+        {
+          groupQuestionArr.forEach(groupQuestionElement => {
+            // console.log("开始处理groupQuestionElement >>>>> ")
+            // console.log(groupQuestionElement)
+            //组卷工具，没有id，用模拟的,即no
+            // let qidForQr = null
+            // let qNoForQr = null
+            // if(groupQuestionElement.id)
+            // {
+            //   qidForQr = groupQuestionElement.id
+            // }
+            // else{
+            //   qNoForQr = groupQuestionElement.no
+            // }
+            //console.log("qidForQr:"+JSON.parse(JSON.stringify(qidForQr)))
+            newObj.qIdArr.push(groupQuestionElement.id)
+            newObj.qNoArr.push(groupQuestionElement.no)
+          });
+        }
       
-      return JSON.stringify(newObj)
-
+        let resultOfQrCode = JSON.stringify(newObj)
+				
+				console.log("创建resultOfQrCode >>>>> " + resultOfQrCode)
+				//return JSON.stringify(newObj)
+				
+				basicQrcInsert({
+					"qrc_info": resultOfQrCode
+				}).then(res =>{
+          //console.log(res)
+					if(res.data.result){
+						//保存二维码id
+            questionItem.qrId = res.data.data.id + ""
+            console.log(res.data.data)
+						//返回执行成功
+						resolve(true);
+					}
+					else{
+						this.$message.error("生成二维码失败，请重新提交，或者联系管理员！")
+						reject(false)
+					}
+        })
+      })
     },
     /**
      * uuid生成器
@@ -2608,6 +2633,60 @@ export default {
       console.log("小题序号顺序编码完成 <<<<< ")
     },
     /**
+     * 为所有小题整理二维码
+     */
+    testPaperQuestionCreateQr(sId,testPaperObj)
+    {
+      return new Promise((resolve, reject) => {
+        if(null == testPaperObj.items)
+        {
+          console.log("试卷为空，无法为所有小题整理二维码")
+          reject(false)
+        }
+        console.log("为所有小题整理二维码")
+        //循环输出试卷部分================================================================================================
+        testPaperObj.items.forEach(questionPartItem => {
+
+          //循环输出大题================================================================================================
+          questionPartItem.items.forEach(questionBigItem => {
+            //console.log("开始编码 >>>>> " + this.previewQuestionNum)
+
+            //循环输出小题================================================================================================
+            questionBigItem.items.forEach(questionItem => {
+              
+              //生成二维码
+              let promiseArr=[]
+              questionBigItem.items.forEach((questionItemForQr,questionItemIndexForQr) => {
+                promiseArr.push(this.$options.methods.createQrInfo.bind(this)(questionItemForQr,testPaperObj.id,questionPartItem.id,questionBigItem.id))
+              });
+              //按顺序返回结果
+              Promise.all(promiseArr).then(res=>{
+                console.log('递归生成二维码执行完毕 >>>>> ');
+                //返回执行成功
+                resolve(true);
+              })
+              .catch(err=>{
+                this.$message.error('递归生成二维码出错！')
+                console.log(err);
+                reject(false)
+              })
+              
+            })
+
+            // console.log(lastQuestionItem)
+
+            //循环输出小题，完成================================================================================================
+
+          })
+          //循环输出大题，完成================================================================================================
+
+        })
+        //循环输出试卷部分，完成================================================================================================
+
+        //reject(false)
+      })
+    },
+    /**
      * 快速跳转至顶端
      */
     returnTop(){
@@ -2617,43 +2696,52 @@ export default {
      * 开始预览整个试卷（直接进入图片版）
      */
     startTestPaperImgPreview(studentIdArr){
-      //整理试卷，为每一个学生整理一套试卷
-      let testPaperForStudents = []
-      studentIdArr.forEach(studentItem => {
-        studentItem.items = []
-        let newTestPaperObj = this.$options.methods.copyPojo.bind(this)(this.testPaperObj)
-        //添加考生属性到试卷当中
-        newTestPaperObj.studentInfo = studentItem.info
-
-        studentItem.items.push(newTestPaperObj)
-      });
-      console.log("学生分配试卷完毕")
-        console.log(studentIdArr)
-
-      //进入预览模式
-      this.qustionPreviewMode = true
-
       return new Promise((resolve, reject) => {
 
-        //this.$options.methods.startFullscreenLoading.bind(this)()
-      
-        this.$refs.page_main_tile.scrollIntoView()
-        this.previewQuestionBigNum = 1
-        this.previewQuestionNum = 1
-        this.$options.methods.testPaperQuestionCreateAutoNo.bind(this)()
-        this.qustionPreviewMode = true
-        this.qustionPreviewImgMode = false
-        setTimeout(() => {
+        //整理试卷，为每一个学生整理一套试卷
+        
+        studentIdArr.forEach(studentItem => {
+          studentItem.items = []
+          let newTestPaperObj = this.$options.methods.copyPojo.bind(this)(this.testPaperObj)
+          //添加考生属性到试卷当中
+          newTestPaperObj.studentInfo = studentItem.info
+          // promiseArr.push(this.$options.methods.testPaperQuestionCreateQr.bind(this)(studentItem.uid,newTestPaperObj))
+          studentItem.items.push(newTestPaperObj)
+        });
+        
+        //集中生成学生二维码
+        let promiseArr=[]
+        studentIdArr.forEach(studentItem => {
+          //添加考生二维码属性到试卷当中
+          //promiseArr.push(this.$options.methods.testPaperQuestionCreateQr.bind(this)(studentItem.uid,studentItem.items[0]))
+          this.$options.methods.testPaperQuestionCreateQr.bind(this)(studentItem.uid,studentItem.items[0])
+        });
+
+        Promise.all(promiseArr).then(res=>{
           
-          this.$options.methods.startTestPaperQuestionsToImageByRecursive.bind(this)(studentIdArr).then(res => {
-            //this.$options.methods.testPaperQuestionsToImage.bind(this)()
-            //关闭屏蔽层
-            //this.fullscreenLoading = false
-            resolve(true)
-          })
-          
-          
-        }, 300);
+          console.log("学生分配试卷完毕")
+          console.log(studentIdArr)
+          //进入预览模式
+          this.qustionPreviewMode = true
+          //this.$options.methods.startFullscreenLoading.bind(this)()
+        
+          this.$refs.page_main_tile.scrollIntoView()
+          this.previewQuestionBigNum = 1
+          this.previewQuestionNum = 1
+          this.$options.methods.testPaperQuestionCreateAutoNo.bind(this)()
+          this.qustionPreviewMode = true
+          this.qustionPreviewImgMode = false
+          setTimeout(() => {
+            
+            this.$options.methods.startTestPaperQuestionsToImageByRecursive.bind(this)(studentIdArr).then(res => {
+              //this.$options.methods.testPaperQuestionsToImage.bind(this)()
+              //关闭屏蔽层
+              //this.fullscreenLoading = false
+              resolve(true)
+            })
+            
+          }, 300);
+        })
       })
     },
     /**
@@ -3985,27 +4073,28 @@ export default {
     },
     creatBase64(srcArr) {//循环img数组 转换为图片
             
-            for (let i = 1; i < srcArr.length; i++) {
-                    let lastIndex = srcArr[i].indexOf('"');//找到第一个 "双引号
+        for (let i = 1; i < srcArr.length; i++) {
+                let lastIndex = srcArr[i].indexOf('"');//找到第一个 "双引号
 
-                    let src = srcArr[i].slice(0, lastIndex); //用下标获取每个图片的src
+                let src = srcArr[i].slice(0, lastIndex); //用下标获取每个图片的src
 
-                    let image = new Image();//动态创建一个图片
-                    image.src = src;
-                    image.onload = function () {//创建后 调用base64 图片转换方法 获取base64格式图片
-                        let base64 = this.$options.methods.getBase64Image.bind(this)(image);
-                        let newSrc = srcArr[i].slice(lastIndex);//获取 第一个双引号 之后的字符再把 生成的 base64格式的图片的字符拼接起来
-                        srcArr[i] = base64+newSrc;
-                        if (this.isEnd == srcArr.length) {//用全局变量 判断是否创建完所有6base4图片，返回数组
-                              let result = srcArr.join('src="');//拿到 创建2完的base64图片数组，拼接为一个字符串，抛出去
-                            console.log(result)
-                            //resolve(result)
-                            return result
-                        }
+                let image = new Image();//动态创建一个图片
+                image.src = src;
+                image.onload = function () {//创建后 调用base64 图片转换方法 获取base64格式图片
+                    let base64 = this.$options.methods.getBase64Image.bind(this)(image);
+                    let newSrc = srcArr[i].slice(lastIndex);//获取 第一个双引号 之后的字符再把 生成的 base64格式的图片的字符拼接起来
+                    srcArr[i] = base64+newSrc;
+                    if (this.isEnd == srcArr.length) {//用全局变量 判断是否创建完所有6base4图片，返回数组
+                          let result = srcArr.join('src="');//拿到 创建2完的base64图片数组，拼接为一个字符串，抛出去
+                        console.log(result)
+                        //resolve(result)
+                        return result
                     }
-            }
-            
+                }
         }
+        
+    },
+    
     //方法结束
   }
 }

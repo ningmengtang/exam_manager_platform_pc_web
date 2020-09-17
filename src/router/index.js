@@ -418,7 +418,13 @@ export default new Router({
 				        import ( /* webpackChunkName: "examination_feedback" */ '../components/page/examination/examination_feedback'),
 				    meta: { title: '学生-考试-考后反馈-查看' }
 				},
-				
+				{
+				    name: 'examination_finish',
+				    path: '/examination_finish',
+				    component: () =>
+				        import ( /* webpackChunkName: "eexamination_finish" */ '../components/page/examination/examination_finish'),
+				    meta: { title: '学生-考试-考试完成' }
+				},
 				
 
 
