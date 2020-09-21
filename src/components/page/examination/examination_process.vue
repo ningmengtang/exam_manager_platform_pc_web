@@ -140,10 +140,14 @@
 			},
 			//---跳转无答题卡---
 			goScantronNone() {
+				if(this.getCookie('examTime')==''){
+					this.setCookie('examTime', new Date())
+				}
 				this.$router.push({
 					name: 'examination_scantronNone',
 					query: {
-						id: this.examId
+						id: this.examId,
+						examTime:this.examTime
 					}
 				})
 			},

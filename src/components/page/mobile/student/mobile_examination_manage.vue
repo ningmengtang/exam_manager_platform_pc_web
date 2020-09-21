@@ -1,6 +1,6 @@
 <template>
 	<div class="box">
-		<div class="group">
+		<!-- <div class="group">
 			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">年份</div>
 				<div class="td-group">
@@ -71,7 +71,7 @@
 					</el-radio-group>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<div class="particular">
 			<div class="li" v-for="(item,i) in paperList" :key="item.i">
 				<!-- 				<div class="teacher-name">{{item.operator_name}}</div> -->
@@ -89,7 +89,7 @@
 					<div :class="'font-i1'" class="synopsis" v-else-if="item.status==3">最终得分：60分（120分），要好好学习，天天向上哦！</div>
 					<div :class="'font-i'" class="synopsis" v-else-if="item.status==4">考试取消！详细请联系班主任或者科目老师</div>
 				</div>
-				<div class="title-box" style="margin: 0 20px;">
+				<div class="title-box" >
 					<div class="time">上传时间：{{item.createDate}}</div>
 				</div>
 
@@ -99,10 +99,11 @@
 					</div>
 				</div>
 				<div class="right">
-					<i class="icon" :class="(item.status==0)?'el-icon-caret-right font-i3':(item.status==1||item.status==2)?'el-icon-time font-i':item.status==3?'el-icon-check font-i1':'el-icon-close font-i'"></i>
-					<div class="status" :class="item.status==0?'font-i3':(item.status==1||item.status==2||item.status==4)?'font-i':'font-i1'">{{item.status==0 && item.putInto == 1?'开始考试':item.status==1?'准备考试':item.status==2?'正在批阅':item.status==3?'考试完成':'考试取消'}}</div>
-					<el-button type="primary" plain v-if="item.status==0 && item.putInto == 1 " size="medium" class="buttom i" @click="goExam(item.id,item.examTime)">立即进入</el-button>
+					<i class="icon" :class="(item.status==0)?'el-icon-caret-right font-i3':(item.status==1&&item.studentExam.finish_status!=1||item.status==2)?'el-icon-time font-i':item.studentExam.finish_status==1&&item.status==1?'el-icon-check font-i1':'el-icon-close font-i'"></i>
+					<div class="status" :class="item.status==0?'font-i3':(item.status==1&&item.studentExam.finish_status!=1||item.status==2||item.status==4)?'font-i':item.studentExam.finish_status==1&&item.status==1?'font-i1':''">{{item.status==0 && item.putInto == 1?'开始考试':item.status==1&&item.studentExam.finish_status!=1?'准备考试':item.status==2?'正在批阅':item.studentExam.finish_status==1&&item.status==1?'考试完成':'考试取消'}}</div>
+					<el-button type="primary" plain v-if="item.status==0 && item.putInto == 1" size="medium" class="buttom i" @click="goExam(item.id,item.examTime)">立即进入</el-button>
 					<el-button type="primary" v-else-if="item.status==3" style="background-color: #19ADFB;" size="medium" @click="goGrade()">查看</el-button>
+					<el-button type="primary" v-else-if="item.studentExam.finish_status==1&&item.status==1" style="background-color: #19ADFB;" size="medium" @click="goGrade(item.id,item.examTime)">查看反馈</el-button>
 					<el-button type="primary" disabled v-else style="background-color: #999999;" size="medium">查看</el-button>
 				</div>
 			</div>
@@ -113,10 +114,13 @@
 			 :current-page.sync="currentPage" :page-size="page.pageSize" :total="total">
 			</el-pagination>
 		</div>
+		<Tabbar />
 	</div>
 </template>
 
 <script>
+	import Tabbar from '../common/tabbar.vue'
+	import mobile from '@/assets/js/mobile.js'
 	import {
 		studentIndex,
 		apicommonExamGetFile,
@@ -125,6 +129,12 @@
 		paperWithTag,
 	} from '@/api/api.js'
 	export default {
+		components: {
+			Tabbar
+		},
+		created() {
+			mobile();
+		},
 		data() {
 			return {
 				total: 0,
@@ -224,7 +234,10 @@
 								this.ElementTextList = children
 								break;
 							case '试卷用途':
-								this.PurposeList = [{id:6,text:"考试"}]
+								this.PurposeList = [{
+									id: 6,
+									text: "考试"
+								}]
 								break;
 						}
 						resolve(res)
@@ -236,12 +249,18 @@
 				// return n 
 			},
 			// ---跳转考试页面
-			goExam(id,examTime) {
-				this.$router.push({name:'examination_process',query:{'id':id,'examTime':examTime}})
+			goExam(id, examTime) {
+				this.$router.push({
+					name: 'mobile_eexamination_process',
+					query: {
+						'id': id,
+						'examTime': examTime
+					}
+				})
 			},
 			// ---跳转考试成绩页面
-			goGrade(id) {
-                this.$router.push('examination_feedback')
+			goGrade(id,examTime) {
+				this.$router.push({name:'examination_feedback',query:{'id':id,'examTime':examTime}})
 			},
 			//---查询全部标签
 			selectAllTag() {
@@ -282,7 +301,7 @@
 	};
 </script>
 
-<style scoped src="../../../assets/css/examination.css"></style>
+<style scoped src="../../../../assets/css/examination-mobile.css"></style>
 // 修改element 自带样式
 <style>
 	.el-pagination button:disabled {

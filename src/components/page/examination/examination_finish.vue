@@ -9,6 +9,7 @@
 				<el-image :src="require('../../../assets/img/exam-finish.png')" class='img'></el-image>
 					<div class="ii">考试完成，真棒！</div>
 					<div class="iii">您已经按时完成了考试，并提交了试卷</div>
+					<div class="iii">该页面5秒后自动关闭</div>
 			</div>
 			
 		</div>
@@ -188,25 +189,27 @@
 				let newTime = new Date().getTime();
 				let timeDifference = this.getCookie('examTime') - newTime;
 				if (timeDifference <= 0) {
-					// this.$alert('考试时间到了！', '提示', {
+					// this.$alert('考试时间结束！将自动提交试卷。', '提醒', {
 					// 	confirmButtonText: '确定',
 					// 	callback: action => {
-					// 		// this.$message({
-					// 		// 	type: 'info',
-					// 		// 	message: `action: ${ action }`
-					// 		// });
+					// 		this.$router.push({
+					// 			name: 'examination_manage',
+					// 		})
 					// 	}
 					// });
+					this.$router.push({
+						name: 'examination_manage',
+					})
 					// 清除计时器
 					clearInterval(this.timer)
 					// 清除时间cookic
-					clearCookie('examTime')
+					this.clearCookie('examTime')
 					localStorage.removeItem('topic')
-					ResidueTime = '00:00:00'
-
+					return ResidueTime = '00:00:00';
 				}
 				ResidueTime = this.getLocalTime(timeDifference)
 				return ResidueTime;
+			
 			},
 			// 题目跳转
 			goTopic() {
@@ -229,7 +232,7 @@
 			})
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
-			}, 0)
+			}, 5000)
 		},
 	};
 </script>

@@ -446,6 +446,70 @@ export default new Router({
 
 
         // mobile
+		{
+		    path: '/mobile_examination_finish',
+		    component: () =>
+		        import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/student/mobile_examination_finish.vue'),
+		    meta: { title: '学生考试完成' }
+		},
+		{
+		    path: '/mobile_examination_upfile',
+			name:'mobile_examination_upfile',
+		    component: () =>
+		        import ( /* webpackChunkName: "mobile_examination_upfile" */ '../components/page/mobile/student/mobile_examination_upfile.vue'),
+		    meta: { title: '学生考试上传图片答案' }
+		},
+		{
+		    path: '/mobile_examination_faceRecognition',
+			name:'mobile_examination_faceRecognition',
+		    component: () =>
+		        import ( /* webpackChunkName: "mobile_examination_faceRecognition" */ '../components/page/mobile/student/mobile_examination_faceRecognition.vue'),
+		    meta: { title: '学生考试上传图片答案' }
+		},
+		{
+		    path: '/mobile_examination_scantronNone',
+			name:'mobile_examination_scantronNone',
+		    component: () =>
+		        import ( /* webpackChunkName: "mobile_examination_scantronNone" */ '../components/page/mobile/student/mobile_examination_scantronNone.vue'),
+		    meta: { title: '学生考试无答题卡' }
+		},
+		{
+		    path: '/mobile_examination_scantronHas',
+			name:'mobile_examination_scantronHas',
+		    component: () =>
+		        import ( /* webpackChunkName: "mobile_examination_scantronHas" */ '../components/page/mobile/student/mobile_examination_scantronHas.vue'),
+		    meta: { title: '学生考试有答题卡' }
+		},
+		{
+		    path: '/mobile_examination_scantronImg',
+			name:'mobile_examination_scantronImg',
+		    component: () =>
+		        import ( /* webpackChunkName: "mobile_examination_scantronImg" */ '../components/page/mobile/student/mobile_examination_scantronImg.vue'),
+		    meta: { title: '学生考试图片试卷' }
+		},
+		{
+		    path: '/mobile_examination_feedback',
+			name:'mobile_examination_feedback',
+		    component: () =>
+		        import ( /* webpackChunkName: "mobile_examination_feedback" */ '../components/page/mobile/student/mobile_examination_feedback.vue'),
+		    meta: { title: '学生考后反馈' }
+		},
+		
+		{
+		    path: '/mobile_examination_process',
+			name:'mobile_eexamination_process',
+		    component: () =>
+		        import ( /* webpackChunkName: "mobile_examination_process" */ '../components/page/mobile/student/mobile_examination_process.vue'),
+		    meta: { title: '学生考试首页' }
+		},
+		{
+			path: '/mobile_examination_manage',
+			name:'mobile_examination_manage',
+			component: () =>
+			    import ( /* webpackChunkName: "mobile_examination_manage" */ '../components/page/mobile/student/mobile_examination_manage.vue'),
+			meta: { title: '学生考试试题' }
+		},
+		
         {
             path: '/mobile_teacherIndex',
             component: () =>

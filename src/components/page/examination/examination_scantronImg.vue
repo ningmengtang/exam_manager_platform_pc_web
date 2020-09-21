@@ -11,18 +11,21 @@
 					<div class="i2">{{examParticular}}</div>
 				</div>
 				<div>
-					<el-button class="buttom">交卷</el-button>
+					<el-button class="buttom" @click="finish()">交卷</el-button>
 				</div>
 				<div class="other-box">
 					<div class="status">图片试卷上传答案</div>
 					<div class="ewm">
-						<el-image :src="ewm"></el-image>
+						<vue-qr :text="qrHost" :margin="0" colorDark="#000000" colorLight="#fff"  :size="100"></vue-qr>
 						<div class="l">扫码快速上传</div>
 					</div>
 				</div>
 			</div>
 			<div class="content-b">
-				<div class="message-top">上传一览</div>
+				<div class="exam-img">
+					<img :src="affix" class="img" @click="img_shade(i)"></img>
+				</div>
+				<div class="message-top" style="margin-top: 20px;">上传一览</div>
 				<div class="ts">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下上传的结果，如果上传了错误的答案，请重新上传，请不要重复上传同样的题目答案。</div>
 				<div class="questions-img">
 					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
@@ -35,11 +38,8 @@
 								</div>
 							</transition>
 						</div>
-						<span class="i">5545</span>
+						<!-- <span class="i">5545</span> -->
 					</div>
-				</div>
-				<div class="exam-img">
-					<img :src="affix"  class="img" @click="img_shade(i)"></img>
 				</div>
 			</div>
 		</div>
@@ -48,16 +48,22 @@
 
 <script>
 	import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+	import VueQr from 'vue-qr'
+	import qrHost from '@/api/qrCode.js'
 	import {
 		studentIndex,
 		apicommonExamGetFile,
 		apiStudentAccountSelectById,
 		apiCommonExamSelectById,
 		apiCommonExamSeleElementTestById,
+		studentTestQuestionsAdd,
+		StudentAccountInfo,
+		studentTestQuestionsLog
 	} from '@/api/api.js'
 	export default {
 		components: {
-			ElImageViewer
+			ElImageViewer,
+			VueQr
 		},
 		data() {
 			return {
@@ -67,10 +73,13 @@
 				currentPage: 1,
 				download: 0,
 				disabled: 0,
+				qrHost: qrHost(),
 				loading: false,
 				status: '',
 				examId: this.$route.query.id,
 				examTitle: '',
+				examSn: '',
+				studentSn: '',
 				examParticular: '',
 				papers: {},
 				classes: '',
@@ -102,27 +111,13 @@
 				problemImg: 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
 				ewm: require("../../../assets/img/ewm.png"),
 				urls: [
-					'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-					'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
-					'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
-					'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
-					'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
-					'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
-					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg',
-					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg',
-					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
+
 				],
 				srcList: [
 
-					'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-					'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
-					'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
-					'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
-					'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
-					'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
-					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
+
 				],
-				affix:''
+				affix: ''
 			}
 		},
 		methods: {
@@ -234,36 +229,69 @@
 				}
 				ResidueTime = this.getLocalTime(timeDifference)
 				return ResidueTime;
-			
-			},
-			// 题目跳转
-			goTopic() {
 
+			},
+			// 考试完成
+			finish() {
+				this.$router.push({
+					name: 'examination_finish',
+					query: {
+						id: this.examId
+					}
+				})
 			}
 		},
 		mounted() {
 			this.loading = true,
-				localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
-
+				// ---查看学生信息
+				StudentAccountInfo({
+					id: localStorage.getItem('userID')
+				}).then(res => {
+					this.studentSn = res.data.data.list[0].sn
+				})
+			// 新增答案
+			studentTestQuestionsAdd({
+				'paper_id': this.examId,
+				'paper_sn': this.examSn,
+				'paper_title': this.examTitle,
+				'student_id': localStorage.getItem('userID'),
+				'student_name': localStorage.getItem('userName'),
+				'student_sn': this.studentSn,
+			}).then(res => {
+				console.log(res.data)
+			})
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
 				this.examTitle = res.data.data.title
 				this.examParticular = res.data.data.examExplain
-				// this.affix=res.data.data.affix
+				this.examSn = res.data.data.sn
+				console.log(res.data.data)
 			})
 			// 返回图片试卷
-			apicommonExamGetFile(this.examId).then(res=>{
+			apicommonExamGetFile(this.examId).then(res => {
 				let blob = new Blob([res.data]);
 				let url = window.URL.createObjectURL(blob);
-			     this.affix=url
+				this.affix = url
 			})
-			// ---查看试卷试题---
-			// apiCommonExamSeleElementTestById(this.examId).then(res => {
-			// 	console.log(res.data.data.elementTest)
-			// })
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 0)
+			// 小题日志
+			studentTestQuestionsLog({
+				'student_id': localStorage.getItem('userID'),
+				'paper_id': this.examId,
+			}).then(res => {
+				let data = res.data.data.list[0]
+                
+				this.question_id_black = data.id
+				// 小题上传答案二维码
+				this.qrHost=`${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
+				// 小题上传答案二维码
+				this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
+					this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
+					this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
+
+			})
 		},
 	};
 </script>

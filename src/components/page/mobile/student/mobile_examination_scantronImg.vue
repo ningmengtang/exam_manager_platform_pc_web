@@ -11,23 +11,29 @@
 					<div class="i2">{{examParticular}}</div>
 				</div>
 				<div>
-					<el-button class="buttom">交卷</el-button>
+					<el-button class="buttom" @click="finish()">交卷</el-button>
 				</div>
-				<div class="other-box">
+				<div class="other-box" style="margin-top: .3rem;">
 					<div class="status">图片试卷上传答案</div>
-					<div class="ewm">
-						<el-image :src="ewm"></el-image>
-						<div class="l">扫码快速上传</div>
+					<div class="up-box" v-loading="loading">
+						<el-upload class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload" :on-preview="handlePreview"
+						 :on-remove="handleRemove"  list-type="picture">
+							<el-button size="small" type="primary" class="button">点击上传</el-button>
+							<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
+						</el-upload>
 					</div>
 				</div>
 			</div>
 			<div class="content-b">
-				<div class="message-top">上传一览</div>
+				<div class="exam-img">
+					<img :src="affix" class="img" @click="img_shade(i)"></img>
+				</div>
+				<div class="message-top" style="margin-top: 20px;">上传一览</div>
 				<div class="ts">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下上传的结果，如果上传了错误的答案，请重新上传，请不要重复上传同样的题目答案。</div>
 				<div class="questions-img">
 					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
 						<div class="img-box-i">
-							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
+							<el-image :src="url" lazy class="img" @click="img_shade(i)" style="width: 100%;"></el-image>
 							<transition name="el-zoom-in-top">
 								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
 									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
@@ -35,29 +41,40 @@
 								</div>
 							</transition>
 						</div>
-						<span class="i">5545</span>
+						<!-- <span class="i">5545</span> -->
 					</div>
-				</div>
-				<div class="exam-img">
-					<img :src="affix"  class="img" @click="img_shade(i)"></img>
 				</div>
 			</div>
 		</div>
+		<Tabbar />
 	</div>
 </template>
 
 <script>
+	import Tabbar from '../common/tabbar.vue'
+	import mobile from '@/assets/js/mobile.js'
 	import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+	import VueQr from 'vue-qr'
+	import qrHost from '@/api/qrCode.js'
 	import {
 		studentIndex,
 		apicommonExamGetFile,
 		apiStudentAccountSelectById,
 		apiCommonExamSelectById,
 		apiCommonExamSeleElementTestById,
+		studentTestQuestionsAdd,
+		StudentAccountInfo,
+		studentTestQuestionsLog,
+		studentTestQuestionsImg
 	} from '@/api/api.js'
 	export default {
 		components: {
-			ElImageViewer
+			ElImageViewer,
+			VueQr,
+			Tabbar
+		},
+		created() {
+			mobile();
 		},
 		data() {
 			return {
@@ -67,10 +84,13 @@
 				currentPage: 1,
 				download: 0,
 				disabled: 0,
+				qrHost: qrHost(),
 				loading: false,
 				status: '',
 				examId: this.$route.query.id,
 				examTitle: '',
+				examSn: '',
+				studentSn: '',
 				examParticular: '',
 				papers: {},
 				classes: '',
@@ -100,40 +120,50 @@
 				timer: '',
 				stateType: '',
 				problemImg: 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-				ewm: require("../../../assets/img/ewm.png"),
 				urls: [
-					'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-					'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
-					'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
-					'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
-					'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
-					'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
-					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg',
-					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg',
-					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
+
 				],
 				srcList: [
 
-					'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-					'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
-					'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
-					'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
-					'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
-					'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
-					'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
+
 				],
-				affix:''
+				affix: ''
 			}
 		},
 		methods: {
-			//---分页---
-			handleSizeChange(val) {
-
+			// 上传文件
+			uploadFild(param) {
+				var that = this
+				var file = param.file
+				this.uploadFile = new FormData()
+				this.uploadFile.append('file', file)
+				this.loading = true
+				studentTestQuestionsImg(this.question_id_black, this.uploadFile).then(res => {
+					this.$message.success('上传成功')
+					this.loading = false
+				})
 			},
-			//---分页2---
-			handleCurrentChange(val) {
-				this.page.pageNum = val
-				this.selectPaper();
+			// 上传控制
+			beforeUpload(file) {
+				// console.log(file)
+				var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+				const extension = testmsg === 'png'
+				const extension2 = testmsg === 'jpg'
+				const isLt2M = file.size / 1024 / 1024 < 50
+				if (!extension && !extension2) {
+					this.$message({
+						message: '上传文件只能是 png、jpg格式!',
+						type: 'warning'
+					});
+				}
+				if (!isLt2M) {
+					this.$message({
+						message: '上传文件大小不能超过 50MB!',
+						type: 'warning'
+					});
+				}
+				return extension || extension2 && isLt2M
+				// return extension 
 			},
 			format(percentage) {
 				if (percentage == 100) {
@@ -234,48 +264,81 @@
 				}
 				ResidueTime = this.getLocalTime(timeDifference)
 				return ResidueTime;
-			
-			},
-			// 题目跳转
-			goTopic() {
 
+			},
+			// 考试完成
+			finish() {
+				this.$router.push({
+					name: 'examination_finish',
+					query: {
+						id: this.examId
+					}
+				})
+			},
+			handleRemove(file, fileList) {
+				console.log(file, fileList);
+			},
+			handlePreview(file) {
+				console.log(file);
 			}
 		},
+		
 		mounted() {
-			this.loading = true,
-				localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
-
+				// ---查看学生信息
+				StudentAccountInfo({
+					id: localStorage.getItem('userID')
+				}).then(res => {
+					this.studentSn = res.data.data.list[0].sn
+				})
+			// 新增答案
+			studentTestQuestionsAdd({
+				'paper_id': this.examId,
+				'paper_sn': this.examSn,
+				'paper_title': this.examTitle,
+				'student_id': localStorage.getItem('userID'),
+				'student_name': localStorage.getItem('userName'),
+				'student_sn': this.studentSn,
+			}).then(res => {
+				console.log(res.data)
+			})
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
 				this.examTitle = res.data.data.title
 				this.examParticular = res.data.data.examExplain
-				// this.affix=res.data.data.affix
+				this.examSn = res.data.data.sn
+				console.log(res.data.data)
 			})
 			// 返回图片试卷
-			apicommonExamGetFile(this.examId).then(res=>{
+			apicommonExamGetFile(this.examId).then(res => {
 				let blob = new Blob([res.data]);
 				let url = window.URL.createObjectURL(blob);
-			     this.affix=url
+				this.affix = url
 			})
-			// ---查看试卷试题---
-			// apiCommonExamSeleElementTestById(this.examId).then(res => {
-			// 	console.log(res.data.data.elementTest)
-			// })
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 0)
+			// 小题日志
+			studentTestQuestionsLog({
+				'student_id': localStorage.getItem('userID'),
+				'paper_id': this.examId,
+			}).then(res => {
+				let data = res.data.data.list[0]
+                
+				this.question_id_black = data.id
+				// 小题上传答案二维码
+				this.qrHost=`${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
+				// 小题上传答案二维码
+				this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
+					this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
+					this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
+
+			})
 		},
 	};
 </script>
 
-<style scoped src="../../../assets/css/examination-other.css"></style>
+<style scoped src="../../../../assets/css/examination-other-mobile.css"></style>
 // 修改element 自带样式
-<style>
-	.el-pagination button:disabled {
-		background-color: #f5f5f5;
-	}
-
-	.el-pager li.active {
-		background-color: #f5f5f5;
-	}
+<style scoped>
+	.up-box{min-height: 200px;}
 </style>

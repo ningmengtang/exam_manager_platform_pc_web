@@ -1,20 +1,14 @@
 <template>
 	<div class="box">
-		<div class="finish-box">
-			<div class="time-box">
-				<div class="ts">距离考试结束还有</div>
-				<div class="ts-time">{{ResidueTime}}</div>
-			</div>
-			<div class="last">
-				<el-image :src="require('../../../../assets/img/exam-finish.png')" class='img'></el-image>
-				<div class="ii">考试完成，真棒！</div>
-				<div class="iii">您已经按时完成了考试，并提交了试卷</div>
-			</div>
-			<div>
-				<van-uploader :after-read="afterRead" />
-			</div>
-		</div>
+		<div class="up-box" v-loading="loading">
+				<el-upload class="upload-demo" action=""  :http-request="uploadFild" :before-upload="beforeUpload"
+				 :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture" >
+					<el-button size="small" type="primary" class="button">点击上传</el-button>
+					<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
+				</el-upload>
 		
+		
+		</div>
 		<Tabbar />
 	</div>
 </template>
@@ -28,6 +22,8 @@
 		apiStudentAccountSelectById,
 		apiCommonExamSelectById,
 		apiCommonExamSeleElementTestById,
+		studentTestQuestionsImg,
+		studentTestQuestionsAnswerSheet
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -38,6 +34,8 @@
 		},
 		data() {
 			return {
+				uploadType: this.$route.query.type,
+				fileList: [],
 				total: 0,
 				pageSize: 9,
 				pageNum: 1,
@@ -46,9 +44,10 @@
 				disabled: 0,
 				loading: false,
 				status: '',
-				examId: this.$route.query.id,
+				examId: '',
 				examTitle: '',
 				examParticular: '',
+				getData: this.$route.query,
 				papers: {},
 				classes: '',
 				dialogVisible: false,
@@ -76,23 +75,57 @@
 				ResidueTime: '00:00:00',
 				timer: '',
 				stateType: '',
-				affix: '',
-				
+				affix: ''
 			}
 		},
 		methods: {
-			afterRead(file) {
-			      // 此时可以自行将文件上传至服务器
-			      console.log(file);
-			    },
-			//---分页---
-			handleSizeChange(val) {
-
+			// 上传文件
+			uploadFild(param) {
+				var that = this
+				var file = param.file
+				this.uploadFile = new FormData()
+				this.uploadFile.append('file', file)
+				this.loading = true
+				if(this.uploadType=='none'){
+					studentTestQuestionsImg(this.getData.answer_id, this.uploadFile).then(res => {
+						this.$message.success('上传成功')
+						this.loading = false
+					})
+				}else if(this.uploadType=='has'){
+					studentTestQuestionsAnswerSheet(5000,this.getData.paper_id,this.uploadFile).then(res=>{
+						console.log(res)
+						this.$message.success('上传成功')
+						this.loading = false
+					})
+					
+				}
 			},
-			//---分页2---
-			handleCurrentChange(val) {
-				this.page.pageNum = val
-				this.selectPaper();
+			// 上传控制
+			beforeUpload(file) {
+				// console.log(file)
+				var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+				const extension = testmsg === 'png'
+				const extension2 = testmsg === 'jpg'
+				const isLt2M = file.size / 1024 / 1024 < 50
+				if (!extension && !extension2) {
+					this.$message({
+						message: '上传文件只能是 png、jpg格式!',
+						type: 'warning'
+					});
+				}
+				if (!isLt2M) {
+					this.$message({
+						message: '上传文件大小不能超过 50MB!',
+						type: 'warning'
+					});
+				}
+				return extension || extension2 && isLt2M
+				// return extension 
+			},
+			// 上传成功
+			successUpload(res) {
+				console.log(res)
+				this.$message.success('图片上传成功')
 			},
 			format(percentage) {
 				if (percentage == 100) {
@@ -101,29 +134,6 @@
 					this.customColor = '#409eff'
 				}
 				return percentage === 100 ? '已完成' : `${percentage}%`;
-			},
-			// ---计算完成度---
-			schedule(type) {
-				localStorage.setItem('topic', JSON.stringify(this.topicDefault))
-
-				switch (type) {
-					case 'choice':
-						this.stateType = 'choice'
-						if (this.choiceKey != '') {
-							let arr = this.topic.concat(this.topic2).length
-							let choice = this.topicDefault.length
-							this.percentage = parseInt(choice / arr * 100)
-						}
-						break;
-					case 'synthesize':
-						this.stateType = 'synthesize'
-						if (this.problemImg != '') {
-							let arr = this.topic.concat(this.topic2).length
-							let choice = this.topicDefault.length
-							this.percentage = parseInt(choice / arr * 100)
-						}
-						break;
-				}
 			},
 			// 图片遮罩
 			img_shade(index) {
@@ -198,29 +208,31 @@
 				ResidueTime = this.getLocalTime(timeDifference)
 				return ResidueTime;
 			},
-			// 题目跳转
-			goTopic() {
-
+			handleRemove(file, fileList) {
+				console.log(file, fileList);
+			},
+			handlePreview(file) {
+				console.log(file);
 			}
 		},
 		mounted() {
-			this.loading = true,
-				localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
-			clearInterval(this.timer)
-			// 清除时间cookic
-			this.clearCookie('examTime')
-			localStorage.removeItem('topic')
-			// this.ResidueTime = '00:00:00'
-			// ---查询试卷---
-			apiCommonExamSelectById(this.examId).then(res => {
-				this.examTitle = res.data.data.title
-				this.examParticular = res.data.data.examExplain
-				// this.affix=res.data.data.affix
-			})
-			this.timer = setInterval(x => {
-				this.ResidueTime = this.getResidueTime()
-			}, 0)
-		},
+			
+				// localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
+				// clearInterval(this.timer)
+				// 清除时间cookic
+				// this.clearCookie('examTime')
+				// localStorage.removeItem('topic')
+				// this.ResidueTime = '00:00:00'
+				// ---查询试卷---
+				// apiCommonExamSelectById(this.examId).then(res => {
+				// 	this.examTitle = res.data.data.title
+				// 	this.examParticular = res.data.data.examExplain
+				// 	// this.affix=res.data.data.affix
+				// })
+				this.timer = setInterval(x => {
+					this.ResidueTime = this.getResidueTime()
+				}, 0)
+		}
 	};
 </script>
 

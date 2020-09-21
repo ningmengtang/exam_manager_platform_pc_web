@@ -3,7 +3,8 @@ import {
 	get,
 	post,
 	getCode,
-	uploadget
+	uploadget,
+	uploadpost
 } from './http.js'
 //登录验证码
 export function userCode(data) {
@@ -942,5 +943,46 @@ export function basicQrcDelete(data){
  */
 export function basicQrcSelectByPrimaryKey(data){
     const result =get('/api/basic/qrc/selectByPrimaryKey/ '+data)
+	return result;
+}
+// -------学生试题--------------------------
+// 试卷下载图片
+export function studentTestQuestionsdowonLogImg(data){
+    const result =post('/api/student/question/getImage',data)
+	return result;
+}
+// 查询试题上传日志
+export function studentTestQuestionsLog(data){
+    const result =post('/api/student/question/select',data)
+	return result;
+}
+// 学生试题答案新增
+export function studentTestQuestionsAdd(data){
+    const result =post('/api/student/question/insert',data)
+	return result;
+}
+// 学生上传图片答案
+export function studentTestQuestionsImg(id,data){
+    const result =post('/api/student/question/studentFile/'+id,data)
+	return result;
+}
+// 学生上传String答案
+export function studentTestQuestionsString(id,data){
+    const result =get('/api/student/question/studentStr?'+'answer_test='+id+'&id='+data)
+	return result;
+}
+// 查询上传成功后的id
+export function studentTestQuestionsSelectId(data){
+    const result =post('/api/student/question/select',data)
+	return result;
+}
+// 学生上传答题卡
+export function studentTestQuestionsAnswerSheet(denoise,id,data){
+    const result =post('/api/student/importSheet/importSheet/'+denoise+'/'+id,data)
+	return result;
+}
+// 学生获取试卷分数
+export function studentPerformance(p_id,s_id){
+    const result =get('/api/student/question/getStudentScoreByPaperId/'+p_id+'/'+s_id)
 	return result;
 }

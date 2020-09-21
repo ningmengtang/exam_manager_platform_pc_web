@@ -301,7 +301,7 @@
 			// }
 			this.screenWidth = document.documentElement.getBoundingClientRect().width
 			if(this.screenWidth<=750){
-				flex();
+				mobile();
 			}
 		},
 		mounted() {

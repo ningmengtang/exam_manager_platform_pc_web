@@ -1,10 +1,10 @@
 <template>
 	<div class="box">
 		<!-- 左边 -->
-		<div class="left-box">
+		<!-- <div class="left-box">
 			<div class="box-card">
 				<div class="card-top">
-					<img src="../../../assets/img/img.jpg" class="user-img" />
+					<img src="../../../../assets/img/img.jpg" class="user-img" />
 					<div class="user-top">
 						<div class="username">
 							<div class="name">{{userName}}</div>
@@ -23,7 +23,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<!-- 右边 -->
 		<div class="right-box">
 			<div class="face-box">
@@ -46,10 +46,13 @@
 				</div>
 			</div>
 		</div>
+		<Tabbar />
 	</div>
 </template>
 
 <script>
+	import Tabbar from '../common/tabbar.vue'
+	import mobile from '@/assets/js/mobile.js'
 	import {
 		studentIndex,
 		apicommonExamGetFile,
@@ -81,6 +84,9 @@
 				uploadFile: '',
 				uploadBlackimgscr:''
 			}
+		},
+		components: {
+			Tabbar
 		},
 		methods: {
 			// ---回去--
@@ -147,7 +153,7 @@
 	};
 </script>
 
-<style scoped src="../../../assets/css/examination-other.css"></style>
+<style scoped src="../../../../assets/css/examination-other-mobile.css"></style>
 <style scoped>
 	.box /deep/ .upload-demo,
 	.box /deep/ .el-upload-dragger,
