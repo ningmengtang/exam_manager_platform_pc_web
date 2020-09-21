@@ -1454,6 +1454,7 @@ export default {
         newObj.uid = this.qrInfoObj.uid
         newObj.sId = sId
         newObj.utype = this.qrInfoObj.utype
+        newObj.question_type = questionItem.question_type
 
         //console.log(JSON.parse(JSON.stringify(groupQuestionArr[0])))
         if(groupQuestionArr)
@@ -2657,7 +2658,7 @@ export default {
               //生成二维码
               let promiseArr=[]
               questionBigItem.items.forEach((questionItemForQr,questionItemIndexForQr) => {
-                promiseArr.push(this.$options.methods.createQrInfo.bind(this)(questionItemForQr,testPaperObj.id,questionPartItem.id,questionBigItem.id))
+                promiseArr.push(this.$options.methods.createQrInfo.bind(this)(questionItemForQr,testPaperObj.id,questionPartItem.id,questionBigItem.id,sId))
               });
               //按顺序返回结果
               Promise.all(promiseArr).then(res=>{

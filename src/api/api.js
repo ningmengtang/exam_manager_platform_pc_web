@@ -918,7 +918,17 @@ export function TeacherQuestionList(data){
     const result =post('/api/teacher/question/select' ,data)
 	return result;
 }
+// 查询学生试题
+export function studentQuestionList(data){
+    const result =post('/api/student/question/selectStudentQuestion' ,data)
+	return result;
+}
 
+// 老师批改答案图片
+export function studentQuestionteacherFile(id,is_typical_case,score,status,data){
+    const result =post('/api/student/question/teacherFile?id='+id+'&is_typical_case='+is_typical_case+'&score='+score+'&status='+status ,data)
+	return result;
+}
 //----------------------------------------------------------------
 //二维码操作方法
 

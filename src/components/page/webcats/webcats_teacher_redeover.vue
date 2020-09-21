@@ -91,7 +91,8 @@
 import vueCanvas from "@/components/page/vueCanvas.vue"
 import {
     TeacherQuestionList,
-    apiCommonExamSeleElementTestById
+    apiCommonExamSeleElementTestById,
+    studentQuestionList
 	} from '@/api/api.js'
 export default {
     components:{
@@ -188,6 +189,24 @@ export default {
             }else{
                 this.$message.warning('请先分配任务')
             }
+        })
+
+        studentQuestionList({
+            "paper_id":102,
+            "question_id":[272],
+            "teacher_id":localStorage.getItem('userID')
+            // "status":2
+        }).then(res=>{
+            console.log(res)
+        })
+        // 获取学生题目
+        studentQuestionList({
+            "paper_id":102,
+            "question_id":[272],
+            "teacher_id":localStorage.getItem('userID'),
+            "status":0
+        }).then(res=>{
+            console.log(res)
         })
     }
 }

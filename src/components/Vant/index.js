@@ -1,12 +1,13 @@
 import Vue from 'vue'
 
 import {
-    Field ,
+    Field,
     Tabbar,
     TabbarItem,
-	Uploader 
-}from 'vant'
+    Uploader
+} from 'vant'
 Vue.use(Field)
     .use(Tabbar)
     .use(TabbarItem)
-	.use(Uploader)
+    .use(Uploader)
+    .use(NavBar)

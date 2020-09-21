@@ -423,20 +423,20 @@ import {
 					"pageSize": this.pageSize1,
 					"pageNum": this.pageNum1
 				}).then(res => {
-					// console.log(res)
+					console.log(res)
 					this.papers_task = res.data.data.list
 					this.total1 = res.data.data.total
 					this.currentPage1 = res.data.data.pageNum
 				})
 			},
 			handleCurrentChangeTask1(val){
-				this.pageNum = val
+				this.pageNum1 = val
 				teacherSelectTag({
 					"id": this.obj_task,
 					"pageSize": this.pageSize1,
 					"pageNum": this.pageNum1
 				}).then(res => {
-					// console.log(res)
+					console.log(res)
 					this.papers_task = res.data.data.list
 					this.total1 = res.data.data.total
 					this.currentPage1 = res.data.data.pageNum
