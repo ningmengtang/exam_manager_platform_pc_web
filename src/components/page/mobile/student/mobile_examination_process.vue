@@ -1,10 +1,10 @@
 <template>
 	<div class="box">
 		<!-- 左边 -->
-		<div class="left-box">
+		<!-- <div class="left-box">
 			<div class="box-card">
 				<div class="card-top">
-					<img src="../../../assets/img/img.jpg" class="user-img" />
+					<img src="../../../../assets/img/img.jpg" class="user-img" />
 					<div class="user-top">
 						<div class="username">
 							<div class="name">{{userName}}</div>
@@ -23,7 +23,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<!-- 右边 -->
 		<div class="right-box">
 			<div class="process">
@@ -79,10 +79,13 @@
 				</div>
 			</div>
 		</div>
+		<Tabbar />
 	</div>
 </template>
 
 <script>
+	import Tabbar from '../common/tabbar.vue'
+	import mobile from '@/assets/js/mobile.js'
 	import {
 		studentIndex,
 		apicommonExamGetFile,
@@ -90,6 +93,12 @@
 		apiCommonExamSelectById,
 	} from '@/api/api.js'
 	export default {
+		components: {
+			Tabbar
+		},
+		created() {
+			mobile();
+		},
 		data() {
 			return {
 				total: 0,
@@ -131,7 +140,7 @@
 					this.setCookie('examTime', new Date())
 				}
 				this.$router.push({
-					name: 'examination_scantronHas',
+					name: 'mobile_examination_scantronHas',
 					query: {
 						id: this.examId,
 						examTime:this.examTime
@@ -140,17 +149,21 @@
 			},
 			//---跳转无答题卡---
 			goScantronNone() {
+				if(this.getCookie('examTime')==''){
+					this.setCookie('examTime', new Date())
+				}
 				this.$router.push({
-					name: 'examination_scantronNone',
+					name: 'mobile_examination_scantronNone',
 					query: {
-						id: this.examId
+						id: this.examId,
+						examTime:this.examTime
 					}
 				})
 			},
 			//---跳转人脸---
 			goFaceRecognition() {
 				this.$router.push({
-					name: 'examination_faceRecognition',
+					name: 'mobile_examination_faceRecognition',
 					query: {
 						id: this.examId
 					}
@@ -162,7 +175,7 @@
 					this.setCookie('examTime', new Date())
 				}
 				this.$router.push({
-					name: 'examination_scantronImg',
+					name: 'moblie_examination_scantronImg',
 					query: {
 						id: this.examId,
 						examTime:this.examTime
@@ -222,7 +235,7 @@
 	};
 </script>
 
-<style scoped src="../../../assets/css/examination-other.css"></style>
+<style scoped src="../../../../assets/css/examination-other-mobile.css"></style>
 // 修改element 自带样式
 <style>
 	.el-pagination button:disabled {

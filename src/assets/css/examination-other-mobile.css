@@ -1,10 +1,10 @@
-.box{color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;padding: 24px;display: flex;min-height: 100%;}
+.box{z-index: -1;color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;padding: .3rem;display: flex;min-height: 100%;margin-bottom: 24px;font-size: 18px;}
  
  /* 大div 图片试卷 */
-.big-box{width: 100%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;min-height: 768px;}
-.big-box .header-top{display: flex;justify-content: space-around;align-items: center;}
+.big-box{width: 100%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: .3rem;text-align: center;min-height: 768px;}
+.big-box .header-top{display: flex;justify-content: space-around;align-items: center;flex-direction: column;}
 .big-box .header-top .time .ts-time{color: #FA4B1B;font-size: 48px;font-weight: bold;display: flex;justify-content: center;align-items: center;margin:14px 0;width: 100%;}
-.big-box .header-top .message-top{border-left: 8px solid #19ADFB;display: flex;height: 60px;flex-direction: column;padding-left: 16px;align-items: center;}
+.big-box .header-top .message-top{border-left: 8px solid #19ADFB;display: flex;flex-direction: column;padding-left: 16px;align-items: center;}
 .big-box .header-top .message-top .i1{font-size: 18px;color: #333333;font-weight: bold;}
 .big-box .header-top .message-top .i2{font-size: 16px;color: #999999;margin-top: 8px;}
 .big-box .header-top .buttom{background-color:#19ADFB ; color: #FFFFFF;font-weight: bold;border-radius: 4px;padding: 20px 40px;font-size: 16px;}
@@ -18,11 +18,16 @@
 .big-box .content-b .questions-img{width: 100%;display: flex;min-width: 100%;overflow: auto;height: 180px;display: flex; flex: 1;width: 0;white-space: nowrap;}
 .big-box .questions-img .img-box{text-align: center;}
 .big-box .questions-img .img-box-i{position: relative;}
-.big-box .questions-img .img{width: 180px;margin: 0 10px;cursor: pointer;}
-.big-box .questions-img .img-shade{position: absolute;width: 180px;height: 100%;background-color: rgba(0,0,0,0.5);top: 0;margin-left: 10px;display: flex;align-items: center;justify-content: center;z-index: 9999;}
+.big-box .questions-img .img{width: 100%;margin: 0 10px;cursor: pointer;}
+.big-box .questions-img .img-shade{position: absolute;width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);top: 0;margin-left: 10px;display: flex;align-items: center;justify-content: center;z-index: 9999;}
 .big-box .questions-img .img-shade .icon{font-size: 26px;color: #FFFFFF;margin: 0 5px;cursor: pointer;}
 .big-box .questions-img .i{color: #999999;font-size: 14px;overflow: hidden;width: 180px;}
-.big-box .exam-img{margin-top: 40px;}
+.big-box .exam-img{margin-top: 40px;width: 100%;}
+.big-box .img{width: 100%;}
+
+/* 上传页面 */
+.up-box{width: 100%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: .21rem .24rem;text-align: center;min-height: 768px;}
+.up-box .button{font-size: .38rem;font-weight: bold;padding: .2rem 1.2rem;}
 
 /* 有答题卡 */
 .big-box .ts{font-size: 18px;font-weight: bold;margin: 20px;}
@@ -37,7 +42,7 @@
  
  
 .font-i{color: #999999;font-size: 14px;}
-.left-box{width: 45%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;min-height: 768px;min-width: 550px;}
+.left-box{width: 100%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: .3rem;text-align: center;min-height: 768px;}
 .left-box .user-img{width: 90px;height: 90px;border-radius: 50%;}
 .left-box .card-top{display: flex;align-items: center;justify-content: center;flex-direction: column;}
 .left-box .user-top{width: 100%;margin-top: 30px;}
@@ -74,13 +79,13 @@
 .left-box .answer .at-number{margin: 10px 0;}
 .left-box .answer .affirm{align-self: flex-end;}
 
-.left-box .answer .previous,.next{padding: 24px;background-color: #999999;color: #FFFFFF;font-weight: bold;font-size: 20px;}
+.left-box .answer .previous,.next{padding: .4rem;background-color: #999999;color: #FFFFFF;font-weight: bold;font-size: 20px;}
 .left-box .answer .bottom-ts{margin-top: 8px;font-size: 14px;color: #333333;}
 
 
 
 
-.right-box{width: calc( 55% - 60px);padding: 0 34px;margin-left: 60px;min-width: 900px;min-height: 768px;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);display: table;}
+.right-box{width: 100%;padding: .3rem;min-height: 768px;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);}
 /* 试卷首页 */
 .right-box .process{padding: 40px;display: flex;justify-content: center;flex-wrap: wrap;}
 .right-box .process .ts{font-size: 18px;display: flex;align-items: center;justify-content: center;color: #333333;width: 100%;}
@@ -91,7 +96,7 @@
 .right-box .process .ts-a-box .t3{font-size: 14px;color: #19ADFA;}
 .right-box .process .go-box{width: 100%;margin-top: 20px;display: flex;justify-content: center;flex-wrap: wrap;}
 .right-box .process .go:first-child{margin-left: 0;}
-.right-box .process .go{width: 24.25%;height: 400px;margin-left: 1%;display: flex;flex-direction: column;}
+.right-box .process .go{width: 100%;margin-left: 1%;display: flex;flex-direction: column;}
 .right-box .process .go .ts{display: flex;justify-content: center;margin: 6px 0;font-size: 14px;font-weight: bold;}
 .right-box .process .go .buttom{background-color: #FB4B1B;color: #FFFFFF;border-radius: 4px;font-size: 16px;font-weight: bold;padding: 20px;margin: 5px 0;}
 .right-box .process .go .buttom.i{background-color: #2BBB61;}
@@ -109,27 +114,26 @@
 
 
 /* 右边的小题答题区域 */
-.right-box .questions{padding: 40px;}
+.right-box .questions{padding: .3rem;font-size: 18px;}
 .right-box .questions .message-top{border-left: 8px solid #1AAEFB;display: flex;align-items: center;padding-left: 12px;font-weight: bold;font-size: 20px;margin-bottom: 10px;justify-content: space-between;}
 .right-box .questions .message-top .tag{font-size: 18px;font-weight: bold;height: auto!important;line-height: 32px!important;}
 .right-box .questions .content-b{padding: 0 16px;display: flex;justify-content: space-between;align-items: center;}
 .right-box .questions .content-b .ewm{margin-left: 10px;display: block;box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);padding: 10px;width: 120px;height: 120px;display: inline-table;text-align: center;}
 .right-box .questions .content-b .l{font-size: 14px;margin-top: 4px;}
-.right-box .questions .content-c{min-height: 305px;}
-.right-box .questions .content-cc{min-height: 305px;margin-top: 10px;}
-.right-box .questions .content-cc .cc-img{margin-bottom: 10px;}
+.right-box .questions .content-cc{margin: 10px 0;}
+.right-box .questions .content-cc .cc-img{margin: 10px 0;}
 .right-box .questions .content-c .img-box{max-height: 254px;overflow: auto;}
 .right-box .questions .c-title{font-weight: bold;}
 .right-box .questions .cc-title{font-size: 18px;font-weight: bold;}
 .right-box .questions .choice{display: flex;justify-content: center;align-items: center;flex-direction: column;width: 100%;}
 .right-box .questions .userChoice{padding: 16px;color: #999999;display: flex;align-items: baseline;font-size: 16px;}
 .right-box .questions .userChoice .i{color: #1AAEFB;font-weight: bold;}
-.right-box .questions .reset{color: #FFFFFF;background-color:#19ADFA ;font-size: 18px;display: flex;justify-content: center;font-weight: bold;padding: 24px;}
+.right-box .questions .reset{color: #FFFFFF;background-color:#19ADFA ;font-size: 18px;display: flex;justify-content: center;font-weight: bold;padding: .3rem;align-items: center;}
 .right-box .questions-img {min-width: 100%;overflow: auto;height: 180px;display: flex; flex: 1;width: 0;white-space: nowrap;}
 /* .right-box .questions-img {min-width: 100%;overflow: auto;height: 180px;white-space: nowrap;} */
 .right-box .questions-img .img-box{text-align: center;}
 .right-box .questions-img .img-box-i{position: relative;}
-.right-box .questions-img .img{width: 180px;margin: 0 10px;cursor: pointer;}
+.right-box .questions-img .img{width: 100%;margin: 0 10px;cursor: pointer;}
 .right-box .questions-img .img-shade{position: absolute;width: 180px;height: 100%;background-color: rgba(0,0,0,0.5);top: 0;margin-left: 10px;display: flex;align-items: center;justify-content: center;z-index: 9999;}
 .right-box .questions-img .img-shade .icon{font-size: 26px;color: #FFFFFF;margin: 0 5px;cursor: pointer;}
 .right-box .questions-img .i{color: #999999;font-size: 14px;overflow: hidden;width: 180px;}
@@ -141,9 +145,14 @@
 .finish-box .ts-time{color: #FA4B1B;font-size: 48px;font-weight: bold;display: flex;justify-content: center;align-items: center;margin:14px 0;width: 100%;}
 .finish-box .last{margin-top: 20px;}
 .finish-box .img{margin-bottom: 20px;}
-.finish-box .ii{font-size: 36px;font-weight: bold;}
+.finish-box .ii{font-size: 24px;font-weight: bold;}
 .finish-box .iii{font-size: 16px;margin-top: 14px;}
 
+
+.box /deep/ .el-upload-list--picture .el-upload-list__item{height: auto;display: flex;flex-direction: column;justify-content: center;align-items: center;padding: 10px;}
+.box /deep/ .el-upload-list--picture .el-upload-list__item-thumbnail{height: auto;width: 3.6rem;margin-top: 0.2rem;margin-left: 0;}
+.box /deep/ .el-upload-list--picture .el-upload-list__item-name i{display: none;}
+.box /deep/ .el-upload-list__item-name{text-overflow: clip;white-space: pre-line;text-align: center;margin-right: 0;padding-left: 0;}
 .box /deep/ .el-progress-bar{margin-top: 4px;}
 .box /deep/ .el-checkbox-button__inner{background-color: #999999;color: #FFFFFF;}
 .box /deep/ .el-checkbox-button.is-checked .el-checkbox-button__inner{background-color: #409EFF;}

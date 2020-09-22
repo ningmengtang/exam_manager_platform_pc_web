@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 import {
-    Field ,
+    Field,
     Tabbar,
     TabbarItem,
     NavBar,

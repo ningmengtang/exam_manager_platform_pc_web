@@ -301,7 +301,7 @@
 				// return n 
 			},
 			downloadFile(item) {
-
+               console.log(item)
 				if (item.startTime && item.overTime) {
 					let arr = this.isDuringDate(item.startTime, item.overTime)
 					if (arr) {
