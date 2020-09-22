@@ -452,6 +452,18 @@ export default new Router({
                 import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/teacher/mobile_teacherIndex.vue'),
             meta: { title: '手机教师首页' }
         },
+        {
+            path: '/mobile_checkIndex',
+            component: () =>
+                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/teacher/mobile_checkIndex.vue'),
+            meta: { title: '手机教师批改试卷' }
+        },
+        {
+            path: '/mobile_userInfo',
+            component: () =>
+                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/common/userInfo.vue'),
+            meta: { title: '手机个人信息' }
+        },
 
         {
             path: '/404',

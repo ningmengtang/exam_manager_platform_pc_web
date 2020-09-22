@@ -59,9 +59,9 @@
         </div> -->
         <div>
           <el-radio-group v-model="radio" size="mini">
-            <el-radio label="1" border style="display:block;margin:8px 0px">优秀试卷</el-radio>
-            <el-radio label="2" border style="display:block;margin:8px 0px">典型精题</el-radio>
-            <el-radio label="2" border style="display:block;margin:8px 0px">异常卷</el-radio>
+            <el-radio :label="1" border style="display:block;margin:8px 0px">优秀试卷</el-radio>
+            <el-radio :label="2" border style="display:block;margin:8px 0px">典型精题</el-radio>
+            <el-radio :label="3" border style="display:block;margin:8px 0px">异常卷</el-radio>
           </el-radio-group>
         </div>
       </div>
@@ -75,9 +75,9 @@
     </div>
 
 
-    <div style="display:none">
+    <!-- <div style="display:none">
         <img ref="conf0" src="./X-3.jpg">
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -236,6 +236,7 @@
 <script>
 import IconVue from './Icon.vue'
   export default {
+    props:['urlSrc','ispush'],
     data () {
       return {
         radio:'',
@@ -265,44 +266,68 @@ import IconVue from './Icon.vue'
           lineColor: '#f2849e',
           shadowBlur: 2
         },
-        img:require('./X-3.jpg')
+        img:'',
+        // isOk:false
       }
     },
+    
     created () {
       this.$emit('setNav', '在线涂鸦画板')
 
     },
     mounted () {
-        var that = this
-        const canvas = document.querySelector('#canvas')
-        that.context = canvas.getContext('2d')
-
-        var cW = document.getElementById('canvas').width
-        var cH = document.getElementById('canvas').height
-        console.log(cW)
-        console.log(cH)
-        var imgObj = new Image()
-        imgObj.src = this.img
-        var imgW = ""
-        var imgH = ""
-        imgObj.onload = function(){
-            imgW = imgObj.width
-            imgH = imgObj.height
-            that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
-        }
-        // var img = this.$refs.conf0
-        // img.onload = ()=>{
-        //     this.context.drawImage(img, 0, 0)
-        // }
-        this.initDraw()
-        this.setCanvasStyle()
+       console.log(this.ispush)
         
         // document.querySelector('#footer').classList.add('hide-footer')
         // document.querySelector('body').classList.add('fix-body')
     },
     destroyed () {
-      document.querySelector('#footer').classList.remove('hide-footer')
-      document.querySelector('body').classList.remove('fix-body')
+      // document.querySelector('#footer').classList.remove('hide-footer')
+      // document.querySelector('body').classList.remove('fix-body')
+    },
+    watch:{
+       
+        urlSrc:function(){
+          this.radio = ''
+          var that = this
+          const canvas = document.querySelector('#canvas')
+          that.context = canvas.getContext('2d')
+
+          var cW = document.getElementById('canvas').width
+          var cH = document.getElementById('canvas').height
+        
+          var imgObj = new Image()
+          imgObj.src = '/api/student/question/getImage/' + this.urlSrc+'?id=1'+"&d=" + new Date().getTime()
+          console.log(imgObj.src)
+          var imgW = ""
+          var imgH = ""
+          imgObj.onload = function(){
+              imgW = imgObj.width
+              imgH = imgObj.height
+              // 在canvas绘制前填充白色背景
+              that.context.fillStyle = "#fff";
+              that.context.fillRect(0, 0, cW, cH)
+              that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
+          }
+          // var img = this.$refs.conf0
+          // img.onload = ()=>{
+          //     this.context.drawImage(img, 0, 0)
+          // }
+          this.initDraw()
+          this.setCanvasStyle()
+        },
+        ispush:function(){
+            if(this.ispush == 2){
+                this.getImage()
+                console.log('进入canvans')
+                // this.$emit('getUrlBlob','')
+            }else{
+              return
+            }
+        },
+
+        
+
     },
     computed: {
       controls () {
@@ -432,7 +457,27 @@ import IconVue from './Icon.vue'
             }
             break
           case 'clear':
-            this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height)
+            var that = this
+            const canvas = document.querySelector('#canvas')
+            that.context = canvas.getContext('2d')
+
+            var cW = document.getElementById('canvas').width
+            var cH = document.getElementById('canvas').height
+          
+            var imgObj = new Image()
+            imgObj.src = '/api/student/question/getImage/' + this.urlSrc+'?id=1'+"&d=" + new Date().getTime()
+            console.log(imgObj.src)
+            var imgW = ""
+            var imgH = ""
+            imgObj.onload = function(){
+                imgW = imgObj.width
+                imgH = imgObj.height
+                // 在canvas绘制前填充白色背景
+                that.context.fillStyle = "#fff";
+                that.context.fillRect(0, 0, cW, cH)
+                that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
+            }
+            // this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height)
             this.preDrawAry = []
             this.nextDrawAry = []
             this.middleAry = [this.middleAry[0]]
@@ -441,18 +486,16 @@ import IconVue from './Icon.vue'
       },
       // 生成图片
       getImage () {
+        console.log('生成图片成功')
         const canvas = document.querySelector('#canvas')
-        // var ctx=canvas.getContext("2d"); 
-        // ctx.fillStyle="#E992B9";
-        // ctx.lineWidth=1;
-        // var str = "假如生活欺骗了你，请不要悲伤！thank you!"
+        var ctx=canvas.getContext("2d"); 
+        ctx.fillStyle="#E992B9";
+        ctx.lineWidth=1;
         // ctx.fillText(str,0,20); 
-        // const src = canvas.toDataURL('image/png')
-        // this.imgUrl.push(src)
-        // if (!this.isPc()) {
-        //   // window.open(`data:text/plain,${src}`)
-        //   window.location.href = src
-        // }
+        const src = canvas.toDataURL('image/png')
+        this.$emit('getUrlBlob',src,this.radio)
+        // console.log(src)
+       
       },
 
       // 设置绘画配置

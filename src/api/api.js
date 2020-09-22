@@ -914,7 +914,7 @@ export function TeacherQuestionAdd(data){
 }
 // 老师批阅阅卷
 export function TeacherQuestionList(data){
-    const result =post('/api/teacher/question/select' ,data)
+    const result =post('/api/teacher/question/select'+'?d=' + new Date() * 1 ,data)
 	return result;
 }
 // 查询学生试题
@@ -924,10 +924,89 @@ export function studentQuestionList(data){
 }
 
 // 老师批改答案图片
-export function studentQuestionteacherFile(id,is_typical_case,score,status,data){
-    const result =post('/api/student/question/teacherFile?id='+id+'&is_typical_case='+is_typical_case+'&score='+score+'&status='+status ,data)
+export function studentQuestionteacherFile(id,is_typical_case,score,data){
+    const result =post('/api/student/question/teacherFile?id='+id+'&is_typical_case='+is_typical_case+'&score='+score+'&status=1' ,data)
 	return result;
 }
+
+
+// 老师导入答题卡信息
+export function teacherImportSheet(paper_id,data){
+    const result =post('/api/teacher/importSheet/importSheet/3000'+'/'+paper_id ,data)
+	return result;
+}
+// 查询老师已完成批改的集合
+export function getTeacherPaperfinishQuestionArr(paper_id,data){
+    const result =get('/api/student/question/getTeacherPaperfinishQuestionArr/'+paper_id ,data)
+	return result;
+}
+
+
+// 查询教师答题卡日志
+export function teacherAnswerSheetLogList(data){
+    const result =post('/api/teacher/answerSheetLog/list' ,data)
+	return result;
+}
+
+// 查询试卷批阅进度
+export function getCorrectRateByPaperId(id,data){
+    const result =get('/api/student/question/getCorrectRateByPaperId/'+id+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 查询当前试卷已经导入答题卡的总数与已分发的份数
+export function getAlreadySheetCountAndDispenseCount(id,data){
+    const result =get('/api/student/question/getAlreadySheetCountAndDispenseCount/'+id+'?d=' + new Date() * 1 ,data)
+	return result;
+}
+// 教师修改阅卷操作接口
+export function TeacherQuestionUpdate(data){
+    const result =post('/api/teacher/question/update' ,data)
+	return result;
+}
+// 修改试卷任务接口
+
+export function TeacherTaskUpdate(data){
+    const result =post('/api/teacher/task/update' ,data)
+	return result;
+}
+// 下载导出答题卡详情
+export function importSheetGetFiles(sn,data){
+    const result =uploadget('/api/student/importSheet/getFiles/'+sn+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+// 查询当前老师阅卷任务完成进度
+export function selectTeacheresCountAndUpdateCount(task_id,data){
+    const result =post('/api/teacher/question/selectTeacheresCountAndUpdateCount/'+task_id+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+
+// 当前试卷重新分配
+export function TeacherQuestionReset(task_id,data){
+    const result =get('/api/teacher/question/reset/'+task_id+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+// 重置上一题数据
+export function teacherQuestionResetBefore(data){
+    const result =post('/api/teacher/question/resetBefore'+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+
+// 教师分配任务
+export function teacherTaskSelectByTag(data){
+    const result =post('/api/teacher/task/selectByTag'+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+// 查询试卷信息
+export function studentQuestionSelect(data){
+    const result =post('/api/student/question/select'+'?d=' + new Date() * 1,data)
+	return result;
+}
+
 //----------------------------------------------------------------
 //二维码操作方法
 

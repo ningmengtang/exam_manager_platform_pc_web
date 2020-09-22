@@ -37,6 +37,7 @@
     height: 68px;
     background: #2BBB61;
     border-radius: 4px;
+    border: none;
     color: #fff;
     margin:16px 5px;
     text-align: center;
@@ -46,6 +47,21 @@
 
 .box_top_card .card p{
     line-height: 34px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.box_top_card .iscard{
+    width: 200px;
+    height: 68px;
+    background: #fff;
+    border-radius: 4px;
+    border:1px solid #2BBB61;
+    color: #2BBB61;
+    margin:16px 5px;
+    text-align: center;
+    float: left;
+
 }
 .box_top .box_top_paper{
     float: left;
@@ -214,6 +230,7 @@
 .paper_over .img img{
     width: 100%;
     height: 100%;
+    margin: 30px 0px;
 }
 .img_buttom{
     text-align: center;
@@ -227,4 +244,12 @@
     display: block;
     margin: 10px auto 60px auto;
     border-color: #2BBB61;
+}
+.getNumclass {
+    width: 80px;
+    height: 32px;
+    float: right;
+}
+.getNumclass /deep/ .el-input__inner{
+    padding: 0 8px;
 }

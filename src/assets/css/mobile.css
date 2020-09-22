@@ -35,29 +35,85 @@
     text-align: center;
 } */
 .home{
-    /* background: #fff; */
+    background: #f5f5f5;
+    min-height: 100vh;
 }
 .index_paper_info{
     text-align: center;
-    margin: 2vw auto;
+    margin: 2.5% auto;
     width: 95%;
-    border-radius: 8px;
-    padding:1vw;
+    border-radius: 1vw;
+    padding:3vw;
     background: #fff;
+    height: 100%;
 }
-.label-box{display: flex;margin:  0 1.5vw 0 0;flex-wrap: wrap; margin-top: 1vw;}
-.label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: flex;justify-content: center;align-items: center;font-size: 14px;margin-left: 15px;margin-top: 2px;}
+.label-box{margin:  5vw 1vw 0 0;flex-wrap: wrap; text-align: center;width: 100%;}
+.label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: inline-block;justify-content: center;align-items: center;font-size: 14px;margin-left: 2vw;margin-top: 2px;line-height: 25px;}
 .label:nth-child(1n+1){background-color: #fb4919;}
 .label:nth-child(2n+2){background-color: #19aefb;}
 .label:nth-child(3n+3){background-color: #2bbb61;}
 .index_paper_info .time{
     text-align: center;
     color: #343434;
-    margin-top: 10px;
+    margin-top: 3vh;
 }
 .index_paper_info_p{
     color: #E2643C;
     font-size: 16px;
     text-align: center;
-    margin: 30px auto;
+    margin: 10vh auto;
+}
+
+
+ .left_box_schedule .left_box_schedule_left{
+    float: left;
+    width:49.5%;
+    margin-bottom: 1vh;
+}
+.left_box_schedule .left_box_schedule_left .residue{
+    font-size: 2vw;
+    color: #999;
+    text-align: center;
+}
+.left_box_schedule .left_box_schedule_left .percent{
+    font-size:8vw;
+    color: #E2633B;
+    font-weight: bold;
+    text-align: center;
+}
+.left_box_schedule .left_box_schedule_line{
+
+    height: 6vh;
+    background: #fff;
+    border-left: 2px solid #dddddd;
+    width: 1%;
+    float: left;
+}
+.left_box_schedule .left_box_schedule_right{
+    float: right;
+    width: 49.5%;
+    margin-bottom: 1vh;
+}
+.left_box_schedule .left_box_schedule_right .residue{
+    font-size: 2vw;
+    color: #999;
+    text-align: center;
+}
+.left_box_schedule .left_box_schedule_right .percent{
+    font-size:8vw;
+    color: #E2633B;
+    font-weight: bold;
+    text-align: center;
+}
+.left_box_tip{
+    color: #343434;
+    font-size: 2vw;
+    margin: 1vh ;
+}
+.index_paper_buttom{
+    margin: 2vh 0vh;
+    position: absolute;
+    bottom: 45px;
+    width: 80%;
+    left: 10%;
 }
