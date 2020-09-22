@@ -454,6 +454,7 @@
 					input.accept = '.xls'
 					input.addEventListener('change',(event)=>{
 						let file = event.target.files[0]
+						console.log(file)
 						let data = new FormData()
 						data.append('file',file)
 						AdminOrderUpload(item.id,data).then(res=>{

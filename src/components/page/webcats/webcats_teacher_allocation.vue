@@ -30,26 +30,19 @@
                 <p >{{importPaper.examinationPaper.examExplain}}</p>
             </div>
             <div class="left_box_button">
-                <el-button class="left_box_button_text back">返回菜单</el-button>
+                <el-button class="left_box_button_text back" @click="goback">返回菜单</el-button>
             </div>
             <div class="left_box_schedule">
-                <div class="left_box_schedule_left">
-                    <div class="residue">剩余导入进度</div>
+                <div class="left_box_schedule_left" style="width:100%">
+                    <div class="residue">需要分配答题卡</div>
                     <div class="percent">
-                        10%
+                        {{yetPlan}}份
                     </div>
                     
                 </div>
-                <div class="left_box_schedule_line">
-                </div>
-                <div class="left_box_schedule_right">
-                    <div class="residue">剩余导入进度</div>
-                    <div class="percent">
-                        10%
-                    </div>
-                </div>
+                
                 <div class="left_box_tip">
-                        已导入70%的答题卡，仍需导入30位考生的答题卡
+                        已分配0张答题卡，仍需分配{{yetPlan}}位考生的答题卡。
                 </div>
             </div>
         </div>
@@ -61,6 +54,7 @@
                         第{{i.no}}题
                     </el-button>
                 </div>
+                
             </div>
 
             <div class="right_box_content">
@@ -88,7 +82,9 @@
 import {
     schoolSelectTeacher,
     apiCommonExamSeleElementTestById,
-    TeacherQuestionAdd
+    TeacherQuestionAdd,
+    getAlreadySheetCountAndDispenseCount,
+    TeacherTaskUpdate
 	} from '@/api/api.js'
 import { forEach } from 'jszip';
 export default {
@@ -106,16 +102,27 @@ export default {
         };
         return{
             topicList:[],
+            isNext:true,
             selectTopicList:[],
             selectIndex:0,
             data: generateData(),
+            NowSlectItem:[],
+            importPaper:{
+                "start_time":'',
+                "over_time":'',
+                "examinationPaper":{
+                    "tag_list":[],
+                    "title":'',
+                    "examExplain":''
+                }
+            },
             value: [1, 4],
             teacherList:[],
             paperId:'',
             selectTeacher:[],
-            importPaper:'',
             startTime:'',
             endTime:'',
+            yetPlan:0,
             topic:[{
                 title:'第一大题',
                 item:[1,2,3,4,5,6]
@@ -139,11 +146,26 @@ export default {
             this.paperId = this.importPaper.paper_id
             this.taskId = this.importPaper.id
 
+            // 查询当前试卷已经导入答题卡的总数与已分发的份数
+            getAlreadySheetCountAndDispenseCount(this.importPaper.paper_id).then(res=>{
+                if(res.data.result){
+                    let data = res.data.data
+                    // console.log(data)
+                    if(data.dispenseCount == data.sheetCount){
+                        this.yetPlan = data.dispenseCount    
+                    }else{
 
+                        this.$message.warning('请导入全部学生答题卡,再进行分配！')
+                        this.$router.push('webcats_teacher_import')
+                    }
+                }else{
+                    this.$router.push('webcats_leader_teacher_index')
+                    this.$message.warning('查询不到导入进度')
+                }
+            })
             apiCommonExamSeleElementTestById(this.paperId).then(res=>{
                 this.elementTest = JSON.parse(res.data.data.elementTest)
                 let elementTestItems = this.elementTest.items
-                console.log
                 // 所有题目
                 this.topicList= []
                 for(var i=0;i<elementTestItems.length;i++){
@@ -161,7 +183,6 @@ export default {
                     }
                     this.topicList.push(arry)
                 }
-                console.log(this.topicList)
                 // 当前分配题目
                 this.selectTopicList = []
                 for(var k=0;k<this.topicList.length;k++){
@@ -171,7 +192,6 @@ export default {
                         }
                     });
                 }
-                console.log(this.selectTopicList)
 
                 // 读当前的第一题
 
@@ -222,6 +242,10 @@ export default {
             console.log(this.selectTeacher)
         },
 
+        // 返回菜单
+        goback(){
+            this.$router.push('webcats_leader_teacher_index')
+        },
         getClass(no){
             for(var i=0;i<this.NowSlectItem.length;i++){
                 if(no == this.NowSlectItem[i].no ){
@@ -234,13 +258,14 @@ export default {
         // 下一题
         nextTopic(){
             if(this.selectTeacher.length>0){
-                if(this.selectIndex >= this.selectTopicList.length ){
-                    this.selectIndex = this.selectTopicList.length
+                // console.log(this.selectIndex)
+                if(this.selectIndex >= this.selectTopicList.length){
+                    this.selectIndex = this.selectTopicList.length -1
                     this.$message.warning('当前任务已经分配完成，请确认所有分配方案')
                 }else{
-                    // 模拟总份数 35
+                    // 总份数
 
-                    let Allnum = 35 
+                    let Allnum = this.yetPlan 
                     let allTaskList = []
                     for(var i=0;i<this.NowSlectItem.length;i++){
                         for(var a=0;a<this.selectTeacher.length;a++){
@@ -285,7 +310,7 @@ export default {
                         this.$forceUpdate();
                        
                         this.selectTeacher = []
-                        console.log(this.allTaskList)
+                        // console.log(this.allTaskList)
 
                     }
                 }
@@ -298,7 +323,6 @@ export default {
         // 上一题
         lastTopic(){
             this.selectIndex--
-            console.log(this.selectIndex)
             if(this.selectIndex >= 0){
                 let firstItem = this.selectTopicList[this.selectIndex]
                 this.NowSlectItem = []
@@ -315,8 +339,6 @@ export default {
                 this.$message.warning('没有更多题目')
             }
         },
-
-
         // 重置
         resetTopic(){
             // 读当前的第一题
@@ -346,6 +368,8 @@ export default {
                     if(res.data.result){
 
                     }else{
+                        this.isNext = false
+                        // this.$message.error(res.data.message)
                         this.$message.error(res.data.message)
                     }
                     resolve(res)
@@ -364,11 +388,28 @@ export default {
                 });
                 // this.getPlan(this.allTaskList[k],k)
             }
-            console.log(taskList)
+            this.isNext = true
+            // console.log(taskList)
             for(var i=0;i<taskList.length;i++){
+               
                 this.getPlan(taskList[i],i)
             }
-            this.$message.success('操作成功')
+            this.$message.success('分配成功')
+            if(this.isNext){
+                TeacherTaskUpdate({
+                    "id":this.importPaper.id,
+                    "status":3
+                }).then(res=>{
+                    if(res.data.result){
+                        this.$router.push('webcats_leader_teacher_index')
+                    }else{
+                        this.$message.error('出错了')
+                    }
+                })
+            }else{
+                this.$message.error('分配失败')
+            }
+           
             
         }
     }

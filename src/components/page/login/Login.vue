@@ -31,7 +31,7 @@
 							<span slot="label">
 								<i class="icon el-icon-thirdyanzhengmatianchong"></i>
 							</span>
-							<el-input size="medium" placeholder="验证码" v-model="param.code" class="i"></el-input>
+							<el-input size="medium" placeholder="验证码" v-model="param.code" class="i" @keyup.enter.native="submitForm()" ></el-input>
 							<img class="main_content_login_img_vcode" style="width: 100px;height:32px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);display: flex;"
 							 :src="vcodeimg" alt="验证码" @click="vcodeRefresh">
 						</el-form-item>
@@ -39,7 +39,7 @@
 							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
-						<el-button type="primary" @click="submitForm()" class="submit" native-type="submitForm">登录</el-button>
+						<el-button type="primary" @click="submitForm()" class="submit"  >登录</el-button>
 					</el-form>
 					<!-- <div class="forget">
 						<router-link to="/index_student" class="i">忘记了密码</router-link>
@@ -208,7 +208,7 @@
 						})
 						userLogin(`${type}`, data).then(res => {
 							let wd = res.data;
-
+							console.log(wd)
 							switch (wd.stateCode) {
 								case 200:
 									//存登录数据
@@ -218,7 +218,9 @@
 									if (wd.data.roleList) {
 										localStorage.setItem('roleList', JSON.stringify(wd.data.roleList))
 									}
-
+									if (wd.data.role) {
+										localStorage.setItem('roleList', JSON.stringify(wd.data.role[0]))
+									}
 									//判断是否是学生
 									if (type == 'student') {
 										localStorage.setItem('userSchoolName', wd.data.schoolName)
@@ -229,11 +231,20 @@
 										localStorage.setItem('userSchoolName', wd.data.schoolName)
 									}
 									this.$message.success('登录成功')
-									// 判断什么端登录
-									this.mobilePhone()?this.$router.push(`/mobile_examination_manage`):this.$router.push(`/index_${type}`)
-									
-									
-									console.log(this.mobilePhone())
+									// 判断是否为手机登录
+									let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+									if(flag && flag !='' && flag != null && flag!= undefined ){
+										if(type == 'teacher'){
+											this.$router.push('/mobile_teacherIndex')
+										}else if(type == 'student'){
+
+											this.$router.push('/mobile_examination_manage')
+										}else{
+											this.$router.push(`/index_${type}`)
+										}
+									}else{
+										this.$router.push(`/index_${type}`)
+									}
 									break;
 								case 300055:
 									this.$message.error('用户已登录')

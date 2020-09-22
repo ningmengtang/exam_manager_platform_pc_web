@@ -125,7 +125,7 @@ export default new Router({
                 },
                 {
                     path: '/order_admin_add2',
-                    name:'order_admin_add2',
+                    name: 'order_admin_add2',
                     component: () =>
                         import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/order/order_admin_add2.vue'),
                     meta: { title: '管理员-普通订单' }
@@ -133,7 +133,7 @@ export default new Router({
                 },
                 {
                     path: '/order_admin_add3',
-                    name:'order_admin_add3',
+                    name: 'order_admin_add3',
                     component: () =>
                         import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/order/order_admin_add3.vue'),
                     meta: { title: '管理员-期末订单' }
@@ -151,12 +151,12 @@ export default new Router({
                         import ( /* webpackChunkName: "order_admin_add" */ '../components/page/order/order_admin_add.vue'),
                     meta: { title: '管理员-订购管理-新增订购' }
                 },
-				{
-				    path: '/manage_admin_class',
-				    component: () =>
-				        import ( /* webpackChunkName: "manage_admin_class" */ '../components/page/manage/manage_admin_class.vue'),
-				    meta: { title: '管理员-班级管理' }
-				},
+                {
+                    path: '/manage_admin_class',
+                    component: () =>
+                        import ( /* webpackChunkName: "manage_admin_class" */ '../components/page/manage/manage_admin_class.vue'),
+                    meta: { title: '管理员-班级管理' }
+                },
                 {
                     path: 'manage_school_subordinate',
                     component: () =>
@@ -266,7 +266,7 @@ export default new Router({
                 },
                 {
                     path: '/distribution_admin_affirm',
-                    name:'distribution_admin_affirm',
+                    name: 'distribution_admin_affirm',
                     component: () =>
                         import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_affirm.vue'),
                     meta: { title: '管理员-试卷分发-试卷确认' }
@@ -274,16 +274,16 @@ export default new Router({
                 },
                 {
                     path: '/distribution_admin_order_affirm',
-                    name:'distribution_admin_order_affirm',
+                    name: 'distribution_admin_order_affirm',
                     component: () =>
                         import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_admin_order_affirm.vue'),
                     meta: { title: '管理员-订单详情' }
 
                 },
-               
+
                 {
                     path: '/distribution_school_affirm',
-                    name:'distribution_school_affirm',
+                    name: 'distribution_school_affirm',
                     component: () =>
                         import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/distribution/distribution_school_affirm.vue'),
                     meta: { title: '学校-试卷分发-试卷确认' }
@@ -308,22 +308,22 @@ export default new Router({
                     meta: { title: '管理员-用户管理-用户修改' }
 
                 },
-				{
-				    name: 'log_all',
-				    path: '/log_all',
-				    component: () =>
-				        import ( /* webpackChunkName: "log_all" */ '../components/page/log/log_all.vue'),
-				    meta: { title: '管理员-日志' }
-				
-				},
-				{
-				    name: 'log_papers',
-				    path: '/log_papers',
-				    component: () =>
-				        import ( /* webpackChunkName: "log_papers" */ '../components/page/log/log_papers.vue'),
-				    meta: { title: '管理员-订单操作日志' }
-				
-				},
+                {
+                    name: 'log_all',
+                    path: '/log_all',
+                    component: () =>
+                        import ( /* webpackChunkName: "log_all" */ '../components/page/log/log_all.vue'),
+                    meta: { title: '管理员-日志' }
+
+                },
+                {
+                    name: 'log_papers',
+                    path: '/log_papers',
+                    component: () =>
+                        import ( /* webpackChunkName: "log_papers" */ '../components/page/log/log_papers.vue'),
+                    meta: { title: '管理员-订单操作日志' }
+
+                },
                 {
                     name: 'test_paper_maker',
                     path: '/test_paper_maker',
@@ -368,64 +368,64 @@ export default new Router({
                         import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_teacher_redeover.vue'),
                     meta: { title: '教师-阅卷管理-批阅' }
                 },
-                
-				{
-				    name: 'examination_manage',
-				    path: '/examination_manage',
-				    component: () =>
-				        import ( /* webpackChunkName: "examination_manage" */ '../components/page/examination/examination_manage'),
-				    meta: { title: '学生-考试管理' }
-				},
-				{
-				    name: 'examination_process',
-				    path: '/examination_process',
-				    component: () =>
-				        import ( /* webpackChunkName: "examination_process" */ '../components/page/examination/examination_process'),
-				    meta: { title: '学生-考试-首页' }
-				},
-				{
-				    name: 'examination_faceRecognition',
-				    path: '/examination_faceRecognition',
-				    component: () =>
-				        import ( /* webpackChunkName: "examination_faceRecognition" */ '../components/page/examination/examination_faceRecognition'),
-				    meta: { title: '学生-考试-人脸识别' }
-				},
-				{
-				    name: 'examination_scantronNone',
-				    path: '/examination_scantronNone',
-				    component: () =>
-				        import ( /* webpackChunkName: "examination_scantronNone" */ '../components/page/examination/examination_scantronNone'),
-				    meta: { title: '学生-考试-无答题卡' }
-				},
-				{
-				    name: 'examination_scantronHas',
-				    path: '/examination_scantronHas',
-				    component: () =>
-				        import ( /* webpackChunkName: "examination_scantronHas" */ '../components/page/examination/examination_scantronHas'),
-				    meta: { title: '学生-考试-有答题卡' }
-				},
-				{
-				    name: 'examination_scantronImg',
-				    path: '/examination_scantronImg',
-				    component: () =>
-				        import ( /* webpackChunkName: "examination_scantronImg" */ '../components/page/examination/examination_scantronImg'),
-				    meta: { title: '学生-考试-图片试卷' }
-				},
-				{
-				    name: 'examination_feedback',
-				    path: '/examination_feedback',
-				    component: () =>
-				        import ( /* webpackChunkName: "examination_feedback" */ '../components/page/examination/examination_feedback'),
-				    meta: { title: '学生-考试-考后反馈-查看' }
-				},
-				{
-				    name: 'examination_finish',
-				    path: '/examination_finish',
-				    component: () =>
-				        import ( /* webpackChunkName: "eexamination_finish" */ '../components/page/examination/examination_finish'),
-				    meta: { title: '学生-考试-考试完成' }
-				},
-				
+
+                {
+                    name: 'examination_manage',
+                    path: '/examination_manage',
+                    component: () =>
+                        import ( /* webpackChunkName: "examination_manage" */ '../components/page/examination/examination_manage'),
+                    meta: { title: '学生-考试管理' }
+                },
+                {
+                    name: 'examination_process',
+                    path: '/examination_process',
+                    component: () =>
+                        import ( /* webpackChunkName: "examination_process" */ '../components/page/examination/examination_process'),
+                    meta: { title: '学生-考试-首页' }
+                },
+                {
+                    name: 'examination_faceRecognition',
+                    path: '/examination_faceRecognition',
+                    component: () =>
+                        import ( /* webpackChunkName: "examination_faceRecognition" */ '../components/page/examination/examination_faceRecognition'),
+                    meta: { title: '学生-考试-人脸识别' }
+                },
+                {
+                    name: 'examination_scantronNone',
+                    path: '/examination_scantronNone',
+                    component: () =>
+                        import ( /* webpackChunkName: "examination_scantronNone" */ '../components/page/examination/examination_scantronNone'),
+                    meta: { title: '学生-考试-无答题卡' }
+                },
+                {
+                    name: 'examination_scantronHas',
+                    path: '/examination_scantronHas',
+                    component: () =>
+                        import ( /* webpackChunkName: "examination_scantronHas" */ '../components/page/examination/examination_scantronHas'),
+                    meta: { title: '学生-考试-有答题卡' }
+                },
+                {
+                    name: 'examination_scantronImg',
+                    path: '/examination_scantronImg',
+                    component: () =>
+                        import ( /* webpackChunkName: "examination_scantronImg" */ '../components/page/examination/examination_scantronImg'),
+                    meta: { title: '学生-考试-图片试卷' }
+                },
+                {
+                    name: 'examination_feedback',
+                    path: '/examination_feedback',
+                    component: () =>
+                        import ( /* webpackChunkName: "examination_feedback" */ '../components/page/examination/examination_feedback'),
+                    meta: { title: '学生-考试-考后反馈-查看' }
+                },
+                {
+                    name: 'examination_finish',
+                    path: '/examination_finish',
+                    component: () =>
+                        import ( /* webpackChunkName: "eexamination_finish" */ '../components/page/examination/examination_finish'),
+                    meta: { title: '学生-考试-考试完成' }
+                },
+
 
 
 
@@ -446,86 +446,97 @@ export default new Router({
 
 
         // mobile
-		{
-		    path: '/mobile_examination_finish',
-			name: 'mobile_examination_finish',
-		    component: () =>
-		        import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/student/mobile_examination_finish.vue'),
-		    meta: { title: '学生考试完成' }
-		},
-		{
-		    path: '/mobile_examination_upfile',
-			name:'mobile_examination_upfile',
-		    component: () =>
-		        import ( /* webpackChunkName: "mobile_examination_upfile" */ '../components/page/mobile/student/mobile_examination_upfile.vue'),
-		    meta: { title: '学生考试上传图片答案' }
-		},
-		{
-		    path: '/mobile_examination_faceRecognition',
-			name:'mobile_examination_faceRecognition',
-		    component: () =>
-		        import ( /* webpackChunkName: "mobile_examination_faceRecognition" */ '../components/page/mobile/student/mobile_examination_faceRecognition.vue'),
-		    meta: { title: '学生考试上传图片答案' }
-		},
-		{
-		    path: '/mobile_examination_scantronNone',
-			name:'mobile_examination_scantronNone',
-		    component: () =>
-		        import ( /* webpackChunkName: "mobile_examination_scantronNone" */ '../components/page/mobile/student/mobile_examination_scantronNone.vue'),
-		    meta: { title: '学生考试无答题卡' }
-		},
-		{
-		    path: '/mobile_examination_scantronHas',
-			name:'mobile_examination_scantronHas',
-		    component: () =>
-		        import ( /* webpackChunkName: "mobile_examination_scantronHas" */ '../components/page/mobile/student/mobile_examination_scantronHas.vue'),
-		    meta: { title: '学生考试有答题卡' }
-		},
-		{
-		    path: '/mobile_examination_scantronImg',
-			name:'mobile_examination_scantronImg',
-		    component: () =>
-		        import ( /* webpackChunkName: "mobile_examination_scantronImg" */ '../components/page/mobile/student/mobile_examination_scantronImg.vue'),
-		    meta: { title: '学生考试图片试卷' }
-		},
-		{
-		    path: '/mobile_examination_feedback',
-			name:'mobile_examination_feedback',
-		    component: () =>
-		        import ( /* webpackChunkName: "mobile_examination_feedback" */ '../components/page/mobile/student/mobile_examination_feedback.vue'),
-		    meta: { title: '学生考后反馈' }
-		},
-		
-		{
-		    path: '/mobile_examination_process',
-			name:'mobile_examination_process',
-		    component: () =>
-		        import ( /* webpackChunkName: "mobile_examination_process" */ '../components/page/mobile/student/mobile_examination_process.vue'),
-		    meta: { title: '学生考试首页' }
-		},
-		{
-			path: '/mobile_examination_manage',
-			name:'mobile_examination_manage',
-			component: () =>
-			    import ( /* webpackChunkName: "mobile_examination_manage" */ '../components/page/mobile/student/mobile_examination_manage.vue'),
-			meta: { title: '学生考试试题' }
-		},
-		{
-			path: '/mobile_personal_student',
-			name:'mobile_personal_student',
-			component: () =>
-			    import ( /* webpackChunkName: "mobile_personal_student" */ '../components/page/mobile/student/mobile_personal_student.vue'),
-			meta: { title: '学生考试试题' }
-		},
-		
-		
+        {
+            path: '/mobile_examination_finish',
+            name: 'mobile_examination_finish',
+            component: () =>
+                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/student/mobile_examination_finish.vue'),
+            meta: { title: '学生考试完成' }
+        },
+        {
+            path: '/mobile_examination_upfile',
+            name: 'mobile_examination_upfile',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_examination_upfile" */ '../components/page/mobile/student/mobile_examination_upfile.vue'),
+            meta: { title: '学生考试上传图片答案' }
+        },
+        {
+            path: '/mobile_examination_faceRecognition',
+            name: 'mobile_examination_faceRecognition',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_examination_faceRecognition" */ '../components/page/mobile/student/mobile_examination_faceRecognition.vue'),
+            meta: { title: '学生考试上传图片答案' }
+        },
+        {
+            path: '/mobile_examination_scantronNone',
+            name: 'mobile_examination_scantronNone',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_examination_scantronNone" */ '../components/page/mobile/student/mobile_examination_scantronNone.vue'),
+            meta: { title: '学生考试无答题卡' }
+        },
+        {
+            path: '/mobile_examination_scantronHas',
+            name: 'mobile_examination_scantronHas',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_examination_scantronHas" */ '../components/page/mobile/student/mobile_examination_scantronHas.vue'),
+            meta: { title: '学生考试有答题卡' }
+        },
+        {
+            path: '/mobile_examination_scantronImg',
+            name: 'mobile_examination_scantronImg',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_examination_scantronImg" */ '../components/page/mobile/student/mobile_examination_scantronImg.vue'),
+            meta: { title: '学生考试图片试卷' }
+        },
+        {
+            path: '/mobile_examination_feedback',
+            name: 'mobile_examination_feedback',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_examination_feedback" */ '../components/page/mobile/student/mobile_examination_feedback.vue'),
+            meta: { title: '学生考后反馈' }
+        },
+
+        {
+            path: '/mobile_examination_process',
+            name: 'mobile_examination_process',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_examination_process" */ '../components/page/mobile/student/mobile_examination_process.vue'),
+            meta: { title: '学生考试首页' }
+        },
+        {
+            path: '/mobile_examination_manage',
+            name: 'mobile_examination_manage',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_examination_manage" */ '../components/page/mobile/student/mobile_examination_manage.vue'),
+            meta: { title: '学生考试试题' }
+        },
+        {
+            path: '/mobile_personal_student',
+            name: 'mobile_personal_student',
+            component: () =>
+                import ( /* webpackChunkName: "mobile_personal_student" */ '../components/page/mobile/student/mobile_personal_student.vue'),
+            meta: { title: '学生考试试题' }
+        },
+
+
         {
             path: '/mobile_teacherIndex',
             component: () =>
                 import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/teacher/mobile_teacherIndex.vue'),
             meta: { title: '手机教师首页' }
         },
-		
+        {
+            path: '/mobile_checkIndex',
+            component: () =>
+                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/teacher/mobile_checkIndex.vue'),
+            meta: { title: '手机教师批改试卷' }
+        },
+        {
+            path: '/mobile_userInfo',
+            component: () =>
+                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/common/userInfo.vue'),
+            meta: { title: '手机个人信息' }
+        },
 
         {
             path: '/404',

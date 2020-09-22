@@ -4,13 +4,31 @@ import {
     Field,
     Tabbar,
     TabbarItem,
+    NavBar,
+    Button,
+    Pagination,
     Uploader,
-	Toast,
-	NavBar
+    Slider,
+    RadioGroup,
+    Radio,
+    Empty,
+    Icon,
+    Cell,
+    CellGroup,
+    Dialog,
 } from 'vant'
 Vue.use(Field)
     .use(Tabbar)
     .use(TabbarItem)
-    .use(Uploader)
     .use(NavBar)
-	.use(Toast)
+    .use(Button)
+    .use(Pagination)
+    .use(Uploader)
+    .use(Slider)
+    .use(RadioGroup)
+    .use(Radio)
+    .use(Empty)
+    .use(Icon)
+    .use(Cell)
+    .use(CellGroup)
+    .use(Dialog)

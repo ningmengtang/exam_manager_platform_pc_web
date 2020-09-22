@@ -85,10 +85,10 @@
 					</div>
 				
 				</div>
-				<div class="right">
+				<div class="right" v-if="isLead">
 					<div class="right-son">
 						<div class="bg-purple">
-							<div class="card-other-i"  @click="addTask">新建考试任务</div>
+							<div class="card-other-i"  @click="addTask" >新建考试任务</div>
 						</div>
 					</div>
 				</div>
@@ -100,10 +100,10 @@
 				<div class="teacher-name">{{ data.operator_name }}</div>
 				<div class="title-box">
 					<div class="title">{{ data.paper_title }}</div>
-					<div class="synopsis">{{data.status == 0?'考试准备开始,请做好准备。':data.status == 1?'考试已结束，尽快导入答题卡':data.status == 2?'等待批阅':data.status==3?'考试已结束，请注意审批试卷':data.strus==4?'考试已经批阅完成':data.status == 5?'本次考试取消':'' }}</div>
+					<div class="synopsis">{{data.status == 0?'考试任务已创建，请尽快导入答题卡。':data.status == 1?'答题卡已导入，请尽快分配老师批阅。':data.status == 2?'已分配老师，正在等待批阅':data.status==3?'已分配老师，正在批阅试卷':data.status==4?'考试已经批阅完成。':data.status == 5?'本次考试取消':'' }}</div>
 				</div>
 				<div class="title-box" style="margin: 0 20px;">
-					<div class="time">开始时间：{{data.start_time}}</div>
+					<div class="time">批阅时间：{{data.start_time}}</div>
 					<div class="time">结束时间：{{data.over_time}}</div>
 				</div>
 				<div class="label-box">
@@ -113,10 +113,12 @@
 					<i class="icon el-icon-time" v-if="data.status == 0 || data.status == 1 ||data.status ==  2"></i>
 					<i class="icon el-icon-circle-check" v-if="data.status == 3 || data.status == 4 "></i>
 					<i class="icon el-icon-circle-close" v-if="data.status == 5  "></i>
-					<div class="status" >{{data.status == 0?'待分配':data.status == 1?'待导入':data.status == 2?'等待批阅':data.status == 3 ?'正在批阅':data.status==4?'批阅完成':data.status == 5?'批阅取消':'暂无'}}</div>
-					<el-button type="text" class="download"  v-if="data.status == 0" @click="importCard(data)">导入答题卡</el-button>
-					<el-button type="text" class="download"  v-if="data.status == 0" @click="goradeOver(data)">查看批阅</el-button>
-					<el-button type="text" class="download"  v-if="data.status == 0" @click="radeOver(data)">开始批阅</el-button>
+					<div class="status" >{{data.status == 0?'待导入':data.status == 1?'待分配':data.status == 2?'等待批阅':data.status == 3 ?'正在批阅':data.status==4?'批阅完成':data.status == 5?'批阅取消':'暂无'}}</div>
+					<el-button type="text" class="download" v-if="isLead && data.status == 0"  @click="importCard(data)">导入答题卡</el-button>
+					<el-button type="text" class="download" v-if="isLead && data.status == 1"  @click="cationCard(data)">分配老师</el-button>
+					<el-button type="text" class="download" v-if="(isLead && data.status == 2) || (isLead && data.status == 3) || (isLead && data.status == 4)"  @click="goradeOver(data)">查看批阅</el-button>
+
+					<el-button type="text" class="download" v-if="(!isLead && data.status == 2 )|| (!isLead && data.status == 3)"  @click="radeOver(data)">开始批阅</el-button>
 				</div>
 			</div>
 			<!-- 分页 -->
@@ -246,11 +248,11 @@
 			</div>
 			<el-dialog
       			width="60%"
-				title="请选择试卷开始和结束下载时间"
+				title="请选择考试审批时间和考试结束审批时间"
 				:visible.sync="innerVisible"
 				append-to-body>
 				<el-form label-width="120px">
-					<el-form-item label="开始下载时间：">
+					<el-form-item label="开始审批时间：">
 						<el-date-picker
 							class="selectTime"
 							v-model="startTime"
@@ -259,7 +261,7 @@
 							placeholder="选择日期时间">
 						</el-date-picker>
 					</el-form-item>
-					<el-form-item label="结束下载时间：">
+					<el-form-item label="结束审批时间：">
 						<el-date-picker
 							class="selectTime"
 							v-model="overTime"
@@ -287,6 +289,7 @@ import {
 		teacherSelectTag,
 		teacherDistributeselect,
 		selectStudentWithPaperAllotByTeacherIdAndPaperId,
+		teacherTaskSelectByTag,
 		schoolSelectTeacher,
 		ApiClassSelectListByOptions,
 		apicommonExamGetFile,
@@ -317,6 +320,7 @@ import {
 				SemesterList:[],
 				dialogVisible: false,
 				innerVisible:false,
+				isLead:false,
 				ParperType:'',
 				years_task:0,
 				version_task:0,
@@ -354,11 +358,11 @@ import {
 					},
 					{
 						"id":0,
-						"text":'待分配'
+						"text":'待导入'
 					},
 					{
 						"id":1,
-						"text":'待导入'
+						"text":'待分配'
 					},
 					{
 						"id":2,
@@ -418,7 +422,7 @@ import {
 			},
 			handleSizeChange1(val){
 				this.pageSize1 = val
-				teacherSelectTag({
+				teacherTaskSelectByTag({
 					"id": this.obj_task,
 					"pageSize": this.pageSize1,
 					"pageNum": this.pageNum1
@@ -431,7 +435,7 @@ import {
 			},
 			handleCurrentChangeTask1(val){
 				this.pageNum1 = val
-				teacherSelectTag({
+				teacherTaskSelectByTag({
 					"id": this.obj_task,
 					"pageSize": this.pageSize1,
 					"pageNum": this.pageNum1
@@ -499,7 +503,7 @@ import {
 				if (this.years_task != 0 && this.years_task) {
 					this.obj_task.push(this.years_task)
 				}
-				teacherSelectTag({
+				teacherTaskSelectByTag({
 					"id": this.obj_task,
 					"pageSize": this.pageSize1,
 					"pageNum": this.pageNum1
@@ -559,7 +563,12 @@ import {
 				sessionStorage.setItem('importPaper', JSON.stringify(data))
 				this.$router.push('webcats_teacher_import')
 			},
-			// 批阅
+			// 分配老师
+			cationCard(data){
+				sessionStorage.setItem('importPaper', JSON.stringify(data))
+				this.$router.push('webcats_teacher_allocation')
+			},
+			// 查看批阅
 			goradeOver(data){
 				sessionStorage.setItem('importPaper', JSON.stringify(data))
 				this.$router.push('webcats_teacher_redeoverlist')
@@ -573,7 +582,7 @@ import {
 			// 新建任务
 			addTask(){
 				this.dialogTableVisible = true
-				teacherSelectTag({
+				teacherTaskSelectByTag({
 					"id": this.obj_task,
 					"pageSize": this.pageSize1,
 					"pageNum": this.pageNum1
@@ -630,6 +639,15 @@ import {
 			}
 		},
 		mounted() {
+			let teacherId = localStorage.getItem('userID')
+			let roleList = JSON.parse(localStorage.getItem('roleList'))
+			console.log(roleList)
+			if(roleList && roleList.roleName == '教师组长' && roleList.teacherId == teacherId){
+				this.isLead = true
+			}else{
+				this.isLead = false
+			}
+
 			this.color = user().color;
 			//标签查询
 			this.TagTypeList = []
@@ -662,8 +680,6 @@ import {
 				}
 				
 			})
-			
-			
 		}
 	};
 </script>
