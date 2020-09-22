@@ -4,7 +4,8 @@ import {
     Field,
     Tabbar,
     TabbarItem,
-    Uploader
+    Uploader,
+	NavBar
 } from 'vant'
 Vue.use(Field)
     .use(Tabbar)
