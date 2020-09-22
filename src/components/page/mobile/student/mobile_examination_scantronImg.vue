@@ -17,7 +17,7 @@
 					<div class="status">图片试卷上传答案</div>
 					<div class="up-box" v-loading="loading">
 						<el-upload class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload" :on-preview="handlePreview"
-						 :on-remove="handleRemove"  list-type="picture">
+						 :on-remove="handleRemove" list-type="picture">
 							<el-button size="small" type="primary" class="button">点击上传</el-button>
 							<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
 						</el-upload>
@@ -52,6 +52,9 @@
 
 <script>
 	import Tabbar from '../common/tabbar.vue'
+	import {
+		Dialog
+	} from 'vant';
 	import mobile from '@/assets/js/mobile.js'
 	import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 	import VueQr from 'vue-qr'
@@ -249,12 +252,16 @@
 				let newTime = new Date().getTime();
 				let timeDifference = this.getCookie('examTime') - newTime;
 				if (timeDifference <= 0) {
-					this.$alert('考试时间结束！将自动提交试卷。', '提醒', {
-						confirmButtonText: '确定',
-						callback: action => {
+					Dialog.confirm({
+							title: '提醒',
+							message: '考试时间结束！将自动提交试卷。',
+						})
+						.then(() => {
 							this.finish()
-						}
-					});
+						})
+						.catch(() => {
+							// on cancel
+						});
 					// 清除计时器
 					clearInterval(this.timer)
 					// 清除时间cookic
@@ -269,7 +276,7 @@
 			// 考试完成
 			finish() {
 				this.$router.push({
-					name: 'examination_finish',
+					name: 'mobile_examination_finish',
 					query: {
 						id: this.examId
 					}
@@ -282,14 +289,14 @@
 				console.log(file);
 			}
 		},
-		
+
 		mounted() {
-				// ---查看学生信息
-				StudentAccountInfo({
-					id: localStorage.getItem('userID')
-				}).then(res => {
-					this.studentSn = res.data.data.list[0].sn
-				})
+			// ---查看学生信息
+			StudentAccountInfo({
+				id: localStorage.getItem('userID')
+			}).then(res => {
+				this.studentSn = res.data.data.list[0].sn
+			})
 			// 新增答案
 			studentTestQuestionsAdd({
 				'paper_id': this.examId,
@@ -323,13 +330,13 @@
 				'paper_id': this.examId,
 			}).then(res => {
 				let data = res.data.data.list[0]
-                
+
 				this.question_id_black = data.id
 				// 小题上传答案二维码
-				this.qrHost=`${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
+				this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
 				// 小题上传答案二维码
 				this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
+				this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
 					this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
 
 			})
@@ -340,5 +347,7 @@
 <style scoped src="../../../../assets/css/examination-other-mobile.css"></style>
 // 修改element 自带样式
 <style scoped>
-	.up-box{min-height: 200px;}
+	.up-box {
+		min-height: 200px;
+	}
 </style>

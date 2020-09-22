@@ -38,6 +38,9 @@
 <script>
 	import Tabbar from '../common/tabbar.vue'
 	import mobile from '@/assets/js/mobile.js'
+	import {
+		Dialog
+	} from 'vant';
 	import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 	import VueQr from 'vue-qr'
 	import qrHost from '@/api/qrCode.js'
@@ -178,12 +181,16 @@
 				let newTime = new Date().getTime();
 				let timeDifference = this.getCookie('examTime') - newTime;
 				if (timeDifference <= 0) {
-					this.$alert('考试时间结束！将自动提交试卷。', '提醒', {
-						confirmButtonText: '确定',
-						callback: action => {
+					Dialog.confirm({
+							title: '提醒',
+							message: '考试时间结束！将自动提交试卷。',
+						})
+						.then(() => {
 							this.finish()
-						}
-					});
+						})
+						.catch(() => {
+							// on cancel
+						});
 					// 清除计时器
 					clearInterval(this.timer)
 					// 清除时间cookic
@@ -230,7 +237,7 @@
 			// 考试完成
 			finish() {
 				this.$router.push({
-					name: 'examination_finish',
+					name: 'mobile_examination_finish',
 					query: {
 						id: this.examId
 					}

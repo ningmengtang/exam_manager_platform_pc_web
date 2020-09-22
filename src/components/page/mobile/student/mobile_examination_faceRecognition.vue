@@ -92,7 +92,7 @@
 			// ---回去--
 			goProcess() {
 				this.$router.push({
-					name: 'examination_process',
+					name: 'mobile_examination_process',
 					query: {
 						id: this.examId,
 					}

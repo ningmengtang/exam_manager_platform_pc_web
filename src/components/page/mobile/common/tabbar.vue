@@ -2,10 +2,10 @@
     <div>
     <div class="home_tabber">
         <van-tabbar v-model="active"  :active-color="activeColor" :fixed="false" route>
-                <van-tabbar-item :to="type == 'teacher'?'/mobile_teacherIndex':''" icon="wap-home">首页</van-tabbar-item>
+                <van-tabbar-item :to="type == 'teacher'?'/mobile_teacherIndex':'/mobile_examination_manage'" icon="wap-home">首页</van-tabbar-item>
                 <van-tabbar-item to="/mobile/car" icon="shop-o">考试</van-tabbar-item>
                 <van-tabbar-item to="/mobile/user" icon="orders-o">练习</van-tabbar-item>
-                <van-tabbar-item to="/mobile/user" icon="manager-o">我的</van-tabbar-item>
+                <van-tabbar-item :to="type == 'teacher'?'/mobile_teacherIndex':'/mobile_personal_student'" icon="manager-o">我的</van-tabbar-item>
         </van-tabbar>
     </div>
         <div class="tabbar--placeholder" style="width:100%;height:55px"></div>

@@ -1,5 +1,5 @@
 <template>
-	<div class="box">
+	<div class="box" v-loading="loading">
 		<!-- 左边 -->
 		<div class="left-box" v-show="!show">
 			<div class="answer">
@@ -39,9 +39,11 @@
 					<div>{{topicIndex}}</div>
 					<el-tag effect="dark" class="tag" @click="show=false">关闭</i></el-tag>
 				</div>
+				<div class="at-top" style="margin: .08rem 0;">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
+					 :format="format"></el-progress>
+				</div>
 				<div class="content-b">
 					<div class="c-title" v-html="Problemtitle"></div>
-					
 				</div>
 				<div class="content-c">
 					<div v-if="stateType=='1000'||stateType=='2000'">
@@ -55,11 +57,10 @@
 								 v-html="d.topic_text"></span></el-radio-button>
 						</el-radio-group>
 						<div class="userChoice"><span>你已选择： </span><span class="i">{{choiceKey}}</span></div>
-						<div style="display: flex;justify-content: center;">
-
-							<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">确认，下一题</el-button>
-
-							<el-button class="reset" @click="choiceKey=''">清空本题答案</el-button>
+						<div style="display: flex;justify-content: center;flex-wrap: wrap;">
+							<el-button class="reset" style="margin: .2rem;" @click="upChoice(question_id_black)">确认上传选择题答案</el-button>
+                            <el-button class="previous" @click="goTopic('previous')">上一题</el-button>
+							<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
 						</div>
 					</div>
 					<div v-else-if="stateType==''"></div>
@@ -79,7 +80,10 @@
 								<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
 							</el-upload>
 						</div>
-						<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">确认，下一题</el-button>
+						<div style="display: flex;justify-content: center;flex-wrap: wrap;">
+						<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
+						<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
+						</div>
 					</div>
 				</div>
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">上传日志</div>
@@ -207,6 +211,15 @@
 				studentTestQuestionsImg(this.question_id_black, this.uploadFile).then(res => {
 					this.$message.success('上传成功')
 					this.loading = false
+					studentTestQuestionsLog({
+						'student_id': localStorage.getItem('userID'),
+						'paper_id': this.examId,
+						'id': this.question_id_black
+					}).then(res2 => {
+						let data = res2.data.data.list[0]
+						this.urls[0] = ('/api/student/question/getImage/' + this.question_id_black + '?id=1' + "&d=" + new Date().getTime()),
+						this.srcList[0] = ('/api/student/question/getImage/' + this.question_id_black + '?id=1' + "&d=" + new Date().getTime())
+					})
 				})
 			},
 			// 上传控制
@@ -323,7 +336,9 @@
 				// 清空选项
 				this.fileList=[]
 				// 显示
-				this.show = true
+				if(checked){
+					this.show = true
+				}
 				// 重置选项
 				this.choiceKey=''
 				// 小题索引
@@ -378,8 +393,8 @@
 			},
 			// 题目跳转
 			goTopic(type) {
-				this.schedule();
-				let index, questionsType, next_data
+				
+				let index, questionsType, next_data,before_data
 				JSON.stringify(this.topicDefault) === '[]' ? this.topicDefault = ['1.1.1'] :
 					(this.topicArr.map((x, i) => {
 						if (x.index == this.topicDefault[this.topicDefault.length - 1]) {
@@ -391,14 +406,12 @@
 					}));
 			
 				if (type == 'previous') {
-					questionsType = this.topicArr[index - 1].type
-					console.log(this.topicDefault)
-					let data = this.topicDefault
-					data.splice(data.length - 1, 1, this.topicArr[index - 1].index)
-					data = Array.from(new Set(data))
-					this.topicDefault = data
-					console.log(data)
-					this.topicLittleQuestions(this.topicArr[index - 1].data, questionsType)
+
+					if(index!=0){
+						before_data=this.topicArr[index-1]
+						questionsType =before_data.type
+						this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
+					}
 				} else if (type == 'next') {
 					if (this.topicDefault.length >= this.topicSum) {
 						this.$confirm('全是题目已完成, 是否提交试卷?', '提示', {
@@ -436,17 +449,24 @@
 									}
 							}
 						}
-						// 上传选择题答案
-						if(questionsType==1000){
-							studentTestQuestionsString(this.choiceKey, this.question_id_black).then(res => {
-								console.log(res)
-							})
-						}	
-						
+						this.schedule();
 						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
 						
 					}
 				}
+			},
+			// 上传选择题答案
+			upChoice(id) {
+				studentTestQuestionsString(this.choiceKey, id).then(res => {
+					studentTestQuestionsLog({
+						'student_id': localStorage.getItem('userID'),
+						'paper_id': this.examId,
+						'id': id
+					}).then(res2 => {
+						let data = res2.data.data.list[0]
+						this.answer_test = data.answer_test
+					})
+				})
 			},
 			// 考试完成
 			finish() {
@@ -465,6 +485,7 @@
 			}
 		},
 		mounted() {
+			this.loading = true,
 			// localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
 			// ---查看学生信息
 			StudentAccountInfo({
@@ -500,7 +521,6 @@
 						})
 					})
 				})
-				console.log(1)
 				// 默认读取当前题目
 				let frist = this.topicDefault[this.topicDefault.length - 1]
 				this.topicArr.map(x => {
@@ -508,6 +528,7 @@
 						this.topicLittleQuestions(x.data, x.type, x.id)
 					}
 				})
+				this.loading = false
 				// console.log(this.topicArr)
 			})
 			// ---定时器计算剩余时间

@@ -33,7 +33,7 @@
 							</span>
 							<el-input size="medium" placeholder="验证码" v-model="param.code" class="i"></el-input>
 							<img class="main_content_login_img_vcode" style="width: 100px;height:32px;box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);display: flex;"
-							  :src="vcodeimg" alt="验证码" @click="vcodeRefresh">
+							 :src="vcodeimg" alt="验证码" @click="vcodeRefresh">
 						</el-form-item>
 						<el-select v-model="value" placeholder="请选择" class="select" @change="identity">
 							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -229,7 +229,11 @@
 										localStorage.setItem('userSchoolName', wd.data.schoolName)
 									}
 									this.$message.success('登录成功')
-									this.$router.push(`/index_${type}`)
+									// 判断什么端登录
+									this.mobilePhone()?this.$router.push(`/mobile_examination_manage`):this.$router.push(`/index_${type}`)
+									
+									
+									console.log(this.mobilePhone())
 									break;
 								case 300055:
 									this.$message.error('用户已登录')
@@ -286,23 +290,27 @@
 				}
 			},
 			// 判断是否手机
-			mobilePhone(){
-				let screenWidth=document.body.offsetWidth;
-				if(screenWidth<=750){
-					// 加载自适应
-					flex();
+			mobilePhone() {
+				this.screenWidth = document.documentElement.getBoundingClientRect().width
+				var ua = navigator.userAgent;
+				var ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
+					isIphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
+					isAndroid = ua.match(/(Android)\s+([\d.]+)/),
+					isMobile = isIphone || isAndroid;
+				if (this.screenWidth <= 750||isMobile) {
+					mobile();
+					return true
+				}else{
+					return false
 				}
 			}
 		},
-        created(){
+		created() {
 			// 判断手机
-			// window.onresize = () => {
-			
-			// }
-			this.screenWidth = document.documentElement.getBoundingClientRect().width
-			if(this.screenWidth<=750){
-				mobile();
+			if(this.mobilePhone()){
+				delete this.options.splice(2,3)
 			}
+			
 		},
 		mounted() {
 			let loginUserType = localStorage.getItem('loginUserType');
@@ -521,9 +529,16 @@
 	.slectColor {
 		background-color: #409EFF;
 	}
-	@media screen and (max-width: 750px){
-		.employ{width: 100%;padding: 20px;}
-		.form-login{width: 100%;}
-		
+
+	@media screen and (max-width: 750px) {
+		.employ {
+			width: 100%;
+			padding: 20px;
+		}
+
+		.form-login {
+			width: 100%;
+		}
+
 	}
 </style>

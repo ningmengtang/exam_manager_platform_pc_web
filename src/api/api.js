@@ -956,6 +956,11 @@ export function basicQrcSelectByPrimaryKey(data){
 	return result;
 }
 // -------学生试题--------------------------
+// 学生开始考试
+export function studentTestQuestionsStart(data){
+    const result =post('/api/student/studentExam/startExam',data)
+	return result;
+}
 // 试卷下载图片
 export function studentTestQuestionsdowonLogImg(data){
     const result =post('/api/student/question/getImage',data)

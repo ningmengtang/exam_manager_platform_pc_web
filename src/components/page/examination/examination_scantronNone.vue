@@ -1,14 +1,14 @@
 <template>
-	<div class="box">
+	<div class="box" v-loading="loading">
 		<!-- 左边 -->
 		<div class="left-box">
 			<div class="answer">
 				<div class="ts">距离考试结束还有</div>
 				<div class="ts-time">{{ResidueTime}}</div>
 				<div class="all-topic-box">
-					<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
+				<!-- 	<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
 						 :format="format"></el-progress>
-					</div>
+					</div> -->
 					<div class="li">
 						<div class="li-i" v-for="(d,i) in topic" :key="i">
 							<div class="at-title">第{{i+1}}部分</div>
@@ -29,8 +29,9 @@
 					</div>
 				</div>
 				<div class="affirm">
-					<!-- <el-button class="previous" @click="goTopic('previous')">确认，上一题</el-button> -->
-					<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">确认，下一题</el-button>
+					<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
+					<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
+					<el-button class="next" style="background-color: #19AEFB;" @click="finishAll">全部完成提交</el-button>
 					<div class="bottom-ts">注意核实个人信息和考试信息，如有不符立刻联系老师</div>
 				</div>
 			</div>
@@ -62,14 +63,13 @@
 						</el-radio-group>
 						<div class="userChoice"><span>你已选择： </span><span class="i">{{choiceKey}}</span></div>
 						<div style="display: flex;justify-content: center;">
-							<el-button class="reset" @click="choiceKey=''">清空本题答案</el-button>
+							<el-button class="reset" @click="upChoice(question_id_black)">确认上传选择题答案</el-button>
 						</div>
 					</div>
 					<div v-else-if="stateType==''"></div>
 					<div v-else>
 						<div class="content-cc">
 							<div class="cc-title">综合题</div>
-							<!-- <el-image :src="problemImg" class="cc-img"></el-image> -->
 							<div class="font-i" style="margin-bottom: 20px;">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下识别的结果，如果修改了答案，请重新上传。</div>
 						</div>
 					</div>
@@ -168,7 +168,6 @@
 				topicSum: 0,
 				Problemtitle: '',
 				ProblemChoice: [],
-				problemImg: 'https://fuss10.elemecdn.com/a/3fproblem/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
 				ewm: '',
 				question_id: '',
 				urls: ['0'],
@@ -177,7 +176,6 @@
 				answer_test: '',
 				question_id_black: '',
 				current_question: '0',
-
 			}
 
 		},
@@ -282,9 +280,9 @@
 			// 获取小题题目
 			topicLittleQuestions(data, type, id, sn, checked, index) {
 				// 重置选项
-				this.choiceKey=''
+				this.choiceKey = ''
 				// 小题索引
-				if(index!=undefined){
+				if (index != undefined) {
 					this.topicIndex = index
 				}
 				// 小题id
@@ -335,7 +333,7 @@
 			// 题目跳转
 			goTopic(type) {
 				this.schedule();
-				let index, questionsType, next_data
+				let index, questionsType, next_data,before_data
 				JSON.stringify(this.topicDefault) === '[]' ? this.topicDefault = ['1.1.1'] :
 					(this.topicArr.map((x, i) => {
 						if (x.index == this.topicDefault[this.topicDefault.length - 1]) {
@@ -345,16 +343,22 @@
 							}
 						}
 					}));
+				// console.log(index)
 
 				if (type == 'previous') {
-					questionsType = this.topicArr[index - 1].type
-					console.log(this.topicDefault)
-					let data = this.topicDefault
-					data.splice(data.length - 1, 1, this.topicArr[index - 1].index)
-					data = Array.from(new Set(data))
-					this.topicDefault = data
-					console.log(data)
-					this.topicLittleQuestions(this.topicArr[index - 1].data, questionsType)
+					if(index!=0){
+						before_data=this.topicArr[index-1]
+						questionsType =before_data.type
+						this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
+					}
+					
+					// console.log(this.topicDefault)
+					// let data = this.topicDefault
+					// data.splice(data.length - 1, 1, this.topicArr[index - 1].index)
+					// data = Array.from(new Set(data))
+					// this.topicDefault = data
+					// console.log(data)
+					// this.topicLittleQuestions(this.topicArr[index - 1].data, questionsType)
 				} else if (type == 'next') {
 					if (this.topicDefault.length >= this.topicSum) {
 						this.$confirm('全是题目已完成, 是否提交试卷?', '提示', {
@@ -375,30 +379,55 @@
 						});
 					} else {
 						next_data = this.topicArr[index + 1]
-						this.topicIndex=next_data.index
+						this.topicIndex = next_data.index
 						questionsType = next_data.type
 						//判断是否重复
 						if (!this.topicDefault.includes(next_data.index)) {
 							this.topicDefault.push(next_data.index)
 						} else {
-							for( const [ i, x ] of this.topicArr.entries()){
-									if (!this.topicDefault.includes(x.index)) {
-										this.topicDefault.push(x.index)
-										return false
-									}
+							for (const [i, x] of this.topicArr.entries()) {
+								if (!this.topicDefault.includes(x.index)) {
+									this.topicDefault.push(x.index)
+									return false
+								}
 							}
 						}
-						// 上传选择题答案
-	
-						
-							console.log(this.question_id_black)
-							studentTestQuestionsString(this.choiceKey, this.question_id_black).then(res => {
-								console.log(res)
-							})
 						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
-						
+
 					}
 				}
+			},
+			// 上传选择题答案
+			upChoice(id) {
+				studentTestQuestionsString(this.choiceKey, id).then(res => {
+					studentTestQuestionsLog({
+						'student_id': localStorage.getItem('userID'),
+						'paper_id': this.examId,
+						'id': id
+					}).then(res2 => {
+						let data = res2.data.data.list[0]
+						this.answer_test = data.answer_test
+					})
+				})
+			},
+			// 提交
+			finishAll(){
+				this.$confirm('全是题目已完成, 是否提交试卷?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.$message({
+						type: 'success',
+						message: '提交成功!'
+					});
+					this.finish()
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '暂时不提交'
+					});
+				});
 			},
 			// 考试完成
 			finish() {
@@ -455,6 +484,7 @@
 						this.topicLittleQuestions(x.data, x.type, x.id)
 					}
 				})
+				this.loading = false
 				// console.log(this.topicArr)
 			})
 			// ---定时器计算剩余时间

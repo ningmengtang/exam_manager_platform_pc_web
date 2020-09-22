@@ -448,6 +448,7 @@ export default new Router({
         // mobile
 		{
 		    path: '/mobile_examination_finish',
+			name: 'mobile_examination_finish',
 		    component: () =>
 		        import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/student/mobile_examination_finish.vue'),
 		    meta: { title: '学生考试完成' }
@@ -497,7 +498,7 @@ export default new Router({
 		
 		{
 		    path: '/mobile_examination_process',
-			name:'mobile_eexamination_process',
+			name:'mobile_examination_process',
 		    component: () =>
 		        import ( /* webpackChunkName: "mobile_examination_process" */ '../components/page/mobile/student/mobile_examination_process.vue'),
 		    meta: { title: '学生考试首页' }
@@ -509,6 +510,14 @@ export default new Router({
 			    import ( /* webpackChunkName: "mobile_examination_manage" */ '../components/page/mobile/student/mobile_examination_manage.vue'),
 			meta: { title: '学生考试试题' }
 		},
+		{
+			path: '/mobile_personal_student',
+			name:'mobile_personal_student',
+			component: () =>
+			    import ( /* webpackChunkName: "mobile_personal_student" */ '../components/page/mobile/student/mobile_personal_student.vue'),
+			meta: { title: '学生考试试题' }
+		},
+		
 		
         {
             path: '/mobile_teacherIndex',
@@ -516,6 +525,7 @@ export default new Router({
                 import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/mobile/teacher/mobile_teacherIndex.vue'),
             meta: { title: '手机教师首页' }
         },
+		
 
         {
             path: '/404',

@@ -16,6 +16,7 @@
 <script>
 	import Tabbar from '../common/tabbar.vue'
 	import mobile from '@/assets/js/mobile.js'
+	import { Dialog } from 'vant'
 	import {
 		studentIndex,
 		apicommonExamGetFile,
@@ -75,7 +76,8 @@
 				ResidueTime: '00:00:00',
 				timer: '',
 				stateType: '',
-				affix: ''
+				affix: '',
+				blackData:''
 			}
 		},
 		methods: {
@@ -93,9 +95,18 @@
 					})
 				}else if(this.uploadType=='has'){
 					studentTestQuestionsAnswerSheet(5000,this.getData.paper_id,this.uploadFile).then(res=>{
-						console.log(res)
+						
 						this.$message.success('上传成功')
 						this.loading = false
+						console.log(res.data.data)
+						for(let x in res.data.data){
+							this.blackData=res.data.data[x]
+						}
+						Dialog.alert({
+						  message: JSON.stringify(this.blackData),
+						}).then(() => {
+						  // on close
+						});
 					})
 					
 				}
@@ -216,7 +227,11 @@
 			}
 		},
 		mounted() {
-			
+			// let json={'_20200919180830.jpg': {"X-0": "试卷信息不一致"}}
+		      
+			// for (let x in json){
+			// 	console.log(json[x])
+			// }
 				// localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
 				// clearInterval(this.timer)
 				// 清除时间cookic
@@ -229,9 +244,9 @@
 				// 	this.examParticular = res.data.data.examExplain
 				// 	// this.affix=res.data.data.affix
 				// })
-				this.timer = setInterval(x => {
-					this.ResidueTime = this.getResidueTime()
-				}, 0)
+				// this.timer = setInterval(x => {
+				// 	this.ResidueTime = this.getResidueTime()
+				// }, 0)
 		}
 	};
 </script>

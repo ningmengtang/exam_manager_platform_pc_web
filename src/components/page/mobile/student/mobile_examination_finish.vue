@@ -10,9 +10,6 @@
 				<div class="ii">考试完成，真棒！</div>
 				<div class="iii">您已经按时完成了考试，并提交了试卷</div>
 			</div>
-			<div>
-				<van-uploader :after-read="afterRead" />
-			</div>
 		</div>
 		
 		<Tabbar />
@@ -21,6 +18,7 @@
 
 <script>
 	import Tabbar from '../common/tabbar.vue'
+	import { Toast,Dialog } from 'vant';
 	import mobile from '@/assets/js/mobile.js'
 	import {
 		studentIndex,
@@ -187,6 +185,12 @@
 					// 		// });
 					// 	}
 					// });
+					Dialog.alert({
+					  title: '提示',
+					  message: '跳转回考试试卷页面',
+					}).then(() => {
+					   this.$router.push('mobile_examination_manage')
+					});
 					// 清除计时器
 					clearInterval(this.timer)
 					// 清除时间cookic
@@ -217,16 +221,17 @@
 				this.examParticular = res.data.data.examExplain
 				// this.affix=res.data.data.affix
 			})
+			Toast('考试完成5秒后自动跳转');
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
-			}, 0)
+			}, 5000)
 		},
 	};
 </script>
 
 <style scoped src="../../../../assets/css/examination-other-mobile.css"></style>
 // 修改element 自带样式
-<style>
+<style scoped="">
 	.el-pagination button:disabled {
 		background-color: #f5f5f5;
 	}
@@ -235,7 +240,7 @@
 		background-color: #f5f5f5;
 	}
 
-	.box {
+/* 	.box {
 		padding-bottom: 52px !important;
-	}
+	} */
 </style>

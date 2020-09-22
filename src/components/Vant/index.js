@@ -5,6 +5,7 @@ import {
     Tabbar,
     TabbarItem,
     Uploader,
+	Toast,
 	NavBar
 } from 'vant'
 Vue.use(Field)
@@ -12,3 +13,4 @@ Vue.use(Field)
     .use(TabbarItem)
     .use(Uploader)
     .use(NavBar)
+	.use(Toast)

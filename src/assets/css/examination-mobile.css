@@ -1,4 +1,4 @@
-.box{padding: .2rem;border-radius: 8px;width: auto;height: 100%;overflow-y: scroll;-webkit-box-sizing: border-box;box-sizing: border-box;color: #333333;font-size: 14px;background-color: #F5F5F5;}
+.box{padding: .2rem;border-radius: 8px;color: #333333;font-size: 14px;background-color: #F5F5F5;min-height: 100%;}
 .group{margin: 10px 0;background-color: #FFFFFF;padding: .1rem;border-radius: 8px;background-image: url(../img/bg-bird.png);background-repeat: no-repeat;background-position: calc( 100% - 20px ) 20px;min-width: 1420px;}
 .row-group{width: 100%;display: flex;align-items: center;}
 .row-group .th-group{font-size: 14px;margin-right: 38px;width: 60px;}
@@ -44,7 +44,7 @@
 .label:nth-child(3n+3){background-color: #2bbb61;}
 
 .label+.label{margin-left: 15px;}
-.right{display: flex;align-items: center;align-items: center;width: 100%;margin-top: .1rem;}
+.right{display: flex;align-items: center;width: 100%;margin-top: .1rem;justify-content: flex-end;}
 .icon{font-size: 25px;color: rgba(67, 207, 124, 1);}
 .right .status{margin-left: 15px;font-size: 16px;margin-right: 20px;}
 .right .status.i{margin-right: 0;font-size: 14px;}

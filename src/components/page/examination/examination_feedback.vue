@@ -71,6 +71,27 @@
 						</div>
 					</div>
 				</div>
+				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">老师批改</div>
+				<div class="questions-img">
+					<div v-for="(url,i) in teacher_urls" :key="url.i" class="img-box">
+						<div class="img-box-i" v-if="logtype=='img'">
+							<el-image :src="url" lazy class="img" @click="img_shade2(i)"></el-image>
+							<transition name="el-zoom-in-top">
+								<div class="img-shade" v-show="i==imgShadeIndex2&&imgShade2==true" @click="imgShade2=false">
+									<i class="icon el-icon-zoom-in" @click="blackOpenViewer()"></i>
+									<i class="icon el-icon-delete-solid "></i>
+								</div>
+							</transition>
+						</div>
+						<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
+						<div class="answer" v-else-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
+					</div>
+				</div>
+				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">参考答案</div>
+				<div class="rv">
+					<div v-html="analysis_text"></div>
+					<div>{{consult_answer_text}}</div>
+				</div>
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">我上传的答案</div>
 				<div class="questions-img">
 					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
@@ -86,15 +107,15 @@
 						<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
 						<div class="answer" v-else-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 					</div>
+
 				</div>
-				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">参考答案</div>
-				<div class="rv">
-					<div v-html="analysis_text" ></div>
-					<div>{{consult_answer_text}}</div>
-				</div>
+
+
+
 			</div>
 		</div>
 		<el-image-viewer v-if="bigImg" :initial-index="bigIndex" :on-close="closeViewer" :url-list="srcList" />
+		<el-image-viewer v-if="blackBigImg" :initial-index="blackBigIndex" :on-close="closeViewer" :url-list="teacher_srcList" />
 	</div>
 </template>
 
@@ -161,9 +182,13 @@
 				],
 				choiceKey: '',
 				bigImg: false,
+				blackBigImg: false,
 				imgShade: false,
+				imgShade2: false,
 				imgShadeIndex: '',
+				imgShadeIndex2: '',
 				bigIndex: 0,
+				blackBigIndex: 0,
 				ResidueTime: '00:00:00',
 				timer: '',
 				stateType: '',
@@ -176,17 +201,19 @@
 				question_id: '',
 				urls: ['0'],
 				srcList: ['0'],
+				teacher_urls: ['0'],
+				teacher_srcList: ['0'],
 				logtype: '',
 				answer_test: '',
 				question_id_black: '',
 				current_question: '0',
 				total_points: 100,
 				Performance: 0,
-				analysis_text:'',
-				consult_answer_text:'',
-				questions_score:'',
-				questions_gain_score:''
-				
+				analysis_text: '',
+				consult_answer_text: '',
+				questions_score: '',
+				questions_gain_score: ''
+
 			}
 
 		},
@@ -219,11 +246,21 @@
 				this.imgShade = true;
 				this.imgShadeIndex = index
 			},
+			img_shade2(index) {
+				this.imgShade2 = true;
+				this.imgShadeIndex2 = index
+			},
 			//---开控制预览大图片---
 			openViewer(index) {
 				this.bigImg = true
 				this.bigIndex = this.imgShadeIndex
 			},
+			// --反馈的
+			blackOpenViewer() {
+				this.blackBigImg = true
+				this.blackBigIndex = this.imgShadeIndex
+			},
+
 
 			//---关闭控制预览大图片---
 			closeViewer() {
@@ -289,13 +326,13 @@
 				// console.log(this.topicDefault)
 			},
 			// 获取小题题目
-			topicLittleQuestions(data, type, id, sn,checked, index) {
-				
-                // 参考答案
-				this.analysis_text=data.anwser.analysis_text
-				this.consult_answer_text=data.anwser.answer_text
+			topicLittleQuestions(data, type, id, sn, checked, index) {
+
+				// 参考答案
+				this.analysis_text = data.anwser.analysis_text
+				this.consult_answer_text = data.anwser.answer_text
 				// 小题分数
-				this.questions_score=data.score
+				this.questions_score = data.score
 				// 小题索引
 				if (index != undefined) {
 					this.topicIndex = index
@@ -326,14 +363,15 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
-					
+
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
+					console.log(data.id)
 					// 小题获取的分数
-					if(data.hasOwnProperty('score')){
-						this.questions_gain_score=data.score
-					}else{
-						this.questions_gain_score=0
+					if (data.hasOwnProperty('score')) {
+						this.questions_gain_score = data.score
+					} else {
+						this.questions_gain_score = 0
 					}
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
@@ -342,12 +380,16 @@
 						this.logtype = 'none'
 					} else {
 						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,
-						// 学生选的答案
-						this.choiceKey=data.answer_test) :
+								// 学生选的答案
+
+								this.choiceKey = data.answer_test) :
 							(
 								this.logtype = 'img',
 								this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
-								this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
+								this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
+								this.teacher_urls[0] = ('/api/student/question/getImage/' + data.id + '?id=2' + "&d=" + new Date().getTime()),
+								this.teacher_srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=2' + "&d=" + new Date().getTime())
+
 							)
 					}
 				})
@@ -501,5 +543,9 @@
 	}
 
 	.left-box .answer .all-topic-box .li {}
-	.rv{line-height: 1.8;font-weight: bold;}
+
+	.rv {
+		line-height: 1.8;
+		font-weight: bold;
+	}
 </style>

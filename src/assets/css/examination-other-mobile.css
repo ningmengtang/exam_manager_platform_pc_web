@@ -1,4 +1,4 @@
-.box{z-index: -1;color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;padding: .3rem;display: flex;min-height: 100%;margin-bottom: 24px;font-size: 18px;}
+.box{z-index: -1;color: rgba(80, 80, 80, 1);background-color: #F5F5F5;border-radius: 8px;padding: .3rem;display: flex;margin-bottom: 24px;font-size: 18px;min-height: 100%;}
  
  /* 大div 图片试卷 */
 .big-box{width: 100%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: .3rem;text-align: center;min-height: 768px;}
@@ -79,7 +79,8 @@
 .left-box .answer .at-number{margin: 10px 0;}
 .left-box .answer .affirm{align-self: flex-end;}
 
-.left-box .answer .previous,.next{padding: .4rem;background-color: #999999;color: #FFFFFF;font-weight: bold;font-size: 20px;}
+ .previous,.next{padding: .4rem;background-color: #999999;color: #FFFFFF;font-weight: bold;font-size: 20px;}
+
 .left-box .answer .bottom-ts{margin-top: 8px;font-size: 14px;color: #333333;}
 
 
@@ -87,7 +88,7 @@
 
 .right-box{width: 100%;padding: .3rem;min-height: 768px;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);}
 /* 试卷首页 */
-.right-box .process{padding: 40px;display: flex;justify-content: center;flex-wrap: wrap;}
+.right-box .process{padding: .2rem;display: flex;justify-content: center;flex-wrap: wrap;}
 .right-box .process .ts{font-size: 18px;display: flex;align-items: center;justify-content: center;color: #333333;width: 100%;}
 .right-box .process .ts-time{color: #FA4B1B;font-size: 48px;font-weight: bold;display: flex;justify-content: center;align-items: center;margin:20px 0;width: 100%;}
 .right-box .process .ts-a-box{margin-top: 34px;display: flex;justify-content: center;align-items: center;flex-direction: column;line-height: 2;border-bottom: 1px solid #999999 ;padding-bottom: 20px;width: 100%;}
@@ -104,7 +105,7 @@
 .right-box .process .go .ts1 p{color: #999999;font-size: 14px;}
 
 /* 人脸 */
-.right-box .face-box{padding: 40px;display: flex;justify-content: center;flex-direction: column;align-items: center;}
+.right-box .face-box{padding: .1rem;display: flex;justify-content: center;flex-direction: column;align-items: center;}
 .right-box .face-box .ts{font-size: 18px;font-weight: bold;}
 .right-box .face-box .ts2{font-size: 16px;color: #999999;margin-top: 14px;}
 .right-box .face-box .face-img{margin-top: 20px;width: 100%;min-height: 500px;}
@@ -115,7 +116,7 @@
 
 /* 右边的小题答题区域 */
 .right-box .questions{padding: .3rem;font-size: 18px;}
-.right-box .questions .message-top{border-left: 8px solid #1AAEFB;display: flex;align-items: center;padding-left: 12px;font-weight: bold;font-size: 20px;margin-bottom: 10px;justify-content: space-between;}
+.right-box .questions .message-top{border-left: 8px solid #1AAEFB;display: flex;align-items: center;padding-left: 12px;font-weight: bold;font-size: 20px;margin-bottom: 10px;justify-content: space-between;flex-wrap: wrap;}
 .right-box .questions .message-top .tag{font-size: 18px;font-weight: bold;height: auto!important;line-height: 32px!important;}
 .right-box .questions .content-b{padding: 0 16px;display: flex;justify-content: space-between;align-items: center;}
 .right-box .questions .content-b .ewm{margin-left: 10px;display: block;box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);padding: 10px;width: 120px;height: 120px;display: inline-table;text-align: center;}
@@ -134,14 +135,14 @@
 .right-box .questions-img .img-box{text-align: center;}
 .right-box .questions-img .img-box-i{position: relative;}
 .right-box .questions-img .img{width: 100%;margin: 0 10px;cursor: pointer;}
-.right-box .questions-img .img-shade{position: absolute;width: 180px;height: 100%;background-color: rgba(0,0,0,0.5);top: 0;margin-left: 10px;display: flex;align-items: center;justify-content: center;z-index: 9999;}
+.right-box .questions-img .img-shade{position: absolute;width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);top: 0;margin-left: 10px;display: flex;align-items: center;justify-content: center;z-index: 9999;}
 .right-box .questions-img .img-shade .icon{font-size: 26px;color: #FFFFFF;margin: 0 5px;cursor: pointer;}
 .right-box .questions-img .i{color: #999999;font-size: 14px;overflow: hidden;width: 180px;}
 .right-box .questions-img .answer{font-size: 16px;font-weight: bold;}
 
 
 /* 考试完成 */
-.finish-box {width: 100%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;min-height: 768px;}
+.finish-box {width: 100%;height: 100%;background-color: #FFFFFF;border-radius: 10px;box-shadow:0px 2px 16px 0px rgba(0, 0, 0, 0.04);padding: 42px 58px;text-align: center;}
 .finish-box .ts-time{color: #FA4B1B;font-size: 48px;font-weight: bold;display: flex;justify-content: center;align-items: center;margin:14px 0;width: 100%;}
 .finish-box .last{margin-top: 20px;}
 .finish-box .img{margin-bottom: 20px;}
