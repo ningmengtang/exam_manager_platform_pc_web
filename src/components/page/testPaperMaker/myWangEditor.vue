@@ -79,7 +79,7 @@ export default {
             'fontName',  // 字体
             'fontSize',  // 字号
             'italic',  // 斜体
-            'underline',  // 下划线
+            //'underline',  // 下划线
             'strikeThrough',  // 删除线
             'foreColor',  // 文字颜色
             'backColor',  // 背景颜色

@@ -597,7 +597,7 @@ export default {
 						this.$message.error('同步试卷至服务器出错！添加大题绑定小题失败！停止操作！')
 						return false
 						}
-
+						console.log("开始添加大题绑定小题")
 						var resResultData = res.data
 						
 						//循环输出小题的答题卡================================================================================================
@@ -627,6 +627,7 @@ export default {
 							this.$message.error('同步试卷至服务器出错！添加小题的答案卡失败！停止操作！')
 							return false
 						}
+						console.log("开始添加小题的答案卡")
 
 						//循环输出小题的答案================================================================================================
 							var questionAnwserItem = questionItem.anwser
@@ -655,6 +656,7 @@ export default {
 								this.$message.error('同步试卷至服务器出错！添加小题的答案失败！停止操作！')
 								return false
 							}
+							console.log("开始添加小题的答案")
 
 							//此时已经结束，关闭屏蔽层
 							if(questionItem.items.length <= 0)
@@ -711,6 +713,7 @@ export default {
 									this.$message.error('同步试卷至服务器出错！添加小题选项失败！停止操作！')
 									return false
 								}
+								console.log("开始添加小题选项")
 
 								var resResultData = res.data
 
@@ -718,8 +721,17 @@ export default {
 								questionOptionItem.sn = resResultData.data.sn
 								
 								
-								//此时已经结束，关闭屏蔽层
-								if(questionItem.items.length <= 0)
+								
+								
+								})
+								// .catch(err=>{
+								// this.$message.error('同步试卷至服务器出错！添加小题选项失败！系统错误！')
+								// return false
+								// })
+
+							})
+							//此时已经结束，关闭屏蔽层
+								if(questionItem.items.length > 0)
 								{
 									console.log("试卷准备重新分组")
 									console.log(this.testPaperObj)
@@ -747,14 +759,6 @@ export default {
 
 									//this.$router.push('/manage_user')
 								}
-								
-								})
-								// .catch(err=>{
-								// this.$message.error('同步试卷至服务器出错！添加小题选项失败！系统错误！')
-								// return false
-								// })
-
-							})
 							//循环输出小题选项，完成================================================================================================
 
 							
