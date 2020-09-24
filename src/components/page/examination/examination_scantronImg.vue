@@ -16,14 +16,23 @@
 				<div class="other-box">
 					<div class="status">图片试卷上传答案</div>
 					<div class="ewm">
-						<vue-qr :text="qrHost" :margin="0" colorDark="#000000" colorLight="#fff"  :size="100"></vue-qr>
+						<vue-qr :text="qrHost" :margin="0" colorDark="#000000" colorLight="#fff" :size="100"></vue-qr>
 						<div class="l">扫码快速上传</div>
 					</div>
 				</div>
 			</div>
 			<div class="content-b">
 				<div class="exam-img">
-					<img :src="affix" class="img" @click="img_shade(i)"></img>
+					<div>
+						<el-image :src="affix" class="img" :preview-src-list="srcList_i">
+							<div class="img-shade" v-show="imgShadeIndex_i&&imgShade_i==true" @click="imgShade_i=false">
+								<i class="icon el-icon-zoom-in" @click="openViewer_i()"></i>
+								<i class="icon el-icon-delete-solid "></i>
+							</div>
+						</el-image>
+						
+					</div>
+
 				</div>
 				<div class="message-top" style="margin-top: 20px;">上传一览</div>
 				<div class="ts">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下上传的结果，如果上传了错误的答案，请重新上传，请不要重复上传同样的题目答案。</div>
@@ -43,6 +52,8 @@
 				</div>
 			</div>
 		</div>
+		<el-image-viewer v-if="bigImg_i" :initial-index="bigIndex_i" :on-close="closeViewer_i" :url-list="srcList_i" />
+		<el-image-viewer v-if="bigImg" :initial-index="bigIndex" :on-close="closeViewer" :url-list="srcList" />
 	</div>
 </template>
 
@@ -58,7 +69,9 @@
 		apiCommonExamSeleElementTestById,
 		studentTestQuestionsAdd,
 		StudentAccountInfo,
-		studentTestQuestionsLog
+		studentTestQuestionsLog,
+		studentTestQuestionsUpImg,
+		studentTestQuestionsDelImg
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -75,6 +88,7 @@
 				disabled: 0,
 				qrHost: qrHost(),
 				loading: false,
+				loading_img: false,
 				status: '',
 				examId: this.$route.query.id,
 				examTitle: '',
@@ -102,22 +116,25 @@
 				topic2: ['第7题', '第8题', '第9题', '第10题', '第11题', '第12题', '第13题', '第14题'],
 				choiceKey: '',
 				bigImg: false,
+				bigImg_i: false,
 				imgShade: false,
+				imgShade_i: false,
 				imgShadeIndex: '',
+				imgShadeIndex_i: '',
 				bigIndex: 0,
+				bigIndex_1: 0,
 				ResidueTime: '00:00:00',
 				timer: '',
 				stateType: '',
 				problemImg: 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
 				ewm: require("../../../assets/img/ewm.png"),
-				urls: [
-
-				],
-				srcList: [
-
-
-				],
-				affix: ''
+				urls: [],
+				srcList: [],
+				srcList_i:[ 'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg'],
+				affix: '',
+				question_id_black: '',
+				question_sn_black: '',
+				up_img_black_id_arr: [],
 			}
 		},
 		methods: {
@@ -162,6 +179,10 @@
 				}
 			},
 			// 图片遮罩
+			img_shade_i(index) {
+				this.imgShade_i = true;
+				this.imgShadeIndex_i = index
+			},
 			img_shade(index) {
 				this.imgShade = true;
 				this.imgShadeIndex = index
@@ -171,10 +192,17 @@
 				this.bigImg = true
 				this.bigIndex = this.imgShadeIndex
 			},
+			openViewer_i(index) {
+				this.bigImg_i = true
+				this.bigIndex_i = this.imgShadeIndex_i
+			},
 
 			//---关闭控制预览大图片---
 			closeViewer() {
 				this.bigImg = false
+			},
+			closeViewer_i() {
+				this.bigImg_i = false
 			},
 			// 获取cookie
 			getCookie(name) {
@@ -258,7 +286,33 @@
 				'student_name': localStorage.getItem('userName'),
 				'student_sn': this.studentSn,
 			}).then(res => {
-				console.log(res.data)
+				let id = res.data.data
+				// 返回的id和sn
+
+				studentTestQuestionsLog({
+					'student_id': localStorage.getItem('userID'),
+					'paper_id': this.examId,
+					'id': id
+				}).then(res => {
+					let data = res.data.data.list[0]
+					this.question_id_black = data.id
+					this.question_sn_black = data.sn
+
+					studentTestQuestionsUpImg(data.sn).then(res => {
+						this.loading_img = false
+						if (res.data.data != undefined) {
+							res.data.data.map((x, i) => {
+								// 返回的图片id
+								this.up_img_black_id_arr[i] = x.id
+								this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+								this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+							})
+						}
+
+					})
+
+
+				})
 			})
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
@@ -271,27 +325,13 @@
 			apicommonExamGetFile(this.examId).then(res => {
 				let blob = new Blob([res.data]);
 				let url = window.URL.createObjectURL(blob);
-				this.affix = url
+				this.affix=url
+				this.srcList_i[0]=url
 			})
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 0)
-			// 小题日志
-			studentTestQuestionsLog({
-				'student_id': localStorage.getItem('userID'),
-				'paper_id': this.examId,
-			}).then(res => {
-				let data = res.data.data.list[0]
-                
-				this.question_id_black = data.id
-				// 小题上传答案二维码
-				this.qrHost=`${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-				// 小题上传答案二维码
-				this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
-					this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
-
-			})
+			
 		},
 	};
 </script>

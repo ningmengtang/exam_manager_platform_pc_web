@@ -17,14 +17,13 @@
 							<div v-for="(d2,k) in d.items" :key="k">
 								<div class="at-title-i" v-html="d2.topic_text"></div>
 								<div class="at-number">
-									<!-- <el-button class="button" :class="topicDefault==`${i+1}.${k+1}.${o+1}`?'i':''" v-for="(d3,o) in d2.items" :key="o" :label="o" @click="topicNumber(`${i+1}.${k+1}.${o+1}`)"
-									 >第{{o+1}}小题</el-button> -->
-									<!-- <el-checkbox-group v-model="topicDefault">
-										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn),kkk()">第{{o+1}}题</el-checkbox-button>
-									</el-checkbox-group> -->
-									<el-checkbox-group v-model="topicDefault">
+								<!-- 	<el-checkbox-group v-model="topicDefault">
 										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="checked=>topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,checked,`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-checkbox-button>
-									</el-checkbox-group>
+									</el-checkbox-group> -->
+									<el-radio-group v-model="topicDefault">
+										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-radio-button>
+									</el-radio-group>
+
 								</div>
 							</div>
 						</div>
@@ -32,7 +31,7 @@
 				</div>
 				<div class="affirm">
 					<!-- <el-button class="previous" @click="goTopic('previous')">确认，上一题</el-button> -->
-					<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">查看，下一题</el-button>
+					<!-- <el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">查看，下一题</el-button> -->
 					<div class="bottom-ts">注意核实个人信息和考试信息，如有不符立刻联系老师</div>
 				</div>
 			</div>
@@ -70,44 +69,48 @@
 							<div class="font-i" style="margin-bottom: 20px;">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下识别的结果，如果修改了答案，请重新上传。</div>
 						</div>
 					</div>
-				</div>
-				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">老师批改</div>
-				<div class="questions-img">
-					<div v-for="(url,i) in teacher_urls" :key="url.i" class="img-box">
-						<div class="img-box-i" v-if="logtype=='img'">
-							<el-image :src="url" lazy class="img" @click="img_shade2(i)"></el-image>
-							<transition name="el-zoom-in-top">
-								<div class="img-shade" v-show="i==imgShadeIndex2&&imgShade2==true" @click="imgShade2=false">
-									<i class="icon el-icon-zoom-in" @click="blackOpenViewer()"></i>
-									<i class="icon el-icon-delete-solid "></i>
+					<div>
+						<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">我上传的答案</div>
+						<div class="questions-img" v-loading="loading_img">
+							<div v-for="(url,i) in urls" :key="url.i" class="img-box">
+								<div class="img-box-i" v-if="logtype=='img'">
+									<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
+									<transition name="el-zoom-in-top">
+										<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
+											<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
+											<i class="icon el-icon-delete-solid " @click="upImgDel(up_img_black_id_arr[i])"></i>
+										</div>
+									</transition>
 								</div>
-							</transition>
+								<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
+							</div>
+							<div class="answer" v-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 						</div>
-						<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
-						<div class="answer" v-else-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 					</div>
 				</div>
+				<div>
+					<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;" v-if="logtype=='img'">老师批改</div>
+					<div class="questions-img">
+						<div v-for="(url,i) in teacher_urls" :key="url.i" class="img-box">
+							<div class="img-box-i" v-if="logtype=='img'">
+								<el-image :src="url" lazy class="img" @click="img_shade2(i)"></el-image>
+								<transition name="el-zoom-in-top">
+									<div class="img-shade" v-show="i==imgShadeIndex2&&imgShade2==true" @click="imgShade2=false">
+										<i class="icon el-icon-zoom-in" @click="blackOpenViewer()"></i>
+										<i class="icon el-icon-delete-solid "></i>
+									</div>
+								</transition>
+							</div>
+							<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
+							<div class="answer" v-else-if="logtype=='choice1'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
+						</div>
+					</div>
+				</div>
+
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">参考答案</div>
 				<div class="rv">
 					<div v-html="analysis_text"></div>
 					<div>{{consult_answer_text}}</div>
-				</div>
-				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">我上传的答案</div>
-				<div class="questions-img">
-					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
-						<div class="img-box-i" v-if="logtype=='img'">
-							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
-							<transition name="el-zoom-in-top">
-								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
-									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
-									<i class="icon el-icon-delete-solid "></i>
-								</div>
-							</transition>
-						</div>
-						<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
-						<div class="answer" v-else-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
-					</div>
-
 				</div>
 
 
@@ -115,7 +118,7 @@
 			</div>
 		</div>
 		<el-image-viewer v-if="bigImg" :initial-index="bigIndex" :on-close="closeViewer" :url-list="srcList" />
-		<el-image-viewer v-if="blackBigImg" :initial-index="blackBigIndex" :on-close="closeViewer" :url-list="teacher_srcList" />
+		<el-image-viewer v-if="blackBigImg" :initial-index="blackBigIndex" :on-close="closeViewer2" :url-list="teacher_srcList" />
 	</div>
 </template>
 
@@ -134,7 +137,8 @@
 		studentTestQuestionsAdd,
 		studentTestQuestionsString,
 		StudentAccountInfo,
-		studentPerformance
+		studentPerformance,
+		studentTestQuestionsUpImg,
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -150,6 +154,7 @@
 				download: 0,
 				disabled: 0,
 				loading: false,
+				loading_img: false,
 				status: '',
 				studentSn: '',
 				examId: this.$route.query.id,
@@ -162,7 +167,7 @@
 				dialogVisible: false,
 				percentage: 0,
 				customColor: '#409eff',
-				topicDefault: ['1.1.1'],
+				topicDefault:'1.1.1',
 				topicIndex: '1.1.1',
 				topicArr: [],
 				choice: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
@@ -199,20 +204,22 @@
 				problemImg: 'https://fuss10.elemecdn.com/a/3fproblem/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
 				ewm: '',
 				question_id: '',
-				urls: ['0'],
-				srcList: ['0'],
-				teacher_urls: ['0'],
-				teacher_srcList: ['0'],
+				urls: [],
+				srcList: [],
+				teacher_urls: [],
+				teacher_srcList: [],
 				logtype: '',
 				answer_test: '',
 				question_id_black: '',
+				question_sn_black: '',
 				current_question: '0',
 				total_points: 100,
 				Performance: 0,
 				analysis_text: '',
 				consult_answer_text: '',
 				questions_score: '',
-				questions_gain_score: ''
+				questions_gain_score: '',
+				up_img_black_id_arr: []
 
 			}
 
@@ -258,13 +265,16 @@
 			// --反馈的
 			blackOpenViewer() {
 				this.blackBigImg = true
-				this.blackBigIndex = this.imgShadeIndex
+				this.blackBigIndex = this.imgShadeIndex2
 			},
 
 
 			//---关闭控制预览大图片---
 			closeViewer() {
 				this.bigImg = false
+			},
+			closeViewer2() {
+				this.blackBigImg = false
 			},
 			// 获取cookie
 			getCookie(name) {
@@ -327,16 +337,17 @@
 			},
 			// 获取小题题目
 			topicLittleQuestions(data, type, id, sn, checked, index) {
-
-				// 参考答案
-				this.analysis_text = data.anwser.analysis_text
-				this.consult_answer_text = data.anwser.answer_text
-				// 小题分数
-				this.questions_score = data.score
+				// loading
+				this.loading_img = true
+				// 重置选项
+				this.choiceKey = ''
+				this.logtype = ''
 				// 小题索引
 				if (index != undefined) {
 					this.topicIndex = index
 				}
+				// 判断选中的题目
+			     checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -363,45 +374,52 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
-
+					
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
-					console.log(data.id)
-					// 小题获取的分数
-					if (data.hasOwnProperty('score')) {
-						this.questions_gain_score = data.score
-					} else {
-						this.questions_gain_score = 0
-					}
+					this.question_sn_black = data.sn
+					// console.log(data.id)
+					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					// console.log(data.id)
 					if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
 						this.logtype = 'none'
+						this.loading_img = false
 					} else {
-						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,
-								// 学生选的答案
-
-								this.choiceKey = data.answer_test) :
+						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img = false) :
 							(
 								this.logtype = 'img',
-								this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
-								this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
-								this.teacher_urls[0] = ('/api/student/question/getImage/' + data.id + '?id=2' + "&d=" + new Date().getTime()),
-								this.teacher_srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=2' + "&d=" + new Date().getTime())
-
+								this.up_img_black_id_arr = [],
+								this.urls=[],
+								this.srcList=[],
+								this.teacher_urls=[],
+								this.teacher_srcList=[],
+								studentTestQuestionsUpImg(data.sn).then(res => {
+									this.loading_img = false
+									if (res.data.data != undefined) {
+										res.data.data.map((x, i) => {
+											// 返回的图片id
+											this.up_img_black_id_arr[i] = x.id
+											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+											this.teacher_urls[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime()),
+											this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
+										})
+									}
+			
+								})
 							)
 					}
 				})
-
 			},
 			// 题目跳转
 			goTopic(type) {
 				this.schedule();
 				let index, questionsType, next_data
+				console.log(this.topicDefault)
 				JSON.stringify(this.topicDefault) === '[]' ? this.topicDefault = ['1.1.1'] :
 					(this.topicArr.map((x, i) => {
-						if (x.index == this.topicDefault[this.topicDefault.length - 1]) {
+						if (x.index == this.topicDefault) {
 							index = i
 							if (index > this.topicSum - 2) {
 								index = -1
@@ -438,20 +456,21 @@
 						});
 					} else {
 						next_data = this.topicArr[index + 1]
+						console.log(next_data)
 						this.topicIndex = next_data.index
 						questionsType = next_data.type
-						//判断是否重复
-						if (!this.topicDefault.includes(next_data.index)) {
-							this.topicDefault.push(next_data.index)
-						} else {
-							for (const [i, x] of this.topicArr.entries()) {
-								if (!this.topicDefault.includes(x.index)) {
-									this.topicDefault.push(x.index)
-									console.log(x.index)
-									return false
-								}
-							}
-						}
+						// //判断是否重复
+						// if (!this.topicDefault.includes(next_data.index)) {
+						// 	this.topicDefault.push(next_data.index)
+						// } else {
+						// 	for (const [i, x] of this.topicArr.entries()) {
+						// 		if (!this.topicDefault.includes(x.index)) {
+						// 			this.topicDefault.push(x.index)
+						// 			console.log(x.index)
+						// 			return false
+						// 		}
+						// 	}
+						// }
 						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
 
 					}
@@ -491,8 +510,6 @@
 				let a, b, c = 1
 				let d = JSON.parse(res.data.data.elementTest);
 				console.log(d)
-				// 总分
-				this.total_points = d.score
 				this.topic = d.items
 				d.items.forEach((x, i) => {
 					x.items.map((y, o) => {
@@ -510,13 +527,15 @@
 					})
 				})
 				// 默认读取当前题目
-				let frist = this.topicDefault[this.topicDefault.length - 1]
-
+				let frist = this.topicDefault
+				console.log(frist)
 				this.topicArr.map(x => {
 					if (x.index == frist) {
 						this.topicLittleQuestions(x.data, x.type, x.id)
 					}
 				})
+				this.loading = false
+				// console.log(this.topicArr)
 			})
 
 		},
@@ -547,5 +566,9 @@
 	.rv {
 		line-height: 1.8;
 		font-weight: bold;
+	}
+
+	.el-radio-button__orig-radio:checked+.el-radio-button__inner {
+		margin-left: 12px;
 	}
 </style>

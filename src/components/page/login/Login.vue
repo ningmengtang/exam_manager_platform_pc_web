@@ -240,7 +240,7 @@
 
 											this.$router.push('/mobile_examination_manage')
 										}else{
-											this.$router.push(`/index_${type}`)
+											this.$router.push(`/examination_manage`)
 										}
 									}else{
 										this.$router.push(`/index_${type}`)

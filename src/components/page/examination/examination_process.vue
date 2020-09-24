@@ -109,7 +109,7 @@
 				examTime: this.$route.query.examTime,
 				examTitle: '',
 				examParticular: '',
-				overTime:this.$route.query.overTime,
+				overTime: this.$route.query.overTime,
 				papers: {},
 				classes: '',
 				dialogVisible: false,
@@ -129,9 +129,8 @@
 			},
 			// ---跳转有答题卡--
 			goScantronHas() {
-				if (this.getCookie('examTime') == '') {
-					this.setCookie('examTime', new Date())
-				}
+				this.setCookie('examTime', new Date())
+				
 				this.$router.push({
 					name: 'examination_scantronHas',
 					query: {
@@ -148,9 +147,8 @@
 			},
 			//---跳转无答题卡---
 			goScantronNone() {
-				if (this.getCookie('examTime') == '') {
-					this.setCookie('examTime', new Date())
-				}
+				this.setCookie('examTime', new Date())
+				
 				this.$router.push({
 					name: 'examination_scantronNone',
 					query: {
@@ -158,11 +156,12 @@
 						examTime: this.examTime
 					}
 				})
+				
 				studentTestQuestionsStart({
 					examinationId: this.examId,
 					studentId: this.userID
-				// }).then(res => {
-				// 	console.log(res)
+					// }).then(res => {
+					// 	console.log(res)
 				})
 			},
 			//---跳转人脸---
@@ -227,12 +226,22 @@
 						";expires=" + exp.toGMTString();
 				}
 			},
+			//  删除cookie
+			clearCookie(name, value) {
+				var exp = new Date();
+				exp.setTime(exp.getTime() - 1);
+				// 这里需要判断一下cookie是否存在
+				var c = this.getCookie(name);
+				if (c != null) {
+					document.cookie = name + "=" + c + ";expires=" + exp.toGMTString();
+				}
+			},
 			//---日期转时间戳---
-			getTimestamp(str){
+			getTimestamp(str) {
 				// var stringTime = this.overTime;
 				// var timestamp2 = Date.parse(new Date(str));
 				// timestamp2 = timestamp2 / 1000;
-				let strtime = str.replace(new RegExp("-","gm"),"/");
+				let strtime = str.replace(new RegExp("-", "gm"), "/");
 				var starttimeHaoMiao = (new Date(strtime)).getTime();
 				return starttimeHaoMiao;
 			}
@@ -259,7 +268,6 @@
 				} else {
 					this.isexamImg = false
 				}
-
 			})
 		},
 	};

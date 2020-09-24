@@ -186,28 +186,29 @@
 			//计算考试剩余时间
 			getResidueTime() {
 				let ResidueTime
-				let newTime = new Date().getTime();
-				let timeDifference = this.getCookie('examTime') - newTime;
-				if (timeDifference <= 0) {
-					// this.$alert('考试时间结束！将自动提交试卷。', '提醒', {
-					// 	confirmButtonText: '确定',
-					// 	callback: action => {
-					// 		this.$router.push({
-					// 			name: 'examination_manage',
-					// 		})
-					// 	}
-					// });
-					this.$router.push({
-						name: 'examination_manage',
-					})
-					// 清除计时器
-					clearInterval(this.timer)
-					// 清除时间cookic
-					this.clearCookie('examTime')
-					localStorage.removeItem('topic')
-					return ResidueTime = '00:00:00';
-				}
-				ResidueTime = this.getLocalTime(timeDifference)
+				// let newTime = new Date().getTime();
+				// let timeDifference = this.getCookie('examTime') - newTime;
+				// 清除计时器
+				clearInterval(this.timer)
+				// 清除时间cookic
+				this.clearCookie('examTime')
+				localStorage.removeItem('topic')
+				return ResidueTime = '00:00:00';
+				this.$router.push({
+					name: 'examination_manage',
+				})
+				// if (timeDifference <= 0) {
+				// 	this.$router.push({
+				// 		name: 'examination_manage',
+				// 	})
+				// 	// 清除计时器
+				// 	clearInterval(this.timer)
+				// 	// 清除时间cookic
+				// 	this.clearCookie('examTime')
+				// 	localStorage.removeItem('topic')
+				// 	return ResidueTime = '00:00:00';
+				// }
+				// ResidueTime = this.getLocalTime(timeDifference)
 				return ResidueTime;
 			
 			},
@@ -218,12 +219,8 @@
 		},
 		mounted() {
 			this.loading = true,
-				localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
-            clearInterval(this.timer)
-            // 清除时间cookic
-            this.clearCookie('examTime')
-            localStorage.removeItem('topic')
-            // this.ResidueTime = '00:00:00'
+		// 		localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
+  
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
 				this.examTitle = res.data.data.title
@@ -231,8 +228,13 @@
 				// this.affix=res.data.data.affix
 			})
 			this.timer = setInterval(x => {
-				this.ResidueTime = this.getResidueTime()
+				// this.ResidueTime = this.getResidueTime()
+				this.$router.push({
+					name: 'examination_manage',
+				})
+				clearInterval(this.timer)
 			}, 5000)
+			
 		},
 	};
 </script>

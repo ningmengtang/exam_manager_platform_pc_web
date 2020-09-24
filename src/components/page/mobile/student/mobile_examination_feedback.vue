@@ -22,9 +22,9 @@
 									<!-- <el-checkbox-group v-model="topicDefault">
 										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn),kkk()">第{{o+1}}题</el-checkbox-button>
 									</el-checkbox-group> -->
-									<el-checkbox-group v-model="topicDefault">
-										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="checked=>topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,checked,`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-checkbox-button>
-									</el-checkbox-group>
+									<el-radio-group v-model="topicDefault">
+										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-radio-button>
+									</el-radio-group>
 								</div>
 							</div>
 						</div>
@@ -87,8 +87,8 @@
 							</transition>
 						</div>
 						<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
-						<div class="answer" v-else-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 					</div>
+					<div class="answer" v-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 				</div>
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">参考答案</div>
 				<div class="rv">
@@ -97,7 +97,7 @@
 				</div>
 				
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">我上传的答案</div>
-				<div class="questions-img">
+				<div class="questions-img" v-loading="loading_img">
 					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
 						<div class="img-box-i" v-if="logtype=='img'">
 							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
@@ -109,8 +109,8 @@
 							</transition>
 						</div>
 						<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
-						<div class="answer" v-else-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 					</div>
+					<div class="answer" v-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 				</div>
 
 			</div>
@@ -137,7 +137,8 @@
 		studentTestQuestionsAdd,
 		studentTestQuestionsString,
 		StudentAccountInfo,
-		studentPerformance
+		studentPerformance,
+		studentTestQuestionsUpImg,
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -158,6 +159,7 @@
 				download: 0,
 				disabled: 0,
 				loading: false,
+				loading_img: false,
 				status: '',
 				studentSn: '',
 				examId: this.$route.query.id,
@@ -170,7 +172,7 @@
 				dialogVisible: false,
 				percentage: 0,
 				customColor: '#409eff',
-				topicDefault: ['1.1.1'],
+				topicDefault:'1.1.1',
 				topicIndex: '1.1.1',
 				topicArr: [],
 				choice: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
@@ -190,11 +192,13 @@
 				],
 				choiceKey: '',
 				bigImg: false,
+				blackBigImg: false,
 				imgShade: false,
-				imgShade2:false,
+				imgShade2: false,
 				imgShadeIndex: '',
 				imgShadeIndex2: '',
 				bigIndex: 0,
+				blackBigIndex: 0,
 				ResidueTime: '00:00:00',
 				timer: '',
 				stateType: '',
@@ -205,11 +209,14 @@
 				problemImg: 'https://fuss10.elemecdn.com/a/3fproblem/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
 				ewm: '',
 				question_id: '',
-				urls: ['0'],
-				srcList: ['0'],
+				urls: [],
+				srcList: [],
+				teacher_urls: [],
+				teacher_srcList: [],
 				logtype: '',
 				answer_test: '',
 				question_id_black: '',
+				question_sn_black: '',
 				current_question: '0',
 				total_points: 100,
 				Performance: 0,
@@ -217,8 +224,8 @@
 				consult_answer_text: '',
 				questions_score: '',
 				questions_gain_score: '',
-				teacher_urls: ['0'],
-				teacher_srcList: ['0'],
+				up_img_black_id_arr: []
+				
 
 			}
 
@@ -333,16 +340,18 @@
 			// 获取小题题目
 			topicLittleQuestions(data, type, id, sn, checked, index) {
 				// 显示
-				this.show = true
-				// 参考答案
-				this.analysis_text = data.anwser.analysis_text
-				this.consult_answer_text = data.anwser.answer_text
-				// 小题分数
-				this.questions_score = data.score
+				this.show=true
+				// loading
+				this.loading_img = true
+				// 重置选项
+				this.choiceKey = ''
+				this.logtype = ''
 				// 小题索引
 				if (index != undefined) {
 					this.topicIndex = index
 				}
+				// 判断选中的题目
+			     checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -369,31 +378,43 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
+					
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
-					// 小题获取的分数
-					if (data.hasOwnProperty('score')) {
-						this.questions_gain_score = data.score
-					} else {
-						this.questions_gain_score = 0
-					}
+					this.question_sn_black = data.sn
+					// console.log(data.id)
+					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					// console.log(data.id)
 					if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
 						this.logtype = 'none'
+						this.loading_img = false
 					} else {
-						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,
-								// 学生选的答案
-								this.choiceKey = data.answer_test) :
+						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img = false) :
 							(
 								this.logtype = 'img',
-								this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
-								this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
+								this.up_img_black_id_arr = [],
+								this.urls=[],
+								this.srcList=[],
+								this.teacher_urls=[],
+								this.teacher_srcList=[],
+								studentTestQuestionsUpImg(data.sn).then(res => {
+									this.loading_img = false
+									if (res.data.data != undefined) {
+										res.data.data.map((x, i) => {
+											// 返回的图片id
+											this.up_img_black_id_arr[i] = x.id
+											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+											this.teacher_urls[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime()),
+											this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
+										})
+									}
+			
+								})
 							)
 					}
 				})
-
 			},
 			// 题目跳转
 			goTopic(type) {
@@ -509,14 +530,14 @@
 						})
 					})
 				})
-				// 默认读取当前题目
-				let frist = this.topicDefault[this.topicDefault.length - 1]
-
+				let frist = this.topicDefault
+				console.log(frist)
 				this.topicArr.map(x => {
 					if (x.index == frist) {
 						this.topicLittleQuestions(x.data, x.type, x.id)
 					}
 				})
+				this.loading = false
 			})
 
 		},

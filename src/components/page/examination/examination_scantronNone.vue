@@ -6,7 +6,7 @@
 				<div class="ts">距离考试结束还有</div>
 				<div class="ts-time">{{ResidueTime}}</div>
 				<div class="all-topic-box">
-				<!-- 	<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
+					<!-- 	<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
 						 :format="format"></el-progress>
 					</div> -->
 					<div class="li">
@@ -15,12 +15,8 @@
 							<div v-for="(d2,k) in d.items" :key="k">
 								<div class="at-title-i" v-html="d2.topic_text"></div>
 								<div class="at-number">
-									<!-- <el-button class="button" :class="topicDefault==`${i+1}.${k+1}.${o+1}`?'i':''" v-for="(d3,o) in d2.items" :key="o" :label="o" @click="topicNumber(`${i+1}.${k+1}.${o+1}`)"
-									 >第{{o+1}}小题</el-button> -->
-									<!-- <el-checkbox-group v-model="topicDefault">
-										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn),kkk()">第{{o+1}}题</el-checkbox-button>
-									</el-checkbox-group> -->
 									<el-checkbox-group v-model="topicDefault">
+										<!-- <el-checkbox-button    v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="checked=>topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,checked,`${i+1}.${k+1}.${o+1}`)" @change.native="currentQuestion">第{{o+1}}题</el-checkbox-button> -->
 										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="checked=>topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,checked,`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-checkbox-button>
 									</el-checkbox-group>
 								</div>
@@ -29,7 +25,7 @@
 					</div>
 				</div>
 				<div class="affirm">
-					<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
+					<!-- <el-button class="previous" @click="goTopic('previous')">上一题</el-button> -->
 					<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
 					<el-button class="next" style="background-color: #19AEFB;" @click="finishAll">全部完成提交</el-button>
 					<div class="bottom-ts">注意核实个人信息和考试信息，如有不符立刻联系老师</div>
@@ -74,21 +70,26 @@
 						</div>
 					</div>
 				</div>
-				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">上传日志</div>
-				<div class="questions-img">
+				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">
+					<div>上传日志</div>
+					<div><span class="i">上传成功请按这里刷新按钮</span>
+						<el-button type="primary" icon="el-icon-refresh-right" circle class="icon" @click="selectlog(question_id_black)"></el-button>
+					</div>
+				</div>
+				<div class="questions-img" v-loading="loading_img">
 					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
 						<div class="img-box-i" v-if="logtype=='img'">
 							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
 							<transition name="el-zoom-in-top">
 								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
 									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
-									<i class="icon el-icon-delete-solid "></i>
+									<i class="icon el-icon-delete-solid " @click="upImgDel(up_img_black_id_arr[i])"></i>
 								</div>
 							</transition>
 						</div>
 						<span class="i" v-if="logtype=='img'">{{topicIndex}}</span>
-						<div class="answer" v-else-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 					</div>
+					<div class="answer" v-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 				</div>
 			</div>
 		</div>
@@ -110,7 +111,9 @@
 		studentTestQuestionsdowonLogImg,
 		studentTestQuestionsAdd,
 		studentTestQuestionsString,
-		StudentAccountInfo
+		StudentAccountInfo,
+		studentTestQuestionsUpImg,
+		studentTestQuestionsDelImg
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -126,6 +129,8 @@
 				download: 0,
 				disabled: 0,
 				loading: false,
+				loading_img: false,
+				is_checkbox_click: false,
 				status: '',
 				studentSn: '',
 				examId: this.$route.query.id,
@@ -139,6 +144,7 @@
 				percentage: 0,
 				customColor: '#409eff',
 				topicDefault: ['1.1.1'],
+				topicDefaultSave: ['1.1.1'],
 				topicIndex: '1.1.1',
 				topicArr: [],
 				choice: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
@@ -170,12 +176,16 @@
 				ProblemChoice: [],
 				ewm: '',
 				question_id: '',
-				urls: ['0'],
-				srcList: ['0'],
+				urls: [],
+				srcList: [],
 				logtype: '',
 				answer_test: '',
 				question_id_black: '',
+				question_sn_black: '',
 				current_question: '0',
+				black_log_data: '',
+				up_img_black_id_arr: [],
+				finish_arr:[]
 			}
 
 		},
@@ -273,18 +283,24 @@
 				return ResidueTime;
 			},
 			// 判断是否选中状态
-			currentQuestion(val) {
-				console.log(val)
-				// console.log(this.topicDefault)
-			},
+			// currentQuestion() {
+
+			// 	console.log(this.topicDefaultSave)
+			// },
 			// 获取小题题目
 			topicLittleQuestions(data, type, id, sn, checked, index) {
+
+				// loading
+				this.loading_img = true
 				// 重置选项
 				this.choiceKey = ''
+				this.logtype = ''
 				// 小题索引
 				if (index != undefined) {
 					this.topicIndex = index
 				}
+				// 判断选中的题目
+                 checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -311,74 +327,92 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
+					
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
-					console.log(data.id)
+					this.question_sn_black = data.sn
+					// console.log(data.id)
+					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					// console.log(data.id)
 					if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
 						this.logtype = 'none'
+						this.loading_img = false
 					} else {
-						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test) :
+						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img = false) :
 							(
 								this.logtype = 'img',
-								this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
-								this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
+								this.up_img_black_id_arr = [],
+								this.urls=[],
+								this.srcList=[],
+								studentTestQuestionsUpImg(data.sn).then(res => {
+									this.loading_img = false
+									if (res.data.data != undefined) {
+										res.data.data.map((x, i) => {
+											// 返回的图片id
+											this.up_img_black_id_arr[i] = x.id
+											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+										})
+									}
+
+								})
 							)
 					}
 				})
-
+			},
+			// 删除图片
+			upImgDel(id) {
+				studentTestQuestionsDelImg(id).then(res => {
+					this.$message.success('删除图片成功！')
+				})
+				studentTestQuestionsUpImg(this.question_sn_black).then(res => {
+					// 获取删除的索引
+					let index = this.up_img_black_id_arr.findIndex(x => x == id)
+					this.up_img_black_id_arr.splice(index, 1)
+					this.urls.splice(index, 1)
+					this.srcList.splice(index, 1)
+				})
 			},
 			// 题目跳转
 			goTopic(type) {
 				this.schedule();
-				let index, questionsType, next_data,before_data
-				JSON.stringify(this.topicDefault) === '[]' ? this.topicDefault = ['1.1.1'] :
-					(this.topicArr.map((x, i) => {
-						if (x.index == this.topicDefault[this.topicDefault.length - 1]) {
-							index = i
-							if (index > this.topicSum - 2) {
-								index = -1
-							}
-						}
-					}));
+				let i = 1;
+				let index, questionsType, next_data, before_data
+				// JSON.stringify(this.topicDefault) === '[]' ? this.topicDefault = ['1.1.1'] :
+				// 	(this.topicArr.map((x, i) => {
+				// 		if (x.index == this.topicDefault[this.topicDefault.length - 1]) {
+				// 			index = i
+				// 		}
+				// 	}));
+				index=this.topicArr.findIndex(x=>x.index==this.topicDefault[this.topicDefault.length - 1])
 				// console.log(index)
 
 				if (type == 'previous') {
-					if(index!=0){
-						before_data=this.topicArr[index-1]
-						questionsType =before_data.type
-						this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
+					if (index != 0) {
+						// before_data = this.topicArr[index - 1]
+						// console.log(index)
+						// this.topicIndex = before_data.index
+						// questionsType = before_data.type
+						// this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
+						let data = this.topicDefault
+						data.splice(data.length - 1, 1, this.topicArr[index - 1].index)
+						data = Array.from(new Set(data))
+						this.topicDefault = data
+						console.log(data)
+						this.topicLittleQuestions(this.topicArr[index - 1].data, questionsType)
 					}
-					
+
 					// console.log(this.topicDefault)
-					// let data = this.topicDefault
-					// data.splice(data.length - 1, 1, this.topicArr[index - 1].index)
-					// data = Array.from(new Set(data))
-					// this.topicDefault = data
-					// console.log(data)
-					// this.topicLittleQuestions(this.topicArr[index - 1].data, questionsType)
+				
 				} else if (type == 'next') {
+				   console.log(this.topicDefault)
 					if (this.topicDefault.length >= this.topicSum) {
-						this.$confirm('全是题目已完成, 是否提交试卷?', '提示', {
-							confirmButtonText: '确定',
-							cancelButtonText: '取消',
-							type: 'warning'
-						}).then(() => {
-							this.$message({
-								type: 'success',
-								message: '提交成功!'
-							});
-							this.finish()
-						}).catch(() => {
-							this.$message({
-								type: 'info',
-								message: '暂时不提交'
-							});
-						});
+
+						this.finishAll()
 					} else {
-						next_data = this.topicArr[index + 1]
+						let data = Array.from(new Set(this.topicArr))
+						next_data = data[index + 1]
 						this.topicIndex = next_data.index
 						questionsType = next_data.type
 						//判断是否重复
@@ -393,25 +427,28 @@
 							}
 						}
 						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
-
 					}
 				}
 			},
 			// 上传选择题答案
 			upChoice(id) {
 				studentTestQuestionsString(this.choiceKey, id).then(res => {
+					this.loading_img = true
 					studentTestQuestionsLog({
 						'student_id': localStorage.getItem('userID'),
 						'paper_id': this.examId,
 						'id': id
 					}).then(res2 => {
+						this.loading_img = false
+						this.logtype = 'choice'
 						let data = res2.data.data.list[0]
+						console.log(data.answer_test)
 						this.answer_test = data.answer_test
 					})
 				})
 			},
 			// 提交
-			finishAll(){
+			finishAll() {
 				this.$confirm('全是题目已完成, 是否提交试卷?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -428,6 +465,68 @@
 						message: '暂时不提交'
 					});
 				});
+			},
+			// 查询日志
+			selectlog() {
+				this.loading_img=true
+				studentTestQuestionsLog({
+					'student_id': localStorage.getItem('userID'),
+					'paper_id': this.examId,
+					'pageSize': 999,
+					'pageNum': 1,
+					'id': this.question_id_black
+				}).then(res => {
+					let data = res.data.data.list[0]
+					this.black_log_data = res.data.data.list
+					this.up_img_black_id_arr=[];
+					if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
+						this.logtype = 'none'
+						console.log(1)
+					} else {
+						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img=false) :
+							(
+								this.logtype = 'img',
+								studentTestQuestionsUpImg(this.question_sn_black).then(res => {
+									this.loading_img=false
+									if (res.data.data != undefined) {
+										res.data.data.map((x, i) => {
+											// 返回的图片id
+											this.up_img_black_id_arr[i] = x.id
+											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+										})
+									}
+
+								})
+							)
+					}
+				})
+			},
+			// 判断完成
+			selectAllLog(id){
+				studentTestQuestionsLog({
+					'student_id': localStorage.getItem('userID'),
+					'paper_id': this.examId,
+					'pageSize': 999,
+					'pageNum': 1,
+				}).then(res => {
+					let data=res.data.data.list
+					let finish=false;
+					// console.log(data)
+					
+					// data.map((x,i)=>{
+					// // console.log(this.topicArr[i].id)
+					// // console.log(x.question_id)
+					// 	// if(x.hasOwnProperty('answer_test') || x.hasOwnProperty('student_image')){
+							
+					// 	// 	// this.topicDefault.push(this.topicArr[i].index)
+					// 	// }
+						
+						
+					// })
+
+				})
+				
 			},
 			// 考试完成
 			finish() {
@@ -453,13 +552,12 @@
 				this.examTitle = res.data.data.title
 				this.examParticular = res.data.data.examExplain
 				this.examSn = res.data.data.sn
-				// console.log(res.data.data)
 			})
 			// ---查看试卷试题---
 			apiCommonExamSeleElementTestById(this.examId).then(res => {
 				let a, b, c = 1
 				let d = JSON.parse(res.data.data.elementTest);
-				console.log(d)
+				// console.log(d)
 				this.topic = d.items
 				d.items.forEach((x, i) => {
 					x.items.map((y, o) => {
@@ -476,6 +574,7 @@
 						})
 					})
 				})
+				this.selectAllLog()
 				// 默认读取当前题目
 				let frist = this.topicDefault[this.topicDefault.length - 1]
 
@@ -491,6 +590,7 @@
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 1000)
+			
 		},
 
 	};

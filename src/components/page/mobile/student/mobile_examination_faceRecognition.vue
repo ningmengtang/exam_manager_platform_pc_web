@@ -31,13 +31,14 @@
 				<div class="ts2">进入考试前必须录入人脸</div>
 				<div class="face-img">
 					<el-upload class="upload-demo" drag action="" accept=".jpg,.png" :http-request="uploadFild" :before-upload="beforeUpload"
-					 :on-success="successUpload" :show-file-list="false" multiple>
+					 :on-success="successUpload" :show-file-list="false" multiple v-loading="loading">
 						<div v-if="!uploadFile">
 							<i class="el-icon-upload"></i>
 							<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 							<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2m</div>
 						</div>
-						<el-image :src="uploadBlackimgscr" v-else v-loading="loading" style="min-width: 100px;min-height: 100px;"></el-image>
+						<el-image :src="uploadBlackimgscr"  style="min-width: 100px;min-height: 100px;" v-else-if='isFace' ></el-image>
+						<div v-if="isFace==false&&isFace!==''">请重新导入人脸</div>
 					</el-upload>
 				</div>
 				<div class="bottom-box">
@@ -54,6 +55,9 @@
 	import Tabbar from '../common/tabbar.vue'
 	import mobile from '@/assets/js/mobile.js'
 	import {
+		Dialog,Toast
+	} from 'vant'
+	import {
 		studentIndex,
 		apicommonExamGetFile,
 		apiStudentAccountSelectById,
@@ -69,7 +73,7 @@
 				currentPage: 1,
 				download: 0,
 				disabled: 0,
-				loading: true,
+				loading: false,
 				status: '',
 				userName: localStorage.getItem('userName'),
 				userID: localStorage.getItem('userID'),
@@ -82,7 +86,8 @@
 				classes: '',
 				dialogVisible: false,
 				uploadFile: '',
-				uploadBlackimgscr:''
+				uploadBlackimgscr:'',
+				isFace: ''
 			}
 		},
 		components: {
@@ -104,11 +109,26 @@
 				var file = param.file
 				this.uploadFile = new FormData()
 				this.uploadFile.append('file', file)
+				this.loading=true
 				faceInsert(this.uploadFile).then(res => {
-					this.uploadBlackimgscr=res.data.data.headImg
-					this.loading = false
+					if (!res.data.result) {
+						this.$alert(`${res.data.message}或者不是人脸！请重新导入`, '提示', {
+							confirmButtonText: '确定',
+							callback: action => {
+								this.$message.error(`${res.data.message}错误代码${res.data.stateCode}`)
+							}
+						});
+			            this.isFace=false
+						this.loading = false
+					} else {
+						this.uploadBlackimgscr = res.data.data.headImg
+						this.loading = false
+						this.$message.success('人脸录入成功')
+						this.isFace = true
+					}
+			
 				})
-				this.$message.success('导入成功')
+			
 			},
 			// 上传控制
 			beforeUpload(file) {
@@ -116,7 +136,7 @@
 				var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
 				const extension = testmsg === 'png'
 				const extension2 = testmsg === 'jpg'
-				const isLt2M = file.size / 1024 / 1024 < 2
+				const isLt2M = file.size / 1024 / 1024 < 20
 				if (!extension && !extension2) {
 					this.$message({
 						message: '上传文件只能是 png、jpg格式!',
@@ -125,7 +145,7 @@
 				}
 				if (!isLt2M) {
 					this.$message({
-						message: '上传文件大小不能超过 2MB!',
+						message: '上传文件大小不能超过 20MB!',
 						type: 'warning'
 					});
 				}
