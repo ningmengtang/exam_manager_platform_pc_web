@@ -326,9 +326,6 @@ import IconVue from './Icon.vue'
             this.srcList.push( '/api/student/question/getImage/' + selectSn+'?id=1'+"&d=" + new Date().getTime())
             var imgW = ""
             var imgH = ""
-
-
-
             imgObj.onload = function(){
 
               var cW = document.getElementById('canvas').width
@@ -354,14 +351,8 @@ import IconVue from './Icon.vue'
                 width *= dd;
                 height *= dd;
               }
-
-
- 
-
-
             that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
  
-            // that.context.restore()
             }
 
 
@@ -493,10 +484,6 @@ import IconVue from './Icon.vue'
                 width *= dd;
                 height *= dd;
               }
-              console.log("cW:"+cW+",imgH:"+cH);
-              console.log("imgW:"+imgW+",imgH:"+imgH);
-              console.log("width:"+width+",height:"+height);
-              //that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,width,height)
               that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
           }
           this.initDraw()
@@ -561,10 +548,6 @@ import IconVue from './Icon.vue'
                   width *= dd;
                   height *= dd;
                 }
-                console.log("cW:"+cW+",imgH:"+cH);
-                console.log("imgW:"+imgW+",imgH:"+imgH);
-                console.log("width:"+width+",height:"+height);
-                //that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,width,height)
                 that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
             }
             this.radio = ''
@@ -686,16 +669,16 @@ import IconVue from './Icon.vue'
             }
             break
           case 'clear':
+            this.srcList = []
+            let selectSn = this.urlSrc[this.selectIndex].id
             var that = this
             const canvas = document.querySelector('#canvas')
             that.context = canvas.getContext('2d')
-
             var cW = document.getElementById('canvas').width
             var cH = document.getElementById('canvas').height
-          
             var imgObj = new Image()
-            imgObj.src = '/api/student/question/getImageList/' + this.urlSrc+'?id=1'+"&d=" + new Date().getTime()
-            console.log(imgObj.src)
+            imgObj.src = '/api/student/question/getImage/' +selectSn+'?id=1'+"&d=" + new Date().getTime()
+            this.srcList.push( '/api/student/question/getImage/' + selectSn+'?id=1'+"&d=" + new Date().getTime())
             var imgW = ""
             var imgH = ""
             imgObj.onload = function(){
@@ -704,9 +687,21 @@ import IconVue from './Icon.vue'
                 // 在canvas绘制前填充白色背景
                 that.context.fillStyle = "#fff";
                 that.context.fillRect(0, 0, cW, cH)
-                that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
+                let width = imgW;
+                let height = imgH;
+                if(width > cW){
+                  let dd = cW / width;
+                  width *= dd;
+                  height *= dd;
+                }
+
+                if(height>cH){
+                  let dd = cH / height;
+                  width *= dd;
+                  height *= dd;
+                }
+                that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
             }
-            // this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height)
             this.preDrawAry = []
             this.nextDrawAry = []
             this.middleAry = [this.middleAry[0]]

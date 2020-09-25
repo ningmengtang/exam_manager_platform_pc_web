@@ -434,8 +434,7 @@
         is_typical_case:0,
         isNext:true,
         oldTaskList:[],
-
-
+        is_sheet_upload:true,
         context: {},
         imgUrl: [],
         canvasMoveUse: true,
@@ -567,15 +566,46 @@
         this.$forceUpdate(); 
       },
       getAllTotal(){
-        // this.total = 0
-        // this.alltotal = 0
-        // this.selectNo = []
-        // let list  = this.NowSelectItem.groupQuestionArr 
-        // for(var i=0;i<list.length;i++){
-        //   this.alltotal = this.alltotal + list[i].score
-        //   this.total = this.total + list[i].setgetNum
-        //   this.selectNo.push(list[i].no)
-        // }
+
+      },
+      issheetuploadgetQuestiongetImageList(sn,question_id,getAll){
+        return new Promise((resolve,reject)=>{
+              studentQuestiongetImageListSn(sn).then(res=>{
+                  if(res.data.data){                           
+                      let data = res.data.data
+                      // console.log(data)
+                      
+                      data.forEach(ele=> {
+                          ele.question_id = question_id
+                          getAll.push(ele)
+                      });
+                  }else{
+                      this.$message.warning('暂无试题图片')
+                  }
+              resolve(res)
+              }).catch(error=>{
+                  console.log(error)
+              })
+          })
+      },
+      getQuestiongetImageList(sn,question_id){
+        return new Promise((resolve,reject)=>{
+              studentQuestiongetImageListSn(sn).then(res=>{
+                  if(res.data.data){                           
+                      let data = res.data.data
+                      console.log(data)
+                      data.forEach(ele=> {
+                          ele.question_id = question_id
+                          this.urlSrc.push(ele)
+                      });
+                  }else{
+                      this.$message.warning('暂无试题图片')
+                  }
+              resolve(res)
+              }).catch(error=>{
+                  console.log(error)
+              })
+          })
       },
       getinit(){
         let importPaper = JSON.parse(sessionStorage.getItem("importPaper"))
@@ -673,31 +703,17 @@
                             this.selectNum = index
                             break
                         }else if(this.allTopic[this.allTopic.length -1].status == '批阅完成'){
-                           
                             this.selectNum = '批阅完成'
-                            //  console.log(this.selectNum)
                         }
-
-
                     }
-                    console.log(this.allTopic)
-                    console.log(list)
                     // this.$forceUpdate(); 
                     // 读当前为那道题目
                     // 初始为第一题
                     if(this.selectNum == '批阅完成'){
                         this.isOver = true
                         this.$message.warning('全部批阅完成')
-
                     }else{
-
-
                         this.NowSelectItem = this.allTopic[this.selectNum]
-
-                        // console.log(this.NowSelectItem)
-
-
-
                         this.getNum = []
                         for(var b=0;b<this.NowSelectItem.groupQuestionArr.length;b++){
                             let item = this.NowSelectItem.groupQuestionArr[b]
@@ -722,7 +738,41 @@
                             // console.log()
                             if(res.data.data){
                                 this.nowQuestion = res.data.data.list
-                                this.urlSrc = this.nowQuestion[0].id
+                                // 判断有几张图片
+                                this.is_sheet_upload = true
+                                for(let i=0;i<this.nowQuestion.length;i++){
+                                  if(!this.nowQuestion[i].is_sheet_upload){
+                                    this.is_sheet_upload = false
+                                  }
+                                }
+
+                                this.urlSrc = []
+                                if(this.is_sheet_upload){
+                                  let promiseArr = []
+                                  let getAll = []
+                                  for(var k=0;k<this.nowQuestion.length;k++){
+                                      promiseArr.push(this.issheetuploadgetQuestiongetImageList(this.nowQuestion[k].sn,this.nowQuestion[k].question_id,getAll))
+                                  }
+                                  Promise.all(promiseArr).then(res=>{
+                                      this.urlSrc.push(getAll[0])
+                                      let question_id = []
+                                      let dataId = []
+                                      for(var k=0;k<this.nowQuestion.length;k++){
+                                          question_id.push(this.nowQuestion[k].question_id)
+                                          dataId.push(getAll[k].student_with_question_id)
+                                      }
+                                      this.urlSrc[0].dataId = dataId
+                                      this.urlSrc[0].question_id = question_id
+                                  })
+                                }else{
+                                  let promiseArr = []
+                                  for(var k=0;k<this.nowQuestion.length;k++){
+                                      promiseArr.push(this.getQuestiongetImageList(this.nowQuestion[k].sn,this.nowQuestion[k].question_id))
+                                  }
+                                  Promise.all(promiseArr).then(res=>{
+                                  })
+                                }
+                                console.log(this.urlSrc)
                             }else{
                                 // 获取学生题目
                                 studentQuestionList({
@@ -733,7 +783,44 @@
                                 }).then(res=>{
                                     if(res.data.data){
                                         this.nowQuestion = res.data.data.list
-                                        this.urlSrc = this.nowQuestion[0].id
+                                        // 判断几张试卷
+                                        this.is_sheet_upload = true
+                                        for(let i=0;i<this.nowQuestion.length;i++){
+                                          if(!this.nowQuestion[i].is_sheet_upload){
+                                            this.is_sheet_upload = false
+                                          }
+                                        }
+                                        his.urlSrc = []
+                                        if(this.is_sheet_upload){
+                                              let promiseArr = []
+                                              let getAll = []
+                                              for(var k=0;k<this.nowQuestion.length;k++){
+                                                  promiseArr.push(this.issheetuploadgetQuestiongetImageList(this.nowQuestion[k].sn,this.nowQuestion[k].question_id,getAll))
+                                              }
+                                              Promise.all(promiseArr).then(res=>{
+                                                  this.urlSrc.push(getAll[0])
+                                                  let question_id = []
+                                                  let dataId = []
+                                              
+                                                  for(var k=0;k<this.nowQuestion.length;k++){
+                                                      question_id.push(this.nowQuestion[k].question_id)
+                                                      dataId.push(getAll[k].student_with_question_id)
+                                                  }
+                                                  this.urlSrc[0].dataId = dataId
+                                                  this.urlSrc[0].question_id = question_id
+
+                                              })
+
+                                          }else{
+                                              let promiseArr = []
+                                              for(var k=0;k<this.nowQuestion.length;k++){
+                                                  promiseArr.push(this.getQuestiongetImageList(this.nowQuestion[k].sn,this.nowQuestion[k].question_id))
+                                              }
+                                              Promise.all(promiseArr).then(res=>{
+                                              })
+                                          }
+                                          console.log(this.urlSrc)
+                                        // this.urlSrc = this.nowQuestion[0].id
                                     }else{
 
                                         this.$message.warning('修改完成。')
@@ -746,8 +833,11 @@
             }else{
                 this.$message.warning('请先分配任务')
             }
-        }) 
+        })
       },
+
+
+      
       renderResize() {
           // 判断横竖屏
           let width = window.screen.width
@@ -894,7 +984,7 @@
       },
       // 生成图片
       getImage () {
-        console.log('生成图片成功')
+
         const canvas = document.querySelector('#canvas')
         var ctx=canvas.getContext("2d"); 
         ctx.fillStyle="#E992B9";
