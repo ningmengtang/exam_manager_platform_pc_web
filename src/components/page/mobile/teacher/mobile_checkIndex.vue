@@ -498,7 +498,7 @@
     },
     watch:{
       urlSrc:function(){
-           var that = this
+          var that = this
           const canvas = document.querySelector('#canvas')
           that.context = canvas.getContext('2d')
 

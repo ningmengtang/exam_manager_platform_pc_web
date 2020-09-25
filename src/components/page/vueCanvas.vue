@@ -5,7 +5,7 @@
         id="canvas" 
         class="fl" 
         width="700" 
-        height="500" 
+        height="600" 
         @mousedown="canvasDown($event)" 
         @mouseup="canvasUp($event)"
         @mousemove="canvasMove($event)"
@@ -53,10 +53,18 @@
           </span>
         </div>
  
-        <!-- <div id="canvas-drawImage">
-          <h5>生成图像</h5>
-          <button class="drawImage" @click="getImage()">预览</button>
-        </div> -->
+        <div id="canvas-drawImage">
+          <h5>查看图像</h5>
+          <el-image
+            style="width: 32px; height: 32px"
+            :src="url"
+            :preview-src-list="srcList">
+          </el-image>
+        </div>
+        <div id="canvas-drawImage">
+          <el-button type="info" @click="lastPage">上一页</el-button>
+          <el-button type="success" @click="nextPage">下一页</el-button>
+        </div>
         <div>
           <el-radio-group v-model="radio" size="mini">
             <el-radio :label="1" border style="display:block;margin:8px 0px">优秀试卷</el-radio>
@@ -74,7 +82,7 @@
       </div>
     </div>
 
-
+ 
     <!-- <div style="display:none">
         <img ref="conf0" src="./X-3.jpg">
     </div> -->
@@ -251,6 +259,11 @@ import IconVue from './Icon.vue'
           className: 'big fa fa-paint-brush',
           lineWidth: 12
         }],
+        dataList:[],
+        url: require('../../assets/img/fangda.png'),
+        srcList: [
+          
+        ],
         context: {},
         imgUrl: [],
         canvasMoveUse: false,
@@ -266,6 +279,7 @@ import IconVue from './Icon.vue'
           lineColor: '#f2849e',
           shadowBlur: 2
         },
+        selectIndex:0,
         img:'',
         // isOk:false
       }
@@ -286,40 +300,96 @@ import IconVue from './Icon.vue'
       // document.querySelector('body').classList.remove('fix-body')
     },
     watch:{
-       
+      
+      // urlSrc:function(){
+
+      //   this.getdraw(700,800)
+
+      // },
+        
         urlSrc:function(){
+          this.selectIndex = 0
+
           this.radio = ''
+          this.srcList = []
           var that = this
           const canvas = document.querySelector('#canvas')
           that.context = canvas.getContext('2d')
 
-          var cW = document.getElementById('canvas').width
-          var cH = document.getElementById('canvas').height
+         
         
           var imgObj = new Image()
-          imgObj.src = '/api/student/question/getImage/' + this.urlSrc+'?id=1'+"&d=" + new Date().getTime()
-          console.log(imgObj.src)
-          var imgW = ""
-          var imgH = ""
-          imgObj.onload = function(){
+         
+          if(this.urlSrc[this.selectIndex]){
+            let selectSn = this.urlSrc[this.selectIndex].id
+            imgObj.src = '/api/student/question/getImage/' +selectSn+'?id=1'+"&d=" + new Date().getTime()
+            this.srcList.push( '/api/student/question/getImage/' + selectSn+'?id=1'+"&d=" + new Date().getTime())
+            var imgW = ""
+            var imgH = ""
+
+
+
+            imgObj.onload = function(){
+
+              var cW = document.getElementById('canvas').width
+              var cH = document.getElementById('canvas').height
+
+              
               imgW = imgObj.width
               imgH = imgObj.height
               // 在canvas绘制前填充白色背景
               that.context.fillStyle = "#fff";
               that.context.fillRect(0, 0, cW, cH)
-              that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
+
+              let width = imgW;
+              let height = imgH;
+              if(width > cW){
+                let dd = cW / width;
+                width *= dd;
+                height *= dd;
+              }
+
+              if(height>cH){
+                let dd = cH / height;
+                width *= dd;
+                height *= dd;
+              }
+
+
+ 
+
+
+            that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+ 
+            // that.context.restore()
+            }
+
+
+            this.initDraw()
+            this.setCanvasStyle()
           }
-          // var img = this.$refs.conf0
-          // img.onload = ()=>{
-          //     this.context.drawImage(img, 0, 0)
-          // }
-          this.initDraw()
-          this.setCanvasStyle()
         },
         ispush:function(){
+          console.log(this.ispush)
             if(this.ispush == 2){
-                this.getImage()
-                console.log('进入canvans')
+              let isNext = true
+              for(var i=0;i<this.urlSrc.length;i++){
+                if(this.urlSrc[i].teacherImg == '' || this.urlSrc[i].teacherImg == undefined || this.urlSrc[i].teacherImg == null){
+                  console.log(this.urlSrc[i])
+                  isNext = false
+                }
+              }
+              
+              if(isNext){
+                this.$emit('getUrlBlob',this.urlSrc)
+              }else{
+                this.$message.warning('还有试题尚未批改，请点击下一页。')
+                this.$emit('NogetUrlBlob')
+              }
+              
+              
+                // this.getImage()
+                // console.log('进入canvans')
                 // this.$emit('getUrlBlob','')
             }else{
               return
@@ -347,6 +417,165 @@ import IconVue from './Icon.vue'
       }
     },
     methods: {
+      getdraw(x,y){
+        this.dataList = []
+        // console.log(this.urlSrc)
+
+        this.urlSrc.forEach(ele => {
+          this.dataList.push('/api/student/question/getImage/'+ele + '?id=1'+"&d=" + new Date().getTime())
+        });
+        // console.log(this.dataList)
+        var that = this
+        const canvas = document.querySelector('#canvas')
+        that.context = canvas.getContext('2d')
+        canvas.width = x
+        const encoderOptions = 1
+        let length = this.dataList.length
+        
+        this.dataList.forEach((ele,i) => {
+          canvas.height =y * (i + 1)
+          this.cHeight = y*(i+1)
+          var myImage = new Image()
+
+          myImage.crossOrigin = ''
+          myImage.src = ele;
+          myImage.onload = () =>{
+
+            var imgW = myImage.width
+            var imgH = myImage.height
+            // canvas.height = imgH*x/imgW*(i+1)
+            console.log(canvas.height)
+            // console.log(imgW)
+            // console.log(imgH)
+            that.context.drawImage(myImage,0,  y*i ,x,imgH*x/imgW)
+           
+            // that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
+            // that.context.drawImage(myImage,0,y*i,x,y)
+            // that.context.drawImage(myImage,0,y*i,480,640)
+          }
+        });
+      },
+      // 上一页
+      lastPage(){
+        if(this.selectIndex <=0){
+          this.$message.warning('没有上一页')
+        }else{
+          this.selectIndex--
+          this.srcList = []
+          let selectSn = this.urlSrc[this.selectIndex].id
+          var that = this
+          const canvas = document.querySelector('#canvas')
+          that.context = canvas.getContext('2d')
+          var cW = document.getElementById('canvas').width
+          var cH = document.getElementById('canvas').height
+          var imgObj = new Image()
+          imgObj.src = '/api/student/question/getImage/' +selectSn+'?id=1'+"&d=" + new Date().getTime()
+          this.srcList.push( '/api/student/question/getImage/' + selectSn+'?id=1'+"&d=" + new Date().getTime())
+          var imgW = ""
+          var imgH = ""
+          imgObj.onload = function(){
+              imgW = imgObj.width
+              imgH = imgObj.height
+              // 在canvas绘制前填充白色背景
+              that.context.fillStyle = "#fff";
+              that.context.fillRect(0, 0, cW, cH)
+              // that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
+              let width = imgW;
+              let height = imgH;
+              if(width > cW){
+                let dd = cW / width;
+                width *= dd;
+                height *= dd;
+              }
+
+              if(height>cH){
+                let dd = cH / height;
+                width *= dd;
+                height *= dd;
+              }
+              console.log("cW:"+cW+",imgH:"+cH);
+              console.log("imgW:"+imgW+",imgH:"+imgH);
+              console.log("width:"+width+",height:"+height);
+              //that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,width,height)
+              that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+          }
+          this.initDraw()
+          this.setCanvasStyle()
+        }
+        
+      },
+      // 下一页
+      nextPage(){
+
+        if(this.selectIndex >= this.urlSrc.length){
+           this.$message.warning('没有下一页')
+        }else{
+          
+          const canvasImg = document.querySelector('#canvas')
+          var ctx=canvasImg.getContext("2d"); 
+          ctx.fillStyle="#E992B9";
+          ctx.lineWidth=1;
+          
+          const src = canvasImg.toDataURL('image/png')
+          this.urlSrc[this.selectIndex].teacherImg = src
+          this.urlSrc[this.selectIndex].radioType = this.radio
+         
+          this.selectIndex ++
+          if(this.selectIndex >= this.urlSrc.length){
+            this.$message.warning('没有下一页')
+          }else{
+            this.srcList = []
+            let selectSn = this.urlSrc[this.selectIndex].id
+            var that = this
+            const canvas = document.querySelector('#canvas')
+            that.context = canvas.getContext('2d')
+
+            var cW = document.getElementById('canvas').width
+            var cH = document.getElementById('canvas').height
+          
+            var imgObj = new Image()
+
+
+
+            imgObj.src = '/api/student/question/getImage/' +selectSn+'?id=1'+"&d=" + new Date().getTime()
+            this.srcList.push( '/api/student/question/getImage/' + selectSn+'?id=1'+"&d=" + new Date().getTime())
+            var imgW = ""
+            var imgH = ""
+
+            imgObj.onload = function(){
+                imgW = imgObj.width
+                imgH = imgObj.height
+                // 在canvas绘制前填充白色背景
+                that.context.fillStyle = "#fff";
+                that.context.fillRect(0, 0, cW, cH)
+                let width = imgW;
+                let height = imgH;
+                if(width > cW){
+                  let dd = cW / width;
+                  width *= dd;
+                  height *= dd;
+                }
+
+                if(height>cH){
+                  let dd = cH / height;
+                  width *= dd;
+                  height *= dd;
+                }
+                console.log("cW:"+cW+",imgH:"+cH);
+                console.log("imgW:"+imgW+",imgH:"+imgH);
+                console.log("width:"+width+",height:"+height);
+                //that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,width,height)
+                that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+            }
+            this.radio = ''
+            this.initDraw()
+            this.setCanvasStyle()
+          }
+  
+          console.log(this.urlSrc)
+        }
+      },
+
       isPc () {
         const userAgentInfo = navigator.userAgent
         const Agents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod']
@@ -363,7 +592,7 @@ import IconVue from './Icon.vue'
         this.imgUrl = this.imgUrl.filter(item => item !== src)
       },
       initDraw () {
-        const preData = this.context.getImageData(0, 0, 700, 500)
+        const preData = this.context.getImageData(0, 0, 700, 600)
         // 空绘图表面进栈
         this.middleAry.push(preData)
       },
@@ -374,11 +603,11 @@ import IconVue from './Icon.vue'
           let canvasX
           let canvasY
           if (this.isPc()) {
-            canvasX = e.clientX - t.parentNode.offsetLeft -250
-            canvasY = e.clientY - t.parentNode.offsetTop - 100
+            canvasX = e.offsetX 
+            canvasY = e.offsetY 
           } else {
-            canvasX = e.changedTouches[0].clientX - t.parentNode.offsetLeft -250
-            canvasY = e.changedTouches[0].clientY - t.parentNode.offsetTop - 100
+            canvasX = e.changedTouches[0].offsetX
+            canvasY = e.changedTouches[0].offsetY
           }
           this.context.lineTo(canvasX, canvasY)
           this.context.stroke()
@@ -394,7 +623,7 @@ import IconVue from './Icon.vue'
       // mouseup
       canvasUp (e) {
         console.log('canvasUp')
-        const preData = this.context.getImageData(0, 0, 700, 500)
+        const preData = this.context.getImageData(0, 0, 700, 600)
         if (!this.nextDrawAry.length) {
           // 当前绘图表面进栈
           this.middleAry.push(preData)
@@ -414,8 +643,8 @@ import IconVue from './Icon.vue'
         // client是基于整个页面的坐标
         // offset是cavas距离顶部以及左边的距离
 
-        const canvasX = e.clientX - e.target.parentNode.offsetLeft - 250
-        const canvasY = e.clientY - e.target.parentNode.offsetTop  -100
+        const canvasX = e.offsetX 
+        const canvasY = e.offsetY 
         console.log(e.clientX)
         console.log(e.clientY)
         this.setCanvasStyle()
@@ -424,7 +653,7 @@ import IconVue from './Icon.vue'
         this.context.moveTo(canvasX, canvasY)
         console.log('moveTo', canvasX, canvasY)
         // 当前绘图表面状态
-        const preData = this.context.getImageData(0, 0, 700, 500)
+        const preData = this.context.getImageData(0, 0, 700, 1600)
         // 当前绘图表面进栈
         this.preDrawAry.push(preData)
       },
@@ -465,7 +694,7 @@ import IconVue from './Icon.vue'
             var cH = document.getElementById('canvas').height
           
             var imgObj = new Image()
-            imgObj.src = '/api/student/question/getImage/' + this.urlSrc+'?id=1'+"&d=" + new Date().getTime()
+            imgObj.src = '/api/student/question/getImageList/' + this.urlSrc+'?id=1'+"&d=" + new Date().getTime()
             console.log(imgObj.src)
             var imgW = ""
             var imgH = ""

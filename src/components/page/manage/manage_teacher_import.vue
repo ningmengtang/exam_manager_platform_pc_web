@@ -6,17 +6,18 @@
 				<el-radio-group v-model="paperType" @change="changeType" style="margin-top:20px;">
 					<el-radio label="图片试卷">图片试卷</el-radio>
 					<el-radio label="在线组卷">在线组卷</el-radio>
+					<el-radio label="公共试卷">公共试卷</el-radio>
 				</el-radio-group>
 			</div>
-			<div class="l-box-1">
+			<div class="l-box-1" v-if="!iscommon">
 				<div class="l-title">标题</div>
 				<el-input v-model="form.title" placeholder="请输入内容" maxlength="30" show-word-limit class="ids"></el-input>
 			</div>
-			<div class="l-box-1">
+			<div class="l-box-1"  v-if="!iscommon">
 				<div class="l-title">试卷说明</div>
 				<el-input type="textarea" placeholder="请输入内容" v-model="form.examExplain" :autosize="{ minRows: 2, maxRows: 8}"></el-input>
 			</div>
-			<div class="l-box-1">
+			<div class="l-box-1"  v-if="!iscommon">
 				<div class="l-title">试卷作答时间</div>
 				<el-input v-model="form.examTime" :min="1" :max="9999"   type="number" show-word-limit class="ids">
 					<template slot="append">
@@ -24,7 +25,7 @@
 					</template>
 				</el-input>
 			</div>
-			<div class="l-box-2" v-if="ispaperType">
+			<div class="l-box-2" v-if="ispaperType && !iscommon">
 				<el-upload 
 				class="upload-demo" 
 				drag action=""  
@@ -42,9 +43,22 @@
 				</el-upload>
 				
 			</div>
+			<div class="l-box-1" v-if="iscommon">
+				<div class="l-title">标题</div>
+				<el-input v-model="iscommonTitle" placeholder="请输入内容" maxlength="30" show-word-limit class="ids"></el-input>
+			</div>
+			<div class="l-box-1" v-if="iscommon">
+				<div class="l-title">选择试卷类型</div>
+				<div class="group" style="margin-top:20px">
+				
+					<el-radio-group v-model="selectTag">
+						<el-radio-button v-for="(d,i) in tagList.purpose" :label="d.id" >{{d.text}}</el-radio-button>
+					</el-radio-group>
+				</div>
+			</div>
 		</div>
 		<div class="right">
-			<div class="l-box-1">
+			<div class="l-box-1" v-if="!iscommon">
 				<div class="t-content">
 					<div class="group">
 							<div class="row-group">
@@ -118,8 +132,52 @@
 					</div>
 				</div>
 			</div>
+			<div  v-if="iscommon">
+				<div>
+					<span>
+						已选择:[
+						<span style="color:red">
+							{{ParperType.title}}
+						</span>
+						]
+						
+					</span>
+				</div>
+				<el-table
+					highlight-current-row
+    				@current-change="selectPaperonly"
+					:data="tableData"
+					style="width: 100%">
+					<el-table-column
+					 	type="index"
+      					width="80"
+						label="序号">
+					</el-table-column>
+					<el-table-column
+						prop="createDate"
+						label="创建日期"
+						>
+					</el-table-column>
+					<el-table-column
+						prop="title"
+						label="试卷名称"
+						>
+					</el-table-column>
+					<el-table-column
+						prop="operator_name"
+						label="出卷人">
+					</el-table-column>
+				</el-table>
+
+				<div class="page">
+					<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+					:current-page.sync="currentPage" :page-size="pageSize" :total="total">
+					</el-pagination>
+				</div>
 			
-			<div style="margin-top:30px;max-height: 400px;overflow: auto;">
+			</div>
+			
+			<div style="margin-top:30px;max-height: 400px;overflow: auto;" v-if="!iscommon">
 				<el-table
 				      :data="StudenList"
 				      style="width: 100%"
@@ -148,31 +206,33 @@
 			</div>
 			<div class="card-box" >
 				<el-row :gutter="20">
-					<el-col :span="8" v-if="!ispaperType" :offset="3">
+					<el-col :span="8" v-if="!ispaperType &&!iscommon" :offset="3">
 						<div class="grid-content bg-purple">
 							<el-button class="i" @click="redictToTestPaperMaker(0)">进入组卷工具</el-button>
 							<div class="ii">(在线组卷)</div>
 						</div>
 					</el-col>
-					<el-col :span="8" v-if="!ispaperType" :disabled="!testPaperCacheReady" :offset="3">
+					<el-col :span="8" v-if="!ispaperType && !iscommon" :disabled="!testPaperCacheReady" :offset="3">
 						<div class="grid-content bg-purple">
 							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
 							<div class="ii">(在线组卷)</div>
 						</div>
 					</el-col>
-					<el-col :span="8" v-if="ispaperType" :offset="8">
+					<el-col :span="8" v-if="ispaperType && !iscommon" :offset="8">
 						<div class="grid-content bg-purple">
 							<el-button class="i"  @click="parperAddPic">确认提交试卷</el-button>
 							<div class="ii">(图片试卷)</div>
 						</div>
 					</el-col>
+					<el-col :span="8" v-if="iscommon" :offset="8">
+						<div class="grid-content bg-purple">
+							<el-button class="i"  @click="ClickCommon">确认提交试卷</el-button>
+							<div class="ii">(公共试卷)</div>
+						</div>
+					</el-col>
 				</el-row>
 			</div>
-			<!-- <div class="page">
-				<el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-				 :current-page.sync="currentPage" :page-size="pageSize" :total="total">
-				</el-pagination>
-			</div> -->
+		
 			
 			<!-- <div class="hint">
 				<div>温馨提示：</div>
@@ -186,7 +246,7 @@
 <script>
 import user from '../../common/user';
 import {
-	selectTag,StudentSelectByTeacher,selectListByOptions,apiCommonExamAdd,apiCommonExamUpload,studentStudentExamAdd,apiAdminExamUpdate,
+	selectTag,StudentSelectByTeacher,selectListByOptions,apiCommonExamAdd,apiCommonExamUpload,studentStudentExamAdd,apiAdminExamUpdate,teacherSelectTag,CommonExamCopypaper,
 	apiAdminExamBigQuestionInsert,apiAdminExamQuestionInsert,apiAdminExamQuestionAnwserInsert,apiAdminExamQuestionAnwserSheetInsert,apiAdminExamBigQuestionWithChildrenInsert
 
 } from '@/api/api.js'
@@ -205,20 +265,25 @@ export default {
 			array_nav: [], //存储el-chckbox数组
 			title: '',
 			textarea: '',
+			selectTag:'',
 			select: '',
 			total:0,
 			currentPage: 1,
 			pageNum:1,
-			pageSize:999,
+			pageSize:6,
 			dialogVisible: false,
+			iscommonTitle:'',
 			ispaperType:true,
 			paperType:'图片试卷',
 			tagList:[],
 			AllTagList:[],
+			iscommon:false,
 			StudenList:[],
 			userID:localStorage.getItem('userID'),
 			selectStudentList:[],
+			ParperType:'',
 			uploadFile:'',
+			tableData:[],
 			form:{
 				title:'',
 				examExplain:'',
@@ -261,6 +326,10 @@ export default {
 				{
 					label: '在线组卷',
 					value:'在线组卷'
+				},
+				{
+					label: '公共试卷',
+					value:'公共试卷'
 				}
 			],
 		};
@@ -269,46 +338,84 @@ export default {
 		 //改变时
 		handleSizeChange(val) {
 			this.pageSize = val;
-			StudentSelectByTeacher(this.userID,this.pageNum,this.pageSize).then(res=>{
-				this.StudenList = res.data.data.list
+			teacherSelectTag({
+				"id": [],
+				"pageSize": this.pageSize,
+				"pageNum": this.pageNum
+			}).then(res => {
+				this.tableData = res.data.data.list
 				this.total = res.data.data.total
-				this.currentPage = res.data.data.pageNum
+				this.currentPage = res.data.data.pageNum	
 			})
 			
 		},
 		//条目改变时
 		handleCurrentChange(val) {
 			this.pageNum = val;
-			StudentSelectByTeacher(this.userID,this.pageNum,this.pageSize).then(res=>{
-				this.StudenList = res.data.data.list
+			teacherSelectTag({
+				"id": [],
+				"pageSize": this.pageSize,
+				"pageNum": this.pageNum
+			}).then(res => {
+				this.tableData = res.data.data.list
 				this.total = res.data.data.total
 				this.currentPage = res.data.data.pageNum
+					
 			})
 		},
-		getValue() {
-			console.log(this.array_nav);
-		},
-		// handleSizeChange(val) {
-		// 	console.log(`每页 ${val} 条`);
-		// },
-		// handleCurrentChange(val) {
-		// 	console.log(`当前页: ${val}`);
-		// },
 		changeType(){
 			console.log("切换组卷类型");
 			if(this.paperType == '图片试卷'){
 				this.ispaperType = true
 			}else if(this.paperType == '在线组卷'){
 				this.ispaperType = false
+			}else if(this.paperType == '公共试卷'){
+				this.iscommon = true
+
+				// 请求老师的试卷
+
+				//试卷
+				teacherSelectTag({
+					"id": [],
+					"pageSize": this.pageSize,
+					"pageNum": this.pageNum
+				}).then(res => {
+					this.tableData = res.data.data.list
+					this.total = res.data.data.total
+					this.currentPage = res.data.data.pageNum
+					
+				})
 			}
 		},
 		handleSelectionChange(val){
 			this.selectStudentList = val
 		},
+		selectPaperonly(val){
+			this.ParperType = val
+		},
+		// 公共试卷
+		ClickCommon(){
+			console.log(this.selectTag)
+			console.log(this.iscommonTitle)
+			console.log(this.ParperType)
+			if(this.selectTag && this.iscommonTitle && this.ParperType){
+				CommonExamCopypaper(this.ParperType.id,this.selectTag,this.iscommonTitle).then(res=>{
+					if(res.data.result){
+						this.$message.success('操作成功')
+						this.$router.push('/manage_teacher')	
+					}else{
+						this.$message.error(res.data.message)
+					}
+				})
+			}else{
+				this.$message.warning('请填写必要信息')
+			}
+			// CommonExamCopypaper(this.paperType.id,)
+		},
 		// 上传附件
 		uploadFild(param){
 			var that = this
-			console.log(param)
+			// console.log(param)
 			var file = param.file
 			this.uploadFile = new FormData()
 			this.uploadFile.append('file',file)
@@ -879,10 +986,10 @@ export default {
 			this.tagList = res.data.data
 			
 		})
-		StudentSelectByTeacher(this.userID,this.pageNum,this.pageSize).then(res=>{
+		StudentSelectByTeacher(this.userID,1,999).then(res=>{
 			this.StudenList = res.data.data.list
-			this.total = res.data.data.total
-			this.currentPage = res.data.data.pageNum
+			// this.total = res.data.data.total
+			// this.currentPage = res.data.data.pageNum
 		})
 		
 
@@ -925,16 +1032,8 @@ export default {
 				this.testPaperCacheReady = false
 			}
 		})
-		// let teacherId = 
-		
-		// // 获取全部标签
-		// ApiTagSelectList({
-		// 	"pageNum": 1,
-		// 	"pageSize": 999
-		// }).then(res=>{
-		// 	console.log(res)
-		// 	this.AllTagList = res.data.data.list
-		// })
+
+		// 获取相应试卷
 	}
 };
 </script>
