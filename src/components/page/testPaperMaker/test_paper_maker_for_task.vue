@@ -24,11 +24,11 @@
           <i class="el-icon-collection-tag"></i>预览试题
         </div>
         
-        <div class="div_menu_item background_orange" style="margin-top:30px;" v-if="qustionPreviewMode" @click="qustionPreviewMode = false">
+        <div class="div_menu_item background_orange" style="margin-top:30px;"  @click="qustionPreviewMode = false">
           <i class="el-icon-collection-tag"></i>退出预览试题
         </div> -->
 
-        <!-- <div class="div_menu_item background_orange" style="margin-top:30px;" v-if="qustionPreviewMode" @click="returnTop();testPaperQuestionsToImage()">
+        <!-- <div class="div_menu_item background_orange" style="margin-top:30px;"  @click="returnTop();testPaperQuestionsToImage()">
           <i class="el-icon-collection-tag"></i>预览试题图片
         </div> -->
 
@@ -84,7 +84,7 @@
           </div>
           
           <!-- 题目预览 -->
-          <div v-if="qustionPreviewMode" class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
+          <div  class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
           <div class="layout_test_paper_item" v-for="(testPaperObjItem,testPaperObjItemIndex) in studentItem.items">
           <!-- ============================================================================================================ -->
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;"><!-- 临时去掉v-if="qustionPreviewMode && !qustionPreviewImgMode" -->
@@ -212,7 +212,7 @@
           
 
           <!-- 题目答题卡预览 -->
-          <div v-if="qustionPreviewMode" class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
+          <div  class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
           <div class="layout_test_paper_item" v-for="(testPaperObjItem,testPaperObjItemIndex) in studentItem.items">
           <!-- ============================================================================================================ -->
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;"><!-- 暂时屏蔽 v-if="qustionPreviewMode && !qustionPreviewImgMode" -->
@@ -349,7 +349,7 @@
           <!-- 题目答题卡预览结束 -->
 
           <!-- 题目预览，图片模式 -->
-          <div v-if="qustionPreviewMode" class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
+          <div  class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
           <div class="layout_test_paper_item" v-for="(testPaperObjItem,testPaperObjItemIndex) in studentItem.items">
           <!-- ============================================================================================================ -->
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;"><!-- 临时屏蔽  v-if="qustionPreviewMode && !qustionPreviewImgMode"-->
@@ -419,7 +419,7 @@
           <!-- 题目预览，图片模式结束 -->
 
           <!-- 题目答题卡预览 图片模式 -->
-          <div v-if="qustionPreviewMode" class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
+          <div  class="layout_test_paper_layout" v-for="(studentItem,studentItemIndex) in createTestPaperInfoObj.students">
           <div class="layout_test_paper_item" v-for="(testPaperObjItem,testPaperObjItemIndex) in studentItem.items">
           <!-- ============================================================================================================ -->
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;"><!-- 暂时屏蔽 v-if="qustionPreviewMode && !qustionPreviewImgMode" -->
@@ -491,12 +491,12 @@
           </div>
           <!-- 题目答题卡预览 图片模式 结束 -->
 
-          <!-- <div class="layout_question_preview_layout" style="float:left;margin-left:210px;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode">
+          <!-- <div class="layout_question_preview_layout" style="float:left;margin-left:210px;margin-top:10px;width:800px;background-color:#FFF;" >
             <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
               <span>题目预览（图片）</span>
             </div>
           </div>
-          <div class="layout_question_preview_img_layout" style="float:left;margin-left:210px;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode">
+          <div class="layout_question_preview_img_layout" style="float:left;margin-left:210px;margin-top:10px;width:800px;background-color:#FFF;" >
             <div class="preview_img" style="width:100%;">
               <img :src="testPaperPreviewImg"/>
 
@@ -512,15 +512,15 @@
           <div class="layout_question_preview_layout" style="margin-left:auto;margin-right:auto;margin-top:10px;width:800px;background-color:#FFF;" v-if="qustionPreviewMode && qustionPreviewImgMode">
             <div class="layout_question_part_header_title" style="font-size:22px;font-weight:bold;line-height:50px;text-align:center;">
 
-              <div class="div_menu_item background_orange" style="margin-top:30px;" @click="createTestPaperPreviewPdf()" v-if="qustionPreviewMode">
+              <div class="div_menu_item background_orange" style="margin-top:30px;" @click="createTestPaperPreviewPdf()" >
                 <i class="el-icon-collection-tag"></i>预览整张试卷
               </div>
 
-              <div class="div_menu_item background_orange" style="margin-top:30px;" @click="createTestPaperAnwserSheetPreviewPdf()" v-if="qustionPreviewMode">
+              <div class="div_menu_item background_orange" style="margin-top:30px;" @click="createTestPaperAnwserSheetPreviewPdf()" >
                 <i class="el-icon-collection-tag"></i>预览整张答题卡
               </div>
 
-              <div class="div_menu_item background_orange" style="margin-top:30px;" @click="downloadTestPaperAndAnwserSheetPdf()" v-if="qustionPreviewMode">
+              <div class="div_menu_item background_orange" style="margin-top:30px;" @click="downloadTestPaperAndAnwserSheetPdf()" >
                 <i class="el-icon-collection-tag"></i>下载试卷和答题卡PDF
               </div>
             </div>

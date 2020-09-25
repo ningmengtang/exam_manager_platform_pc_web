@@ -11,4 +11,7 @@
 </style>
 <style >
 *{box-sizing: border-box;}
+div{
+    word-break:break-all;
+}
 </style>
