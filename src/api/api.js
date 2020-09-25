@@ -53,6 +53,11 @@ export function faceInsert(data){
 	const result = post ('/api/face/insert',data)
 	return result;
 }
+// 人脸对照
+export function faceRecognition (data){
+	const result = post ('/api/face/compare',data)
+	return result;
+}
 //教师首页状态查询
 export function teacherIndexStatus(data) {
 	const result = get('/api/teacher/teacherExam/selectTeacherPapersCountByTeacherIdAndPutInto', data)
