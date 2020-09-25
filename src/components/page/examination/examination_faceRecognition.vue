@@ -84,7 +84,8 @@
 				dialogVisible: false,
 				uploadFile: '',
 				uploadBlackimgscr: '',
-				isFace: ''
+				isFace: '',
+				FaceRecognition:false
 			}
 		},
 		methods: {

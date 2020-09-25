@@ -72,31 +72,6 @@ export function uploadget(url, params) {
         })
     })
 }
-// export function uploadpost(url, params) {
-//     var Base64 = require('js-base64').Base64
-//     var loginToken = localStorage.getItem('loginToken');
-//     var authStr = ":" + loginToken;
-//     var authStr_hex = 'Basic ' + Base64.encode(authStr);
-//     return new Promise((resolve, reject) => {
-//         axios({
-//             url: url,
-//             method: 'POST',
-//             data: params,
-//             responseType: 'blob',
-//             contentType: "application/json; charset=utf-8",
-//             headers: {
-//                 'Content-Type': 'application/x-www-form-urlencoded ',
-//                 "uniqueKey": getUniqueKey(),
-//                 "Authorization": loginToken == null ? undefined : authStr_hex
-//             }
-//         }).then(res => {
-//             resolve(res)
-//         }).catch(err => {
-//             reject(err)
-
-//         })
-//     })
-// }
 export function post(url, data) {
     var Base64 = require('js-base64').Base64
     var loginToken = localStorage.getItem('loginToken')

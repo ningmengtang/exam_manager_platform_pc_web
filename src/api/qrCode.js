@@ -1,4 +1,4 @@
 export default function () {
-	const host = 'http://10.0.0.19:8081/#/'
+	const host = window.location.protocol+"//"+window.location.host+'/#/'
 	return host;
 }

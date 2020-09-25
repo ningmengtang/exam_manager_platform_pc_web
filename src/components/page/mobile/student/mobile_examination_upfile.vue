@@ -89,6 +89,15 @@
 					studentTestQuestionsImg(this.getData.answer_id, this.uploadFile).then(res => {
 						Toast.success('图片上传成功,上传完全部答题卡请关闭改页面');
 						this.loading = false
+						setTimeout(x=>{
+							this.$router.push({
+								name: '404',
+								query: {
+									id: this.examId
+								}
+							})
+						},1000)
+						
 					})
 				} else if (this.uploadType == 'has') {
 					studentTestQuestionsAnswerSheet(5000, this.getData.paper_id, this.uploadFile).then(res => {

@@ -386,35 +386,28 @@
 					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
-						this.logtype = 'none'
+					studentTestQuestionsUpImg(data.sn).then(res2 => {
 						this.loading_img = false
-					} else {
-						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img =
-								false) :
-							(
-								this.logtype = 'img',
-								this.up_img_black_id_arr = [],
-								this.urls = [],
-								this.srcList = [],
-								this.teacher_urls = [],
-								this.teacher_srcList = [],
-								studentTestQuestionsUpImg(data.sn).then(res => {
-									this.loading_img = false
-									if (res.data.data != undefined) {
-										res.data.data.map((x, i) => {
-											// 返回的图片id
-											this.up_img_black_id_arr[i] = x.id
-											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
-											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
-											this.teacher_urls[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime()),
-												this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
-										})
-									}
-
-								})
-							)
-					}
+						if (!res2.data.hasOwnProperty('data') && !data.hasOwnProperty('answer_test')) {
+							this.loading_img = false
+							this.logtype = 'none'
+						} else if (data.hasOwnProperty('answer_test')) {
+							this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false
+							console.log(data.answer_test)
+						} else if (res2.data.hasOwnProperty('data')) {
+							this.logtype = 'img'
+							this.up_img_black_id_arr = []
+							this.urls = []
+							this.srcList = []
+							res2.data.data.map((x, i) => {
+								// 返回的图片id
+								this.up_img_black_id_arr[i] = x.id
+								// console.log(x.id)
+								this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+								this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+							})
+						}
+					})
 				})
 			},
 			// 题目跳转
