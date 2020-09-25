@@ -117,7 +117,7 @@
 				examId: this.$route.query.id,
 				examTime: this.$route.query.examTime,
 				examTitle: '',
-				overTime:this.$route.query.overTime,
+				overTime: this.$route.query.overTime,
 				examParticular: '',
 				papers: {},
 				classes: '',
@@ -221,7 +221,10 @@
 					var Days = 1;
 					var exp = new Date();
 					exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
-					document.cookie = name + "=" + escape(this.getTimestamp(this.overTime)) + ";expires=" + exp.toGMTString();
+					// document.cookie = name + "=" + escape(value.setTime(value.getTime() + 1 * this.examTime * 60 * 1000)) +
+					// 	";expires=" + exp.toGMTString();
+					document.cookie = name + "=" + escape(this.getTimestamp(this.overTime)) +
+						";expires=" + exp.toGMTString();
 				}
 			},
 			//---日期转时间戳---

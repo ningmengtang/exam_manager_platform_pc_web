@@ -21,7 +21,7 @@
 						</el-input>
 					</el-form-item>
 					<el-form-item label="学校编号:" prop="schoolCode" v-if="typeStatus=='school'">
-						<el-input v-model="form.schoolCode"  >
+						<el-input v-model="form.schoolCode">
 						</el-input>
 					</el-form-item>
 					<el-form-item label="学号:" prop="stuedntNum" v-if="typeStatus=='student'">
@@ -41,13 +41,13 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="班级:" prop="class" v-if="typeStatus=='student'">
-						<el-select v-model="form.classDefault"   placeholder="请选择" @visible-change="classList">
+						<el-select v-model="form.classDefault" placeholder="请选择" @visible-change="classList">
 							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="班级:" prop="class" v-if="typeStatus=='teacher'">
-						<el-select v-model="form.classDefault"  multiple placeholder="请选择" @visible-change="classList">
+						<el-select v-model="form.classDefault" multiple placeholder="请选择" @visible-change="classList">
 							<el-option v-for="(item,i) in form.class" :key="item.i" :label="item.name" :value="item.id">
 							</el-option>
 						</el-select>
@@ -58,6 +58,13 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
+					<el-form-item label="教师角色:" prop="sex" v-else-if="typeStatus=='teacher'">
+						<el-select v-model="form.teacherRoleDefault" placeholder="请选择" @visible-change="teacherRole">
+							<el-option v-for="(item,i) in form.teacherRole" :key="item.i" :label="item.name" :value="item.id">
+							</el-option>
+						</el-select>
+					</el-form-item>
+
 					<el-form-item label="角色:" prop="roleDefault">
 
 						<el-input v-model="form.roleDefault" disabled>
@@ -71,7 +78,7 @@
 				</el-form>
 
 			</div>
-			
+
 		</div>
 	</div>
 </template>
@@ -159,7 +166,7 @@
 						message: '请选择班级',
 						trigger: 'blur'
 					}],
-					schoolCode:[{
+					schoolCode: [{
 						required: true,
 						message: '请输入学校编号',
 						trigger: 'blur'
@@ -193,17 +200,24 @@
 						label: '管理员',
 						value: 'admin'
 					}],
-					roleName:0,
-					roleSn:0,
-					roleId:0,
+					roleName: 0,
+					roleSn: 0,
+					roleId: 0,
 					schoolDefault: '',
 					school: '',
 					stuedntNum: '',
 					mobile: '',
-					schoolCode:'',
+					schoolCode: '',
 					adminRoleDefault: [],
 					adminRole: '',
-
+					teacherRoleDefault: 4,
+					teacherRole: [{
+						id: 4,
+						name: '普通教师'
+					}, {
+						id: 13,
+						name: '教师组长'
+					}]
 				},
 				dialogTableVisible: false,
 				dialogFormVisible: false,
@@ -240,9 +254,13 @@
 			},
 			// 选择班级事件
 			classList() {
-				if (this.form.class=='') {
+				if (this.form.class == '') {
 					this.$message.error('请先选择学校')
 				}
+			},
+			// 教师选择角色事件
+			teacherRole() {
+				
 			},
 			submit() {
 				//go
@@ -275,49 +293,92 @@
 									schoolSn: form.schoolDefault[0].sn,
 									classesId: form.classDefault,
 									code: form.stuedntNum,
-									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
+									role: {
+										id: form.roleId,
+										name: form.roleDefault,
+										sn: form.roleSn
+									}
 								}).then(res => {
-									if(res.data.stateCode==200){
+									if (res.data.stateCode == 200) {
 										this.$message.success('添加学生账号成功')
 										this.black()
-									}else{
-										this.$message.error('改用户已存在')
+									} else {
+										this.$message.error('该用户已存在')
 									}
 								})
 								break;
 							case 'teacher':
-								adminAddTeacher({
-									name: form.userName,
-									mobile: form.mobile,
-									password: md5(form.password),
-									sex: form.sexDefault,
-									schoolId: form.schoolDefault[0].id,
-									classesId:form.classDefault,
-									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
+							   
+								//读取角色id
+								adminSelectRoleadminPower({
+									id: this.form.teacherRoleDefault
 								}).then(res => {
-									if(res.data.stateCode==200){
-										this.$message.success('添加教师账号成功')
-										this.black()
-									}else{
-										this.$message.error('改用户已存在')
-									}
+									console.log(res)
+									res.data.data.list.map(x => {
+										this.form.roleId = x.id
+										this.form.roleSn = x.sn
+										adminAddTeacher({
+											name: form.userName,
+											mobile: form.mobile,
+											password: md5(form.password),
+											sex: form.sexDefault,
+											schoolId: form.schoolDefault[0].id,
+											classesId: form.classDefault,
+											role: {
+												id: x.id,
+												name: x.name,
+												sn: x.sn
+											}
+										}).then(res => {
+											if (res.data.stateCode == 200) {
+												this.$message.success('添加教师账号成功')
+												this.black()
+											} else {
+												this.$message.error('该用户已存在')
+											}
+										})
+									})
 								})
+								// adminAddTeacher({
+								// 	name: form.userName,
+								// 	mobile: form.mobile,
+								// 	password: md5(form.password),
+								// 	sex: form.sexDefault,
+								// 	schoolId: form.schoolDefault[0].id,
+								// 	classesId: form.classDefault,
+								// 	role: {
+								// 		id: form.roleId,
+								// 		name: form.roleDefault,
+								// 		sn: form.roleSn
+								// 	}
+								// }).then(res => {
+								// 	if (res.data.stateCode == 200) {
+								// 		this.$message.success('添加教师账号成功')
+								// 		this.black()
+								// 	} else {
+								// 		this.$message.error('该用户已存在')
+								// 	}
+								// })
 								break;
 							case 'school':
 								adminAddSchool({
 									name: form.userName,
 									mobile: form.mobile,
 									password: md5(form.password),
-									code:form.schoolCode,
-									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
+									code: form.schoolCode,
+									role: {
+										id: form.roleId,
+										name: form.roleDefault,
+										sn: form.roleSn
+									}
 								}).then(res => {
-									if(res.data.stateCode==200){
+									if (res.data.stateCode == 200) {
 										this.$message.success('添加学校账号成功')
 										this.black()
-									}else{
-										this.$message.error('改用户已存在')
+									} else {
+										this.$message.error('该用户已存在')
 									}
-									
+
 								})
 								break;
 							case 'user':
@@ -326,40 +387,44 @@
 									name: form.userName,
 									password: md5(form.password),
 									sex: form.sexDefault,
-									role:{id:form.roleId,name:form.roleDefault,sn:form.roleSn}
+									role: {
+										id: form.roleId,
+										name: form.roleDefault,
+										sn: form.roleSn
+									}
 								}).then(res => {
-									if(res.data.stateCode==200){
+									if (res.data.stateCode == 200) {
 										this.$message.success('添加专家账号成功')
 										this.black()
-									}else{
-										this.$message.error('改用户已存在')
+									} else {
+										this.$message.error('该用户已存在')
 									}
-									
+
 								})
 								break;
 							case 'admin':
-							var a = this.form.adminRoleDefault;
-							let arr = []
-							a.map((x, i) => {
-								let json = {};
-								json['roleId'] = a[i]
-								arr.push(json)
-							})
-							adminAddAdmin({
-								mobilePhone: form.mobile,
-								name: form.userName,
-								password: md5(form.password),
-								sex: form.sexDefault,
-								type:'admin',
-								adminRoles:arr
-							}).then(res => {
-								if(res.data.stateCode==200){
-									this.$message.success('添加管理员账号成功')
-									this.black()
-								}else{
-									this.$message.error('改用户已存在')
-								}
-							})
+								var a = this.form.adminRoleDefault;
+								let arr = []
+								a.map((x, i) => {
+									let json = {};
+									json['roleId'] = a[i]
+									arr.push(json)
+								})
+								adminAddAdmin({
+									mobilePhone: form.mobile,
+									name: form.userName,
+									password: md5(form.password),
+									sex: form.sexDefault,
+									type: 'admin',
+									adminRoles: arr
+								}).then(res => {
+									if (res.data.stateCode == 200) {
+										this.$message.success('添加管理员账号成功')
+										this.black()
+									} else {
+										this.$message.error('该用户已存在')
+									}
+								})
 								break;
 						}
 					} else {
@@ -372,27 +437,31 @@
 				this.$router.push('user_control')
 			},
 			// 查看角色
-			SelectRoleadminPower(data){
-				 adminSelectRoleadminPower({name:data}).then(res=>{
-					 console.log(res)
-					res.data.data.list.map(x=>{
-						this.form.roleId=x.id
-						this.form.roleSn=x.sn
+			SelectRoleadminPower(data) {
+				adminSelectRoleadminPower({
+					name: data
+				}).then(res => {
+					console.log(res)
+					res.data.data.list.map(x => {
+						this.form.roleId = x.id
+						this.form.roleSn = x.sn
 					})
 				})
-			}
 
+
+			}
 		},
 		mounted() {
-           let form = this.form
+			let form = this.form
 			switch (this.$route.query.typeStatus) {
 				case 'student':
-				    this.form.roleDefault ='学生'
+					this.form.roleDefault = '学生'
 					this.SelectRoleadminPower(this.form.roleDefault)
 					break;
 				case 'teacher':
 					this.form.roleDefault = '教师'
-					this.SelectRoleadminPower(this.form.roleDefault)
+					// this.SelectRoleadminPower(this.form.roleDefault)
+
 					break;
 				case 'school':
 					this.form.roleDefault = '学校'
@@ -403,20 +472,21 @@
 					this.SelectRoleadminPower(this.form.roleDefault)
 					break;
 				case 'admin':
-				//查询全部角色
-				adminSelectRoleadminPower({
-					"isAdmin": true
-				}).then(res => {
-					form.adminRole = res.data.data.list;
-				})
+					//查询全部角色
+					adminSelectRoleadminPower({
+						"isAdmin": true
+					}).then(res => {
+						form.adminRole = res.data.data.list;
+					})
 					this.form.roleDefault = '管理员'
 					break;
 
 			}
 			//查询学校
 			ApiSchoolAccountSelectByOptions(this.page).then(res => {
-				res.data ? (this.form.school = res.data.data.list, this.total = res.data.data.total,console.log(res)) : this.$message.error(
-					'查询超时,请刷新重新查询！')
+				res.data ? (this.form.school = res.data.data.list, this.total = res.data.data.total, console.log(res)) : this.$message
+					.error(
+						'查询超时,请刷新重新查询！')
 			})
 		}
 	};

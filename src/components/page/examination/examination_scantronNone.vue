@@ -385,22 +385,22 @@
 				// 			index = i
 				// 		}
 				// 	}));
-				index=this.topicArr.findIndex(x=>x.index==this.topicDefault[this.topicDefault.length - 1])
-				// console.log(index)
+				// index=this.topicArr.findIndex(x=>x.index==this.topicDefault[this.topicDefault.length - 1])
+				index=this.topicArr.findIndex(x=>x.index==this.topicIndex)
 
 				if (type == 'previous') {
 					if (index != 0) {
-						// before_data = this.topicArr[index - 1]
-						// console.log(index)
-						// this.topicIndex = before_data.index
-						// questionsType = before_data.type
+						before_data = this.topicArr[index - 1]
+						this.topicIndex = before_data.index
+						questionsType = before_data.type
 						// this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
-						let data = this.topicDefault
-						data.splice(data.length - 1, 1, this.topicArr[index - 1].index)
-						data = Array.from(new Set(data))
-						this.topicDefault = data
-						console.log(data)
-						this.topicLittleQuestions(this.topicArr[index - 1].data, questionsType)
+						// let data = this.topicDefault
+						// data.splice(data.length - 1, 1, this.topicArr[index - 1].index)
+						// data = Array.from(new Set(data))
+						// this.topicDefault = data
+						// console.log(data)
+						// this.topicIndex=this.topicArr[index-1].index
+						this.topicLittleQuestions(before_data.data, questionsType,before_data.id,before_data.sn,true,before_data.index)
 					}
 
 					// console.log(this.topicDefault)
@@ -426,7 +426,7 @@
 								}
 							}
 						}
-						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
+						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn,true,next_data.index)
 					}
 				}
 			},
@@ -511,19 +511,20 @@
 					'pageNum': 1,
 				}).then(res => {
 					let data=res.data.data.list
-					let finish=false;
-					// console.log(data)
+					let order=[]
+					// 获取正确排序id
+					this.topicArr.map((x,i)=>{
+						order.push(x.data.id)
+					})
+					// 正确的排序数组
+					data.sort((a,b)=>{
+					    return order.indexOf(a.question_id)-order.indexOf(b.question_id);
+					});
+					// 获取题目已经做了的题目
+					data.forEach((x,i)=>{
+						console.log(x)
+					})
 					
-					// data.map((x,i)=>{
-					// // console.log(this.topicArr[i].id)
-					// // console.log(x.question_id)
-					// 	// if(x.hasOwnProperty('answer_test') || x.hasOwnProperty('student_image')){
-							
-					// 	// 	// this.topicDefault.push(this.topicArr[i].index)
-					// 	// }
-						
-						
-					// })
 
 				})
 				
@@ -557,7 +558,7 @@
 			apiCommonExamSeleElementTestById(this.examId).then(res => {
 				let a, b, c = 1
 				let d = JSON.parse(res.data.data.elementTest);
-				// console.log(d)
+				console.log(d)
 				this.topic = d.items
 				d.items.forEach((x, i) => {
 					x.items.map((y, o) => {
@@ -591,7 +592,9 @@
 				this.ResidueTime = this.getResidueTime()
 			}, 1000)
 			
-		},
+			
+		}
+		
 
 	};
 </script>

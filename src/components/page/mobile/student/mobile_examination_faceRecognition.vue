@@ -80,6 +80,7 @@
 				userSchoolName: localStorage.getItem('userSchoolName'),
 				userGrade: localStorage.getItem('userGrade'),
 				examId: this.$route.query.id,
+				overTime: this.$route.query.overTime,
 				examTitle: '',
 				examParticular: '',
 				papers: {},
@@ -100,6 +101,7 @@
 					name: 'mobile_examination_process',
 					query: {
 						id: this.examId,
+						overTime:this.overTime
 					}
 				})
 			},

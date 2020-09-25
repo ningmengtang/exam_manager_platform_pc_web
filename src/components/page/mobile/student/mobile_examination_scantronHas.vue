@@ -29,6 +29,9 @@
 					<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
 				</el-upload>
 			</div>
+			<div class="ts">
+				<span>3.</span><span class='ts-i'><i class="icon el-icon-info"></i>上传成功后去考试辅助哪里查询上传日志</span>
+			</div>
 			<Tabbar />
 
 		</div>
@@ -284,5 +287,5 @@
 	.el-pager li.active {
 		background-color: #f5f5f5;
 	}
-	.up-box{min-height: 200px;z-index: 1;}
+	.up-box{min-height: 1.6rem;z-index: 1;}
 </style>

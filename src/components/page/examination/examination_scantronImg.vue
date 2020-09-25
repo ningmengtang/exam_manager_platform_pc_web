@@ -43,7 +43,7 @@
 							<transition name="el-zoom-in-top">
 								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
 									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
-									<i class="icon el-icon-delete-solid "></i>
+									<i class="icon el-icon-delete-solid" @click="upImgDel(up_img_black_id_arr[i])"></i>
 								</div>
 							</transition>
 						</div>
@@ -203,6 +203,19 @@
 			},
 			closeViewer_i() {
 				this.bigImg_i = false
+			},
+			// 删除图片
+			upImgDel(id) {
+				studentTestQuestionsDelImg(id).then(res => {
+					this.$message.success('删除图片成功！')
+				})
+				studentTestQuestionsUpImg(this.question_sn_black).then(res => {
+					// 获取删除的索引
+					let index = this.up_img_black_id_arr.findIndex(x => x == id)
+					this.up_img_black_id_arr.splice(index, 1)
+					this.urls.splice(index, 1)
+					this.srcList.splice(index, 1)
+				})
 			},
 			// 获取cookie
 			getCookie(name) {

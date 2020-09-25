@@ -243,7 +243,7 @@
 											this.$router.push(`/examination_manage`)
 										}
 									}else{
-										this.$router.push(`/index_${type}`)
+										type == 'student'?this.$router.push(`/examination_manage`):this.$router.push(`/index_${type}`)
 									}
 									break;
 								case 300055:
@@ -292,7 +292,7 @@
 			},
 			setCookie(name, value) {
 				if (value) {
-					var days = 1; //定义一天
+					var days = 30; //定义一天
 					var exp = new Date();
 					exp.setTime(exp.getTime() + days * 24 * 60 * 60 * 1000);
 					// 写入Cookie, toGMTString将时间转换成字符串

@@ -68,7 +68,9 @@
 		studentTestQuestionsAdd,
 		StudentAccountInfo,
 		studentTestQuestionsLog,
-		studentTestQuestionsImg
+		studentTestQuestionsImg,
+		studentTestQuestionsUpImg,
+		studentTestQuestionsDelImg
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -275,12 +277,18 @@
 			},
 			// 考试完成
 			finish() {
-				this.$router.push({
-					name: 'mobile_examination_finish',
-					query: {
-						id: this.examId
-					}
-				})
+				Dialog.alert({
+				  title: '提示',
+				  message: '跳转回考试试卷页面',
+				}).then(() => {
+				 this.$router.push({
+				 	name: 'mobile_examination_finish',
+				 	query: {
+				 		id: this.examId
+				 	}
+				 })
+				});
+				
 			},
 			handleRemove(file, fileList) {
 				console.log(file, fileList);
@@ -291,12 +299,13 @@
 		},
 
 		mounted() {
-			// ---查看学生信息
-			StudentAccountInfo({
-				id: localStorage.getItem('userID')
-			}).then(res => {
-				this.studentSn = res.data.data.list[0].sn
-			})
+			// this.loading = true,
+				// ---查看学生信息
+				StudentAccountInfo({
+					id: localStorage.getItem('userID')
+				}).then(res => {
+					this.studentSn = res.data.data.list[0].sn
+				})
 			// 新增答案
 			studentTestQuestionsAdd({
 				'paper_id': this.examId,
@@ -306,7 +315,33 @@
 				'student_name': localStorage.getItem('userName'),
 				'student_sn': this.studentSn,
 			}).then(res => {
-				console.log(res.data)
+				let id = res.data.data
+				// 返回的id和sn
+		
+				studentTestQuestionsLog({
+					'student_id': localStorage.getItem('userID'),
+					'paper_id': this.examId,
+					'id': id
+				}).then(res => {
+					let data = res.data.data.list[0]
+					this.question_id_black = data.id
+					this.question_sn_black = data.sn
+		
+					studentTestQuestionsUpImg(data.sn).then(res => {
+						this.loading_img = false
+						if (res.data.data != undefined) {
+							res.data.data.map((x, i) => {
+								// 返回的图片id
+								this.up_img_black_id_arr[i] = x.id
+								this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+								this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+							})
+						}
+		
+					})
+		
+		
+				})
 			})
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
@@ -319,27 +354,13 @@
 			apicommonExamGetFile(this.examId).then(res => {
 				let blob = new Blob([res.data]);
 				let url = window.URL.createObjectURL(blob);
-				this.affix = url
+				this.affix=url
+				this.srcList_i[0]=url
 			})
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 0)
-			// 小题日志
-			studentTestQuestionsLog({
-				'student_id': localStorage.getItem('userID'),
-				'paper_id': this.examId,
-			}).then(res => {
-				let data = res.data.data.list[0]
-
-				this.question_id_black = data.id
-				// 小题上传答案二维码
-				this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-				// 小题上传答案二维码
-				this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-				this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
-					this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
-
-			})
+			
 		},
 	};
 </script>

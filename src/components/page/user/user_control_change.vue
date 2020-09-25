@@ -63,6 +63,12 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
+					<el-form-item label="教师角色:" prop="sex" v-else-if="typeStatus=='teacher'">
+						<el-select v-model="form.teacherRoleDefault" placeholder="请选择">
+							<el-option v-for="(item,i) in form.teacherRole" :key="item.i" :label="item.name" :value="item.id">
+							</el-option>
+						</el-select>
+					</el-form-item>
 					<el-form-item label="角色:" prop="roleDefault">
 						<el-input v-model="form.roleDefault" disabled>
 						</el-input>
@@ -218,7 +224,15 @@
 					schoolCode: '',
 					adminRoleDefault: [],
 					adminRole: '',
-					sn: ''
+					sn: '',
+					teacherRoleDefault: 4,
+					teacherRole: [{
+						id: 4,
+						name: '普通教师'
+					}, {
+						id: 13,
+						name: '教师组长'
+					}]
 
 				},
 				dialogTableVisible: false,
@@ -425,11 +439,12 @@
 					this.form.roleDefault = '教师'
 
 					adminSelectRoleTeacherId(this.userChangId).then(res => {
-
 						form.userName = res.data.data.name;
 						form.sexDefault = res.data.data.sex;
 						form.mobile = res.data.data.mobile
 						form.schoolDefault = res.data.data.schoolName
+						// 教师角色
+						form.teacherRoleDefault=res.data.data.role.id
 						console.log(res)
 						//查询班级
 						let schoolId = res.data.data.schoolId;

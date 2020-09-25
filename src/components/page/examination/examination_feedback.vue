@@ -17,11 +17,11 @@
 							<div v-for="(d2,k) in d.items" :key="k">
 								<div class="at-title-i" v-html="d2.topic_text"></div>
 								<div class="at-number">
-								<!-- 	<el-checkbox-group v-model="topicDefault">
+									<!-- 	<el-checkbox-group v-model="topicDefault">
 										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="checked=>topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,checked,`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-checkbox-button>
 									</el-checkbox-group> -->
 									<el-radio-group v-model="topicDefault">
-										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-radio-button>
+										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`,d3.score)">第{{o+1}}题</el-radio-button>
 									</el-radio-group>
 
 								</div>
@@ -167,7 +167,7 @@
 				dialogVisible: false,
 				percentage: 0,
 				customColor: '#409eff',
-				topicDefault:'1.1.1',
+				topicDefault: '1.1.1',
 				topicIndex: '1.1.1',
 				topicArr: [],
 				choice: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
@@ -336,7 +336,8 @@
 				// console.log(this.topicDefault)
 			},
 			// 获取小题题目
-			topicLittleQuestions(data, type, id, sn, checked, index) {
+			topicLittleQuestions(data, type, id, sn, checked, index,score) {
+				console.log(this.topicDefault)
 				// loading
 				this.loading_img = true
 				// 重置选项
@@ -346,8 +347,10 @@
 				if (index != undefined) {
 					this.topicIndex = index
 				}
+				// 小题总分
+				this.questions_score=score
 				// 判断选中的题目
-			     checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
+				checked ? (this.topicDefaultSave = this.topicDefault) : (this.topicDefault = this.topicDefaultSave)
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -374,11 +377,12 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
-					
+
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
 					this.question_sn_black = data.sn
-					// console.log(data.id)
+					// 改小题获取的分数
+					this.questions_gain_score=data.score
 					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
@@ -386,14 +390,15 @@
 						this.logtype = 'none'
 						this.loading_img = false
 					} else {
-						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img = false) :
+						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img =
+								false) :
 							(
 								this.logtype = 'img',
 								this.up_img_black_id_arr = [],
-								this.urls=[],
-								this.srcList=[],
-								this.teacher_urls=[],
-								this.teacher_srcList=[],
+								this.urls = [],
+								this.srcList = [],
+								this.teacher_urls = [],
+								this.teacher_srcList = [],
 								studentTestQuestionsUpImg(data.sn).then(res => {
 									this.loading_img = false
 									if (res.data.data != undefined) {
@@ -403,10 +408,10 @@
 											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 											this.teacher_urls[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime()),
-											this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
+												this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
 										})
 									}
-			
+
 								})
 							)
 					}
@@ -528,10 +533,9 @@
 				})
 				// 默认读取当前题目
 				let frist = this.topicDefault
-				console.log(frist)
-				this.topicArr.map(x => {
+				this.topicArr.some(x => {
 					if (x.index == frist) {
-						this.topicLittleQuestions(x.data, x.type, x.id)
+						this.topicLittleQuestions(x.data, x.type, x.id,x.sn,true,x.index,x.data.score)
 					}
 				})
 				this.loading = false

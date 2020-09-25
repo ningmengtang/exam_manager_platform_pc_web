@@ -23,7 +23,7 @@
 										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn),kkk()">第{{o+1}}题</el-checkbox-button>
 									</el-checkbox-group> -->
 									<el-radio-group v-model="topicDefault">
-										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-radio-button>
+										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`,d3.score)">第{{o+1}}题</el-radio-button>
 									</el-radio-group>
 								</div>
 							</div>
@@ -338,7 +338,7 @@
 				// console.log(this.topicDefault)
 			},
 			// 获取小题题目
-			topicLittleQuestions(data, type, id, sn, checked, index) {
+			topicLittleQuestions(data, type, id, sn, checked, index,score) {
 				// 显示
 				this.show=true
 				// loading
@@ -350,6 +350,8 @@
 				if (index != undefined) {
 					this.topicIndex = index
 				}
+				// 小题总分
+				this.questions_score=score
 				// 判断选中的题目
 			     checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
 				// 小题id
@@ -382,6 +384,8 @@
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
 					this.question_sn_black = data.sn
+					// 小题获取的分数
+					this.questions_gain_score=data.score
 					// console.log(data.id)
 					// console.log(data.sn)
 					// 小题上传答案二维码
@@ -534,7 +538,7 @@
 				console.log(frist)
 				this.topicArr.map(x => {
 					if (x.index == frist) {
-						this.topicLittleQuestions(x.data, x.type, x.id)
+						this.topicLittleQuestions(x.data, x.type, x.id,x.sn,true,x.index,x.data.score)
 					}
 				})
 				this.loading = false

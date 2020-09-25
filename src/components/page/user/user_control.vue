@@ -67,6 +67,12 @@
 						<div v-for="(data, i) in scope.row.role_list" :key="data.i" :style="{color:color}">{{data.name}}</div>
 					</template>
 				</el-table-column>
+				//教师角色
+				<el-table-column prop="teacher_num" v-if="typeStatus=='teacher'" sortable label="教师角色">
+					<template slot-scope="scope" v-if="typeStatus=='teacher'">
+						<div v-for="(data, i) in scope.row" :key="data.i" :style="{color:color}">{{data.name}}</div>
+					</template>
+				</el-table-column>
 				<el-table-column prop="createDate" sortable label="创建时间">
 				</el-table-column>
 				<el-table-column label="操作">
