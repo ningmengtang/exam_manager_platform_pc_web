@@ -56,7 +56,8 @@
 		apicommonExamGetFile,
 		apiStudentAccountSelectById,
 		apiCommonExamSelectById,
-		faceInsert
+		faceInsert,
+		faceRecognition
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -159,6 +160,12 @@
 			// ---查询班级---
 			apiStudentAccountSelectById(this.userID).then(res => {
 				this.classes = res.data.data.classes.name
+				// 判断是否有人脸录入
+				if (res.data.data.hasOwnProperty('headImg')) {
+					this.FaceRecognition = true;
+				} else {
+					this.FaceRecognition = false;
+				}
 			})
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
