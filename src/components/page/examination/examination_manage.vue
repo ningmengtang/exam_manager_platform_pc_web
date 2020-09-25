@@ -2,6 +2,16 @@
 	<div class="box">
 		<div class="group">
 			<div class="row-group" style="margin-top: 20px;">
+				<div class="th-group">考试状态</div>
+				<div class="td-group">
+					<el-radio-group v-model="examStatus" @change="examTagStatus">
+						<el-radio-button v-for="(item,index) in examStatusList" :label="item.id" :key="index">
+							{{item.text}}
+						</el-radio-button>
+					</el-radio-group>
+				</div>
+			</div>
+			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">年份</div>
 				<div class="td-group">
 					<el-radio-group v-model="years" @change="getQuery">
@@ -77,6 +87,7 @@
 				<!-- 				<div class="teacher-name">{{item.operator_name}}</div> -->
 				<div class="tag">
 					<el-tag effect="dark" size="medium">{{item.operator_name}}</el-tag>
+					<!-- <div>{{item.operator_name}}</div> -->
 				</div>
 				<!-- <div class="user-img">开始考试</div> -->
 
@@ -89,7 +100,7 @@
 					<div :class="'font-i1'" class="synopsis" v-else-if="item.status==3">最终得分：60分（120分），要好好学习，天天向上哦！</div>
 					<div :class="'font-i'" class="synopsis" v-else-if="item.status==4">考试取消！详细请联系班主任或者科目老师</div>
 				</div>
-				<div class="title-box" style="margin: 0 20px;">
+				<div class="title-box" style="min-width: 220px;margin-right: 20px;">
 					<div class="time">上传时间：{{item.createDate}}</div>
 				</div>
 
@@ -99,13 +110,18 @@
 					</div>
 				</div>
 				<div class="right">
+					
+				
+					
+					<!-- <div class="status" :class="item.status==0&&item.studentExam.finish_status!=1?'font-i3':(item.status==1&&item.studentExam.finish_status!=1||item.status==2||item.status==4)?'font-i':item.studentExam.finish_status==1&&item.status==0?'font-i1':''"  >{{ item.status==0&&item.studentExam.finish_status!=1?'开始考试':item.status==1&&item.studentExam.finish_status!=1?'准备考试':(!isDuringDate(item.startTime,item.overTime)&&item.studentExam.finish_status!=1)?'正在批阅':item.studentExam.finish_status==1&&item.status==0?'考试完成':'考试取消'}}</div> -->
 					<i class="icon" :class="(item.status==0&&item.studentExam.finish_status!=1)?'el-icon-caret-right font-i3':(item.status==1||item.studentExam.finish_status!=1||item.status==2)?'el-icon-time font-i':item.studentExam.finish_status==1&&item.status==0?'el-icon-check font-i1':'el-icon-close font-i'"></i>
 					<div class="status" :class="item.status==0&&item.studentExam.finish_status!=1?'font-i3':(item.status==1&&item.studentExam.finish_status!=1||item.status==2||item.status==4)?'font-i':item.studentExam.finish_status==1&&item.status==0?'font-i1':''"  >{{ item.status==0&&item.studentExam.finish_status!=1?'开始考试':item.status==1&&item.studentExam.finish_status!=1?'准备考试':(!isDuringDate(item.startTime,item.overTime)&&item.studentExam.finish_status!=1)?'正在批阅':item.studentExam.finish_status==1&&item.status==0?'考试完成':'考试取消'}}</div>
-					<el-button type="primary" plain v-if="item.status==0&&item.studentExam.finish_status!=1" size="medium" class="buttom i" @click="goExam(item.id,item.examTime,item.overTime,item.startTime)">立即进入</el-button>
-					<el-button type="primary" v-else-if="item.status==3" style="background-color: #19ADFB;" size="medium" @click="goGrade()">查看</el-button>
+					
+						<el-button type="primary" plain v-if="item.status==0&&item.studentExam.finish_status!=1" size="medium" class="buttom i" @click="goExam(item.id,item.examTime,item.overTime,item.startTime)">立即进入</el-button>
+					 <el-button type="primary" v-else-if="item.status==3&&item.studentExam.finish_status!=1" style="background-color: #19ADFB;padding: 10px 34px;" size="medium" @click="goGrade()">查看</el-button>
 					<el-button type="primary" v-else-if="item.studentExam.finish_status==1&&item.status==0" style="background-color: #19ADFB;"
 					 size="medium" @click="goGrade(item.id,item.examTime)">查看反馈</el-button>
-					<el-button type="primary" disabled v-else style="background-color: #999999;" size="medium">查看</el-button>
+					<el-button type="primary" disabled v-else style="background-color: #999999;padding: 10px 34px;" size="medium">查看</el-button>
 				</div>
 			</div>
 		</div>
@@ -153,7 +169,9 @@
 				purpose: 6,
 				PurposeList: [],
 				TagType: [],
-				paperList: []
+				paperList: [],
+				examStatus:'',
+				examStatusList:[{'id':'','text':'全部'},{'id':0,'text':'准备考试'},{'id':2,'text':'开始考试'},{'id':1,'text':'查看反馈'},]
 			}
 		},
 		methods: {
@@ -164,7 +182,7 @@
 			//---分页2
 			handleCurrentChange(val) {
 				this.page.pageNum = val
-				this.selectPaper();
+				this.selectPaper([6],this.examStatus);
 			},
 			//---查询标签
 			getQuery() {
@@ -244,7 +262,7 @@
 			goExam(id, examTime, overTime, startTime) {
 				this.isDuringDate(startTime, overTime) ?
 					(this.$router.push({
-						name: 'examination_process',
+						name: 'examination_faceRecognition',
 						query: {
 							'id': id,
 							'examTime': examTime,
@@ -283,9 +301,10 @@
 				})
 			},
 			//---全部试卷查询
-			selectPaper(id) {
+			selectPaper(id,status) {
 				paperWithTag({
 					"id": id,
+					"status":status,
 					"pageNum": this.page.pageNum,
 					"pageSize": this.page.pageSize
 				}).then(res => {
@@ -294,6 +313,10 @@
 					this.total = res.data.data.total
 					this.currentPage = res.data.data.pageNum
 				})
+			},
+			// 考试状态标签查询
+			examTagStatus(){
+				this.selectPaper([6],this.examStatus)
 			},
 			//---计算是否超时
 			isDuringDate(beginDateStr, endDateStr) {
@@ -312,7 +335,7 @@
 			this.TagTypeList = [];
 			this.selectAllTag();
 			// 全部试卷查询
-			this.selectPaper([6])
+			this.selectPaper([6],this.examStatus)
 
 		},
 	};
@@ -321,11 +344,5 @@
 <style scoped src="../../../assets/css/examination.css"></style>
 // 修改element 自带样式
 <style>
-	.el-pagination button:disabled {
-		background-color: #f5f5f5;
-	}
-
-	.el-pager li.active {
-		background-color: #f5f5f5;
-	}
+	.box /deep/ .el-tag{display: block;white-space: break-spaces;height: auto;}
 </style>

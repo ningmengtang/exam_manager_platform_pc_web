@@ -1118,4 +1118,14 @@ export function teacherTestSelectTaskforStudent(data){
 	return result;
 }
 
+// 读取试题图片
+export function studentTestQuestionsUpImg(sn){
+    const result =get('/api/student/question/getImageList/'+sn)
+	return result;
+}
+// 删除试题试卷图片
+export function studentTestQuestionsDelImg(id){
+    const result =get('/api/studentWithTeacher/image/delId/'+id)
+	return result;
+}
 

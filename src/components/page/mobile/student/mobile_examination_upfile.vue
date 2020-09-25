@@ -1,13 +1,13 @@
 <template>
 	<div class="box">
-		<div class="up-box" v-loading="loading">
-				<el-upload class="upload-demo" action=""  :http-request="uploadFild" :before-upload="beforeUpload"
-				 :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture" >
-					<el-button size="small" type="primary" class="button">点击上传</el-button>
-					<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
-				</el-upload>
-		
-		
+		<div class="up-box" >
+			<el-upload v-loading="loading" class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload" :on-preview="handlePreview"
+			 :on-remove="handleRemove" :file-list="fileList" list-type="picture">
+				<el-button size="small" type="primary" class="button">点击上传</el-button>
+				<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
+			</el-upload>
+
+
 		</div>
 		<Tabbar />
 	</div>
@@ -16,13 +16,10 @@
 <script>
 	import Tabbar from '../common/tabbar.vue'
 	import mobile from '@/assets/js/mobile.js'
-	import { Dialog } from 'vant'
 	import {
-		studentIndex,
-		apicommonExamGetFile,
-		apiStudentAccountSelectById,
-		apiCommonExamSelectById,
-		apiCommonExamSeleElementTestById,
+		Dialog,Toast
+	} from 'vant'
+	import {
 		studentTestQuestionsImg,
 		studentTestQuestionsAnswerSheet
 	} from '@/api/api.js'
@@ -77,7 +74,7 @@
 				timer: '',
 				stateType: '',
 				affix: '',
-				blackData:''
+				blackData: ''
 			}
 		},
 		methods: {
@@ -88,27 +85,40 @@
 				this.uploadFile = new FormData()
 				this.uploadFile.append('file', file)
 				this.loading = true
-				if(this.uploadType=='none'){
+				if (this.uploadType == 'none') {
 					studentTestQuestionsImg(this.getData.answer_id, this.uploadFile).then(res => {
-						this.$message.success('上传成功')
+						Toast.success('图片上传成功,上传完全部答题卡请关闭改页面');
 						this.loading = false
 					})
-				}else if(this.uploadType=='has'){
-					studentTestQuestionsAnswerSheet(5000,this.getData.paper_id,this.uploadFile).then(res=>{
-						
-						this.$message.success('上传成功')
-						this.loading = false
-						console.log(res.data.data)
-						for(let x in res.data.data){
-							this.blackData=res.data.data[x]
-						}
-						Dialog.alert({
-						  message: JSON.stringify(this.blackData),
-						}).then(() => {
-						  // on close
-						});
-					})
+				} else if (this.uploadType == 'has') {
+					studentTestQuestionsAnswerSheet(5000, this.getData.paper_id, this.uploadFile).then(res => {
 					
+							Toast.success('图片上传成功,上传完答案请关闭该页面');
+							this.loading = false
+							console.log(res)
+							for (let x in res.data.data) {
+								this.blackData = res.data.data[x]
+							}
+							// Dialog.alert({
+							//   message: JSON.stringify(this.blackData),
+							// }).then(() => {
+							//   // on close
+							// });
+					         if (res.data.hasOwnProperty('data')) {
+					         	Dialog.alert({
+					         		message: JSON.stringify(this.blackData),
+					         	}).then(() => {
+					         		// on close
+					         	});
+					         } else {
+					         Dialog.alert({
+					         	message: res.data.message,
+					         }).then(() => {
+					         	// on close
+					         });
+					         
+					         }
+						})
 				}
 			},
 			// 上传控制
@@ -136,7 +146,7 @@
 			// 上传成功
 			successUpload(res) {
 				console.log(res)
-				this.$message.success('图片上传成功')
+				Toast.success('图片上传成功');
 			},
 			format(percentage) {
 				if (percentage == 100) {
@@ -227,26 +237,6 @@
 			}
 		},
 		mounted() {
-			// let json={'_20200919180830.jpg': {"X-0": "试卷信息不一致"}}
-		      
-			// for (let x in json){
-			// 	console.log(json[x])
-			// }
-				// localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
-				// clearInterval(this.timer)
-				// 清除时间cookic
-				// this.clearCookie('examTime')
-				// localStorage.removeItem('topic')
-				// this.ResidueTime = '00:00:00'
-				// ---查询试卷---
-				// apiCommonExamSelectById(this.examId).then(res => {
-				// 	this.examTitle = res.data.data.title
-				// 	this.examParticular = res.data.data.examExplain
-				// 	// this.affix=res.data.data.affix
-				// })
-				// this.timer = setInterval(x => {
-				// 	this.ResidueTime = this.getResidueTime()
-				// }, 0)
 		}
 	};
 </script>

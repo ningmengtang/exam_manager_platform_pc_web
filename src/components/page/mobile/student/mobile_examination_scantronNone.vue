@@ -6,9 +6,9 @@
 				<div class="ts">距离考试结束还有</div>
 				<div class="ts-time">{{ResidueTime}}</div>
 				<div class="all-topic-box">
-					<div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
+					<!-- <div class="at-top">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
 						 :format="format"></el-progress>
-					</div>
+					</div> -->
 					<div class="li">
 						<div class="li-i" v-for="(d,i) in topic" :key="i">
 							<div class="at-title">第{{i+1}}部分</div>
@@ -39,9 +39,9 @@
 					<div>{{topicIndex}}</div>
 					<el-tag effect="dark" class="tag" @click="show=false">关闭</i></el-tag>
 				</div>
-				<div class="at-top" style="margin: .08rem 0;">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
+				<!-- <div class="at-top" style="margin: .08rem 0;">作答进度:<el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :color="customColor"
 					 :format="format"></el-progress>
-				</div>
+				</div> -->
 				<div class="content-b">
 					<div class="c-title" v-html="Problemtitle"></div>
 				</div>
@@ -59,7 +59,7 @@
 						<div class="userChoice"><span>你已选择： </span><span class="i">{{choiceKey}}</span></div>
 						<div style="display: flex;justify-content: center;flex-wrap: wrap;">
 							<el-button class="reset" style="margin: .2rem;" @click="upChoice(question_id_black)">确认上传选择题答案</el-button>
-                            <el-button class="previous" @click="goTopic('previous')">上一题</el-button>
+							<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
 							<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
 						</div>
 					</div>
@@ -72,7 +72,7 @@
 							<div class="font-i">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下识别的结果，如果修改了答案，请重新上传。</div>
 						</div>
 
-						
+
 						<div class="up-box" v-loading="loading">
 							<el-upload class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload" :on-preview="handlePreview"
 							 :on-remove="handleRemove" :file-list="fileList" list-type="picture">
@@ -81,26 +81,31 @@
 							</el-upload>
 						</div>
 						<div style="display: flex;justify-content: center;flex-wrap: wrap;">
-						<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
-						<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
+							<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
+							<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
 						</div>
 					</div>
 				</div>
-				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">上传日志</div>
-				<div class="questions-img">
+				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">
+					<div>上传日志</div>
+					<!-- <div style="width: 100%;text-align: right"><span class="i">上传成功请按这里刷新按钮</span>
+						<el-button type="primary" icon="el-icon-refresh-right" circle class="icon" @click="selectlog(question_id_black)"></el-button>
+					</div> -->
+				</div>
+				<div class="questions-img" v-loading="loading_img">
 					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
 						<div class="img-box-i" v-if="logtype=='img'">
 							<el-image :src="url" lazy class="img" @click="img_shade(i)"></el-image>
 							<transition name="el-zoom-in-top">
 								<div class="img-shade" v-show="i==imgShadeIndex&&imgShade==true" @click="imgShade=false">
 									<i class="icon el-icon-zoom-in" @click="openViewer()"></i>
-									<i class="icon el-icon-delete-solid "></i>
+									<i class="icon el-icon-delete-solid " @click="upImgDel(up_img_black_id_arr[i])"></i>
 								</div>
 							</transition>
 						</div>
 						<span class="i" v-if="logtype=='img'">{{topicDefault[topicDefault.length-1]}}</span>
-						<div class="answer" v-else-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 					</div>
+					<div class="answer" v-if="logtype=='choice'">该题上传答案的答案是：<span style="color: #1AAEFB;">{{answer_test}}</span></div>
 				</div>
 			</div>
 		</div>
@@ -124,9 +129,10 @@
 		studentTestQuestionsdowonLogImg,
 		studentTestQuestionsAdd,
 		studentTestQuestionsString,
-		studentTestQuestionsImg,
-		studentTestQuestionsAnswerSheet,
-		StudentAccountInfo
+		StudentAccountInfo,
+		studentTestQuestionsUpImg,
+		studentTestQuestionsDelImg,
+		studentTestQuestionsImg
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -138,7 +144,7 @@
 		},
 		data() {
 			return {
-				fileList:[],
+				fileList: [],
 				show: false,
 				total: 0,
 				pageSize: 9,
@@ -147,6 +153,7 @@
 				download: 0,
 				disabled: 0,
 				loading: false,
+				loading_img:false,
 				status: '',
 				studentSn: '',
 				examId: this.$route.query.id,
@@ -160,6 +167,7 @@
 				percentage: 0,
 				customColor: '#409eff',
 				topicDefault: ['1.1.1'],
+				topicDefaultSave: ['1.1.1'],
 				topicIndex: '1.1.1',
 				topicArr: [],
 				choice: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
@@ -192,11 +200,16 @@
 				problemImg: 'https://fuss10.elemecdn.com/a/3fproblem/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
 				ewm: '',
 				question_id: '',
-				urls: ['0'],
-				srcList: ['0'],
+				urls: [],
+				srcList: [],
 				logtype: '',
 				answer_test: '',
-				question_id_black: ''
+				question_id_black: '',
+				question_sn_black: '',
+				current_question: '0',
+				black_log_data: '',
+				up_img_black_id_arr: [],
+				finish_arr:[]
 			}
 
 		},
@@ -217,8 +230,18 @@
 						'id': this.question_id_black
 					}).then(res2 => {
 						let data = res2.data.data.list[0]
-						this.urls[0] = ('/api/student/question/getImage/' + this.question_id_black + '?id=1' + "&d=" + new Date().getTime()),
-						this.srcList[0] = ('/api/student/question/getImage/' + this.question_id_black + '?id=1' + "&d=" + new Date().getTime())
+						studentTestQuestionsUpImg(this.question_sn_black).then(res => {
+							this.loading_img=false
+							if (res.data.data != undefined) {
+								res.data.data.map((x, i) => {
+									// 返回的图片id
+									this.up_img_black_id_arr[i] = x.id
+									this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+									this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+								})
+							}
+						
+						})
 					})
 				})
 			},
@@ -333,18 +356,19 @@
 			// },
 			// 获取小题题目
 			topicLittleQuestions(data, type, id, sn, checked, index) {
-				// 清空选项
-				this.fileList=[]
-				// 显示
-				if(checked){
-					this.show = true
-				}
+			    //显示控制
+				this.show=true
+				// loading
+				this.loading_img = true
 				// 重置选项
-				this.choiceKey=''
+				this.choiceKey = ''
+				this.logtype = ''
 				// 小题索引
-				if(index!=undefined){
+				if (index != undefined) {
 					this.topicIndex = index
 				}
+				// 判断选中的题目
+			     checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -363,7 +387,7 @@
 					'question_id': id,
 					'question_sn': sn
 				}).then(res => {
-					console.log(res.data)
+					// console.log(res.data)
 				})
 				// 小题日志
 				studentTestQuestionsLog({
@@ -371,30 +395,57 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
+					
 					let data = res.data.data.list[0]
-					console.log(data.id)
 					this.question_id_black = data.id
+					this.question_sn_black = data.sn
+					// console.log(data.id)
+					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					console.log(data.id)
 					if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
 						this.logtype = 'none'
+						this.loading_img = false
 					} else {
-						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test) :
+						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img = false) :
 							(
 								this.logtype = 'img',
-								this.urls[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime()),
-								this.srcList[0] = ('/api/student/question/getImage/' + data.id + '?id=1' + "&d=" + new Date().getTime())
+								this.up_img_black_id_arr = [],
+								this.urls=[],
+								this.srcList=[],
+								studentTestQuestionsUpImg(data.sn).then(res => {
+									this.loading_img = false
+									if (res.data.data != undefined) {
+										res.data.data.map((x, i) => {
+											// 返回的图片id
+											this.up_img_black_id_arr[i] = x.id
+											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+										})
+									}
+			
+								})
 							)
 					}
 				})
-
-
+			},
+			// 删除图片
+			upImgDel(id) {
+				studentTestQuestionsDelImg(id).then(res => {
+					this.$message.success('删除图片成功！')
+				})
+				studentTestQuestionsUpImg(this.question_sn_black).then(res => {
+					// 获取删除的索引
+					let index = this.up_img_black_id_arr.findIndex(x => x == id)
+					this.up_img_black_id_arr.splice(index, 1)
+					this.urls.splice(index, 1)
+					this.srcList.splice(index, 1)
+				})
 			},
 			// 题目跳转
 			goTopic(type) {
-				
-				let index, questionsType, next_data,before_data
+
+				let index, questionsType, next_data, before_data
 				JSON.stringify(this.topicDefault) === '[]' ? this.topicDefault = ['1.1.1'] :
 					(this.topicArr.map((x, i) => {
 						if (x.index == this.topicDefault[this.topicDefault.length - 1]) {
@@ -404,12 +455,12 @@
 							}
 						}
 					}));
-			
+
 				if (type == 'previous') {
 
-					if(index!=0){
-						before_data=this.topicArr[index-1]
-						questionsType =before_data.type
+					if (index != 0) {
+						before_data = this.topicArr[index - 1]
+						questionsType = before_data.type
 						this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
 					}
 				} else if (type == 'next') {
@@ -432,26 +483,26 @@
 						});
 					} else {
 						next_data = this.topicArr[index + 1]
-						this.topicIndex=next_data.index
+						this.topicIndex = next_data.index
 						questionsType = next_data.type
 						//判断是否重复
-						
+
 						// this.topicDefault.push(next_data.index)
-						
+
 						if (!this.topicDefault.includes(next_data.index)) {
 							this.topicDefault.push(next_data.index)
 						} else {
-							for( const [ i, x ] of this.topicArr.entries()){
-									if (!this.topicDefault.includes(x.index)) {
-										this.topicDefault.push(x.index)
-										console.log(x.index)
-										return false
-									}
+							for (const [i, x] of this.topicArr.entries()) {
+								if (!this.topicDefault.includes(x.index)) {
+									this.topicDefault.push(x.index)
+									console.log(x.index)
+									return false
+								}
 							}
 						}
 						this.schedule();
 						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
-						
+
 					}
 				}
 			},
@@ -486,13 +537,13 @@
 		},
 		mounted() {
 			this.loading = true,
-			// localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
-			// ---查看学生信息
-			StudentAccountInfo({
-				id: localStorage.getItem('userID')
-			}).then(res => {
-				this.studentSn = res.data.data.list[0].sn
-			})
+				// localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
+				// ---查看学生信息
+				StudentAccountInfo({
+					id: localStorage.getItem('userID')
+				}).then(res => {
+					this.studentSn = res.data.data.list[0].sn
+				})
 			// ---查询试卷---
 			apiCommonExamSelectById(this.examId).then(res => {
 				this.examTitle = res.data.data.title
@@ -559,5 +610,8 @@
 		width: 100%;
 		min-width: 100%;
 	}
-	.up-box{min-height: 200px;}
+
+	.up-box {
+		min-height: 200px;
+	}
 </style>

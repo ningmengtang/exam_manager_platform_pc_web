@@ -28,6 +28,9 @@
 					</div>
 				</div>
 			</div>
+			<div class="ts">
+				<span>3.</span><span class='ts-i'><i class="icon el-icon-info"></i>上传成功后去考试辅助哪里查询上传日志</span>
+			</div>
 
 		</div>
 	</div>

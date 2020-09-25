@@ -253,7 +253,7 @@
 			// ---跳转考试页面
 			goExam(id, examTime,overTime,startTime) {
 				this.isDuringDate(startTime, overTime) ?(this.$router.push({
-					name: 'mobile_examination_process',
+					name: 'mobile_examination_faceRecognition',
 					query: {
 						'id': id,
 						'examTime': examTime,

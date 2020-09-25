@@ -401,7 +401,7 @@
                 <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:12px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">李某某</span></div>
                 <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:12px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">440XXXXXXXXXXXXX88</span></div>
                 
-                <div style="float:left;width:580px;line-height:30px;border:1px solid #000;font-size:12px;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">注<br>意<br>事<br>项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
+                <div style="float:left;width:580px;border:1px solid #000;font-size:12px;height:200px;overflow:hidden;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;line-height:200px;">注意事项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
               
                 <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:12px;vertical-align: middle;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">缺考标志</div><div style="margin-left:10px;margin-top:6px;display:inline-block;width:30px;height:18px;border:2px solid #000;float:left;"></div><div style="margin-left:10px;display:inline-block;height:30px;line-height:30px;float:left;">本栏由监考人员填写！</div></div>
                 <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:12px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">作答时间</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObj.examTime}}分钟</span></div>
@@ -515,7 +515,7 @@
                 <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:12px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">学生姓名</span><span style="margin-left:10px;display:inline-block;width:180px;">李某某</span></div>
                 <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:12px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">身份证件</span><span style="margin-left:10px;display:inline-block;width:160px;">440XXXXXXXXXXXXX88</span></div>
                 
-                <div style="float:left;width:580px;line-height:30px;border:1px solid #000;font-size:12px;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">注<br>意<br>事<br>项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
+                <div style="float:left;width:580px;border:1px solid #000;font-size:12px;height:200px;overflow:hidden;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;line-height:200px;">注意事项</div><div style="margin-left:10px;display:inline-block;width:465px;float:left;">{{testPaperObj.examExplain}}</div></div>
               
                 <div style="float:left;width:300px;height:30px;line-height:30px;border:1px solid #000;font-size:12px;vertical-align: middle;"><div style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;float:left;">缺考标志</div><div style="margin-left:10px;margin-top:6px;display:inline-block;width:30px;height:18px;border:2px solid #000;float:left;"></div><div style="margin-left:10px;display:inline-block;height:30px;line-height:30px;float:left;">本栏由监考人员填写！</div></div>
                 <div style="float:left;width:280px;height:30px;line-height:30px;border:1px solid #000;font-size:12px;"><span style="display:inline-block;width:100px;height:100%;text-align:center;background: #DCDFE6;">作答时间</span><span style="margin-left:10px;display:inline-block;width:160px;">{{testPaperObj.examTime}}分钟</span></div>
@@ -1361,70 +1361,90 @@ export default {
 
     }
   },
+  watch: {
+    //监听路由变化，并重新获取数据
+    $route(to, from) {
+      //this.$nextTick(() => {
+        //console.log(to)
+        //console.log(from)
+        if(to.name == "test_paper_maker")
+        {
+          this.$options.methods.pageInit.bind(this)()
+        }
+        
+      //})
+    }
+  },
   mounted () {
-    this.$nextTick(() => {
-      
-      if(localStorage.getItem('testPaperCache')!=null)
-      {
-        this.testPaperObj = JSON.parse(localStorage.getItem('testPaperCache'))
-        this.$message.success('成功读取上次组卷的历史记录！')
-        console.log("已读取上次组卷的历史记录 ")
-        this.$forceUpdate();
-      }
-      else{
-        this.resetTestPaperObj()
-      }
-      if(localStorage.getItem('newTestPaperInfo')!=null)
-      {
-        var newTestPaperInfo = JSON.parse(localStorage.getItem('newTestPaperInfo'))
-        this.form = newTestPaperInfo.form
-        this.testPaperObj.title = newTestPaperInfo.form.title
-        this.testPaperObj.examExplain = newTestPaperInfo.form.examExplain
-        this.testPaperObj.examTime = newTestPaperInfo.form.examTime
-      }
-
-      this.qrInfoObj.uid = localStorage.getItem("userID").toString()
-      this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
-      //console.log(this.$route.query.createTestPaperInfoObj)
-      // console.log(this.$router.params.createTestPaperInfoObj)
-      if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)
-      {
-        //进入批量生产模式
-        this.createTestPaperInfoObj = this.$route.query.createTestPaperInfoObj
-        
-        apiCommonExamSeleElementTestById(this.createTestPaperInfoObj.testPaperId).then(res => {
-          if(!res.data.result)
-          {
-            this.$message.error('获取试卷失败，无法下载！')
-            console.log("获取试卷失败，无法下载！")
-            return
-          }
-
-          var resResultData = res.data
-
-          console.log(resResultData)
-
-          this.testPaperObj = JSON.parse(resResultData.data.elementTest)
-
-          this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
-        })
-        
-      }
-
-      /**
-       * 启动自动保存功能
-       */
-      this.$options.methods.autoSaveTestPaperTempCache.bind(this)(10 * 60 * 1000 )
-    })
-      //console.log(this.testPaperObj)
-      //this.editor = this.$refs.myQuillEditor.quill;
-      //console.log(this.testPaperObj.items[0].topic_text)
+    this.$options.methods.pageInit.bind(this)()
   },
   beforeDestroy(){
     //this.editor = null;
     //delete this.editor;
   },
   methods: {
+    /**
+     * 初始化界面
+     */
+    pageInit(){
+      this.$nextTick(() => {
+      
+        if(localStorage.getItem('testPaperCache')!=null)
+        {
+          this.testPaperObj = JSON.parse(localStorage.getItem('testPaperCache'))
+          this.$message.success('成功读取上次组卷的历史记录！')
+          console.log("已读取上次组卷的历史记录 ")
+          this.$forceUpdate();
+        }
+        else{
+          this.resetTestPaperObj()
+        }
+        if(localStorage.getItem('newTestPaperInfo')!=null)
+        {
+          var newTestPaperInfo = JSON.parse(localStorage.getItem('newTestPaperInfo'))
+          this.form = newTestPaperInfo.form
+          this.testPaperObj.title = newTestPaperInfo.form.title
+          this.testPaperObj.examExplain = newTestPaperInfo.form.examExplain
+          this.testPaperObj.examTime = newTestPaperInfo.form.examTime
+        }
+
+        this.qrInfoObj.uid = localStorage.getItem("userID").toString()
+        this.qrInfoObj.utype = localStorage.getItem("loginUserType").toString()
+        //console.log(this.$route.query.createTestPaperInfoObj)
+        // console.log(this.$router.params.createTestPaperInfoObj)
+        if(null != this.$route.query && null != this.$route.query.createTestPaperInfoObj)
+        {
+          //进入批量生产模式
+          this.createTestPaperInfoObj = this.$route.query.createTestPaperInfoObj
+          
+          apiCommonExamSeleElementTestById(this.createTestPaperInfoObj.testPaperId).then(res => {
+            if(!res.data.result)
+            {
+              this.$message.error('获取试卷失败，无法下载！')
+              console.log("获取试卷失败，无法下载！")
+              return
+            }
+
+            var resResultData = res.data
+
+            console.log(resResultData)
+
+            this.testPaperObj = JSON.parse(resResultData.data.elementTest)
+
+            this.$options.methods.multiDownloadTestPaperForStudent.bind(this)(this.createTestPaperInfoObj.students)
+          })
+          
+        }
+
+        /**
+         * 启动自动保存功能
+         */
+        this.$options.methods.autoSaveTestPaperTempCache.bind(this)(10 * 60 * 1000 )
+      })
+        //console.log(this.testPaperObj)
+        //this.editor = this.$refs.myQuillEditor.quill;
+        //console.log(this.testPaperObj.items[0].topic_text)
+    },
     /**
      * 测试100个学生批量下载
      */
