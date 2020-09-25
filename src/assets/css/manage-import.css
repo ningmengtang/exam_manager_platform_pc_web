@@ -57,3 +57,13 @@
 .group /deep/  .el-radio-button__inner:hover{
     color: #2BBB61;
 }
+.page /deep/ .el-pagination.is-background .el-pager li:not(.disabled):hover {
+    color: #2BBB61;
+}
+.page /deep/  .el-pagination.is-background .el-pager li:not(.disabled).active{
+    background-color: #2BBB61;
+    color: #fff;
+}
+.page /deep/ .el-pager li.active{
+    background-color: #2BBB61;
+}

@@ -1007,6 +1007,38 @@ export function studentQuestionSelect(data){
     const result =post('/api/student/question/select'+'?d=' + new Date() * 1,data)
 	return result;
 }
+// 管理员试题答案
+export function adminExamQuestion(data){
+    const result =post('/api/admin/exam/question/answer/list'+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+
+// 获取图片信息
+export function studentQuestiongetImageListSn(sn,data){
+    const result =get('/api/student/question/getImageList/'+sn+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+
+// 条件查询试题含图片
+export function studentQuestionSelectImg(data){
+    const result =post('/api/student/question/selectWithImgs'+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+// 修改学生试卷试题
+export function studentQuestionUpdate(data){
+    const result =post('/api/student/question/update'+'?d=' + new Date() * 1,data)
+	return result;
+}
+
+// 复制试卷
+export function CommonExamCopypaper(paper_id,tag_id,title,data){
+    const result =get('/api/common/exam/copyPaper/'+paper_id+'?tag_id='+tag_id+'&title='+title+'&d=' + new Date() * 1,data)
+	return result;
+}
+
 
 //----------------------------------------------------------------
 //二维码操作方法
@@ -1080,6 +1112,12 @@ export function studentPerformance(p_id,s_id){
     const result =get('/api/student/question/getStudentScoreByPaperId/'+p_id+'/'+s_id)
 	return result;
 }
+// 查询任务对应的学生信息
+export function teacherTestSelectTaskforStudent(data){
+    const result =post('/api/teacher/task/selectTaskforStudent',data)
+	return result;
+}
+
 // 读取试题图片
 export function studentTestQuestionsUpImg(sn){
     const result =get('/api/student/question/getImageList/'+sn)

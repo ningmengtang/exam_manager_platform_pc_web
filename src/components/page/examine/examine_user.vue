@@ -58,7 +58,7 @@ export default {
         return{
             tableData:[],
             currentPage:1,
-            pageSize:6,
+            pageSize:10,
             pageNum:1,
             total:0,
             loading:false,

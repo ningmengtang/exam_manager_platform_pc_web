@@ -117,8 +117,8 @@
 					<el-button type="text" class="download" v-if="isLead && data.status == 0"  @click="importCard(data)">导入答题卡</el-button>
 					<el-button type="text" class="download" v-if="isLead && data.status == 1"  @click="cationCard(data)">分配老师</el-button>
 					<el-button type="text" class="download" v-if="(isLead && data.status == 2) || (isLead && data.status == 3) || (isLead && data.status == 4)"  @click="goradeOver(data)">查看批阅</el-button>
-
 					<el-button type="text" class="download" v-if="(!isLead && data.status == 2 )|| (!isLead && data.status == 3)"  @click="radeOver(data)">开始批阅</el-button>
+					<el-button type="text" class="download" v-if="isLead && data.status == 4"  @click="feedBack(data)">查看反馈</el-button>
 				</div>
 			</div>
 			<!-- 分页 -->
@@ -579,6 +579,14 @@ import {
 				sessionStorage.setItem('importPaper', JSON.stringify(data))
 				this.$router.push('webcats_teacher_redeover')
 			},
+
+			// 查看反馈
+			feedBack(data){
+				sessionStorage.setItem('importPaper', JSON.stringify(data))
+				this.$router.push('webcats_teacher_feeback')
+				// console.log(data)
+			},
+
 			// 新建任务
 			addTask(){
 				this.dialogTableVisible = true

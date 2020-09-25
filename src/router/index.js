@@ -79,7 +79,7 @@ export default new Router({
                     path: '/manage_teacher_import',
                     component: () =>
                         import ( /* webpackChunkName: "manage_teacher_importr" */ '../components/page/manage/manage_teacher_import.vue'),
-                    meta: { title: '教师-试卷管理-学生导入' }
+                    meta: { title: '教师-试卷管理-提交试卷' }
                 },
                 {
                     path: '/manage_user_import',
@@ -368,6 +368,21 @@ export default new Router({
                         import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_teacher_redeover.vue'),
                     meta: { title: '教师-阅卷管理-批阅' }
                 },
+                {
+                    path: '/webcats_teacher_feeback',
+                    component: () =>
+                        import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_teacher_feeback.vue'),
+                    meta: { title: '教师-阅卷管理-考试反馈' }
+                },
+                {
+                    name:'webcats_teacher_feebacklist',
+                    path: '/webcats_teacher_feebacklist',
+                    component: () =>
+                        import ( /* webpackChunkName: "user_control" */ '../components/page/webcats/webcats_teacher_feebacklist.vue'),
+                    meta: { title: '教师-阅卷管理-考试反馈详情' }
+                },
+
+
 
                 {
                     name: 'examination_manage',
@@ -425,6 +440,7 @@ export default new Router({
                         import ( /* webpackChunkName: "eexamination_finish" */ '../components/page/examination/examination_finish'),
                     meta: { title: '学生-考试-考试完成' }
                 },
+                
 
 
 

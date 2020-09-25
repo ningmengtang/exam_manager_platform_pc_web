@@ -26,7 +26,7 @@
     </div>
         <div class="box_left" v-if="!isOver">
             <div class="box_canvas">
-                <vueCanvas :urlSrc="urlSrc" :ispush="ispush" @getUrlBlob="getUrlBlob"></vueCanvas>
+                <vueCanvas :urlSrc="urlSrc" :ispush="ispush" @getUrlBlob="getUrlBlob"  @NogetUrlBlob="NogetUrlBlob" @openPic="openPic"></vueCanvas>
             </div>
             <div class="box_count">
                <div class="box_total" v-for="(item,i) in NowSelectItem.groupQuestionArr">
@@ -36,7 +36,6 @@
                             <el-radio-button :label="0">0分</el-radio-button>
                             <el-radio-button :label="3">3分</el-radio-button>
                             <el-radio-button :label="item.score">满分</el-radio-button>
-                            <!-- <el-input-number v-model="getNum[i]" @change="changeCustom(item,i)" :min="0" :max="item.score" ></el-input-number> -->
                             <el-input class="getNumclass" type="number" v-model="getNum[i]" placeholder="自定义" @change="changeCustom(item,i)"></el-input>
                         </el-radio-group>
                     </div>
@@ -85,9 +84,7 @@
                 </div>       
             </div>
         </div>
-        <!-- <div >
-            <img :src="urlSrc" alt="">
-        </div> -->
+        
     </div>
 </template>
 <script>
@@ -98,7 +95,8 @@ import {
     studentQuestionList,
     studentQuestionteacherFile,
     getTeacherPaperfinishQuestionArr,
-    teacherQuestionResetBefore
+    teacherQuestionResetBefore,
+    studentQuestiongetImageListSn
 	} from '@/api/api.js'
 export default {
     components:{
@@ -122,7 +120,8 @@ export default {
             ispush:1,
             is_typical_case:0,
             isNext:true,
-            oldTaskList:[]
+            oldTaskList:[],
+            srcList:[]
         }
     },
     methods:{
@@ -144,6 +143,11 @@ export default {
             }
         },
 
+        // 查看图片
+        openPic(){
+            // console.log('asdas')
+            
+        },
         // 改变自定义分数
         changeCustom(item,i){
             let num = this.getNum[i]
@@ -163,177 +167,17 @@ export default {
                 this.$message.warning('没有上一条题数据！')
             }else{
                 let oldTask  =  this.oldTaskList[this.oldTaskList.length-1]
+                console.log(oldTask)
                 teacherQuestionResetBefore({
                     "student_with_question_id":oldTask
                 }).then(res=>{
+                    // console.log(res)
                     if(res.data.result){
                         this.oldTaskList.pop()
-                    // 获取当前老师需要批该的任务
-                    TeacherQuestionList({
-                        "teacher_id":localStorage.getItem('userID'),
-                        "paper_id":this.importPaper.paper_id,
-                    }).then(res=>{
-                        let list = ''
-                        list = res.data.data.list
-                        if(list){
-                            this.elementTest = ''
-                            apiCommonExamSeleElementTestById(this.importPaper.paper_id).then(res=>{
-                                this.elementTest =JSON.parse(res.data.data.elementTest)
-                                let elementTestItems = this.elementTest.items
-                                this.topicList= []
-                                for(var i=0;i<elementTestItems.length;i++){
-                                    let item  = elementTestItems[i].items
-                                    let arry = []
-                                    for(var k=0;k<item.length;k++){
-                                        let groupQuestionArr = item[k].items
-                                        groupQuestionArr.forEach(element => {
-                                            if(element.groupQuestionArr){
-                                                arry.push(element)
-                                            }
-                                        });
-                                    }
-                                    this.topicList =  this.topicList.concat(arry)
-                                }
-                                this.allTopic = []
-                                for(var a=0;a<this.topicList.length;a++){
-                                    list.forEach(element => {
-                                        if(element.question_id == this.topicList[a].id){
-                                            this.allTopic.push({
-                                                "groupQuestionArr":this.topicList[a].groupQuestionArr,
-                                                "list":element
-                                            })
 
-                                        }           
-                                    });   
-                                }
-
-                                for(var j=0;j<list.length;j++){
-                                    // 这题已完成
-                                    if(list[j].finish_count >= list[j].count ){
-                                        // console.log('批阅完成')
-                                        for(let k=0;k<this.allTopic.length;k++){
-
-                                            if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                                this.allTopic[k].status = '批阅完成'
-                                                break
-                                            }
-                                        }
-                                        //正在批阅 
-                                    }else if( list[j].finish_count > 0  && list[j].finish_count < list[j].count ){
-                                        // console.log('正在批阅')
-
-
-                                        for(let k=0;k<this.allTopic.length;k++){
-                                        
-                                            if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                                this.allTopic[k].status = '正在批阅'
-                                                break
-                                            }
-                                        }
-                                        // 待批阅
-                                    }else if(list[j].finish_count == 0 ){
-                                        // console.log('待批阅')
-                                        for(let k=0;k<this.allTopic.length;k++){
-                                            if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                                this.allTopic[k].status = '待批阅'
-                                                break
-                                            }
-                                        }
-                                    }else{
-                                        for(let k=0;k<this.allTopic.length;k++){
-                                            if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                                this.allTopic[k].status = '待批阅'
-                                                break
-                                            }
-                                        }
-                                    }
-
-                                }
-
-                                // console.log(this.allTopic)
-
-
-
-                                this.selectNum = 0
-                                for (let index = 0; index < this.allTopic.length; index++) {
-                                    if(this.allTopic[index].status == '正在批阅'){
-                                        this.selectNum = index
-                                        break
-                                    }else if(this.allTopic[index].status == '待批阅'){
-                                        this.selectNum = index
-                                        break
-                                    }else if(this.allTopic[this.allTopic.length -1].status == '批阅完成'){
-                                        this.selectNum = '批阅完成'
-                                    }
-                                }
-
-                                // console.log(121)
-                                // 读当前为那道题目
-                                this.NowSelectItem = []
-                                // 初始为第一题
-                                if(this.selectNum == '批阅完成'){
-                                    this.isOver = true
-                                    // console.log(this.isOver)
-                                    this.$message.warning('全部批阅完成')
-                                }else{
-                                    this.NowSelectItem = this.allTopic[this.selectNum]
-
-
-                                    // console.log(this.NowSelectItem)
-
-
-
-                                    this.getNum = []
-                                    for(var b=0;b<this.NowSelectItem.groupQuestionArr.length;b++){
-                                        let item = this.NowSelectItem.groupQuestionArr[b]
-                                        item.setgetNum = 3
-                                        this.getNum.push('')
-                                    }
-                                    this.getAllTotal()
-
-                                    // 获取学生的试题id
-                                    let question_id = []
-                                    this.NowSelectItem.groupQuestionArr.forEach(element => {
-                                        question_id.push(element.id)
-                                    });
-                                    // 获取学生的试题
-                                    // this.nowQuestion = ''
-                                    // this.urlSrc = ''
-                                    studentQuestionList({
-                                        "paper_id":this.importPaper.paper_id,
-                                        "question_id":question_id,
-                                        "teacher_id":localStorage.getItem('userID'),
-                                        "status":2
-                                    }).then(res=>{
-                                        // 上次没修改完成的试题
-                                        if(res.data.data){
-                                            this.nowQuestion = res.data.data.list
-                                            this.urlSrc = this.nowQuestion[0].id
-                                        }else{
-                                            // 获取学生题目
-                                            studentQuestionList({
-                                                "paper_id":this.importPaper.paper_id,
-                                                "question_id":question_id,
-                                                "teacher_id":localStorage.getItem('userID'),
-                                                "status":0
-                                            }).then(res=>{
-                                                if(res.data.data){
-                                                    this.nowQuestion = res.data.data.list
-                                                    this.urlSrc = this.nowQuestion[0].id
-                                                }else{
-                                                    // this.isOver = true
-                                                    this.$message.warning('修改完成。')
-                                                }
-                                            })
-                                        }
-                                    })
-                                }
-                            })
-                            this.ispush = 1
-                        }else{
-                            this.$message.warning('请先分配任务')
-                        }
-                    })
+                        // 获取当前老师需要批该的任务
+                        this.getNowTeacherCheck()
+                        this.ispush = 1
                     }else{
                         this.$message.error(res.data.message)
                     }
@@ -345,229 +189,62 @@ export default {
             // 触发子节点将canvas转成base64
             this.ispush = 2
             // this.
-            // console.log('下一题')
+            console.log('下一题')
+        },
+        NogetUrlBlob(){
+            this.ispush = 1
         },
         // 子节点返回base64图片
-        getUrlBlob(data,radio){
-            console.log('请求后台')
-            // 拿到子节点返回的base64进行传输
-            let formData = new FormData()
-            let fileName = new Date().getTime() +'.png'
-            formData.append('file',this.dataURLtoFile(data,fileName))
+        getUrlBlob(data){
             let alllist = this.NowSelectItem.groupQuestionArr
-            // this.isNext = false
             let promiseArr = []
-            // 存储上一条的数据
-
+             // 存储上一条的数据
             let oldTopic = []
-
-            for(var i=0;i<this.nowQuestion.length;i++){
-                for(var k=0;k<alllist.length;k++){
-                    if(alllist[k].id == this.nowQuestion[i].question_id){
-                        promiseArr.push(this.NextWaitPromise(this.nowQuestion[i].id,radio,alllist[k].setgetNum,formData,oldTopic))
-                        // this.getNextWait(this.nowQuestion[i].id,this.is_typical_case,alllist[k].setgetNum,radio,formData)
-                        // studentQuestionteacherFile(this.nowQuestion[i].id,this.is_typical_case,list[k].setgetNum,radio,formData).then(res=>{
-                        //     console.log(res)
-                        // })
+            // 扫描上传
+            if(this.is_sheet_upload){
+                let selectData = data[0]
+                let formData = new FormData()
+                let fileName = new Date().getTime() +'.png'
+                formData.append('file',this.dataURLtoFile(selectData.teacherImg,fileName))
+                for(var j=0;j<selectData.question_id.length;j++){
+                    let item = selectData.question_id[j]
+                    let itemId = selectData.dataId[j]
+                    // console.log(itemId)
+                    for(var k=0;k<alllist.length;k++){
+                        if(alllist[k].id == item){
+                            promiseArr.push(this.NextWaitPromise(itemId,selectData.radioType,alllist[k].setgetNum,formData,oldTopic))
+                        }
                     }
-                } 
+                }
+            }
+            // 非扫描上传
+            else{
+                for(var i=0;i<data.length;i++){
+                    let formData = new FormData()
+                    let fileName = new Date().getTime() +'.png'
+                    formData.append('file',this.dataURLtoFile(data[i].teacherImg,fileName))
+                    
+                    for(var k=0;k<alllist.length;k++){
+                        if(alllist[k].id == data[i].question_id){
+                            promiseArr.push(this.NextWaitPromise(data[i].student_with_question_id,data[i].radioType,alllist[k].setgetNum,formData,oldTopic))
+                        }
+                    }
+                }
             }
             Promise.all(promiseArr).then(res=>{
-                this.oldTaskList.push(oldTopic)
-                // console.log(oldTopic)
-                this.importPaper = []
-                
-                let importPaper = JSON.parse(sessionStorage.getItem("importPaper"))
-                if(importPaper){
-                    this.importPaper = importPaper
-                }else{
-                    this.$message.warning('无试卷数据')
-                }
                 // 获取当前老师需要批该的任务
-                TeacherQuestionList({
-                    "teacher_id":localStorage.getItem('userID'),
-                    "paper_id":this.importPaper.paper_id,
-                }).then(res=>{
-                    let list = ''
-                    list = res.data.data.list
-                    // console.log(list)
-                    if(list){
-                        this.elementTest = ''
-                        apiCommonExamSeleElementTestById(this.importPaper.paper_id).then(res=>{
-                            this.elementTest =JSON.parse(res.data.data.elementTest)
-                            let elementTestItems = this.elementTest.items
-                            this.topicList= []
-                            for(var i=0;i<elementTestItems.length;i++){
-                                let item  = elementTestItems[i].items
-                                let arry = []
-                                for(var k=0;k<item.length;k++){
-                                    let groupQuestionArr = item[k].items
-                                    groupQuestionArr.forEach(element => {
-                                        if(element.groupQuestionArr){
-                                            arry.push(element)
-                                        }
-                                    });
-                                }
-                                this.topicList =  this.topicList.concat(arry)
-                            }
-                            console.log(list)
-                            console.log(this.topicList)
-
-                            this.allTopic = []
-                            for(var a=0;a<this.topicList.length;a++){
-                                list.forEach(element => {
-                                    if(element.question_id == this.topicList[a].id){
-                                        this.allTopic.push({
-                                            "groupQuestionArr":this.topicList[a].groupQuestionArr,
-                                            "list":element
-                                        })
-
-                                    }           
-                                });   
-                            }
-
-                            // console.log(this.allTopic)
-                            for(var j=0;j<list.length;j++){
-                                // 这题已完成
-                                if(list[j].finish_count >= list[j].count ){
-                                    // console.log('批阅完成')
-                                    for(let k=0;k<this.allTopic.length;k++){
-
-                                        if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                            this.allTopic[k].status = '批阅完成'
-                                            break
-                                        }
-                                    }
-                                    //正在批阅 
-                                }else if( list[j].finish_count > 0  && list[j].finish_count < list[j].count ){
-                                    // console.log('正在批阅')
-
-
-                                    for(let k=0;k<this.allTopic.length;k++){
-                                    
-                                        if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                            this.allTopic[k].status = '正在批阅'
-                                            break
-                                        }
-                                    }
-                                    // 待批阅
-                                }else if(list[j].finish_count == 0 ){
-                                    // console.log('待批阅')
-                                    for(let k=0;k<this.allTopic.length;k++){
-                                        if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                            this.allTopic[k].status = '待批阅'
-                                            break
-                                        }
-                                    }
-                                }else{
-                                    for(let k=0;k<this.allTopic.length;k++){
-                                        if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                            this.allTopic[k].status = '待批阅'
-                                            break
-                                        }
-                                    }
-                                }
-
-                            }
-
-                            console.log(this.allTopic)
-
-
-
-                            this.selectNum = 0
-                            for (let index = 0; index < this.allTopic.length; index++) {
-                                if(this.allTopic[index].status == '正在批阅'){
-                                    this.selectNum = index
-                                    break
-                                }else if(this.allTopic[index].status == '待批阅'){
-                                    this.selectNum = index
-                                    break
-                                }else if(this.allTopic[this.allTopic.length -1].status == '批阅完成'){
-                                    this.selectNum = '批阅完成'
-                                }
-                            }
-
-                            console.log(121)
-                            // 读当前为那道题目
-                            this.NowSelectItem = []
-                            // 初始为第一题
-                            if(this.selectNum == '批阅完成'){
-                                this.isOver = true
-                                // console.log(this.isOver)
-                                this.$message.warning('全部批阅完成')
-                            }else{
-                                this.NowSelectItem = this.allTopic[this.selectNum]
-
-
-                                // console.log(this.NowSelectItem)
-
-
-
-                                this.getNum = []
-                                for(var b=0;b<this.NowSelectItem.groupQuestionArr.length;b++){
-                                    let item = this.NowSelectItem.groupQuestionArr[b]
-                                    item.setgetNum = 3
-                                    this.getNum.push('')
-                                }
-                                this.getAllTotal()
-
-                                // 获取学生的试题id
-                                let question_id = []
-                                this.NowSelectItem.groupQuestionArr.forEach(element => {
-                                    question_id.push(element.id)
-                                });
-                                // 获取学生的试题
-                                // this.nowQuestion = ''
-                                // this.urlSrc = ''
-                                studentQuestionList({
-                                    "paper_id":this.importPaper.paper_id,
-                                    "question_id":question_id,
-                                    "teacher_id":localStorage.getItem('userID'),
-                                    "status":2
-                                }).then(res=>{
-                                    // 上次没修改完成的试题
-                                    if(res.data.data){
-                                        this.nowQuestion = res.data.data.list
-                                        this.urlSrc = this.nowQuestion[0].id
-                                    }else{
-                                        // 获取学生题目
-                                        studentQuestionList({
-                                            "paper_id":this.importPaper.paper_id,
-                                            "question_id":question_id,
-                                            "teacher_id":localStorage.getItem('userID'),
-                                            "status":0
-                                        }).then(res=>{
-                                            if(res.data.data){
-                                                this.nowQuestion = res.data.data.list
-                                                this.urlSrc = this.nowQuestion[0].id
-                                            }else{
-                                                // this.isOver = true
-                                                this.$message.warning('修改完成。')
-                                            }
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                        this.ispush = 1
-                    }else{
-                        this.$message.warning('请先分配任务')
-                    }
-                })
-            }).catch(err=>{
+                // 记录上一题信息
+                this.oldTaskList.push(oldTopic)
+                this.getNowTeacherCheck()
+                this.ispush = 1
+            }).catch((err)=>{
                 this.$message.error('批改失败')
-                reject(false)
             })
-
-            // console.log(this.NowSelectItem)
         },
-        // async getNextWait(id,is_typical_case,setgetNum,radio,formData){
-        //     await this.NextWaitPromise(id,is_typical_case,setgetNum,radio,formData,i)
-        // },
         NextWaitPromise(id,radio,setgetNum,formData,oldTopic){
             return new Promise((resolve,reject)=>{
                 studentQuestionteacherFile(id,radio,setgetNum,formData).then(res=>{
-                   
+                    console.log(res)
                     oldTopic.push(res.data.data.student_with_question.id)
                   
                     resolve(res)
@@ -588,7 +265,299 @@ export default {
 		    return new File([u8arr], fileName , {
 		        type: 'image/png'
 		    })
-		},
+        },
+        getQuestiongetImageList(sn,question_id){
+            return new Promise((resolve,reject)=>{
+                studentQuestiongetImageListSn(sn).then(res=>{
+                    if(res.data.data){                           
+                        let data = res.data.data
+                        console.log(data)
+                        
+                        data.forEach(ele=> {
+                            ele.question_id = question_id
+                            this.urlSrc.push(ele)
+                        });
+                    }else{
+                        this.$message.warning('暂无试题图片')
+                    }
+                resolve(res)
+                }).catch(error=>{
+                    console.log(error)
+                })
+            })
+        },
+        issheetuploadgetQuestiongetImageList(sn,question_id,getAll){
+            return new Promise((resolve,reject)=>{
+                studentQuestiongetImageListSn(sn).then(res=>{
+                    if(res.data.data){                           
+                        let data = res.data.data
+                        // console.log(data)
+                        
+                        data.forEach(ele=> {
+                            ele.question_id = question_id
+                            getAll.push(ele)
+                        });
+                    }else{
+                        this.$message.warning('暂无试题图片')
+                    }
+                resolve(res)
+                }).catch(error=>{
+                    console.log(error)
+                })
+            })
+        },
+        getNowTeacherCheck(){
+            // 获取当前老师需要批该的任务
+            TeacherQuestionList({
+                "teacher_id":localStorage.getItem('userID'),
+                "paper_id":this.importPaper.paper_id,
+            }).then(res=>{
+                let list = res.data.data.list
+                if(list){
+                    apiCommonExamSeleElementTestById(this.importPaper.paper_id).then(res=>{
+                        this.elementTest =JSON.parse(res.data.data.elementTest)
+                        let elementTestItems = this.elementTest.items
+
+                        this.topicList= []
+                        for(var i=0;i<elementTestItems.length;i++){
+                            let item  = elementTestItems[i].items
+                            let arry = []
+                            for(var k=0;k<item.length;k++){
+                                let groupQuestionArr = item[k].items
+                                groupQuestionArr.forEach(element => {
+                                    if(element.groupQuestionArr){
+                                        arry.push(element)
+                                    }
+                                });
+                            }
+                            this.topicList =  this.topicList.concat(arry)
+                        }
+
+                        this.allTopic = []
+                        for(var a=0;a<this.topicList.length;a++){
+                            list.forEach(element => {
+                                if(element.question_id == this.topicList[a].id){
+                                    this.allTopic.push({
+                                        "groupQuestionArr":this.topicList[a].groupQuestionArr,
+                                        "list":element
+                                    })
+                                    
+                                }           
+                            });   
+                        }
+
+                        for(var j=0;j<list.length;j++){
+                            // 这题已完成
+                            if(list[j].finish_count >= list[j].count ){
+                                // console.log('批阅完成')
+                                for(let k=0;k<this.allTopic.length;k++){
+                                    
+                                    if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
+                                        this.allTopic[k].status = '批阅完成'
+                                        break
+                                    }
+                                }
+                                //正在批阅 
+                            }else if( list[j].finish_count > 0  && list[j].finish_count < list[j].count ){
+                                // console.log('正在批阅')
+
+                                
+                                for(let k=0;k<this.allTopic.length;k++){
+                                
+                                    if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
+                                        this.allTopic[k].status = '正在批阅'
+                                        break
+                                    }
+                                }
+                                // 待批阅
+                            }else if(list[j].finish_count == 0 ){
+                                // console.log('待批阅')
+                                for(let k=0;k<this.allTopic.length;k++){
+                                    if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
+                                        this.allTopic[k].status = '待批阅'
+                                        break
+                                    }
+                                }
+                            }else{
+                                for(let k=0;k<this.allTopic.length;k++){
+                                    if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
+                                        this.allTopic[k].status = '待批阅'
+                                        break
+                                    }
+                                }
+                            }
+                        
+                        }
+
+                        for (let index = 0; index < this.allTopic.length; index++) {
+                            if(this.allTopic[index].status == '正在批阅'){
+                                this.selectNum = index
+                                break
+                            }else if(this.allTopic[index].status == '待批阅'){
+                                this.selectNum = index
+                                break
+                            }else if(this.allTopic[this.allTopic.length -1].status == '批阅完成'){
+                            
+                                this.selectNum = '批阅完成'
+                            }
+
+
+                        }
+                        this.$forceUpdate(); 
+                        // 读当前为那道题目
+                        // 初始为第一题
+                        if(this.selectNum == '批阅完成'){
+                            this.isOver = true
+                            this.$message.warning('全部批阅完成')
+
+                        }else{
+
+                            this.NowSelectItem = this.allTopic[this.selectNum]
+
+                            // console.log(this.NowSelectItem)
+
+
+
+                            this.getNum = []
+                            for(var b=0;b<this.NowSelectItem.groupQuestionArr.length;b++){
+                                let item = this.NowSelectItem.groupQuestionArr[b]
+                                item.setgetNum = 3
+                                this.getNum.push('')
+                            }
+                            this.getAllTotal()
+
+
+                            // 获取学生的试题id
+                            let question_id = []
+                            this.NowSelectItem.groupQuestionArr.forEach(element => {
+                                question_id.push(element.id)
+                            });
+
+                            // console.log(this.NowSelectItem)
+                            // 获取学生的试题
+                            studentQuestionList({
+                                "paper_id":this.importPaper.paper_id,
+                                "question_id":question_id,
+                                "teacher_id":localStorage.getItem('userID'),
+                                "status":2
+                            }).then(res=>{
+                                // 上次没修改完成的试题
+                                console.log(res)
+                                if(res.data.data){
+                                    
+                                    this.nowQuestion = res.data.data.list
+                                    console.log(this.nowQuestion)
+                                    // 判断几张试卷
+                                    this.is_sheet_upload = true
+                                    for(let i=0;i<this.nowQuestion.length;i++){
+                                        if(!this.nowQuestion[i].is_sheet_upload){
+                                            this.is_sheet_upload = false
+                                        }
+                                    }
+                                    
+
+                                    this.urlSrc = []
+                                    console.log(this.is_sheet_upload)
+                                    if(this.is_sheet_upload){
+                                        let promiseArr = []
+                                        let getAll = []
+                                        for(var k=0;k<this.nowQuestion.length;k++){
+                                            promiseArr.push(this.issheetuploadgetQuestiongetImageList(this.nowQuestion[k].sn,this.nowQuestion[k].question_id,getAll))
+                                        }
+                                        Promise.all(promiseArr).then(res=>{
+                                            this.urlSrc.push(getAll[0])
+                                            let question_id = []
+                                            let dataId = []
+                                        
+                                            for(var k=0;k<this.nowQuestion.length;k++){
+                                                question_id.push(this.nowQuestion[k].question_id)
+                                                dataId.push(getAll[k].student_with_question_id)
+                                            }
+                                            this.urlSrc[0].dataId = dataId
+                                            this.urlSrc[0].question_id = question_id
+
+                                        })
+
+                                    }else{
+                                        let promiseArr = []
+                                        for(var k=0;k<this.nowQuestion.length;k++){
+                                            promiseArr.push(this.getQuestiongetImageList(this.nowQuestion[k].sn,this.nowQuestion[k].question_id))
+                                        }
+                                        Promise.all(promiseArr).then(res=>{
+                                        })
+                                    }
+
+                                    console.log(this.urlSrc)
+
+                                }else{
+                                    
+                                    // 获取学生题目
+                                    studentQuestionList({
+                                        "paper_id":this.importPaper.paper_id,
+                                        "question_id":question_id,
+                                        "teacher_id":localStorage.getItem('userID'),
+                                        "status":0
+                                    }).then(res=>{
+                                        console.log(res)
+                                        if(res.data.data){
+                                            this.nowQuestion = res.data.data.list
+                                       
+                                            // 判断几张试卷
+                                            this.is_sheet_upload = true
+                                            
+                                            for(let i=0;i<this.nowQuestion.length;i++){
+                                                if(!this.nowQuestion[i].is_sheet_upload){
+                                                    this.is_sheet_upload = false
+                                                }
+                                            }
+                                            
+
+                                            this.urlSrc = []
+                                            console.log(this.is_sheet_upload)
+                                            if(this.is_sheet_upload){
+                                                let promiseArr = []
+                                                let getAll = []
+                                                for(var k=0;k<this.nowQuestion.length;k++){
+                                                    promiseArr.push(this.issheetuploadgetQuestiongetImageList(this.nowQuestion[k].sn,this.nowQuestion[k].question_id,getAll))
+                                                }
+                                                Promise.all(promiseArr).then(res=>{
+                                                    this.urlSrc.push(getAll[0])
+                                                    let question_id = []
+                                                    let dataId = []
+                                                
+                                                    for(var k=0;k<this.nowQuestion.length;k++){
+                                                        question_id.push(this.nowQuestion[k].question_id)
+                                                        dataId.push(getAll[k].student_with_question_id)
+                                                    }
+                                                    this.urlSrc[0].dataId = dataId
+                                                    this.urlSrc[0].question_id = question_id
+
+                                                })
+
+                                            }else{
+                                                let promiseArr = []
+                                                for(var k=0;k<this.nowQuestion.length;k++){
+                                                    promiseArr.push(this.getQuestiongetImageList(this.nowQuestion[k].sn,this.nowQuestion[k].question_id))
+                                                }
+                                                Promise.all(promiseArr).then(res=>{
+                                                })
+                                            }
+                                            console.log(this.urlSrc)
+                                        }else{
+                                            
+                                            this.$message.warning('修改完成。')
+                                        }
+
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    this.$message.warning('请先分配任务')
+                }
+            }) 
+        }
     },
     mounted(){
 
@@ -598,177 +567,13 @@ export default {
         }else{
             this.$message.warning('无试卷数据')
         }
-
-        // 获取当前老师需要批该的任务
-        TeacherQuestionList({
-            "teacher_id":localStorage.getItem('userID'),
-            "paper_id":this.importPaper.paper_id,
-        }).then(res=>{
-            let list = res.data.data.list
-            if(list){
-                apiCommonExamSeleElementTestById(this.importPaper.paper_id).then(res=>{
-                    this.elementTest =JSON.parse(res.data.data.elementTest)
-                    let elementTestItems = this.elementTest.items
-
-                    this.topicList= []
-                    for(var i=0;i<elementTestItems.length;i++){
-                        let item  = elementTestItems[i].items
-                        let arry = []
-                        for(var k=0;k<item.length;k++){
-                            let groupQuestionArr = item[k].items
-                            groupQuestionArr.forEach(element => {
-                                if(element.groupQuestionArr){
-                                    arry.push(element)
-                                }
-                            });
-                        }
-                        this.topicList =  this.topicList.concat(arry)
-                    }
-
-                    this.allTopic = []
-                    for(var a=0;a<this.topicList.length;a++){
-                        list.forEach(element => {
-                            if(element.question_id == this.topicList[a].id){
-                                this.allTopic.push({
-                                    "groupQuestionArr":this.topicList[a].groupQuestionArr,
-                                    "list":element
-                                })
-                                
-                            }           
-                        });   
-                    }
-                    for(var j=0;j<list.length;j++){
-                        // 这题已完成
-                        if(list[j].finish_count >= list[j].count ){
-                            // console.log('批阅完成')
-                            for(let k=0;k<this.allTopic.length;k++){
-                                
-                                if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                    this.allTopic[k].status = '批阅完成'
-                                    break
-                                }
-                            }
-                            //正在批阅 
-                        }else if( list[j].finish_count > 0  && list[j].finish_count < list[j].count ){
-                            // console.log('正在批阅')
-
-                            
-                            for(let k=0;k<this.allTopic.length;k++){
-                             
-                                if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                    this.allTopic[k].status = '正在批阅'
-                                    break
-                                }
-                            }
-                            // 待批阅
-                        }else if(list[j].finish_count == 0 ){
-                            // console.log('待批阅')
-                            for(let k=0;k<this.allTopic.length;k++){
-                                if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                    this.allTopic[k].status = '待批阅'
-                                    break
-                                }
-                            }
-                        }else{
-                            for(let k=0;k<this.allTopic.length;k++){
-                                if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
-                                    this.allTopic[k].status = '待批阅'
-                                    break
-                                }
-                            }
-                        }
-                       
-                    }
-
-                    for (let index = 0; index < this.allTopic.length; index++) {
-                        if(this.allTopic[index].status == '正在批阅'){
-                            this.selectNum = index
-                            break
-                        }else if(this.allTopic[index].status == '待批阅'){
-                            this.selectNum = index
-                            break
-                        }else if(this.allTopic[this.allTopic.length -1].status == '批阅完成'){
-                           
-                            this.selectNum = '批阅完成'
-                            //  console.log(this.selectNum)
-                        }
-
-
-                    }
-                    // console.log(this.allTopic)
-                    // console.log(list)
-                    this.$forceUpdate(); 
-                    // 读当前为那道题目
-                    // 初始为第一题
-                    if(this.selectNum == '批阅完成'){
-                        this.isOver = true
-                        this.$message.warning('全部批阅完成')
-
-                    }else{
-
-
-                        this.NowSelectItem = this.allTopic[this.selectNum]
-
-                        // console.log(this.NowSelectItem)
-
-
-
-                        this.getNum = []
-                        for(var b=0;b<this.NowSelectItem.groupQuestionArr.length;b++){
-                            let item = this.NowSelectItem.groupQuestionArr[b]
-                            item.setgetNum = 3
-                            this.getNum.push('')
-                        }
-                        this.getAllTotal()
-
-                        // 获取学生的试题id
-                        let question_id = []
-                        this.NowSelectItem.groupQuestionArr.forEach(element => {
-                            question_id.push(element.id)
-                        });
-                        // 获取学生的试题
-                        studentQuestionList({
-                            "paper_id":this.importPaper.paper_id,
-                            "question_id":question_id,
-                            "teacher_id":localStorage.getItem('userID'),
-                            "status":2
-                        }).then(res=>{
-                            // 上次没修改完成的试题
-                            // console.log()
-                            if(res.data.data){
-                                this.nowQuestion = res.data.data.list
-                                this.urlSrc = this.nowQuestion[0].id
-                            }else{
-                                // 获取学生题目
-                                studentQuestionList({
-                                    "paper_id":this.importPaper.paper_id,
-                                    "question_id":question_id,
-                                    "teacher_id":localStorage.getItem('userID'),
-                                    "status":0
-                                }).then(res=>{
-                                    if(res.data.data){
-                                        this.nowQuestion = res.data.data.list
-                                        this.urlSrc = this.nowQuestion[0].id
-                                    }else{
-
-                                        this.$message.warning('修改完成。')
-                                    }
-                                })
-                            }
-                        })
-                    }
-                })
-            }else{
-                this.$message.warning('请先分配任务')
-            }
-        })   
+        this.getNowTeacherCheck()
     },
-    // watch:{
-    //     allTopic:function(){
-    //         console.log(21212)
-    //         this.$forceUpdate(); 
-    //     }
-    // }
+    watch:{
+        selectNum:function(){
+            console.log(1212)
+        }
+    }
 }
 </script>
 <style scoped src="../../../assets/css/teacher_redeover.css"></style>

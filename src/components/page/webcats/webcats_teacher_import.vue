@@ -213,16 +213,16 @@ export default {
 				let file = event.target.files[0]
 				var data = new FormData()
                 data.append('file',file)
-                const loading = this.$loading({
-                    lock: true,
-                    text: '正在导入答题卡,请稍等！',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
+                // const loading = this.$loading({
+                //     lock: true,
+                //     text: '正在导入答题卡,请稍等！',
+                //     spinner: 'el-icon-loading',
+                //     background: 'rgba(0, 0, 0, 0.7)'
+                // });
 				teacherImportSheet(this.importPaper.paper_id,data).then(res=>{
-                    loading.close();
+                    // loading.close();
 					if(res.data.result){
-						this.$message.success('上传成功')
+						this.$message.success('正在导入答题卡,请稍等！')
                         // 查询当前试卷已经导入答题卡的总数与已分发的份数
                         getAlreadySheetCountAndDispenseCount(this.importPaper.paper_id).then(res=>{
                             if(res.data.result){
