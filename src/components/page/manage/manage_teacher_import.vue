@@ -339,7 +339,7 @@ export default {
 		handleSizeChange(val) {
 			this.pageSize = val;
 			teacherSelectTag({
-				"id": [],
+				"id": [38],
 				"pageSize": this.pageSize,
 				"pageNum": this.pageNum
 			}).then(res => {
@@ -353,7 +353,7 @@ export default {
 		handleCurrentChange(val) {
 			this.pageNum = val;
 			teacherSelectTag({
-				"id": [],
+				"id": [38],
 				"pageSize": this.pageSize,
 				"pageNum": this.pageNum
 			}).then(res => {
@@ -367,8 +367,10 @@ export default {
 			console.log("切换组卷类型");
 			if(this.paperType == '图片试卷'){
 				this.ispaperType = true
+				this.iscommon = false
 			}else if(this.paperType == '在线组卷'){
 				this.ispaperType = false
+				this.iscommon = false
 			}else if(this.paperType == '公共试卷'){
 				this.iscommon = true
 
@@ -376,7 +378,7 @@ export default {
 
 				//试卷
 				teacherSelectTag({
-					"id": [],
+					"id": [38],
 					"pageSize": this.pageSize,
 					"pageNum": this.pageNum
 				}).then(res => {
@@ -395,9 +397,7 @@ export default {
 		},
 		// 公共试卷
 		ClickCommon(){
-			console.log(this.selectTag)
-			console.log(this.iscommonTitle)
-			console.log(this.ParperType)
+		
 			if(this.selectTag && this.iscommonTitle && this.ParperType){
 				CommonExamCopypaper(this.ParperType.id,this.selectTag,this.iscommonTitle).then(res=>{
 					if(res.data.result){
