@@ -63,7 +63,16 @@
           <i class="el-icon-refresh-right" style="font-size: 25px;float: right;padding-top: 3px;margin-right: 110px;cursor:pointer" @click="Changerotate"></i>
         </div>
         <div id="canvas-drawImage">
-          <el-button type="info" @click="lastPage">上一页</el-button>
+
+          <div style="margin:0px 20px">
+            当前页码：
+            
+            <span style="color:red">{{selectIndex+1}}</span>
+            
+            /{{urlSrc.length}}
+          </div> 
+          
+          <el-button type="info" @click="lastPage" style="margin-top:20px">上一页</el-button>
           <el-button type="success" @click="nextPage">下一页</el-button>
         </div>
         <div>
@@ -441,9 +450,18 @@ import IconVue from './Icon.vue'
           console.log(this.ispush)
             if(this.ispush == 2){
               let isNext = true
+              // 将当前页面的的图片放上
+              const canvasImg = document.querySelector('#canvas')
+              var ctx=canvasImg.getContext("2d"); 
+              ctx.fillStyle="#E992B9";
+              ctx.lineWidth=1;
+              const src = canvasImg.toDataURL('image/png')
+              this.urlSrc[this.selectIndex].teacherImg = src
+              this.urlSrc[this.selectIndex].radioType = this.radio
+              // console.log(this.urlSrc[0].teacherImg)
               for(var i=0;i<this.urlSrc.length;i++){
                 if(this.urlSrc[i].teacherImg == '' || this.urlSrc[i].teacherImg == undefined || this.urlSrc[i].teacherImg == null){
-                  console.log(this.urlSrc[i])
+                  // console.log(this.urlSrc[i])
                   isNext = false
                 }
               }
@@ -579,6 +597,9 @@ import IconVue from './Icon.vue'
           var ctx=canvasImg.getContext("2d"); 
           ctx.fillStyle="#E992B9";
           ctx.lineWidth=1;
+
+
+
           
           const src = canvasImg.toDataURL('image/png')
           this.urlSrc[this.selectIndex].teacherImg = src
