@@ -1138,4 +1138,8 @@ export function studentTestQuestionsDelImg(id){
     const result =get('/api/studentWithTeacher/image/delId/'+id)
 	return result;
 }
-
+// 判断学生考试完成了
+export function studentTestQuestionsFinish(paper_id,student_id){
+	const result =get('/api/student/studentExam/overStudentExamStatus/'+paper_id+'/'+student_id)
+	return result;
+}

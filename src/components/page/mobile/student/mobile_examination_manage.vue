@@ -99,13 +99,23 @@
 					</div>
 				</div>
 				<div class="right">
-					<i class="icon" :class="(item.status==0&&item.studentExam.finish_status!=1)?'el-icon-caret-right font-i3':(item.status==1||item.studentExam.finish_status!=1||item.status==2)?'el-icon-time font-i':item.studentExam.finish_status==1&&item.status==0?'el-icon-check font-i1':'el-icon-close font-i'"></i>
-					<div class="status" :class="item.status==0&&item.studentExam.finish_status!=1?'font-i3':(item.status==1&&item.studentExam.finish_status!=1||item.status==2||item.status==4)?'font-i':item.studentExam.finish_status==1&&item.status==0?'font-i1':''"  >{{ item.status==0&&item.studentExam.finish_status!=1?'开始考试':item.status==1&&item.studentExam.finish_status!=1?'准备考试':(!isDuringDate(item.startTime,item.overTime)&&item.studentExam.finish_status!=1)?'正在批阅':item.studentExam.finish_status==1&&item.status==0?'考试完成':'考试取消'}}</div>
-					<el-button type="primary" plain v-if="item.status==0&&item.studentExam.finish_status!=1" size="medium" class="buttom i" @click="goExam(item.id,item.examTime,item.overTime,item.startTime)">立即进入</el-button>
-					<el-button type="primary" v-else-if="item.status==3" style="background-color: #19ADFB;" size="medium" @click="goGrade()">查看</el-button>
-					<el-button type="primary" v-else-if="item.studentExam.finish_status==1&&item.status==0" style="background-color: #19ADFB;"
+					<!-- <div class="status" :class="item.status==0&&item.studentExam.finish_status!=1?'font-i3':(item.status==1&&item.studentExam.finish_status!=1||item.status==2||item.status==4)?'font-i':item.studentExam.finish_status==1&&item.status==0?'font-i1':''"  >{{ item.status==0&&item.studentExam.finish_status!=1?'开始考试':item.status==1&&item.studentExam.finish_status!=1?'准备考试':(!isDuringDate(item.startTime,item.overTime)&&item.studentExam.finish_status!=1)?'正在批阅':item.studentExam.finish_status==1&&item.status==0?'考试完成':'考试取消'}}</div> -->
+					<i class="icon" :class="(item.studentExam.finish_status==2||item.studentExam.finish_status==1)?'el-icon-caret-right font-i3':(item.status==1||item.studentExam.finish_status!=1||item.status==2)?'el-icon-time font-i':item.studentExam.finish_status==5?'el-icon-check font-i1':'el-icon-close font-i'"></i>
+					
+					<!-- <div class="status" :class="item.status==0&&item.studentExam.finish_status!=1?'font-i3':(item.status==1&&item.studentExam.finish_status!=1||item.status==2||item.status==4)?'font-i':item.studentExam.finish_status==1&&item.status==0?'font-i1':''"  >{{ item.status==0&&item.studentExam.finish_status!=1?'开始考试':item.status==1&&item.studentExam.finish_status!=1?'准备考试':(!isDuringDate(item.startTime,item.overTime)&&item.studentExam.finish_status!=1)?'正在批阅':item.studentExam.finish_status==1&&item.status==0?'考试完成':'考试取消'}}</div> -->
+					<div class="status  font-i3" v-if="item.studentExam.finish_status==0">未开始考试</div>
+					<div class="status font-i3" v-if="item.studentExam.finish_status==1">开始考试</div>
+					<div class="status font-i3" v-if="item.studentExam.finish_status==2">正在考试</div>
+					<div class="status font-i" v-if="item.studentExam.finish_status==3">考试完成</div>
+					<div class="status font-i" v-if="item.studentExam.finish_status==4">正在批阅</div>
+					<div class="status font-i1" v-if="item.studentExam.finish_status==5">批阅完成</div>
+					<div class="status font-i" v-if="item.studentExam.finish_status==6">考试结束</div>
+						<el-button type="primary" plain v-if="(item.studentExam.finish_status==0||item.studentExam.finish_status==1||item.studentExam.finish_status==2)&&isDuringDate" size="medium" class="buttom i"  @click="goExam(item.id,item.examTime,item.overTime,item.startTime)">立即进入</el-button>
+					 <el-button type="primary" v-else-if="item.status==3&&item.studentExam.finish_status!=1" style="background-color: #19ADFB;padding: 10px 34px;" size="medium" @click="goGrade()">查看</el-button>
+					<el-button type="primary" v-else-if="item.studentExam.finish_status==5&&item.status==0" style="background-color: #19ADFB;"
 					 size="medium" @click="goGrade(item.id,item.examTime)">查看反馈</el-button>
-					<el-button type="primary" disabled v-else style="background-color: #999999;" size="medium">查看</el-button>
+					<el-button type="primary" disabled v-else style="background-color: #999999;padding: 10px 34px;" size="medium">查看</el-button>
+					
 				</div>
 			</div>
 		</div>

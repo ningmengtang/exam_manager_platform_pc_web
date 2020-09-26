@@ -105,13 +105,14 @@
 		methods: {
 			// ---回去--
 			goProcess() {
-				this.$router.push({
+				this.isFace ? (this.$router.push({
 					name: 'mobile_examination_process',
 					query: {
 						id: this.examId,
-						overTime:this.overTime
+						'examTime': this.examTime,
+						'overTime': this.overTime
 					}
-				})
+				})) : (this.$message.error('考试进入要先导入人脸'))
 			},
 			uploadFild(param) {
 				var that = this
@@ -120,19 +121,19 @@
 				this.uploadFile = new FormData()
 				// this.uploadFile.append('file', file)
 				this.loading = true
-				// this.FaceRecognition=false
+				this.FaceRecognition=false
 				if (this.FaceRecognition) {
 					this.uploadFile.append('file', file)
 					faceRecognition(this.uploadFile).then(res => {
 						this.loading = false
-						if(res.data.result){
+						if (res.data.result) {
 							console.log(res)
 							this.uploadBlackimgscr = res.data.data
 							this.loading = false
 							this.$message.success('人脸识别成功')
 							this.isFace = true
-						}else{
-							document.title='学生-考试-人脸录入'
+						} else {
+							document.title = '学生-考试-人脸录入'
 							this.$alert(`${res.data.message}或者不是人脸！请重新导入`, '提示', {
 								confirmButtonText: '确定',
 								callback: action => {
@@ -145,7 +146,7 @@
 					})
 				} else {
 					this.uploadFile.append('file', file)
-					faceInsert(this.userID,this.uploadFile).then(res => {
+					faceInsert(this.userID, this.uploadFile).then(res => {
 						if (!res.data.result) {
 							this.$alert(`${res.data.message}或者不是人脸！请重新导入`, '提示', {
 								confirmButtonText: '确定',
