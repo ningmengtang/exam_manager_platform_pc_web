@@ -262,15 +262,14 @@ export default {
 
         // 下一题
         nextTopic(){
-            console.log(this.selectTeacher.length)
-            console.log(this.yetPlan)
+            
             if(this.selectTeacher.length < this.yetPlan){
                 if(this.selectTeacher.length>0){
-                    // console.log(this.selectIndex)
+
                     if(this.selectIndex >= this.selectTopicList.length){
                         this.selectIndex = this.selectTopicList.length -1
                         this.$message.warning('当前任务已经分配完成，请确认所有分配方案')
-                    }else{
+                    }else {
                         // 总份数
 
                         let Allnum = this.yetPlan 
@@ -318,7 +317,7 @@ export default {
                             this.$forceUpdate();
                         
                             this.selectTeacher = []
-                            // console.log(this.allTaskList)
+    
 
                         }
                     }

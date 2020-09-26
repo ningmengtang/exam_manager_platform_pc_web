@@ -53,6 +53,12 @@
               <!-- 查看图片 -->
               
               <span title="上一页" class="fa-prev-last" @click="pageChange('prev')"></span>
+
+
+                <div class="tip" v-if="visible">
+                    请点击下一页！
+                    <i class="el-icon-bottom-right" style="font-size:20px"></i>
+                </div>
               <span title="下一页" class="fa-prev-next" @click="pageChange('next')"></span>
               <!-- <span title="放大" class="fa-fada" @click="openPic"></span> -->
               <el-image
@@ -115,6 +121,8 @@
           </div>
       </div>  
     </div>
+   
+    
   </div>
 </template>
 
@@ -350,6 +358,7 @@
   background-image: url('../../../../assets/img/lastPage.png');
 }
 .fa-prev-next{
+  position: relative;
   display: inline-block;
   font-size: 14px;
   width: 32px;
@@ -455,6 +464,26 @@
 .img_p{
   text-align: center;
 }
+.tip{
+  width: 110px;
+  bottom: 72px;
+  height: 69px;
+  overflow: hidden;
+  left: 142px;
+  position: absolute;
+  background: #FFF;
+  border: 1px solid #EBEEF5;
+  padding: 12px;
+  z-index: 2000;
+  color: #606266;
+  line-height: 1.4;
+  text-align: justify;
+  font-size: 14px;
+  -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  word-break: break-all;
+
+}
 </style>
 <script>
 import { Toast } from 'vant';
@@ -485,6 +514,7 @@ import { Toast } from 'vant';
         scold:0,
         srcList:[],
         selectIndex:0,
+        visible:false,
         importPaper:'',
         isOver:false,
         elementTest:'',
@@ -709,9 +739,11 @@ import { Toast } from 'vant';
               this.setCanvasStyle()
             }
         }else if(type == 'next'){
+            this.visible = false
             if(this.selectIndex >= this.urlSrc.length){
                 Toast.fail('没有下一页');
               }else{
+
                 const canvasImg = document.querySelector('#canvas')
                 var ctx=canvasImg.getContext("2d"); 
                 ctx.fillStyle="#E992B9";
@@ -1289,7 +1321,14 @@ import { Toast } from 'vant';
       nextTopic(){
         // console.log('生成图片成功')
         let isNext = true
-        console.log(this.urlSrc)
+         // 将当前页面的的图片放上
+        const canvasImg = document.querySelector('#canvas')
+        var ctx=canvasImg.getContext("2d"); 
+        ctx.fillStyle="#E992B9";
+        ctx.lineWidth=1;
+        const src = canvasImg.toDataURL('image/png')
+        this.urlSrc[this.selectIndex].teacherImg = src
+        this.urlSrc[this.selectIndex].radioType = this.radio
         for(var i=0;i<this.urlSrc.length;i++){
           if(this.urlSrc[i].teacherImg == '' || this.urlSrc[i].teacherImg == undefined || this.urlSrc[i].teacherImg == null){
             
@@ -1298,7 +1337,7 @@ import { Toast } from 'vant';
         }
      
         if(isNext){
-          console.log(1212)
+          // console.log(1212)
             // 下一题
             let alllist = this.NowSelectItem.groupQuestionArr
             let promiseArr = []
@@ -1354,6 +1393,7 @@ import { Toast } from 'vant';
                 Toast.fail('批改失败')
             })
           }else{
+            this.visible = true
             Toast.fail('还有试题尚未批改，请点击下一页。')
         }
       }

@@ -170,15 +170,12 @@ export default {
                 this.$message.warning('没有上一条题数据！')
             }else{
                 let oldTask  =  this.oldTaskList[this.oldTaskList.length-1]
-                console.log("-------------- 上一题id  ---------------------")
-                console.log(oldTask)
-                console.log("-------------- 本题id ---------------------")
-                console.log( this.nowQuestion)
+              
                 let nowId = []
                 for(var i=0;i<this.nowQuestion.length;i++){
                     nowId.push(this.nowQuestion[i].id)
                 }
-                console.log(nowId)
+                // console.log(nowId)
 
                 
                 teacherQuestionResetBefore({
