@@ -55,7 +55,7 @@ export function faceInsert(id,data){
 }
 // 人脸对照
 export function faceRecognition(data){
-	const result = post ('/api/student/account/searchOne',data)
+	const result = post ('/api/student/account/searchOneByBase64',data)
 	return result;
 }
 //教师首页状态查询
