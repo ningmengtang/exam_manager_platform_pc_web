@@ -557,7 +557,10 @@ import { Toast } from 'vant';
     },
     watch:{
       urlSrc:function(){
-        console.log('进入canvas')
+          console.log('进入canvas')
+          this.selectIndex = 0
+          this.radio = ''
+          this.srcList = []
           var that = this
           const canvas = document.querySelector('#canvas')
           that.context = canvas.getContext('2d')
@@ -629,7 +632,7 @@ import { Toast } from 'vant';
       // 改变试卷类型
       // 改变页数
       pageChange(type){
-        console.log(type)
+        // console.log(type)
         if(type == 'prev'){
           if(this.selectIndex <=0){
               Toast.fail('没有上一页');
@@ -808,7 +811,6 @@ import { Toast } from 'vant';
                 apiCommonExamSeleElementTestById(this.importPaper.paper_id).then(res=>{
                     this.elementTest =JSON.parse(res.data.data.elementTest)
                     let elementTestItems = this.elementTest.items
-
                     this.topicList= []
                     for(var i=0;i<elementTestItems.length;i++){
                         let item  = elementTestItems[i].items
@@ -1138,31 +1140,43 @@ import { Toast } from 'vant';
             }
             break
           case 'clear':
-              var that = this
-              const canvas = document.querySelector('#canvas')
-              that.context = canvas.getContext('2d')
+            this.srcList = []
+            let selectSn = this.urlSrc[this.selectIndex].id
+            var that = this
+            const canvas = document.querySelector('#canvas')
+            that.context = canvas.getContext('2d')
+            var cW = document.getElementById('canvas').width
+            var cH = document.getElementById('canvas').height
+            var imgObj = new Image()
+            imgObj.src = '/api/student/question/getImage/' +selectSn+'?id=1'+"&d=" + new Date().getTime()
+            this.srcList.push( '/api/student/question/getImage/' + selectSn+'?id=1'+"&d=" + new Date().getTime())
+            var imgW = ""
+            var imgH = ""
+            imgObj.onload = function(){
+                imgW = imgObj.width
+                imgH = imgObj.height
+                // 在canvas绘制前填充白色背景
+                that.context.fillStyle = "#fff";
+                that.context.fillRect(0, 0, cW, cH)
+                let width = imgW;
+                let height = imgH;
+                if(width > cW){
+                  let dd = cW / width;
+                  width *= dd;
+                  height *= dd;
+                }
 
-              var cW = document.getElementById('canvas').width
-              var cH = document.getElementById('canvas').height
-            
-              var imgObj = new Image()
-              imgObj.src = '/api/student/question/getImage/' + this.urlSrc+'?id=1'+"&d=" + new Date().getTime()
-              console.log(imgObj.src)
-              var imgW = ""
-              var imgH = ""
-              imgObj.onload = function(){
-                  imgW = imgObj.width
-                  imgH = imgObj.height
-                  // 在canvas绘制前填充白色背景
-                  that.context.fillStyle = "#fff";
-                  that.context.fillRect(0, 0, cW, cH)
-                  that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
-              }
-              // this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height)
-              this.preDrawAry = []
-              this.nextDrawAry = []
-              this.middleAry = [this.middleAry[0]]
-              break
+                if(height>cH){
+                  let dd = cH / height;
+                  width *= dd;
+                  height *= dd;
+                }
+                that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+            }
+            this.preDrawAry = []
+            this.nextDrawAry = []
+            this.middleAry = [this.middleAry[0]]
+            break
         }
       },
       // 生成图片
@@ -1230,16 +1244,17 @@ import { Toast } from 'vant';
       // 下一题
       nextTopic(){
         // console.log('生成图片成功')
-        let isNext = false
-        // console.log(this.)
+        let isNext = true
+        console.log(this.urlSrc)
         for(var i=0;i<this.urlSrc.length;i++){
           if(this.urlSrc[i].teacherImg == '' || this.urlSrc[i].teacherImg == undefined || this.urlSrc[i].teacherImg == null){
-            console.log(this.urlSrc[i])
+            
             isNext = false
           }
         }
      
         if(isNext){
+          console.log(1212)
             // 下一题
             let alllist = this.NowSelectItem.groupQuestionArr
             let promiseArr = []
@@ -1247,7 +1262,8 @@ import { Toast } from 'vant';
             let oldTopic = []
             // 扫描上传
             if(this.is_sheet_upload){
-                let selectData = data[0]
+                let selectData = this.urlSrc[0]
+
                 let formData = new FormData()
                 let fileName = new Date().getTime() +'.png'
                 formData.append('file',this.dataURLtoFile(selectData.teacherImg,fileName))
@@ -1264,14 +1280,14 @@ import { Toast } from 'vant';
             }
             // 非扫描上传
             else{
-                for(var i=0;i<data.length;i++){
+                for(var i=0;i< this.urlSrc.length;i++){
                     let formData = new FormData()
                     let fileName = new Date().getTime() +'.png'
-                    formData.append('file',this.dataURLtoFile(data[i].teacherImg,fileName))
+                    formData.append('file',this.dataURLtoFile(this.urlSrc[i].teacherImg,fileName))
                     
                     for(var k=0;k<alllist.length;k++){
-                        if(alllist[k].id == data[i].question_id){
-                            promiseArr.push(this.NextWaitPromise(data[i].student_with_question_id,data[i].radioType,alllist[k].setgetNum,formData,oldTopic))
+                        if(alllist[k].id == this.urlSrc[i].question_id){
+                            promiseArr.push(this.NextWaitPromise(this.urlSrc[i].student_with_question_id,this.urlSrc[i].radioType,alllist[k].setgetNum,formData,oldTopic))
                         }
                     }
                 }
@@ -1279,7 +1295,14 @@ import { Toast } from 'vant';
             Promise.all(promiseArr).then(res=>{
                 // 获取当前老师需要批该的任务
                 // 记录上一题信息
-                this.oldTaskList.push(oldTopic)
+                var resList= []
+                for(var i=0;i<oldTopic.length;i++){
+                    var current = oldTopic[i]
+                    if(resList.indexOf(current) === -1){
+                        resList.push(current)
+                    }
+                }
+                this.oldTaskList.push(resList)
                 this.getinit()
                
             }).catch((err)=>{

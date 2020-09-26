@@ -5,7 +5,7 @@
         id="canvas" 
         class="fl" 
         width="700" 
-        height="600" 
+        height="700" 
         @mousedown="canvasDown($event)" 
         @mouseup="canvasUp($event)"
         @mousemove="canvasMove($event)"
@@ -60,6 +60,7 @@
             :src="url"
             :preview-src-list="srcList">
           </el-image>
+          <i class="el-icon-refresh-right" style="font-size: 25px;float: right;padding-top: 3px;margin-right: 110px;cursor:pointer" @click="Changerotate"></i>
         </div>
         <div id="canvas-drawImage">
           <el-button type="info" @click="lastPage">上一页</el-button>
@@ -81,8 +82,8 @@
         <span class="fa fa-close" @click="removeImg(src)"></span>
       </div>
     </div>
-
- 
+    <!-- <canvas id="canvas1" style="display: none;">
+    </canvas> -->
     <!-- <div style="display:none">
         <img ref="conf0" src="./X-3.jpg">
     </div> -->
@@ -271,6 +272,7 @@ import IconVue from './Icon.vue'
         preDrawAry: [],
         // 存储当前表面状态数组-下一步
         nextDrawAry: [],
+        Rotatestep:0,
         // 中间数组
         middleAry: [],
         // 配置参数
@@ -308,11 +310,16 @@ import IconVue from './Icon.vue'
       // },
         
         urlSrc:function(){
+
+
+          console.log(12121)
           this.selectIndex = 0
 
           this.radio = ''
           this.srcList = []
           var that = this
+
+
           const canvas = document.querySelector('#canvas')
           that.context = canvas.getContext('2d')
 
@@ -327,18 +334,46 @@ import IconVue from './Icon.vue'
             var imgW = ""
             var imgH = ""
             imgObj.onload = function(){
+             
 
+              // let imageWrapperCanvas  = document.querySelector('#canvas1')
+              // let imageWrapperCtx = imageWrapperCanvas.getContext('2d')
+           
+
+
+              // canvas宽高
               var cW = document.getElementById('canvas').width
               var cH = document.getElementById('canvas').height
-
-              
+              // 图片宽高
               imgW = imgObj.width
               imgH = imgObj.height
-              // 在canvas绘制前填充白色背景
-              that.context.fillStyle = "#fff";
-              that.context.fillRect(0, 0, cW, cH)
 
-              let width = imgW;
+
+
+              // let width = imgW;
+              // let height = imgH;
+              // if(width > cW){
+              //   let dd = cW / width;
+              //   width *= dd;
+              //   height *= dd;
+              // }
+
+              // if(height>cH){
+              //   let dd = cH / height;
+              //   width *= dd;
+              //   height *= dd;
+              // }
+
+
+
+
+              canvas.height = cH
+              canvas.width = cW
+              // that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
+              that.context.save()
+
+              
+              let  width  = imgW;
               let height = imgH;
               if(width > cW){
                 let dd = cW / width;
@@ -351,11 +386,39 @@ import IconVue from './Icon.vue'
                 width *= dd;
                 height *= dd;
               }
-            that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
- 
+
+             
+
+
+              // that.context.translate(350,350)
+              // that.context.rotate(90* Math.PI / 180)
+              // that.context.translate(-350,-350)
+
+              
+              // 
+              // let  width1  = imgW;
+              // let height1 = imgH;
+              // if(width1 > cW){
+              //   let dd = cW / width1;
+              //   width1 *= dd;
+              //   height1 *= dd;
+              // }
+
+              // if(height1>cH){
+              //   let dd = cH / height1;
+              //   width1 *= dd;
+              //   height1 *= dd;
+              // }
+              // that.context.translate(0,0)
+
+
+              that.context.drawImage(this,0,(cH-height)/2,width,height)
+              // that.context.
+              // that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+             
+
+              that.context.restore();
             }
-
-
             this.initDraw()
             this.setCanvasStyle()
           }
@@ -438,7 +501,7 @@ import IconVue from './Icon.vue'
             console.log(canvas.height)
             // console.log(imgW)
             // console.log(imgH)
-            that.context.drawImage(myImage,0,  y*i ,x,imgH*x/imgW)
+            that.context.drawImage(this,0,(cH-height)/2,width,height)
            
             // that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
             // that.context.drawImage(myImage,0,y*i,x,y)
@@ -484,7 +547,7 @@ import IconVue from './Icon.vue'
                 width *= dd;
                 height *= dd;
               }
-              that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+              that.context.drawImage(this,0,(cH-height)/2,width,height)
           }
           this.initDraw()
           this.setCanvasStyle()
@@ -548,7 +611,7 @@ import IconVue from './Icon.vue'
                   width *= dd;
                   height *= dd;
                 }
-                that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+                that.context.drawImage(this,0,(cH-height)/2,width,height)
             }
             this.radio = ''
             this.initDraw()
@@ -575,7 +638,7 @@ import IconVue from './Icon.vue'
         this.imgUrl = this.imgUrl.filter(item => item !== src)
       },
       initDraw () {
-        const preData = this.context.getImageData(0, 0, 700, 600)
+        const preData = this.context.getImageData(0, 0, 700, 700)
         // 空绘图表面进栈
         this.middleAry.push(preData)
       },
@@ -588,9 +651,13 @@ import IconVue from './Icon.vue'
           if (this.isPc()) {
             canvasX = e.offsetX 
             canvasY = e.offsetY 
+            // canvasX = e.clientX - t.parentNode.offsetLeft
+            // canvasY = e.clientY - t.parentNode.offsetTop - 44 
           } else {
             canvasX = e.changedTouches[0].offsetX
             canvasY = e.changedTouches[0].offsetY
+            // canvasX = e.changedTouches[0].clientX - t.parentNode.offsetLeft
+            // canvasY = e.changedTouches[0].clientY - t.parentNode.offsetTop - 44
           }
           this.context.lineTo(canvasX, canvasY)
           this.context.stroke()
@@ -606,7 +673,7 @@ import IconVue from './Icon.vue'
       // mouseup
       canvasUp (e) {
         console.log('canvasUp')
-        const preData = this.context.getImageData(0, 0, 700, 600)
+        const preData = this.context.getImageData(0, 0, 700, 700)
         if (!this.nextDrawAry.length) {
           // 当前绘图表面进栈
           this.middleAry.push(preData)
@@ -625,9 +692,10 @@ import IconVue from './Icon.vue'
         this.canvasMoveUse = true
         // client是基于整个页面的坐标
         // offset是cavas距离顶部以及左边的距离
-
         const canvasX = e.offsetX 
         const canvasY = e.offsetY 
+        // const canvasX = e.clientX - e.target.parentNode.offsetLeft
+        // const canvasY = e.clientY - e.target.parentNode.offsetTop -44
         console.log(e.clientX)
         console.log(e.clientY)
         this.setCanvasStyle()
@@ -636,7 +704,7 @@ import IconVue from './Icon.vue'
         this.context.moveTo(canvasX, canvasY)
         console.log('moveTo', canvasX, canvasY)
         // 当前绘图表面状态
-        const preData = this.context.getImageData(0, 0, 700, 1600)
+        const preData = this.context.getImageData(0, 0, 700, 700)
         // 当前绘图表面进栈
         this.preDrawAry.push(preData)
       },
@@ -700,13 +768,85 @@ import IconVue from './Icon.vue'
                   width *= dd;
                   height *= dd;
                 }
-                that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+                that.context.drawImage(this,0,(cH-height)/2,width,height)
             }
             this.preDrawAry = []
             this.nextDrawAry = []
             this.middleAry = [this.middleAry[0]]
             break
         }
+      },
+
+      // 旋转图片
+      Changerotate(){
+          console.log(this.Rotatestep)
+          //最小与最大旋转方向，图片旋转4次后回到原方向
+          // 到最大旋转角度，重置0
+          this.Rotatestep ++
+          if(this.Rotatestep == 4){
+            this.Rotatestep = 0
+          }
+          // 旋转角度
+            // this.selectIndex = 0
+
+            // this.radio = ''
+            // this.srcList = []
+
+            var that = this
+            const canvas = document.querySelector('#canvas')
+            that.context = canvas.getContext('2d')
+            var imgObj = new Image()
+            let selectSn = this.urlSrc[this.selectIndex].id
+            imgObj.src = '/api/student/question/getImage/' +selectSn+'?id=1'+"&d=" + new Date().getTime()
+            // this.srcList.push( '/api/student/question/getImage/' + selectSn+'?id=1'+"&d=" + new Date().getTime())
+            var imgW = ""
+            var imgH = ""
+            imgObj.onload = function(){
+              // canvas宽高
+              var cW = document.getElementById('canvas').width
+              var cH = document.getElementById('canvas').height
+              // 图片宽高
+              imgW = imgObj.width
+              imgH = imgObj.height
+
+              canvas.height = cH
+              canvas.width = cW
+
+
+              that.context.save()
+
+
+              let  width  = imgW;
+              let height = imgH;
+
+              if(width > cW){
+                let dd = cW / width;
+                width *= dd;
+                height *= dd;
+              }
+
+              if(height>cH){
+                let dd = cH / height;
+                width *= dd;
+                height *= dd;
+              }
+
+              // console.log(that.Rotatestep)
+              // that.context.translate(cW,cH)
+              // that.context.rotate(1 * 90* Math.PI / 180)
+              // that.context.translate(-cW,-cH)
+
+              that.context.translate(350,350)
+              that.context.rotate(that.Rotatestep*90* Math.PI / 180)
+              that.context.translate(-350,-350)
+
+
+              that.context.drawImage(this,0,(cH-height)/2,width,height)
+              that.context.restore();
+            }
+            this.initDraw()
+            this.setCanvasStyle()
+
       },
       // 生成图片
       getImage () {
@@ -721,6 +861,7 @@ import IconVue from './Icon.vue'
         // console.log(src)
        
       },
+
 
       // 设置绘画配置
       setCanvasStyle () {
