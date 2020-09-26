@@ -159,6 +159,7 @@
 				disabled: 0,
 				loading: false,
 				loading_img: false,
+				loading_Exam: false,
 				status: '',
 				studentSn: '',
 				examId: this.$route.query.id,
@@ -215,7 +216,9 @@
 				black_log_data: '',
 				up_img_black_id_arr: [],
 				finish_arr: [],
-				goTopicIndex: ''
+				goTopicIndex: '',
+				selectAllLog_one: 0,
+				selectAllLog_order: [],
 			}
 
 		},
@@ -374,7 +377,11 @@
 					this.topicIndex = index
 				}
 				// 判断选中的题目
-				checked ? (this.topicDefaultSave = this.topicDefault) : (this.topicDefault = this.topicDefaultSave)
+				if (checked) {
+					this.topicDefault = this.topicDefaultSave
+				} else {
+					this.topicDefault = this.topicDefaultSave
+				}
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -382,7 +389,6 @@
 				this.Problemtitle = data.topic_text
 				//  小题选项
 				this.ProblemChoice = data.items
-
 				// 新增小题答案
 				studentTestQuestionsAdd({
 					'paper_id': this.examId,
@@ -394,41 +400,55 @@
 					'question_id': id,
 					'question_sn': sn
 				}).then(res => {
-					// console.log(res.data)
-				})
-				// 小题日志
-				studentTestQuestionsLog({
-					'student_id': localStorage.getItem('userID'),
-					'paper_id': this.examId,
-					'question_id': id
-				}).then(res => {
-
-					let data = res.data.data.list[0]
-					this.question_id_black = data.id
-					this.question_sn_black = data.sn
-					// console.log(data.id)
-					// console.log(data.sn)
-					// 小题上传答案二维码
-					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					if (!data.hasOwnProperty('answer_test')) {
-						this.logtype = 'img',
-							this.up_img_black_id_arr = [],
-							this.urls = [],
-							this.srcList = [],
-							studentTestQuestionsUpImg(data.sn).then(res => {
+					this.selectAllLog()
+					// 小题日志
+					studentTestQuestionsLog({
+						'student_id': localStorage.getItem('userID'),
+						'paper_id': this.examId,
+						'question_id': id
+					}).then(res => {
+						console.log(res.data.data)
+						this.loading_img = false
+						let data = res.data.data.list[0]
+						this.question_id_black = data.id
+						this.question_sn_black = data.sn
+						// console.log(data)
+						// console.log(data.sn)
+						// 小题上传答案二维码
+						this.qrHost =
+							`${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none&websocket_sn=${this.websocket_sn}`
+						// console.log(this.qrHost)
+						// console.log(this.qrHost)
+						// 判断是上传否有图片
+						// console.log(data.sn)
+						studentTestQuestionsUpImg(data.sn).then(res2 => {
+							// console.log(res2)
+							this.loading_img = false
+							if (!res2.data.hasOwnProperty('data') && !data.hasOwnProperty('answer_test')) {
 								this.loading_img = false
-								res.data.data.map((x, i) => {
+								this.logtype = 'none'
+							} else if (data.hasOwnProperty('answer_test')) {
+								this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false, this.choiceKey =
+									data.answer_test
+								// console.log(data.answer_test)
+							} else if (res2.data.hasOwnProperty('data')) {
+								this.logtype = 'img'
+								this.up_img_black_id_arr = []
+								this.urls = []
+								this.srcList = []
+								res2.data.data.map((x, i) => {
 									// 返回的图片id
 									this.up_img_black_id_arr[i] = x.id
-									console.log(x.id)
+									// console.log(x.id)
 									this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 									this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 								})
-							})
-					} else {
-						this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false, this.choiceKey = this.answer_test
-					}
+							}
+
+						})
+					})
 				})
+
 			},
 			// 删除图片
 			upImgDel(id) {
@@ -539,33 +559,47 @@
 					'pageNum': 1,
 				}).then(res => {
 					let data = res.data.data.list
-					let order = []
-					// 获取正确排序id
-					this.topicArr.map((x, i) => {
-						order.push(x.data.id)
-						this.finish_arr.push({
-							finish: false,
-							index: i
+					this.selectAllLog_order
+					// 判断数量
+					// 判断第一次执行
+					if (this.selectAllLog_one == 0) {
+						// 获取正确排序id
+						this.topicArr.map((x, i) => {
+							this.selectAllLog_order.push(x.data.id)
+							this.finish_arr.push({
+								finish: false,
+								index: i
+							})
 						})
-					})
+
+						this.selectAllLog_one = 1
+					}
 					// 正确的排序数组
 					data.sort((a, b) => {
-						return order.indexOf(a.question_id) - order.indexOf(b.question_id);
+						return this.selectAllLog_order.indexOf(a.question_id) - this.selectAllLog_order.indexOf(b.question_id);
 					});
 					// 获取题目已经做了的题目
 					data.forEach((x, i) => {
 						if (x.hasOwnProperty('item_imgs') || x.hasOwnProperty('answer_test')) {
 							this.finish_arr[i]['finish'] = true
-						} else {}
+						} else {
+							this.finish_arr[i]['finish'] = false
+						}
 					})
-					if (this.topicDefault.length - 1 <= this.topicSum) {
+					// if (this.finish_arr.length == this.topicSum) {
 
+
+					// }
+					if (this.topicDefault.length - 1 <= this.topicSum) {
+						this.topicDefault = []
 						this.finish_arr.forEach((x, i) => {
 							if (x.finish) {
-								if (i != 0) {
+								if (i != -1) {
 									this.topicDefault.push(this.topicArr[i]['index'])
 								}
-							} else {}
+							} else {
+								this.topicDefault.splice(i, 1)
+							}
 						})
 					}
 				})
@@ -580,55 +614,55 @@
 		mounted() {
 			this.loading = true,
 				// localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
-				// ---查看学生信息
 				StudentAccountInfo({
-					id: localStorage.getItem('userID')
-				}).then(res => {
-					this.studentSn = res.data.data.list[0].sn
+						id: localStorage.getItem('userID')
+					}).then(res => {
+						this.studentSn = res.data.data.list[0].sn
+					})
+				// ---查询试卷---
+				apiCommonExamSelectById(this.examId).then(res => {
+					this.examTitle = res.data.data.title
+					this.examParticular = res.data.data.examExplain
+					this.examSn = res.data.data.sn
 				})
-			// ---查询试卷---
-			apiCommonExamSelectById(this.examId).then(res => {
-				this.examTitle = res.data.data.title
-				this.examParticular = res.data.data.examExplain
-				this.examSn = res.data.data.sn
-				console.log(res.data.data)
-			})
-			// ---查看试卷试题---
-			apiCommonExamSeleElementTestById(this.examId).then(res => {
-				let a, b, c = 1
-				let d = JSON.parse(res.data.data.elementTest);
-				console.log(d)
-				this.topic = d.items
-				d.items.forEach((x, i) => {
-					x.items.map((y, o) => {
-						this.topicSum = this.topicSum + y.items.length
-						y.items.map((z, p) => {
-							// 默认读取第一题
-							this.topicArr.push({
-								index: `${i+1}.${o+1}.${p+1}`,
-								type: z.question_type,
-								data: z,
-								id: z.id,
-								sn: z.sn
+				// ---查看试卷试题---
+				apiCommonExamSeleElementTestById(this.examId).then(res => {
+					let a, b, c = 1
+					let d = JSON.parse(res.data.data.elementTest);
+					console.log(d)
+					this.topic = d.items
+					d.items.forEach((x, i) => {
+						x.items.map((y, o) => {
+							this.topicSum = this.topicSum + y.items.length
+							y.items.map((z, p) => {
+								// 默认读取第一题
+								this.topicArr.push({
+									index: `${i+1}.${o+1}.${p+1}`,
+									type: z.question_type,
+									data: z,
+									id: z.id,
+									sn: z.sn
+								})
 							})
 						})
 					})
+					// 获取做完的题目
+					this.selectAllLog()
+					// 默认读取当前题目
+					let frist = this.topicDefault[this.topicDefault.length - 1]
+				
+					this.topicArr.map(x => {
+						if (x.index == frist) {
+							// this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn, true, next_data.index)
+							this.topicLittleQuestions(x.data, x.type, x.id, x.sn, true, x.index)
+						}
+					})
+					this.loading = false
 				})
-				// 默认读取当前题目
-				let frist = this.topicDefault[this.topicDefault.length - 1]
-				this.topicArr.map(x => {
-					if (x.index == frist) {
-						this.topicLittleQuestions(x.data, x.type, x.id)
-					}
-				})
-				this.loading = false
-				this.selectAllLog()
-			})
-
-			// ---定时器计算剩余时间
-			this.timer = setInterval(x => {
-				this.ResidueTime = this.getResidueTime()
-			}, 1000)
+				// ---定时器计算剩余时间
+				this.timer = setInterval(x => {
+					this.ResidueTime = this.getResidueTime()
+				}, 1000)
 		},
 	};
 </script>
