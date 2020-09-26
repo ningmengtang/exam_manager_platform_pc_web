@@ -26,6 +26,7 @@
 		apiStudentAccountSelectById,
 		apiCommonExamSelectById,
 		apiCommonExamSeleElementTestById,
+		studentTestQuestionsFinish
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -220,6 +221,9 @@
 				this.examTitle = res.data.data.title
 				this.examParticular = res.data.data.examExplain
 				// this.affix=res.data.data.affix
+			})
+			studentTestQuestionsFinish(this.examId,localStorage.getItem('userID')).then(res=>{
+				console.log(res)
 			})
 			Toast('考试完成5秒后自动跳转');
 			this.timer = setInterval(x => {
