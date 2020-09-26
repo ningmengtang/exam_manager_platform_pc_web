@@ -33,7 +33,7 @@
 				<div class="ts-time">{{examTime}}分钟</div>
 				<div class="ts-a-box">
 					<div class="t1">欢迎使用在线考试辅助系统</div>
-					<div class="t2">修正程序错误的第一步是要重现这个错误</div>
+					<!-- <div class="t2">修正程序错误的第一步是要重现这个错误</div> -->
 					<div class="t3">图片试卷无法使用本系统辅助大部分功能，仅可以直接上传答案图片</div>
 				</div>
 				<div class="go-box">

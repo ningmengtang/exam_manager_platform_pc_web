@@ -2,6 +2,16 @@
 	<div class="box">
 		<div class="group">
 			<div class="row-group" style="margin-top: 20px;">
+				<div class="th-group">试卷用途</div>
+				<div class="td-group">
+					<el-radio-group v-model="purpose" @change="getQuery">
+						<el-radio-button v-for="(item,index) in PurposeList" :label="item.id" :key="item.index">
+							{{item.text}}
+						</el-radio-button>
+					</el-radio-group>
+				</div>
+			</div>
+			<div class="row-group" style="margin-top: 20px;">
 				<div class="th-group">考试状态</div>
 				<div class="td-group">
 					<el-radio-group v-model="examStatus" @change="examTagStatus">
@@ -71,16 +81,7 @@
 					</el-radio-group>
 				</div>
 			</div>
-			<div class="row-group" style="margin-top: 20px;">
-				<div class="th-group">试卷用途</div>
-				<div class="td-group">
-					<el-radio-group v-model="purpose" @change="getQuery">
-						<el-radio-button v-for="(item,index) in PurposeList" :label="item.id" :key="item.index">
-							{{item.text}}
-						</el-radio-button>
-					</el-radio-group>
-				</div>
-			</div>
+			
 		</div>
 		<div class="particular">
 			<div class="li" v-for="(item,i) in paperList" :key="item.i">
@@ -166,7 +167,7 @@
 				SemesterList: [],
 				elementTest: 0,
 				ElementTextList: [],
-				purpose: 6,
+				purpose: 0,
 				PurposeList: [],
 				TagType: [],
 				paperList: [],
@@ -182,7 +183,7 @@
 			//---分页2
 			handleCurrentChange(val) {
 				this.page.pageNum = val
-				this.selectPaper([6],this.examStatus);
+				this.selectPaper([],this.examStatus);
 			},
 			//---查询标签
 			getQuery() {
@@ -244,10 +245,7 @@
 								this.ElementTextList = children
 								break;
 							case '试卷用途':
-								this.PurposeList = [{
-									id: 6,
-									text: "考试"
-								}]
+								this.PurposeList = children
 								break;
 						}
 						resolve(res)
@@ -316,7 +314,7 @@
 			},
 			// 考试状态标签查询
 			examTagStatus(){
-				this.selectPaper([6],this.examStatus)
+				this.selectPaper([],this.examStatus)
 			},
 			//---计算是否超时
 			isDuringDate(beginDateStr, endDateStr) {
@@ -335,8 +333,7 @@
 			this.TagTypeList = [];
 			this.selectAllTag();
 			// 全部试卷查询
-			this.selectPaper([6],this.examStatus)
-
+			this.selectPaper([],this.examStatus)
 		},
 	};
 </script>

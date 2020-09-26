@@ -31,7 +31,7 @@
 				<div class="ts2" v-if="FaceRecognition">进入考试前必须识别人脸</div>
 				<div class="ts2" v-else>进入考试前必须录入人脸</div>
 				<div class="face-img">
-					<el-upload class="upload-demo" drag action="" accept=".jpg,.png" :http-request="uploadFild" :before-upload="beforeUpload"
+					<!-- <el-upload class="upload-demo" drag action="" accept=".jpg,.png" :http-request="uploadFild" :before-upload="beforeUpload"
 					 :on-success="successUpload" :show-file-list="false" multiple v-loading="loading">
 						<div v-if="!uploadFile">
 							<i class="el-icon-upload"></i>
@@ -40,7 +40,21 @@
 						</div>
 						<el-image :src="uploadBlackimgscr" style="min-width: 100px;min-height: 100px;" v-else-if='isFace'></el-image>
 						<div v-if="isFace==false&&isFace!==''">请重新导入人脸</div>
-					</el-upload>
+					</el-upload> -->
+					<div>
+					    <el-button type="primary" @click="cameraupload">拍照上传</el-button>
+					   
+					    <div class="upload-item">
+					                    <span>摄像头切换：</span>
+					                    <el-select ref="select" v-model="selectCamera" placeholder="请选择" size="mini" @change="cameraChange">
+					                        <el-option v-for="item in selectOption" :key="item.label" :label="item.label" :value="item.value"></el-option>
+					                    </el-select>
+					                </div>
+					     <div class="upload-item">
+					            <span>拍照上传摄像头：</span>
+					            <video id="video" ref="video" width="100%" height="500" style="border-radius: 8px;"  autoplay playsinline></video>
+					     </div>
+					</div>
 				</div>
 				  <div>
 					  
@@ -93,7 +107,10 @@
 				FaceRecognition: false,
 				hasFaceBase64: '',
 				old_face: '',
-				canvas:''
+			 canvas:'',
+            selectOption:[],
+             selectCamera:'',
+			 
 				
 				
 			}
@@ -163,8 +180,59 @@
 
 					})
 				}
-
-
+			},
+			uploadBase64(){
+				var that = this
+				// console.log(param)
+				var file = param.file
+				this.uploadFile = new FormData()
+				// this.uploadFile.append('file', file)
+				this.loading = true
+				// this.FaceRecognition=false
+				if (this.FaceRecognition) {
+					this.uploadFile.append('file', file)
+					faceRecognition(this.uploadFile).then(res => {
+						
+						this.loading = false
+						if(res.data.result){
+							console.log(res)
+							this.uploadBlackimgscr = res.data.data
+							this.loading = false
+							this.$message.success('人脸识别成功')
+							this.isFace = true
+						}else{
+							document.title='学生-考试-人脸录入'
+							this.$alert(`${res.data.message}或者不是人脸！请重新导入`, '提示', {
+								confirmButtonText: '确定',
+								callback: action => {
+									this.$message.error(`${res.data.message}错误代码${res.data.stateCode}`)
+								}
+							});
+							this.isFace = false
+							this.loading = false
+						}
+					})
+				} else {
+					this.uploadFile.append('file', file)
+					faceInsert(this.userID,this.uploadFile).then(res => {
+						if (!res.data.result) {
+							this.$alert(`${res.data.message}或者不是人脸！请重新导入`, '提示', {
+								confirmButtonText: '确定',
+								callback: action => {
+									this.$message.error(`${res.data.message}错误代码${res.data.stateCode}`)
+								}
+							});
+							this.isFace = false
+							this.loading = false
+						} else {
+							this.uploadBlackimgscr = res.data.data.headImg
+							this.loading = false
+							this.$message.success('人脸录入成功')
+							this.isFace = true
+						}
+				
+					})
+				}
 			},
 			// 上传控制
 			beforeUpload(file) {
@@ -208,7 +276,37 @@
 				var fd = new FormData();
 				fd.append("file", obj, "image.png");
 				return fd
-			}
+			},
+			
+			cameraupload(){
+			    this.context.drawImage(video, 0, 0, 3264, 2448);
+			    let pageData = this.canvas.toDataURL("image/jpeg");
+				// this.cameraupload=true
+			    console.log(pageData)
+			},
+			cameraChange () {//改变摄像头
+				// console.log(this.selectCamera)
+			    navigator.mediaDevices.getUserMedia({
+			        video: {
+			            deviceId:{ exact: this.selectCamera },
+			            width: 3264, 
+			            height: 2448
+			        },
+					audio: false
+			    }).then(stream =>{
+			        //console.log(stream)
+			        let video = this.$refs.video
+			        //兼容webkit核心浏览器
+			        let CompatibleURL = window.URL || window.webkitURL;
+			        //将视频流设置为video元素的源
+			        //console.log(stream);
+			        //video.src = CompatibleURL.createObjectURL(stream);
+			        video.srcObject = stream;
+			        video.play();
+			    }).catch(err =>{
+			        console.log(err)
+			    })
+			},
 
 
 		},
@@ -252,13 +350,13 @@
 			navigator.mediaDevices
 				.getUserMedia(constraints)
 				.then(stream => {
-					console.log(stream)
+					// console.log(stream)
 					return navigator.mediaDevices.enumerateDevices();
 				}).then(s => {
-					console.log(s)
+					// console.log(s)
 					this.selectOption = []
 					s.forEach(i => {
-						console.log(i)
+						// console.log(i)
 						if (i.kind === 'videoinput') {
 							this.selectOption.push({
 								value: i.deviceId,
@@ -266,6 +364,10 @@
 							})
 						}
 					})
+					this.selectCamera = this.selectOption[0].value
+					this.cameraChange()
+					// console.log(this.selectOption)
+					
 				})
 		},
 	};

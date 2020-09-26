@@ -195,9 +195,9 @@
 				websocket_old: '',
 				websocket_black_change: false,
 				selectAllLog_one: 0,
-				selectAllLog_order: []
+				selectAllLog_order: [],
+				finishAll_t:false
 			}
-
 		},
 		methods: {
 			//---分页---
