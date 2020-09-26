@@ -58,6 +58,7 @@ router.beforeEach((to, from, next) => {
     }
     const role = localStorage.getItem('loginUserType');
     const token = localStorage.getItem('loginToken');
+    let type = localStorage.getItem('loginUserType')
     if (!role && !token && to.path !== '/login') {
         next('/login');
     } else if (role && token && to.path == '/login') {
