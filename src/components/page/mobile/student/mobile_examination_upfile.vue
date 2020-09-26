@@ -1,7 +1,7 @@
 <template>
 	<div class="box">
 		<div class="up-box">
-			<el-upload v-loading="loading" class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload"
+			<el-upload v-loading="loading" class="upload-demo" action="" :http-request="uploadFild"  accept="image/*,video/*" capture="camera" :before-upload="beforeUpload"
 			 :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
 				<el-button size="small" type="primary" class="button">点击上传</el-button>
 				<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>

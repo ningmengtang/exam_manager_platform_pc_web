@@ -31,7 +31,7 @@
 				<div class="ts2" v-if="FaceRecognition">进入考试前必须识别人脸</div>
 				<div class="ts2" v-else>进入考试前必须录入人脸</div>
 				<div class="face-img">
-					<el-upload class="upload-demo" drag action="" accept=".jpg,.png" :http-request="uploadFild" :before-upload="beforeUpload"
+					<el-upload class="upload-demo" drag action=""  :http-request="uploadFild"  accept="image/*,video/*" capture="camera"  :before-upload="beforeUpload"
 					 :on-success="successUpload" :show-file-list="false" multiple v-loading="loading">
 						<div v-if="!uploadFile">
 							<i class="el-icon-upload"></i>
@@ -124,7 +124,6 @@
 				if (this.FaceRecognition) {
 					this.uploadFile.append('file', file)
 					faceRecognition(this.uploadFile).then(res => {
-						
 						this.loading = false
 						if(res.data.result){
 							console.log(res)
@@ -162,11 +161,9 @@
 							this.$message.success('人脸录入成功')
 							this.isFace = true
 						}
-
+			
 					})
 				}
-
-
 			},
 			// 上传控制
 			beforeUpload(file) {

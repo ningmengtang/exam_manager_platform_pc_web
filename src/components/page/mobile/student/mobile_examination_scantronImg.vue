@@ -16,7 +16,7 @@
 				<div class="other-box" style="margin-top: .3rem;">
 					<div class="status">图片试卷上传答案</div>
 					<div class="up-box" v-loading="loading">
-						<el-upload class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload" :on-preview="handlePreview"
+						<el-upload class="upload-demo" action="" :http-request="uploadFild"  accept="image/*,video/*" capture="camera" :before-upload="beforeUpload" :on-preview="handlePreview"
 						 :on-remove="handleRemove" list-type="picture">
 							<el-button size="small" type="primary" class="button">点击上传</el-button>
 							<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
