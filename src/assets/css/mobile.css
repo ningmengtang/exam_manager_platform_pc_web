@@ -46,6 +46,7 @@
     padding:3vw;
     background: #fff;
     height: 100%;
+    font-size: 14px;
 }
 .label-box{margin:  5vw 1vw 0 0;flex-wrap: wrap; text-align: center;width: 100%;}
 .label-box .label{background-color: rgba(229, 229, 229, 1);height: 25px;min-width: 80px;color: #FFFFFF;border-radius: 4px;display: inline-block;justify-content: center;align-items: center;font-size: 14px;margin-left: 2vw;margin-top: 2px;line-height: 25px;}

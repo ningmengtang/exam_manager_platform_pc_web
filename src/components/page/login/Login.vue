@@ -309,7 +309,7 @@
 					isAndroid = ua.match(/(Android)\s+([\d.]+)/),
 					isMobile = isIphone || isAndroid;
 				if (this.screenWidth <= 750||isMobile) {
-					mobile();
+					// mobile();
 					return true
 				}else{
 					return false

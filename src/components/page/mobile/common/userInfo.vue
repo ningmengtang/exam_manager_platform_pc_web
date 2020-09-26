@@ -54,6 +54,7 @@ export default {
             this.$router.push('/mobile_teacherIndex')
         },
         loginOut(){
+            
             // var token = localStorage.getItem('loginToken');
 			userLoginOut({}).then(res => {
 				// console.log(res.data)
@@ -62,6 +63,7 @@ export default {
 					localStorage.clear()
 					this.$router.push('/login');
 				} else {
+                    localStorage.clear()
                     Toast.fail('登出失败');
 				}
 			})
