@@ -1,15 +1,15 @@
 <template>
 	<div class="box">
-		<div class="up-box" >
-			<el-upload v-loading="loading" class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload" :on-preview="handlePreview"
-			 :on-remove="handleRemove" :file-list="fileList" list-type="picture">
+		<div class="up-box">
+			<el-upload v-loading="loading" class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload"
+			 :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
 				<el-button size="small" type="primary" class="button">点击上传</el-button>
 				<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
 			</el-upload>
 
 
 		</div>
-		<Tabbar />
+		<!-- <Tabbar /> -->
 	</div>
 </template>
 
@@ -17,11 +17,13 @@
 	import Tabbar from '../common/tabbar.vue'
 	import mobile from '@/assets/js/mobile.js'
 	import {
-		Dialog,Toast
+		Dialog,
+		Toast
 	} from 'vant'
 	import {
 		studentTestQuestionsImg,
-		studentTestQuestionsAnswerSheet
+		studentTestQuestionsAnswerSheet,
+		studentTestQuestionsWebsocktImg
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -86,48 +88,60 @@
 				this.uploadFile.append('file', file)
 				this.loading = true
 				if (this.uploadType == 'none') {
-					studentTestQuestionsImg(this.getData.answer_id, this.uploadFile).then(res => {
+					if (this.getData.websocket_sn == undefined) {
+						Dialog.alert({
+							message: '请重新扫描二维码',
+						}).then(() => {
+								this.$router.push({
+									name: '404',	
+									query: {
+										id: this.examId
+									}
+								})
+						});
+						
+					}
+					studentTestQuestionsWebsocktImg(this.getData.answer_id, this.getData.websocket_sn, this.uploadFile).then(res => {
 						Toast.success('图片上传成功,上传完全部答题卡请关闭改页面');
 						this.loading = false
-						setTimeout(x=>{
-							this.$router.push({
-								name: '404',
-								query: {
-									id: this.examId
-								}
-							})
-						},1000)
-						
+						// setTimeout(x=>{
+						// 	this.$router.push({
+						// 		name: '404',	
+						// 		query: {
+						// 			id: this.examId
+						// 		}
+						// 	})
+						// },1000)
 					})
 				} else if (this.uploadType == 'has') {
 					studentTestQuestionsAnswerSheet(5000, this.getData.paper_id, this.uploadFile).then(res => {
-					
-							Toast.success('图片上传成功,上传完答案请关闭该页面');
-							this.loading = false
-							console.log(res)
-							for (let x in res.data.data) {
-								this.blackData = res.data.data[x]
-							}
-							// Dialog.alert({
-							//   message: JSON.stringify(this.blackData),
-							// }).then(() => {
-							//   // on close
-							// });
-					         if (res.data.hasOwnProperty('data')) {
-					         	Dialog.alert({
-					         		message: JSON.stringify(this.blackData),
-					         	}).then(() => {
-					         		// on close
-					         	});
-					         } else {
-					         Dialog.alert({
-					         	message: res.data.message,
-					         }).then(() => {
-					         	// on close
-					         });
-					         
-					         }
-						})
+
+						Toast.success('图片上传成功,上传完答案请关闭该页面');
+						this.loading = false
+						console.log(res)
+						for (let x in res.data.data) {
+							this.blackData = res.data.data[x]
+						}
+						// Dialog.alert({
+						//   message: JSON.stringify(this.blackData),
+						// }).then(() => {
+						//   // on close
+						// });
+						if (res.data.hasOwnProperty('data')) {
+							Dialog.alert({
+								message: JSON.stringify(this.blackData),
+							}).then(() => {
+								// on close
+							});
+						} else {
+							Dialog.alert({
+								message: res.data.message,
+							}).then(() => {
+								// on close
+							});
+
+						}
+					})
 				}
 			},
 			// 上传控制
@@ -245,8 +259,7 @@
 				console.log(file);
 			}
 		},
-		mounted() {
-		}
+		mounted() {}
 	};
 </script>
 

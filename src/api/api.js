@@ -49,13 +49,13 @@ export function ApiTagSelectList(data) {
 	return result;
 }
 // 人脸录入
-export function faceInsert(data){
-	const result = post ('/api/face/insert',data)
+export function faceInsert(id,data){
+	const result = post ('/api/face/insert/'+id,data)
 	return result;
 }
 // 人脸对照
-export function faceRecognition (data){
-	const result = post ('/api/face/compare',data)
+export function faceRecognition(data){
+	const result = post ('/api/student/account/searchOne',data)
 	return result;
 }
 //教师首页状态查询
@@ -1095,6 +1095,11 @@ export function studentTestQuestionsAdd(data){
 // 学生上传图片答案
 export function studentTestQuestionsImg(id,data){
     const result =post('/api/student/question/studentFile/'+id,data)
+	return result;
+}
+// websockt
+export function studentTestQuestionsWebsocktImg(id,sn,data){
+    const result =post('/api/student/question/addFileByWebSocket/'+id+'/'+sn,data)
 	return result;
 }
 // 学生上传String答案

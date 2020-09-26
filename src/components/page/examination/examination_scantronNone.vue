@@ -41,7 +41,7 @@
 				</div>
 				<div class="content-b">
 					<div class="c-title" v-html="Problemtitle"></div>
-					<div class="ewm" v-show="stateType!=1000&&stateType!=2000">
+					<div class="ewm" v-show="stateType!=1000&&stateType!=2000" v-loading="loading_ewm">
 						<vue-qr :text="qrHost" :margin="0" colorDark="#000000" colorLight="#fff" :size="100"></vue-qr>
 						<div class="l">扫码快速上传</div>
 					</div>
@@ -131,6 +131,8 @@
 				disabled: 0,
 				loading: false,
 				loading_img: false,
+				loading_Exam: false,
+				loading_ewm: true,
 				is_checkbox_click: false,
 				status: '',
 				studentSn: '',
@@ -188,6 +190,11 @@
 				up_img_black_id_arr: [],
 				finish_arr: [],
 				unfinished_arr: [],
+				websock_frist: 0,
+				websocket_sn: '',
+				websocket_old: '',
+				websocket_black_change: false,
+				selectAllLog_one: 0
 			}
 
 		},
@@ -293,7 +300,7 @@
 			topicLittleQuestions(data, type, id, sn, checked, index) {
 
 				// loading
-				this.loading_img = true
+				// this.loading_img = true
 				// 重置选项
 				this.choiceKey = ''
 				this.logtype = ''
@@ -303,11 +310,18 @@
 				}
 				// 判断选中的题目
 				// checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
-				checked?(''):(this.topicDefault = this.topicDefaultSave)
-				// checked ? (
-				// 		''
-				// 	) :
-				// 	(this.topicDefault = this.topicDefaultSave)
+				// checked?(this.topicDefault = this.topicDefaultSave):(this.topicDefault = this.topicDefaultSave)
+				if (checked) {
+					this.selectAllLog()
+					// console.log(this.finish_arr)
+					// console.log(index)
+					this.topicDefault = this.topicDefaultSave
+
+					// clearInterval(time2)
+
+				} else {
+					this.topicDefault = this.topicDefaultSave
+				}
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -315,6 +329,7 @@
 				this.Problemtitle = data.topic_text
 				//  小题选项
 				this.ProblemChoice = data.items
+
 				// 新增小题答案
 				studentTestQuestionsAdd({
 					'paper_id': this.examId,
@@ -334,25 +349,28 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
-
+					this.loading_img = false
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
 					this.question_sn_black = data.sn
 					// console.log(data)
 					// console.log(data.sn)
 					// 小题上传答案二维码
-					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
+					this.qrHost =
+						`${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none&websocket_sn=${this.websocket_sn}`
+					console.log(this.qrHost)
 					// console.log(this.qrHost)
 					// 判断是上传否有图片
 					// console.log(data.sn)
 					studentTestQuestionsUpImg(data.sn).then(res2 => {
+						console.log(res2)
 						this.loading_img = false
 						if (!res2.data.hasOwnProperty('data') && !data.hasOwnProperty('answer_test')) {
 							this.loading_img = false
 							this.logtype = 'none'
 						} else if (data.hasOwnProperty('answer_test')) {
 							this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false
-							console.log(data.answer_test)
+							// console.log(data.answer_test)
 						} else if (res2.data.hasOwnProperty('data')) {
 							this.logtype = 'img'
 							this.up_img_black_id_arr = []
@@ -365,14 +383,19 @@
 								this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 								this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 							})
+
 						}
+
 					})
 				})
 			},
+
+
 			// 删除图片
 			upImgDel(id) {
 				studentTestQuestionsDelImg(id).then(res => {
 					this.$message.success('删除图片成功！')
+					this.img_size--;
 				})
 				studentTestQuestionsUpImg(this.question_sn_black).then(res => {
 					// 获取删除的索引
@@ -380,6 +403,7 @@
 					this.up_img_black_id_arr.splice(index, 1)
 					this.urls.splice(index, 1)
 					this.srcList.splice(index, 1)
+					this.selectAllLog()
 				})
 			},
 			// 题目跳转
@@ -452,6 +476,7 @@
 						let data = res2.data.data.list[0]
 						console.log(data.answer_test)
 						this.answer_test = data.answer_test
+						this.selectAllLog()
 					})
 				})
 			},
@@ -463,7 +488,7 @@
 						finish_num++
 					}
 				})
-				if (finish_num == this.topicSum) {
+				if (finish_num >= this.topicSum) {
 					this.$confirm('全是题目已完成, 是否提交试卷?', '提示', {
 						confirmButtonText: '确定',
 						cancelButtonText: '取消',
@@ -482,6 +507,56 @@
 					});
 				}
 			},
+			//初始化weosocket
+			initWebSocket() { //初始化weosocket
+				const wsuri = "ws://10.0.0.13:8082";
+				this.websock = new WebSocket(wsuri);
+				this.websock.onmessage = this.websocketonmessage;
+				this.websock.onopen = this.websocketonopen;
+				this.websock.onerror = this.websocketonerror;
+				this.websock.onclose = this.websocketclose;
+				console.log('kkk')
+			},
+			websocketonopen() { //连接建立之后执行send方法发送数据
+				// let actions = {
+				// 	"test": "12345"
+				// };
+				// this.websocketsend(JSON.stringify(actions));
+			},
+			websocketonerror() { //连接建立失败重连
+				this.initWebSocket();
+			},
+			websocketonmessage(e) { //数据接收
+				this.websocket_black_change = true
+				//  判断第一次链接
+				if (this.websock_frist == 0) {
+					this.websock_frist = 1
+					if (this.loading_Exam) {
+						this.loading = false
+						this.loading_ewm = false
+						const redata = JSON.parse(e.data);
+						this.websocket_sn = redata.websocket_sn
+					}
+				} else {
+
+					studentTestQuestionsUpImg(this.question_sn_black).then(res => {
+						this.loading_img = false
+						res.data.data.map((x, i) => {
+							// 返回的图片id
+							this.up_img_black_id_arr[i] = x.id
+							this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+							this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+						})
+						this.selectAllLog()
+					})
+				}
+			},
+			websocketsend(Data) { //数据发送
+				this.websock.send(Data);
+			},
+			websocketclose(e) { //关闭
+				console.log('断开连接', e);
+			},
 			// 查询日志
 			selectlog() {
 				this.loading_img = true
@@ -495,27 +570,6 @@
 					let data = res.data.data.list[0]
 					this.black_log_data = res.data.data.list
 					this.up_img_black_id_arr = [];
-					// if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
-					// 	this.logtype = 'none'
-					// 	console.log(1)
-					// } else {
-					// 	data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img=false) :
-					// 		(
-					// 			this.logtype = 'img',
-					// 			studentTestQuestionsUpImg(this.question_sn_black).then(res => {
-					// 				this.loading_img=false
-					// 				if (res.data.data != undefined) {
-					// 					res.data.data.map((x, i) => {
-					// 						// 返回的图片id
-					// 						this.up_img_black_id_arr[i] = x.id
-					// 						this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
-					// 						this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
-					// 					})
-					// 				}
-
-					// 			})
-					// 		)
-					// }
 					if (!data.hasOwnProperty('answer_test')) {
 						this.logtype = 'img',
 							this.up_img_black_id_arr = [],
@@ -524,7 +578,6 @@
 
 							studentTestQuestionsUpImg(data.sn).then(res => {
 								this.loading_img = false
-
 								res.data.data.map((x, i) => {
 									// 返回的图片id
 									this.up_img_black_id_arr[i] = x.id
@@ -556,26 +609,27 @@
 							index: i
 						})
 					})
-					// 正确的排序数组
-					data.sort((a, b) => {
-						return order.indexOf(a.question_id) - order.indexOf(b.question_id);
-					});
-
-					// 获取题目已经做了的题目
-					console.log(this.finish_arr)
-					data.forEach((x, i) => {
-						if (x.hasOwnProperty('item_imgs') || x.hasOwnProperty('answer_test')) {
-							this.finish_arr[i]['finish'] = true
-							console.log(this.topicArr[i])
-						} else {}
-					})
-					this.finish_arr.map((x, i) => {
-						if (x.finish) {
-							this.topicDefault.push(this.topicArr[i]['index'])
+						// 正确的排序数组
+						data.sort((a, b) => {
+							return order.indexOf(a.question_id) - order.indexOf(b.question_id);
+						});
+						// 获取题目已经做了的题目
+						data.forEach((x, i) => {
+							if (x.hasOwnProperty('item_imgs') || x.hasOwnProperty('answer_test')) {
+								this.finish_arr[i]['finish'] = true
+							} else {}
+						})
+						if(this.topicDefault.length-1<=this.topicSum){
+							
+							this.finish_arr.forEach((x, i) => {
+								if (x.finish) {
+									if (i != 0) {
+										this.topicDefault.push(this.topicArr[i]['index'])
+									}
+								} else {
+								}
+							})
 						}
-					})
-
-
 				})
 
 			},
@@ -635,30 +689,20 @@
 						this.topicLittleQuestions(x.data, x.type, x.id)
 					}
 				})
-				this.loading = false
-				// console.log(this.topicArr)
+				this.loading_Exam = true
+				this.initWebSocket();
 			})
+
 			// ---定时器计算剩余时间
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
 			}, 1000)
-            let data_old=[]
-			
-		// 	let time2=setInterval(x => {
-		// 		this.topicArr.map(x => {
-		// 			if (x.index == this.topicIndex) {
-		// 				this.topicLittleQuestions(x.data, x.type, x.id)
-		// 			}
-		// 			data_old=this.urls.length
-		// 			console.log(this.urls)
-		// 		})
-		// 	}, 3000)
-		// 	this.topicArr.map(x => {
-		// 		if (x.index == this.topicIndex) {
-		// 			this.topicLittleQuestions(x.data, x.type, x.id)
-		// 		}
-		// 	})
-			
+			let data_old = []
+			// 	this.topicArr.map(x => {
+			// 		if (x.index == this.topicIndex) {
+			// 			this.topicLittleQuestions(x.data, x.type, x.id)
+			// 		}
+			// 	})
 		}
 
 
