@@ -454,10 +454,10 @@ export default new Router({
             meta: { title: '学生-登录' }
         },
         {
-            path: '/vueCanvas',
+            path: '/vueVideo',
             component: () =>
-                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/vueCanvas.vue'),
-            meta: { title: '试卷下载' }
+                import ( /* webpackChunkName: "distribution_affirm" */ '../components/page/vueVideo.vue'),
+            meta: { title: '摄像头' }
         },
 
 

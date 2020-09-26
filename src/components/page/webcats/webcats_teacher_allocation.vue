@@ -222,10 +222,13 @@ export default {
                     this.teacherList = []
                     if(res.data.data.list){
                         let list = res.data.data.list
-                        console.log(list)
+                        // console.log(list)
                         for(var i=0;i<list.length;i++){
                             if(list[i].id == localStorage.getItem('userID')){
                                 continue
+                            }else if(list[i].role_list && list[i].role_list[0].roleName == '教师组长'){
+                                continue
+                                
                             }else{
                                 this.teacherList.push(list[i])
                             }
@@ -241,6 +244,7 @@ export default {
         // 改变老师
         handleChangeTeacher(){
             console.log(this.selectTeacher)
+            // this.yetPlan
         },
 
         // 返回菜单
@@ -258,67 +262,74 @@ export default {
 
         // 下一题
         nextTopic(){
-            if(this.selectTeacher.length>0){
-                // console.log(this.selectIndex)
-                if(this.selectIndex >= this.selectTopicList.length){
-                    this.selectIndex = this.selectTopicList.length -1
-                    this.$message.warning('当前任务已经分配完成，请确认所有分配方案')
-                }else{
-                    // 总份数
+            console.log(this.selectTeacher.length)
+            console.log(this.yetPlan)
+            if(this.selectTeacher.length < this.yetPlan){
+                if(this.selectTeacher.length>0){
+                    // console.log(this.selectIndex)
+                    if(this.selectIndex >= this.selectTopicList.length){
+                        this.selectIndex = this.selectTopicList.length -1
+                        this.$message.warning('当前任务已经分配完成，请确认所有分配方案')
+                    }else{
+                        // 总份数
 
-                    let Allnum = this.yetPlan 
-                    let allTaskList = []
-                    for(var i=0;i<this.NowSlectItem.length;i++){
-                        for(var a=0;a<this.selectTeacher.length;a++){
-                            // 处理最后一个
-                            if(a == this.selectTeacher.length -1){
+                        let Allnum = this.yetPlan 
+                        let allTaskList = []
+                        for(var i=0;i<this.NowSlectItem.length;i++){
+                            for(var a=0;a<this.selectTeacher.length;a++){
+                                // 处理最后一个
+                                if(a == this.selectTeacher.length -1){
 
-                                allTaskList.push({
-                                    "teacher_id":this.selectTeacher[a],
-                                    "question_id":this.NowSlectItem[i].id,
-                                    "count":Allnum -( parseInt(Allnum/this.selectTeacher.length) * a),
-                                    "paper_id":this.paperId,
-                                    "task_id":this.taskId
-                                })
-                            }else{
-                                allTaskList.push({
-                                    "teacher_id":this.selectTeacher[a],
-                                    "question_id":this.NowSlectItem[i].id,
-                                    "count":parseInt(Allnum/this.selectTeacher.length),
-                                    "paper_id":this.paperId,
-                                    "task_id":this.taskId
-                                })
+                                    allTaskList.push({
+                                        "teacher_id":this.selectTeacher[a],
+                                        "question_id":this.NowSlectItem[i].id,
+                                        "count":Allnum -( parseInt(Allnum/this.selectTeacher.length) * a),
+                                        "paper_id":this.paperId,
+                                        "task_id":this.taskId
+                                    })
+                                }else{
+                                    allTaskList.push({
+                                        "teacher_id":this.selectTeacher[a],
+                                        "question_id":this.NowSlectItem[i].id,
+                                        "count":parseInt(Allnum/this.selectTeacher.length),
+                                        "paper_id":this.paperId,
+                                        "task_id":this.taskId
+                                    })
+                                }
                             }
+                        }
+
+                        this.allTaskList[this.selectIndex] = allTaskList
+                        this.selectIndex++
+                        // 初始化数据
+                        if(this.selectIndex >= this.selectTopicList.length ){
+                            this.selectIndex = this.selectTopicList.length
+                        }else{
+                            let firstItem =  this.selectTopicList[this.selectIndex]
+                        
+                            this.NowSlectItem = []
+                            firstItem.groupQuestionArr.forEach(ele => {
+                                this.NowSlectItem.push({
+                                    "no":ele.no,
+                                    "id":ele.id
+                                })
+                            });
+
+                            this.$forceUpdate();
+                        
+                            this.selectTeacher = []
+                            // console.log(this.allTaskList)
+
                         }
                     }
 
-                    this.allTaskList[this.selectIndex] = allTaskList
-                    this.selectIndex++
-                    // 初始化数据
-                    if(this.selectIndex >= this.selectTopicList.length ){
-                        this.selectIndex = this.selectTopicList.length
-                    }else{
-                        let firstItem =  this.selectTopicList[this.selectIndex]
-                    
-                        this.NowSlectItem = []
-                        firstItem.groupQuestionArr.forEach(ele => {
-                            this.NowSlectItem.push({
-                                "no":ele.no,
-                                "id":ele.id
-                            })
-                        });
-
-                        this.$forceUpdate();
-                       
-                        this.selectTeacher = []
-                        // console.log(this.allTaskList)
-
-                    }
+                }else{
+                    this.$message.warning('请分配老师')
                 }
-
             }else{
-                 this.$message.warning('请分配老师')
+                this.$message.warning('分配的老师不能多于总试卷')
             }
+
         },
 
         // 上一题
