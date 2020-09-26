@@ -124,6 +124,7 @@
 				if (this.FaceRecognition) {
 					this.uploadFile.append('file', file)
 					faceRecognition(this.uploadFile).then(res => {
+						
 						this.loading = false
 						if(res.data.result){
 							console.log(res)
@@ -161,9 +162,11 @@
 							this.$message.success('人脸录入成功')
 							this.isFace = true
 						}
-			
+
 					})
 				}
+
+
 			},
 			// 上传控制
 			beforeUpload(file) {

@@ -77,7 +77,7 @@
 							<el-upload class="upload-demo" action="" :http-request="uploadFild" :before-upload="beforeUpload" :on-preview="handlePreview"
 							 :on-remove="handleRemove" :file-list="fileList" list-type="picture">
 								<el-button size="small" type="primary" class="button">点击上传</el-button>
-								<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2m</div>
+								<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10m</div>
 							</el-upload>
 						</div>
 						<div style="display: flex;justify-content: center;flex-wrap: wrap;">
@@ -399,7 +399,8 @@
 					'student_sn': this.studentSn,
 					'question_id': id,
 					'question_sn': sn
-				}).then(res => {
+				}).then(res0 => {
+					console.log(res0)
 					this.selectAllLog()
 					// 小题日志
 					studentTestQuestionsLog({
@@ -478,7 +479,7 @@
 						this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
 
 					} else {
-						this.$message.success('没有上一题了')
+						Toast('考试完成5秒后自动跳转');
 					}
 				} else if (type == 'next') {
 					if (this.topicSum != (index + 1)) {
@@ -488,8 +489,15 @@
 						questionsType = next_data.type
 						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
 					} else {
-						this.finishAll()
-						this.$message.success('现在是最后一题了')
+						Toast('现在是最后一题了');
+						Dialog.confirm({
+							title: '提示',
+							message: '是否提交试卷',
+						}).then(() => {
+							this.finish()
+						}).catch(() => {
+							// on cancel
+						});
 					}
 
 				}
@@ -497,16 +505,22 @@
 			// 上传选择题答案
 			upChoice(id) {
 				studentTestQuestionsString(this.choiceKey, id).then(res => {
+					this.loading_img = true
 					studentTestQuestionsLog({
 						'student_id': localStorage.getItem('userID'),
 						'paper_id': this.examId,
 						'id': id
 					}).then(res2 => {
+						this.loading_img = false
+						this.logtype = 'choice'
 						let data = res2.data.data.list[0]
+						console.log(data.answer_test)
 						this.answer_test = data.answer_test
+						this.selectAllLog()
 					})
 				})
-			}, // 提交
+			}, 
+			// 提交
 			finishAll() {
 				let finish_num = 0
 				this.finish_arr.map((x, i) => {
@@ -605,7 +619,7 @@
 				})
 			},
 			handleRemove(file, fileList) {
-				console.log(file, fileList);
+			
 			},
 			handlePreview(file) {
 				console.log(file);
@@ -615,54 +629,54 @@
 			this.loading = true,
 				// localStorage.getItem('topic') != null ? this.topicDefault = JSON.parse(localStorage.getItem('topic')) : '';
 				StudentAccountInfo({
-						id: localStorage.getItem('userID')
-					}).then(res => {
-						this.studentSn = res.data.data.list[0].sn
-					})
-				// ---查询试卷---
-				apiCommonExamSelectById(this.examId).then(res => {
-					this.examTitle = res.data.data.title
-					this.examParticular = res.data.data.examExplain
-					this.examSn = res.data.data.sn
+					id: localStorage.getItem('userID')
+				}).then(res => {
+					this.studentSn = res.data.data.list[0].sn
 				})
-				// ---查看试卷试题---
-				apiCommonExamSeleElementTestById(this.examId).then(res => {
-					let a, b, c = 1
-					let d = JSON.parse(res.data.data.elementTest);
-					console.log(d)
-					this.topic = d.items
-					d.items.forEach((x, i) => {
-						x.items.map((y, o) => {
-							this.topicSum = this.topicSum + y.items.length
-							y.items.map((z, p) => {
-								// 默认读取第一题
-								this.topicArr.push({
-									index: `${i+1}.${o+1}.${p+1}`,
-									type: z.question_type,
-									data: z,
-									id: z.id,
-									sn: z.sn
-								})
+			// ---查询试卷---
+			apiCommonExamSelectById(this.examId).then(res => {
+				this.examTitle = res.data.data.title
+				this.examParticular = res.data.data.examExplain
+				this.examSn = res.data.data.sn
+			})
+			// ---查看试卷试题---
+			apiCommonExamSeleElementTestById(this.examId).then(res => {
+				let a, b, c = 1
+				let d = JSON.parse(res.data.data.elementTest);
+				console.log(d)
+				this.topic = d.items
+				d.items.forEach((x, i) => {
+					x.items.map((y, o) => {
+						this.topicSum = this.topicSum + y.items.length
+						y.items.map((z, p) => {
+							// 默认读取第一题
+							this.topicArr.push({
+								index: `${i+1}.${o+1}.${p+1}`,
+								type: z.question_type,
+								data: z,
+								id: z.id,
+								sn: z.sn
 							})
 						})
 					})
-					// 获取做完的题目
-					this.selectAllLog()
-					// 默认读取当前题目
-					let frist = this.topicDefault[this.topicDefault.length - 1]
-				
-					this.topicArr.map(x => {
-						if (x.index == frist) {
-							// this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn, true, next_data.index)
-							this.topicLittleQuestions(x.data, x.type, x.id, x.sn, true, x.index)
-						}
-					})
-					this.loading = false
 				})
-				// ---定时器计算剩余时间
-				this.timer = setInterval(x => {
-					this.ResidueTime = this.getResidueTime()
-				}, 1000)
+				// 获取做完的题目
+				this.selectAllLog()
+				// 默认读取当前题目
+				let frist = this.topicDefault[this.topicDefault.length - 1]
+
+				this.topicArr.map(x => {
+					if (x.index == frist) {
+						// this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn, true, next_data.index)
+						this.topicLittleQuestions(x.data, x.type, x.id, x.sn, true, x.index)
+					}
+				})
+				this.loading = false
+			})
+			// ---定时器计算剩余时间
+			this.timer = setInterval(x => {
+				this.ResidueTime = this.getResidueTime()
+			}, 1000)
 		},
 	};
 </script>
