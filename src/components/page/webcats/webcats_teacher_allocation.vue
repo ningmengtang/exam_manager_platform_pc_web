@@ -222,6 +222,7 @@ export default {
                     this.teacherList = []
                     if(res.data.data.list){
                         let list = res.data.data.list
+                        console.log(list)
                         for(var i=0;i<list.length;i++){
                             if(list[i].id == localStorage.getItem('userID')){
                                 continue

@@ -310,9 +310,7 @@ import IconVue from './Icon.vue'
       // },
         
         urlSrc:function(){
-
-
-          console.log(12121)
+          console.log('进入canvas')
           this.selectIndex = 0
 
           this.radio = ''
@@ -335,7 +333,7 @@ import IconVue from './Icon.vue'
             var imgH = ""
             imgObj.onload = function(){
              
-
+              
               // let imageWrapperCanvas  = document.querySelector('#canvas1')
               // let imageWrapperCtx = imageWrapperCanvas.getContext('2d')
            
@@ -347,7 +345,10 @@ import IconVue from './Icon.vue'
               // 图片宽高
               imgW = imgObj.width
               imgH = imgObj.height
-
+              
+              // 在canvas绘制前填充白色背景
+              that.context.fillStyle = "#fff";
+              that.context.fillRect(0, 0, cW, cH)
 
 
               // let width = imgW;
@@ -367,10 +368,10 @@ import IconVue from './Icon.vue'
 
 
 
-              canvas.height = cH
-              canvas.width = cW
+              // canvas.height = cH
+              // canvas.width = cW
               // that.context.drawImage(this,0,(cH-imgH * cW/imgW)/2,cW,imgH*cW/imgW)
-              that.context.save()
+              // that.context.save()
 
               
               let  width  = imgW;
@@ -417,7 +418,7 @@ import IconVue from './Icon.vue'
               // that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
              
 
-              that.context.restore();
+              // that.context.restore();
             }
             this.initDraw()
             this.setCanvasStyle()

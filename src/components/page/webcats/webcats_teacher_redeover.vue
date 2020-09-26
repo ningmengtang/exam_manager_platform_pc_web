@@ -226,13 +226,17 @@ export default {
                     // console.log(itemId)
                     for(var k=0;k<alllist.length;k++){
                         if(alllist[k].id == item){
+                            
+                           
                             promiseArr.push(this.NextWaitPromise(itemId,selectData.radioType,alllist[k].setgetNum,formData,oldTopic))
                         }
                     }
                 }
             }
             // 非扫描上传
+            
             else{
+                console.log(data)
                 for(var i=0;i<data.length;i++){
                     let formData = new FormData()
                     let fileName = new Date().getTime() +'.png'
@@ -240,6 +244,8 @@ export default {
                     
                     for(var k=0;k<alllist.length;k++){
                         if(alllist[k].id == data[i].question_id){
+                            // console.log('上传文件')
+                            // console.log(data[i].teacherImg)
                             promiseArr.push(this.NextWaitPromise(data[i].student_with_question_id,data[i].radioType,alllist[k].setgetNum,formData,oldTopic))
                         }
                     }
@@ -283,7 +289,8 @@ export default {
 		    u8arr = new Uint8Array(n)
 		    while (n--) {
 		        u8arr[n] = bstr.charCodeAt(n)
-		    }
+            }
+            console.log(1212)
 		    return new File([u8arr], fileName , {
 		        type: 'image/png'
 		    })

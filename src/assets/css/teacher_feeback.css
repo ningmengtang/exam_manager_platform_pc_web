@@ -61,7 +61,7 @@
     margin-top: 20px;
 }
 .elementTopic{
-    min-height: 300px;
+    min-height: 140px;
     text-align: center;
 }
 .elementTopic /deep/.el-radio-button{
@@ -133,7 +133,7 @@
     min-height: 300px;
 }
 .right_content{
-    padding: 10px;
+    /* padding: 10px; */
 }
 .topic_text{
     margin: 10px 0px;

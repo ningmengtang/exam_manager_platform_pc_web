@@ -80,7 +80,7 @@
            
             <div class="right_box_report">
                 <div class="right_box_title">
-                    <h3>异常卷报告（{{cardErrorIndex}}个未处理）</h3>
+                    <h3>异常导入日志</h3>
                 </div>
                 <el-row :gutter="20" class="right_box_card">
                     <el-col :span="8" v-for="(i,index) in cardError">
