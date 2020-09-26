@@ -21,7 +21,7 @@
 										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="checked=>topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,checked,`${i+1}.${k+1}.${o+1}`)">第{{o+1}}题</el-checkbox-button>
 									</el-checkbox-group> -->
 									<el-radio-group v-model="topicDefault">
-										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`,d3.score)">第{{o+1}}题</el-radio-button>
+										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`,d3.score)">第{{d3.no}}题</el-radio-button>
 									</el-radio-group>
 
 								</div>
@@ -109,11 +109,9 @@
 
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">参考答案</div>
 				<div class="rv">
+					<div v-html="consult_answer_text"></div>
 					<div v-html="analysis_text"></div>
-					<div>{{consult_answer_text}}</div>
 				</div>
-
-
 
 			</div>
 		</div>
@@ -219,7 +217,8 @@
 				consult_answer_text: '',
 				questions_score: '',
 				questions_gain_score: '',
-				up_img_black_id_arr: []
+				up_img_black_id_arr: [],
+				canvas:''
 
 			}
 
@@ -336,19 +335,25 @@
 				// console.log(this.topicDefault)
 			},
 			// 获取小题题目
-			topicLittleQuestions(data, type, id, sn, checked, index,score) {
+			topicLittleQuestions(data, type, id, sn, checked, index, score) {
 				console.log(this.topicDefault)
 				// loading
 				this.loading_img = true
 				// 重置选项
 				this.choiceKey = ''
 				this.logtype = ''
+				this.analysis_text=''
+				this.consult_answer_text=''
 				// 小题索引
 				if (index != undefined) {
 					this.topicIndex = index
 				}
+				// 赋值参考答案
+				console.log(data.anwser)
+				this.analysis_text=data.anwser.analysis_text
+				this.consult_answer_text=data.anwser.answer_text
 				// 小题总分
-				this.questions_score=score
+				this.questions_score = score
 				// 判断选中的题目
 				checked ? (this.topicDefaultSave = this.topicDefault) : (this.topicDefault = this.topicDefaultSave)
 				// 小题id
@@ -382,7 +387,7 @@
 					this.question_id_black = data.id
 					this.question_sn_black = data.sn
 					// 改小题获取的分数
-					this.questions_gain_score=data.score
+					this.questions_gain_score = data.score
 					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
@@ -393,18 +398,22 @@
 							this.logtype = 'none'
 						} else if (data.hasOwnProperty('answer_test')) {
 							this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false
-							console.log(data.answer_test)
+							this.choiceKey = data.answer_test
 						} else if (res2.data.hasOwnProperty('data')) {
 							this.logtype = 'img'
 							this.up_img_black_id_arr = []
 							this.urls = []
 							this.srcList = []
+							this.teacher_urls = []
+							this.teacher_srcList = []
 							res2.data.data.map((x, i) => {
 								// 返回的图片id
 								this.up_img_black_id_arr[i] = x.id
 								// console.log(x.id)
 								this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 								this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+								this.teacher_urls[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
+								this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
 							})
 						}
 					})
@@ -508,11 +517,14 @@
 				let a, b, c = 1
 				let d = JSON.parse(res.data.data.elementTest);
 				console.log(d)
+				
 				this.topic = d.items
 				d.items.forEach((x, i) => {
 					x.items.map((y, o) => {
 						this.topicSum = this.topicSum + y.items.length
 						y.items.map((z, p) => {
+							// console.log(z.anwser.answer_text)
+							// console.log(z.anwser.analysis_text)
 							// 默认读取第一题
 							this.topicArr.push({
 								index: `${i+1}.${o+1}.${p+1}`,
@@ -528,12 +540,13 @@
 				let frist = this.topicDefault
 				this.topicArr.some(x => {
 					if (x.index == frist) {
-						this.topicLittleQuestions(x.data, x.type, x.id,x.sn,true,x.index,x.data.score)
+						this.topicLittleQuestions(x.data, x.type, x.id, x.sn, true, x.index, x.data.score)
 					}
 				})
 				this.loading = false
 				// console.log(this.topicArr)
 			})
+
 
 		},
 

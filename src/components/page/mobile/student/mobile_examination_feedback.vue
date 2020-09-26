@@ -23,7 +23,7 @@
 										<el-checkbox-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn),kkk()">第{{o+1}}题</el-checkbox-button>
 									</el-checkbox-group> -->
 									<el-radio-group v-model="topicDefault">
-										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`,d3.score)">第{{o+1}}题</el-radio-button>
+										<el-radio-button v-for="(d3,o) in d2.items" :key="o" :label="`${i+1}.${k+1}.${o+1}`" @change.native="topicLittleQuestions(d3,d3.question_type,d3.id,d3.sn,'checked',`${i+1}.${k+1}.${o+1}`,d3.score)">第{{d3.no}}题</el-radio-button>
 									</el-radio-group>
 								</div>
 							</div>
@@ -31,8 +31,8 @@
 					</div>
 				</div>
 				<div class="affirm">
-					<!-- <el-button class="previous" @click="goTopic('previous')">确认，上一题</el-button> -->
-					<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">查看，下一题</el-button>
+					<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
+					<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
 					<div class="bottom-ts">注意核实个人信息和考试信息，如有不符立刻联系老师</div>
 				</div>
 			</div>
@@ -61,10 +61,10 @@
 								 v-html="d.topic_text"></span></el-radio-button>
 						</el-radio-group>
 						<div class="userChoice"><span>你已选择： </span><span class="i">{{choiceKey}}</span></div>
-						<div style="display: flex;justify-content: center;">
+						<!-- <div style="display: flex;justify-content: center;">
 							<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
 							<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
-						</div>
+						</div> -->
 					</div>
 					<div v-else-if="stateType==''"></div>
 					<div v-else>
@@ -72,6 +72,10 @@
 							<div class="cc-title">综合题</div>
 							<div class="font-i" style="margin-bottom: 20px;">学生在答题卡上作答后，请家长完整拍照整个小题的作答区域，确认一下识别的结果，如果修改了答案，请重新上传。</div>
 						</div>
+					</div>
+					<div style="display: flex;justify-content: center;">
+						<el-button class="previous" @click="goTopic('previous')">上一题</el-button>
+						<el-button class="next" style="background-color: #19AEFB;" @click="goTopic('next')">下一题</el-button>
 					</div>
 				</div>
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">老师批改</div>
@@ -95,7 +99,7 @@
 					<div v-html="analysis_text"></div>
 					<div>{{consult_answer_text}}</div>
 				</div>
-				
+
 				<div class="message-top" style="margin-top: 10px;margin-bottom: 16px;">我上传的答案</div>
 				<div class="questions-img" v-loading="loading_img">
 					<div v-for="(url,i) in urls" :key="url.i" class="img-box">
@@ -172,7 +176,7 @@
 				dialogVisible: false,
 				percentage: 0,
 				customColor: '#409eff',
-				topicDefault:'1.1.1',
+				topicDefault: '1.1.1',
 				topicIndex: '1.1.1',
 				topicArr: [],
 				choice: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
@@ -225,7 +229,7 @@
 				questions_score: '',
 				questions_gain_score: '',
 				up_img_black_id_arr: []
-				
+
 
 			}
 
@@ -338,9 +342,9 @@
 				// console.log(this.topicDefault)
 			},
 			// 获取小题题目
-			topicLittleQuestions(data, type, id, sn, checked, index,score) {
+			topicLittleQuestions(data, type, id, sn, checked, index, score) {
 				// 显示
-				this.show=true
+				this.show = true
 				// loading
 				this.loading_img = true
 				// 重置选项
@@ -351,9 +355,9 @@
 					this.topicIndex = index
 				}
 				// 小题总分
-				this.questions_score=score
+				this.questions_score = score
 				// 判断选中的题目
-			     checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
+				checked ? (this.topicDefaultSave = this.topicDefault) : (this.topicDefault = this.topicDefaultSave)
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -361,6 +365,10 @@
 				this.Problemtitle = data.topic_text
 				//  小题选项
 				this.ProblemChoice = data.items
+				// 赋值参考答案
+				console.log(data.anwser)
+				this.analysis_text=data.anwser.analysis_text
+				this.consult_answer_text=data.anwser.answer_text
 				// 新增小题答案
 				studentTestQuestionsAdd({
 					'paper_id': this.examId,
@@ -380,106 +388,100 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
-					
+
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
 					this.question_sn_black = data.sn
 					// 小题获取的分数
-					this.questions_gain_score=data.score
+					this.questions_gain_score = data.score
 					// console.log(data.id)
 					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
-						this.logtype = 'none'
+					studentTestQuestionsUpImg(data.sn).then(res2 => {
 						this.loading_img = false
-					} else {
-						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img = false) :
-							(
-								this.logtype = 'img',
-								this.up_img_black_id_arr = [],
-								this.urls=[],
-								this.srcList=[],
-								this.teacher_urls=[],
-								this.teacher_srcList=[],
-								studentTestQuestionsUpImg(data.sn).then(res => {
-									this.loading_img = false
-									if (res.data.data != undefined) {
-										res.data.data.map((x, i) => {
-											// 返回的图片id
-											this.up_img_black_id_arr[i] = x.id
-											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
-											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
-											this.teacher_urls[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime()),
-											this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
-										})
-									}
-			
-								})
-							)
-					}
+						if (!res2.data.hasOwnProperty('data') && !data.hasOwnProperty('answer_test')) {
+							this.loading_img = false
+							this.logtype = 'none'
+						} else if (data.hasOwnProperty('answer_test')) {
+							this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false
+							this.choiceKey = data.answer_test
+						} else if (res2.data.hasOwnProperty('data')) {
+							this.logtype = 'img'
+							this.up_img_black_id_arr = []
+							this.urls = []
+							this.srcList = []
+							this.teacher_urls = []
+							this.teacher_srcList = []
+							res2.data.data.map((x, i) => {
+								// 返回的图片id
+								this.up_img_black_id_arr[i] = x.id
+								// console.log(x.id)
+								this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+								this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+								this.teacher_urls[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
+								this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
+							})
+						}
+					})
+					// 		if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
+					// 			this.logtype = 'none'
+					// 			this.loading_img = false
+					// 		} else {
+					// 			data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img = false,this.choiceKey=data.answer_test) :
+					// 				(
+					// 					this.logtype = 'img',
+					// 					this.up_img_black_id_arr = [],
+					// 					this.urls=[],
+					// 					this.srcList=[],
+					// 					this.teacher_urls=[],
+					// 					this.teacher_srcList=[],
+					// 					studentTestQuestionsUpImg(data.sn).then(res => {
+					// 						this.loading_img = false
+					// 						if (res.data.data != undefined) {
+					// 							res.data.data.map((x, i) => {
+					// 								// 返回的图片id
+					// 								this.up_img_black_id_arr[i] = x.id
+					// 								this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+					// 								this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+					// 								this.teacher_urls[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime()),
+					// 								this.teacher_srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=2' + "&d=" + new Date().getTime())
+					// 							})
+					// 						}
+
+					// 					})
+					// 				)
+					// 		}
 				})
 			},
 			// 题目跳转
 			goTopic(type) {
-				this.schedule();
-				let index, questionsType, next_data
-				JSON.stringify(this.topicDefault) === '[]' ? this.topicDefault = ['1.1.1'] :
-					(this.topicArr.map((x, i) => {
-						if (x.index == this.topicDefault[this.topicDefault.length - 1]) {
-							index = i
-							if (index > this.topicSum - 2) {
-								index = -1
-							}
-						}
-					}));
 
+				let index, questionsType, next_data, before_data
+				index = this.topicArr.findIndex(x => x.index == this.topicIndex)
+				console.log(index)
 				if (type == 'previous') {
-					questionsType = this.topicArr[index - 1].type
-					// console.log(this.topicDefault)
-					let data = this.topicDefault
-					data.splice(data.length - 1, 1, this.topicArr[index - 1].index)
-					data = Array.from(new Set(data))
-					this.topicDefault = data
-					console.log(data)
-					this.topicLittleQuestions(this.topicArr[index - 1].data, questionsType)
-				} else if (type == 'next') {
-					if (this.topicDefault.length >= this.topicSum) {
-						this.$confirm('没有下一题了', '提示', {
-							confirmButtonText: '确定',
-							cancelButtonText: '取消',
-							type: 'warning'
-						}).then(() => {
-							// this.$message({
-							// 	type: 'success',
-							// 	message: '提交成功!'
-							// });
-							// this.finish()
-						}).catch(() => {
-							// this.$message({
-							// 	type: 'info',
-							// 	message: '暂时不提交'
-							// });
-						});
+					if (index != 0) {
+						before_data = this.topicArr[index - 1]
+						this.topicIndex = before_data.index
+						this.topicIndex = before_data.index
+						questionsType = before_data.type
+						this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
+
 					} else {
+						this.$message.success('没有上一题了')
+					}
+				} else if (type == 'next') {
+					if (this.topicSum != (index + 1)) {
 						next_data = this.topicArr[index + 1]
 						this.topicIndex = next_data.index
+						this.topicIndex = next_data.index
 						questionsType = next_data.type
-						//判断是否重复
-						if (!this.topicDefault.includes(next_data.index)) {
-							this.topicDefault.push(next_data.index)
-						} else {
-							for (const [i, x] of this.topicArr.entries()) {
-								if (!this.topicDefault.includes(x.index)) {
-									this.topicDefault.push(x.index)
-									console.log(x.index)
-									return false
-								}
-							}
-						}
 						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
-
+					} else {
+						this.$message.success('现在是最后一题了')
 					}
+
 				}
 			},
 			// 考试完成
@@ -538,7 +540,7 @@
 				console.log(frist)
 				this.topicArr.map(x => {
 					if (x.index == frist) {
-						this.topicLittleQuestions(x.data, x.type, x.id,x.sn,true,x.index,x.data.score)
+						this.topicLittleQuestions(x.data, x.type, x.id, x.sn, true, x.index, x.data.score)
 					}
 				})
 				this.loading = false

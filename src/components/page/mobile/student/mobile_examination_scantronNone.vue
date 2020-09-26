@@ -116,6 +116,10 @@
 
 <script>
 	import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+	import {
+		Toast,
+		Dialog
+	} from 'vant';
 	import Tabbar from '../common/tabbar.vue'
 	import qrHost from '@/api/qrCode.js'
 	import mobile from '@/assets/js/mobile.js'
@@ -132,7 +136,8 @@
 		StudentAccountInfo,
 		studentTestQuestionsUpImg,
 		studentTestQuestionsDelImg,
-		studentTestQuestionsImg
+		studentTestQuestionsImg,
+		studentQuestionSelectImg
 	} from '@/api/api.js'
 	export default {
 		components: {
@@ -153,7 +158,7 @@
 				download: 0,
 				disabled: 0,
 				loading: false,
-				loading_img:false,
+				loading_img: false,
 				status: '',
 				studentSn: '',
 				examId: this.$route.query.id,
@@ -209,7 +214,8 @@
 				current_question: '0',
 				black_log_data: '',
 				up_img_black_id_arr: [],
-				finish_arr:[]
+				finish_arr: [],
+				goTopicIndex: ''
 			}
 
 		},
@@ -231,7 +237,7 @@
 					}).then(res2 => {
 						let data = res2.data.data.list[0]
 						studentTestQuestionsUpImg(this.question_sn_black).then(res => {
-							this.loading_img=false
+							this.loading_img = false
 							if (res.data.data != undefined) {
 								res.data.data.map((x, i) => {
 									// 返回的图片id
@@ -240,7 +246,7 @@
 									this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 								})
 							}
-						
+
 						})
 					})
 				})
@@ -356,8 +362,8 @@
 			// },
 			// 获取小题题目
 			topicLittleQuestions(data, type, id, sn, checked, index) {
-			    //显示控制
-				this.show=true
+				//显示控制
+				this.show = true
 				// loading
 				this.loading_img = true
 				// 重置选项
@@ -368,7 +374,7 @@
 					this.topicIndex = index
 				}
 				// 判断选中的题目
-			     checked?(this.topicDefaultSave = this.topicDefault):(this.topicDefault = this.topicDefaultSave)
+				checked ? (this.topicDefaultSave = this.topicDefault) : (this.topicDefault = this.topicDefaultSave)
 				// 小题id
 				this.question_id = id
 				this.stateType = type
@@ -376,6 +382,7 @@
 				this.Problemtitle = data.topic_text
 				//  小题选项
 				this.ProblemChoice = data.items
+
 				// 新增小题答案
 				studentTestQuestionsAdd({
 					'paper_id': this.examId,
@@ -395,7 +402,7 @@
 					'paper_id': this.examId,
 					'question_id': id
 				}).then(res => {
-					
+
 					let data = res.data.data.list[0]
 					this.question_id_black = data.id
 					this.question_sn_black = data.sn
@@ -403,29 +410,23 @@
 					// console.log(data.sn)
 					// 小题上传答案二维码
 					this.qrHost = `${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none`
-					if (!data.hasOwnProperty('answer_test') && !data.hasOwnProperty('student_image')) {
-						this.logtype = 'none'
-						this.loading_img = false
-					} else {
-						data.hasOwnProperty('answer_test') ? (this.logtype = 'choice', this.answer_test = data.answer_test,this.loading_img = false) :
-							(
-								this.logtype = 'img',
-								this.up_img_black_id_arr = [],
-								this.urls=[],
-								this.srcList=[],
-								studentTestQuestionsUpImg(data.sn).then(res => {
-									this.loading_img = false
-									if (res.data.data != undefined) {
-										res.data.data.map((x, i) => {
-											// 返回的图片id
-											this.up_img_black_id_arr[i] = x.id
-											this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
-											this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
-										})
-									}
-			
+					if (!data.hasOwnProperty('answer_test')) {
+						this.logtype = 'img',
+							this.up_img_black_id_arr = [],
+							this.urls = [],
+							this.srcList = [],
+							studentTestQuestionsUpImg(data.sn).then(res => {
+								this.loading_img = false
+								res.data.data.map((x, i) => {
+									// 返回的图片id
+									this.up_img_black_id_arr[i] = x.id
+									console.log(x.id)
+									this.urls[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
+									this.srcList[i] = ('/api/student/question/getImage/' + x.id + '?id=1' + "&d=" + new Date().getTime())
 								})
-							)
+							})
+					} else {
+						this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false, this.choiceKey = this.answer_test
 					}
 				})
 			},
@@ -446,64 +447,31 @@
 			goTopic(type) {
 
 				let index, questionsType, next_data, before_data
-				JSON.stringify(this.topicDefault) === '[]' ? this.topicDefault = ['1.1.1'] :
-					(this.topicArr.map((x, i) => {
-						if (x.index == this.topicDefault[this.topicDefault.length - 1]) {
-							index = i
-							if (index > this.topicSum - 2) {
-								index = -1
-							}
-						}
-					}));
-
+				index = this.topicArr.findIndex(x => x.index == this.topicIndex)
+				console.log(index)
 				if (type == 'previous') {
-
 					if (index != 0) {
 						before_data = this.topicArr[index - 1]
+						this.topicIndex = before_data.index
+						this.topicIndex = before_data.index
 						questionsType = before_data.type
 						this.topicLittleQuestions(before_data.data, questionsType, before_data.id, before_data.sn)
+
+					} else {
+						this.$message.success('没有上一题了')
 					}
 				} else if (type == 'next') {
-					if (this.topicDefault.length >= this.topicSum) {
-						this.$confirm('全是题目已完成, 是否提交试卷?', '提示', {
-							confirmButtonText: '确定',
-							cancelButtonText: '取消',
-							type: 'warning'
-						}).then(() => {
-							this.$message({
-								type: 'success',
-								message: '提交成功!'
-							});
-							this.finish()
-						}).catch(() => {
-							this.$message({
-								type: 'info',
-								message: '暂时不提交'
-							});
-						});
-					} else {
+					if (this.topicSum != (index + 1)) {
 						next_data = this.topicArr[index + 1]
 						this.topicIndex = next_data.index
+						this.topicIndex = next_data.index
 						questionsType = next_data.type
-						//判断是否重复
-
-						// this.topicDefault.push(next_data.index)
-
-						if (!this.topicDefault.includes(next_data.index)) {
-							this.topicDefault.push(next_data.index)
-						} else {
-							for (const [i, x] of this.topicArr.entries()) {
-								if (!this.topicDefault.includes(x.index)) {
-									this.topicDefault.push(x.index)
-									console.log(x.index)
-									return false
-								}
-							}
-						}
-						this.schedule();
 						this.topicLittleQuestions(next_data.data, questionsType, next_data.id, next_data.sn)
-
+					} else {
+						this.finishAll()
+						this.$message.success('现在是最后一题了')
 					}
+
 				}
 			},
 			// 上传选择题答案
@@ -518,6 +486,40 @@
 						this.answer_test = data.answer_test
 					})
 				})
+			}, // 提交
+			finishAll() {
+				let finish_num = 0
+				this.finish_arr.map((x, i) => {
+					if (x.finish) {
+						finish_num++
+					}
+				})
+				if (finish_num >= this.topicSum) {
+					Dialog.alert({
+						title: '提示',
+						message: '是否提交试卷',
+					}).then(() => {
+						this.finishAll()
+					}).catch(() => {
+						// on cancel
+					});
+					// this.$confirm('全是题目已完成, 是否提交试卷?', '提示', {
+					// 	confirmButtonText: '确定',
+					// 	cancelButtonText: '取消',
+					// 	type: 'warning'
+					// }).then(() => {
+					// 	this.$message({
+					// 		type: 'success',
+					// 		message: '提交成功!'
+					// 	});
+					// 	this.finish()
+					// }).catch(() => {
+					// 	this.$message({
+					// 		type: 'info',
+					// 		message: '暂时不提交'
+					// 	});
+					// });
+				}
 			},
 			// 考试完成
 			finish() {
@@ -528,7 +530,46 @@
 					}
 				})
 			},
-			
+			// 判断完成
+			selectAllLog(id) {
+				studentQuestionSelectImg({
+					'student_id': localStorage.getItem('userID'),
+					'paper_id': this.examId,
+					'pageSize': 999,
+					'pageNum': 1,
+				}).then(res => {
+					let data = res.data.data.list
+					let order = []
+					// 获取正确排序id
+					this.topicArr.map((x, i) => {
+						order.push(x.data.id)
+						this.finish_arr.push({
+							finish: false,
+							index: i
+						})
+					})
+					// 正确的排序数组
+					data.sort((a, b) => {
+						return order.indexOf(a.question_id) - order.indexOf(b.question_id);
+					});
+					// 获取题目已经做了的题目
+					data.forEach((x, i) => {
+						if (x.hasOwnProperty('item_imgs') || x.hasOwnProperty('answer_test')) {
+							this.finish_arr[i]['finish'] = true
+						} else {}
+					})
+					if (this.topicDefault.length - 1 <= this.topicSum) {
+
+						this.finish_arr.forEach((x, i) => {
+							if (x.finish) {
+								if (i != 0) {
+									this.topicDefault.push(this.topicArr[i]['index'])
+								}
+							} else {}
+						})
+					}
+				})
+			},
 			handleRemove(file, fileList) {
 				console.log(file, fileList);
 			},
@@ -581,8 +622,9 @@
 					}
 				})
 				this.loading = false
-				// console.log(this.topicArr)
+				this.selectAllLog()
 			})
+
 			// ---定时器计算剩余时间
 			this.timer = setInterval(x => {
 				this.ResidueTime = this.getResidueTime()
