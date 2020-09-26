@@ -49,14 +49,14 @@
 							<p>5、交卷</p>
 						</div>
 					</div>
-					<div class="go">
+					<!-- <div class="go">
 						<div class="ts">人脸识别</div>
 						<el-button class="buttom" v-if="FaceRecognition==true" @click="goFaceRecognition()">人脸识别</el-button>
 						<el-button class="buttom" v-else @click="goFaceRecognition()">人脸录入</el-button>
 						<div class="ts1">
 							<p>1.进入考试前必须进行人脸录入</p>
 						</div>
-					</div>
+					</div> -->
 					<div class="go">
 						<div class="ts">我没有办法打印</div>
 						<el-button class="buttom" v-if="FaceRecognition==true&&isexamImg==false" @click="goScantronNone()">在线考试辅助</el-button>
