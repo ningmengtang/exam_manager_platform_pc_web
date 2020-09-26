@@ -67,7 +67,8 @@
           <el-button type="success" @click="nextPage">下一页</el-button>
         </div>
         <div>
-          <el-radio-group v-model="radio" size="mini">
+          <el-radio-group v-model="radio" size="mini" class="radio_class">
+            <el-radio :label="0" border style="display:block;margin:8px 0px">普通试卷</el-radio>
             <el-radio :label="1" border style="display:block;margin:8px 0px">优秀试卷</el-radio>
             <el-radio :label="2" border style="display:block;margin:8px 0px">典型精题</el-radio>
             <el-radio :label="3" border style="display:block;margin:8px 0px">异常卷</el-radio>
@@ -240,6 +241,18 @@
     font-size: 12px;
     line-height: 30px;
   }
+  .radio_class /deep/ .el-radio__input.is-checked .el-radio__inner {
+     border-color: #2BBB61;
+     background: #2BBB61;
+  }
+  .radio_class /deep/ .el-radio.is-bordered.is-checked {
+      border-color: #2BBB61;
+  }
+  .radio_class /deep/ .el-radio__input.is-checked+.el-radio__label{
+      border-color: #2BBB61;
+      color: #2BBB61;
+  }
+
 </style>
 
 <script>
@@ -248,7 +261,7 @@ import IconVue from './Icon.vue'
     props:['urlSrc','ispush'],
     data () {
       return {
-        radio:'',
+        radio:0,
         colors: ['#fef4ac', '#0018ba', '#ffc200', '#f32f15', '#cccccc', '#5ab639'],
         brushs: [{
           className: 'small fa fa-paint-brush',
@@ -313,7 +326,7 @@ import IconVue from './Icon.vue'
           console.log('进入canvas')
           this.selectIndex = 0
 
-          this.radio = ''
+          this.radio = 0
           this.srcList = []
           var that = this
 
@@ -614,7 +627,7 @@ import IconVue from './Icon.vue'
                 }
                 that.context.drawImage(this,0,(cH-height)/2,width,height)
             }
-            this.radio = ''
+            this.radio = 0
             this.initDraw()
             this.setCanvasStyle()
           }

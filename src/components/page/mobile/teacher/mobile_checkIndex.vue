@@ -63,12 +63,12 @@
 
             </div>
             
-            <van-radio-group v-model="radio" direction="horizontal" @change="ChangeRadio" style="float:right;padding: 20px 0px;">
+            <el-radio-group v-model="radio" class="radio_class"  text-color="#2BBB61" style="float:right;padding: 20px 0px;">
               <!-- <van-radio name="">正常试卷</van-radio> -->
-              <van-radio name="1">优秀试卷</van-radio>
-              <van-radio name="2">典型试卷</van-radio>
-              <van-radio name="3">异常卷</van-radio>
-            </van-radio-group>
+              <el-radio :label="1" >优秀试卷</el-radio>
+              <el-radio :label="2" >典型试卷</el-radio>
+              <el-radio :label="3" >异常卷</el-radio>
+            </el-radio-group>
           </div>
           <div>
           
@@ -427,6 +427,13 @@
   background-color: #2BBB61;
   border-color: #2BBB61;
 }
+.radio_class /deep/ .el-radio__input.is-checked .el-radio__inner{
+  border-color: #2BBB61;
+    background: #2BBB61;
+}
+.radio_class /deep/  .el-radio__input.is-checked+.el-radio__label{
+   color: #2BBB61
+}
 .card_content{
   padding: 20px;
   /* height: 100%; */
@@ -497,10 +504,11 @@ import { Toast } from 'vant';
         oldTaskList:[],
         is_sheet_upload:true,
         context: {},
+        changed:false,
         imgUrl: [],
         canvasMoveUse: true,
         // value:3,
-        radio:1,
+        radio:0,
         isTip:true,
         // 存储当前表面状态数组-上一步
         preDrawAry: [],
@@ -578,7 +586,7 @@ import { Toast } from 'vant';
       urlSrc:function(){
           console.log('进入canvas')
           this.selectIndex = 0
-          this.radio = ''
+          this.radio = 0
           this.srcList = []
           var that = this
           const canvas = document.querySelector('#canvas')
@@ -755,7 +763,7 @@ import { Toast } from 'vant';
                       }
                       that.context.drawImage(this,0,(cH-height)/2,width,height)
                   }
-                  this.radio = ''
+                  this.radio = 0
                   this.initDraw()
                   this.setCanvasStyle()
                 }
@@ -766,7 +774,14 @@ import { Toast } from 'vant';
       },
       ChangeRadio(){
         console.log(this.radio)
+        // this.changed = true
+        
+        
       },
+      // controlSingel($event){
+      //     console.log($event)
+      //     // this.radio = 1
+      // },
       goback(){
         this.$router.push('mobile_teacherIndex')
       },
@@ -1211,7 +1226,7 @@ import { Toast } from 'vant';
         ctx.lineWidth=1;
         // ctx.fillText(str,0,20); 
         const src = canvas.toDataURL('image/png')
-        this.radio = ''
+        this.radio = 0
         // this.$emit('getUrlBlob',src,this.radio)
       },
       // 设置绘画配置

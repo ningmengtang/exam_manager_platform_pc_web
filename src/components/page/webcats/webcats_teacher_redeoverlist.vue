@@ -351,7 +351,7 @@ export default {
                         "pageNum":this.pageNum
                     }).then(res=>{
                         this.paperList = res.data.data.list
-                    
+                        this.paperListindex = this.paperList.length
                         this.total= res.data.data.total
                         this.currentPage= res.data.data.pageNum
                     })
