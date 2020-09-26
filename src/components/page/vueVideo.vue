@@ -7,6 +7,12 @@
             <el-option v-for="item in selectOption" :key="item.label" :label="item.label" :value="item.value"></el-option>
         </el-select>
     </div>
+    <div class="upload-item">
+                    <span>摄像头切换：</span>
+                    <el-select ref="select" v-model="selectCamera" placeholder="请选择" size="mini" @change="cameraChange">
+                        <el-option v-for="item in selectOption" :key="item.label" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </div>
      <div class="upload-item">
             <span>拍照上传摄像头：</span>
             <video id="video" ref="video" width="360" height="240" controls autoplay playsinline></video>
