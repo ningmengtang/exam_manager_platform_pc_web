@@ -329,7 +329,7 @@
 				this.Problemtitle = data.topic_text
 				//  小题选项
 				this.ProblemChoice = data.items
-
+				// console.log(sn)
 				// 新增小题答案
 				studentTestQuestionsAdd({
 					'paper_id': this.examId,
@@ -358,18 +358,19 @@
 					// 小题上传答案二维码
 					this.qrHost =
 						`${qrHost()}mobile_examination_upfile?answer_id=${this.question_id_black}&type=none&websocket_sn=${this.websocket_sn}`
-					console.log(this.qrHost)
+					// console.log(this.qrHost)
 					// console.log(this.qrHost)
 					// 判断是上传否有图片
 					// console.log(data.sn)
 					studentTestQuestionsUpImg(data.sn).then(res2 => {
-						console.log(res2)
+						// console.log(res2)
 						this.loading_img = false
 						if (!res2.data.hasOwnProperty('data') && !data.hasOwnProperty('answer_test')) {
 							this.loading_img = false
 							this.logtype = 'none'
 						} else if (data.hasOwnProperty('answer_test')) {
-							this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false
+							this.logtype = 'choice', this.answer_test = data.answer_test, this.loading_img = false, this.choiceKey =
+								data.answer_test
 							// console.log(data.answer_test)
 						} else if (res2.data.hasOwnProperty('data')) {
 							this.logtype = 'img'
@@ -515,7 +516,6 @@
 				this.websock.onopen = this.websocketonopen;
 				this.websock.onerror = this.websocketonerror;
 				this.websock.onclose = this.websocketclose;
-				console.log('kkk')
 			},
 			websocketonopen() { //连接建立之后执行send方法发送数据
 				// let actions = {
@@ -601,14 +601,17 @@
 				}).then(res => {
 					let data = res.data.data.list
 					let order = []
+				    // 判断数量
 					// 获取正确排序id
 					this.topicArr.map((x, i) => {
 						order.push(x.data.id)
+						console.log(1)
 						this.finish_arr.push({
 							finish: false,
 							index: i
 						})
 					})
+					if (this.finish_arr.length == this.topicSum) {
 						// 正确的排序数组
 						data.sort((a, b) => {
 							return order.indexOf(a.question_id) - order.indexOf(b.question_id);
@@ -619,19 +622,21 @@
 								this.finish_arr[i]['finish'] = true
 							} else {}
 						})
-						if(this.topicDefault.length-1<=this.topicSum){
-							
-							this.finish_arr.forEach((x, i) => {
-								if (x.finish) {
-									if (i != 0) {
-										this.topicDefault.push(this.topicArr[i]['index'])
-									}
-								} else {
+					}
+					if (this.topicDefault.length - 1 <= this.topicSum) {
+						this.finish_arr.forEach((x, i) => {
+							console.log(x)
+							if (x.finish) {
+								
+								if (i != 0) {
+									
+									this.topicDefault.push(this.topicArr[i]['index'])
 								}
-							})
-						}
-				})
+							} else {}
+						})
+					}
 
+				})
 			},
 			// 考试完成
 			finish() {
@@ -680,6 +685,7 @@
 						})
 					})
 				})
+				// 获取做完的题目
 				this.selectAllLog()
 				// 默认读取当前题目
 				let frist = this.topicDefault[this.topicDefault.length - 1]

@@ -63,6 +63,7 @@
 		faceInsert,
 		faceRecognition
 	} from '@/api/api.js'
+	import {getBase64,getUserMedia,gotDevices,getUserMediaSuccess,getUserMediaError,stopMediaTracks} from "@/assets/js/camera.js"
 	export default {
 		data() {
 			return {
@@ -91,7 +92,9 @@
 				isFace: '',
 				FaceRecognition: false,
 				hasFaceBase64: '',
-				old_face: ''
+				old_face: '',
+				canvas:''
+				
 				
 			}
 		},
@@ -119,6 +122,7 @@
 				if (this.FaceRecognition) {
 					this.uploadFile.append('file', file)
 					faceRecognition(this.uploadFile).then(res => {
+						
 						this.loading = false
 						if(res.data.result){
 							console.log(res)
@@ -228,6 +232,41 @@
 				this.examTitle = res.data.data.title
 				this.examParticular = res.data.data.examExplain
 			})
+			
+			
+			//初始化canvas
+			this.canvas = document.createElement('canvas');
+			this.canvas.style.display = 'none';
+			this.canvas.height = '2448';
+			this.canvas.width = '3264';
+			this.context = this.canvas.getContext('2d');
+			
+			const constraints = {
+				video: {
+					width: 3264,
+					height: 2448
+				},
+				audio: false
+			};
+			//获取摄像头列表
+			navigator.mediaDevices
+				.getUserMedia(constraints)
+				.then(stream => {
+					console.log(stream)
+					return navigator.mediaDevices.enumerateDevices();
+				}).then(s => {
+					console.log(s)
+					this.selectOption = []
+					s.forEach(i => {
+						console.log(i)
+						if (i.kind === 'videoinput') {
+							this.selectOption.push({
+								value: i.deviceId,
+								label: i.label
+							})
+						}
+					})
+				})
 		},
 	};
 </script>

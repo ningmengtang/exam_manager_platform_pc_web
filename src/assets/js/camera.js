@@ -1,3 +1,4 @@
+
 export function getBase64 () {//转成base64
     var dataURL = canvas.toDataURL("image/jpg");
     alert(dataURL);
@@ -6,17 +7,22 @@ export function getBase64 () {//转成base64
 
 //访问用户媒体设备的兼容方法
 export function getUserMedia(constraints, success, error) {
+	console.log(111)
     if (navigator.mediaDevices.getUserMedia) {
+		
         //最新的标准API
         navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
     } else if (navigator.webkitGetUserMedia) {
+		console.log(111)
         //webkit核心浏览器
         navigator.webkitGetUserMedia(constraints,success, error)
     } else if (navigator.mozGetUserMedia) {
         //firfox浏览器
+		console.log(111)
         navigator.mozGetUserMedia(constraints, success, error);
     } else if (navigator.getUserMedia) {
         //旧版API
+		console.log(111)
         navigator.getUserMedia(constraints, success, error);
     }
 }
