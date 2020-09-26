@@ -35,6 +35,7 @@
 							第{{i.no}}小题
 						</el-radio-button>
 					</el-radio-group>
+                
                 </div> 
             </div>
 
@@ -50,7 +51,9 @@
                     第{{selectTopic.element.no}}题
                 </span>
                 <span>
-                    得分：{{selectTopic.question.score}}分(满分{{selectTopic.element.score}}分)
+                    得分：
+                    <span style="color:rgb(251, 75, 28);">{{selectTopic.question.score}}</span>
+                    分(满分{{selectTopic.element.score}}分)
                 </span>
             </div>
             <div class="topic">
@@ -179,6 +182,9 @@ export default {
                                     this.imgUrl.push('/api/student/question/getImage/' +data[k].id+'?id=1'+"&d=" + new Date().getTime())
                                     this.imgUrlTeacher.push('/api/student/question/getImage/' +data[k].id+'?id=2'+"&d=" + new Date().getTime())
                                 }
+
+
+                                console.log(this.imgUrlTeacher)
                                 
                                 
                             }

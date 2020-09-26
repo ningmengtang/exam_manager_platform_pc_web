@@ -119,6 +119,7 @@
 					<el-button type="text" class="download" v-if="(isLead && data.status == 2) || (isLead && data.status == 3) || (isLead && data.status == 4)"  @click="goradeOver(data)">查看批阅</el-button>
 					<el-button type="text" class="download" v-if="(!isLead && data.status == 2 )|| (!isLead && data.status == 3)"  @click="radeOver(data)">开始批阅</el-button>
 					<el-button type="text" class="download" v-if="isLead && data.status == 4"  @click="feedBack(data)">查看反馈</el-button>
+					<el-button type="text" class="download" v-if="isLead && data.status == 3"  @click="feedYes(data)">确认审批</el-button>
 				</div>
 			</div>
 			<!-- 分页 -->
@@ -297,7 +298,9 @@ import {
 		TeacherTaskAdd,
 		TeacherTaskList,
 		TeacherTaskSelectTask,
-		TeacherQuestionExamList
+		TeacherQuestionExamList,
+		getCorrectRateByPaperId,
+		TeacherTaskUpdate
 	} from '@/api/api.js'
 	export default {
 		data() {
@@ -587,6 +590,113 @@ import {
 				// console.log(data)
 			},
 
+			// 确认审批
+			feedYes(item){
+				// 查看试卷批阅进度
+				getCorrectRateByPaperId(item.paper_id).then(res=>{
+					// console.log(res)
+					if(res.data.data){
+
+						let data = res.data.data
+
+						console.log(data)
+						// this.already_count = (data.already_count / data.count).toFixed(2) * 100 
+						// this.already = data.already_count
+						// this.residue = data.residue_count
+						// this.count = data.count
+						if(data.residue_count == 0){
+							this.$confirm('是否确定审批?', '提示', {
+							  confirmButtonText: '确定',
+							  cancelButtonText: '取消',
+							  type: 'warning'
+							}).then(() => {
+								TeacherTaskUpdate({
+									"id":item.id,
+									"status":4
+								}).then(res=>{
+									console.log(res)
+									if(res.data.result){
+										this.$message.success('审批成功')
+										this.pageNum = 1
+										this.pageSize = 4
+										this.status = ''
+										TeacherQuestionExamList({
+											"id": [],
+											"status":this.status,
+											"pageSize": this.pageSize,
+											"pageNum":this.pageNum
+										}).then(res => {
+										if(res.data.data){
+												this.papers = res.data.data.list
+												this.total = res.data.data.total
+												this.currentPage = res.data.data.pageNum
+											}else{
+												this.papers = []
+											}
+										})
+									}else{
+										this.$message.error('审批失败')
+									}
+								})
+							 
+							}).catch(() => {
+							          
+							});
+						}else{
+							this.$confirm('批阅任务尚未完成,确定要审批完成吗?', '提示', {
+							  confirmButtonText: '确定',
+							  cancelButtonText: '取消',
+							  type: 'warning'
+							}).then(() => {
+								TeacherTaskUpdate({
+									"id":item.id,
+									"status":4
+								}).then(res=>{
+									if(res.data.result){
+										this.$message.success('审批成功')
+										this.pageNum = 1
+										this.pageSize = 4
+										this.status = ''
+										TeacherQuestionExamList({
+											"id": [],
+											"status":this.status,
+											"pageSize": this.pageSize,
+											"pageNum":this.pageNum
+										}).then(res => {
+										if(res.data.data){
+												this.papers = res.data.data.list
+												this.total = res.data.data.total
+												this.currentPage = res.data.data.pageNum
+											}else{
+												this.papers = []
+											}
+										})
+									}else{
+										this.$message.error('审批失败')
+									}
+								})
+							}).catch(() => {
+							          
+							});
+						}
+					}
+				})
+				// this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        		//   confirmButtonText: '确定',
+        		//   cancelButtonText: '取消',
+        		//   type: 'warning'
+        		// }).then(() => {
+        		//   this.$message({
+        		//     type: 'success',
+        		//     message: '删除成功!'
+        		//   });
+        		// }).catch(() => {
+        		//   this.$message({
+        		//     type: 'info',
+        		//     message: '已取消删除'
+        		//   });          
+        		// });
+			},
 			// 新建任务
 			addTask(){
 				this.dialogTableVisible = true

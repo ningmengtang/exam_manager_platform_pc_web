@@ -50,8 +50,17 @@
             <!-- <van-button type="primary" size="small">上一页</van-button>
             <van-button type="primary" size="small">下一页</van-button> -->
             <div class="changePage">
+              <!-- 查看图片 -->
+              
               <span title="上一页" class="fa-prev-last" @click="pageChange('prev')"></span>
               <span title="下一页" class="fa-prev-next" @click="pageChange('next')"></span>
+              <!-- <span title="放大" class="fa-fada" @click="openPic"></span> -->
+              <el-image
+                class="fa-fada"
+                :src="url"
+                :preview-src-list="srcList">
+              </el-image>
+
             </div>
             
             <van-radio-group v-model="radio" direction="horizontal" @change="ChangeRadio" style="float:right;padding: 20px 0px;">
@@ -320,14 +329,23 @@
 }
 .changePage{
   display: inline-block;
-  margin-left: 30px;
+  margin-left: 10px;
+}
+.fa-fada{
+  display: inline-block;
+  font-size: 14px;
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  cursor: pointer;
+  /* background-image: url('../../../../assets/img/fangda.png'); */
 }
 .fa-prev-last{
   display: inline-block;
   font-size: 14px;
   width: 32px;
   height: 32px;
-  margin-right: 20px;
+  margin-right: 10px;
   cursor: pointer;
   background-image: url('../../../../assets/img/lastPage.png');
 }
@@ -336,7 +354,7 @@
   font-size: 14px;
   width: 32px;
   height: 32px;
-  margin-right: 20px;
+  margin-right:10px;
   cursor: pointer;
   background-image: url('../../../../assets/img/nextPage.png');
 }
@@ -456,6 +474,7 @@ import { Toast } from 'vant';
           className: 'big fa fa-paint-brush',
           lineWidth: 12
         }],
+        url:require('../../../../assets/img/fangda.png'),
         scold:0,
         srcList:[],
         selectIndex:0,
@@ -571,7 +590,7 @@ import { Toast } from 'vant';
             // console.log(selectSn)
             imgObj.src = '/api/student/question/getImage/' +selectSn+'?id=1'+"&d=" + new Date().getTime()
             this.srcList.push( '/api/student/question/getImage/' + selectSn+'?id=1'+"&d=" + new Date().getTime())
-             console.log(imgObj.src )
+            //  console.log(imgObj.src )
             var imgW = ""
             var imgH = ""
             imgObj.onload = function(){
@@ -582,8 +601,12 @@ import { Toast } from 'vant';
                 // 在canvas绘制前填充白色背景
                 that.context.fillStyle = "#fff";
                 that.context.fillRect(0, 0, cW, cH)
+
+
                 let width = imgW;
                 let height = imgH;
+
+
                 if(width > cW){
                   let dd = cW / width;
                   width *= dd;
@@ -594,7 +617,7 @@ import { Toast } from 'vant';
                   width *= dd;
                   height *= dd;
                 }
-              that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+              that.context.drawImage(this,0,(cH-height)/2,width,height)
             }
             this.initDraw()
             this.setCanvasStyle()
@@ -672,7 +695,7 @@ import { Toast } from 'vant';
                     width *= dd;
                     height *= dd;
                   }
-                  that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+                  that.context.drawImage(this,0,(cH-height)/2,width,height)
               }
               this.initDraw()
               this.setCanvasStyle()
@@ -730,7 +753,7 @@ import { Toast } from 'vant';
                         width *= dd;
                         height *= dd;
                       }
-                      that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+                      that.context.drawImage(this,0,(cH-height)/2,width,height)
                   }
                   this.radio = ''
                   this.initDraw()
@@ -1171,7 +1194,7 @@ import { Toast } from 'vant';
                   width *= dd;
                   height *= dd;
                 }
-                that.context.drawImage(this,0,0,imgW,imgH,0,0,width,height)
+                that.context.drawImage(this,0,(cH-height)/2,width,height)
             }
             this.preDrawAry = []
             this.nextDrawAry = []
@@ -1226,9 +1249,15 @@ import { Toast } from 'vant';
         if(this.oldTaskList.length  == 0){
             Toast.fail('没有上一条题数据')
         }else{
+
           let oldTask  =  this.oldTaskList[this.oldTaskList.length-1]
+          let nowId = []
+            for(var i=0;i<this.nowQuestion.length;i++){
+              nowId.push(this.nowQuestion[i].id)
+          }
           teacherQuestionResetBefore({
-              "student_with_question_id":oldTask
+              "student_with_question_id":oldTask,
+              "current_question_id":nowId
           }).then(res=>{
               // console.log(res)
               if(res.data.result){
@@ -1280,6 +1309,7 @@ import { Toast } from 'vant';
             }
             // 非扫描上传
             else{
+              
                 for(var i=0;i< this.urlSrc.length;i++){
                     let formData = new FormData()
                     let fileName = new Date().getTime() +'.png'

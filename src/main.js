@@ -60,7 +60,13 @@ router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('loginToken');
     let type = localStorage.getItem('loginUserType')
     if (!role && !token && to.path !== '/login') {
-        next('/login');
+        if(to.path == '/mobile_examination_upfile'){
+            // console.log(1211)
+            next()
+        }else{
+            next('/login');
+        }
+       
     } else if (role && token && to.path == '/login') {
         let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
         if(flag && flag !='' && flag != null && flag!= undefined ){

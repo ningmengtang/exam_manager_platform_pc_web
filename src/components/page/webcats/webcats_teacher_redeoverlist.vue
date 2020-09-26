@@ -539,15 +539,16 @@ export default {
             if(res.data.data){
                 let data = res.data.data
                 this.already_count = (data.already_count / data.count).toFixed(2) * 100 
+                // console.log(this.already_count)
                 this.already = data.already_count
                 this.residue = data.residue_count
                 this.count = data.count
-                if(data.residue_count == 0){
-                    TeacherTaskUpdate({
-                        "id":this.importPaper.id,
-                        "status":4
-                    })
-                }
+                // if(data.residue_count == 0){
+                //     TeacherTaskUpdate({
+                //         "id":this.importPaper.id,
+                //         "status":4
+                //     })
+                // }
             }else{
                 this.$message.warning('查询不到批阅进度')
             }
