@@ -61,7 +61,19 @@ router.beforeEach((to, from, next) => {
     if (!role && !token && to.path !== '/login') {
         next('/login');
     } else if (role && token && to.path == '/login') {
-        next(`/index_${role}`)
+        let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+        if(flag && flag !='' && flag != null && flag!= undefined ){
+            if(type == 'teacher'){
+                next('/mobile_teacherIndex')
+            }else if(type == 'student'){
+                next('/mobile_examination_manage')
+            }else{
+                next('/404')
+            }
+        }else{
+            next(`/index_${role}`)
+        }
+        
     } else {
         next()
     }

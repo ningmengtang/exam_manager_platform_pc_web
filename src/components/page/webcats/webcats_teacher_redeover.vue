@@ -80,7 +80,7 @@
                         </p>
                 </div>   
                 <div class="img_buttom">
-                    <el-button size="medium " class="back">返回首页</el-button>
+                    <el-button size="medium " class="back" @click="goback">返回首页</el-button>
                 </div>       
             </div>
         </div>
@@ -142,6 +142,9 @@ export default {
                 this.selectNo.push(list[i].no)
             }
         },
+        goback(){
+            this.$router.push('webcats_leader_teacher_index')
+        },
 
         // 查看图片
         openPic(){
@@ -167,11 +170,22 @@ export default {
                 this.$message.warning('没有上一条题数据！')
             }else{
                 let oldTask  =  this.oldTaskList[this.oldTaskList.length-1]
+                console.log("-------------- 上一题id  ---------------------")
                 console.log(oldTask)
+                console.log("-------------- 本题id ---------------------")
+                console.log( this.nowQuestion)
+                let nowId = []
+                for(var i=0;i<this.nowQuestion.length;i++){
+                    nowId.push(this.nowQuestion[i].id)
+                }
+                console.log(nowId)
+
+                
                 teacherQuestionResetBefore({
-                    "student_with_question_id":oldTask
+                    "student_with_question_id":oldTask,
+                    "current_question_id":nowId
                 }).then(res=>{
-                    // console.log(res)
+                    console.log(res)
                     if(res.data.result){
                         this.oldTaskList.pop()
 
@@ -189,7 +203,7 @@ export default {
             // 触发子节点将canvas转成base64
             this.ispush = 2
             // this.
-            console.log('下一题')
+            // console.log('下一题')
         },
         NogetUrlBlob(){
             this.ispush = 1
@@ -234,7 +248,15 @@ export default {
             Promise.all(promiseArr).then(res=>{
                 // 获取当前老师需要批该的任务
                 // 记录上一题信息
-                this.oldTaskList.push(oldTopic)
+                // 去重
+                var resList= []
+                for(var i=0;i<oldTopic.length;i++){
+                    var current = oldTopic[i]
+                    if(resList.indexOf(current) === -1){
+                        resList.push(current)
+                    }
+                }
+                this.oldTaskList.push(resList)
                 this.getNowTeacherCheck()
                 this.ispush = 1
             }).catch((err)=>{
@@ -313,11 +335,11 @@ export default {
                 "paper_id":this.importPaper.paper_id,
             }).then(res=>{
                 let list = res.data.data.list
+                console.log(list)
                 if(list){
                     apiCommonExamSeleElementTestById(this.importPaper.paper_id).then(res=>{
                         this.elementTest =JSON.parse(res.data.data.elementTest)
                         let elementTestItems = this.elementTest.items
-
                         this.topicList= []
                         for(var i=0;i<elementTestItems.length;i++){
                             let item  = elementTestItems[i].items
@@ -334,6 +356,7 @@ export default {
                         }
 
                         this.allTopic = []
+                        console.log(list)
                         for(var a=0;a<this.topicList.length;a++){
                             list.forEach(element => {
                                 if(element.question_id == this.topicList[a].id){
@@ -345,13 +368,13 @@ export default {
                                 }           
                             });   
                         }
-
+                        console.log(this.allTopic)
                         for(var j=0;j<list.length;j++){
                             // 这题已完成
                             if(list[j].finish_count >= list[j].count ){
-                                // console.log('批阅完成')
+                                console.log('批阅完成')
                                 for(let k=0;k<this.allTopic.length;k++){
-                                    
+                                    console.log(this.allTopic[k])
                                     if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
                                         this.allTopic[k].status = '批阅完成'
                                         break
@@ -359,11 +382,11 @@ export default {
                                 }
                                 //正在批阅 
                             }else if( list[j].finish_count > 0  && list[j].finish_count < list[j].count ){
-                                // console.log('正在批阅')
+                                console.log('正在批阅')
 
                                 
                                 for(let k=0;k<this.allTopic.length;k++){
-                                
+                                     console.log(this.allTopic[k])
                                     if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
                                         this.allTopic[k].status = '正在批阅'
                                         break
@@ -371,15 +394,18 @@ export default {
                                 }
                                 // 待批阅
                             }else if(list[j].finish_count == 0 ){
-                                // console.log('待批阅')
+                                console.log('待批阅')
                                 for(let k=0;k<this.allTopic.length;k++){
+                                     console.log(this.allTopic[k])
                                     if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
                                         this.allTopic[k].status = '待批阅'
                                         break
                                     }
                                 }
                             }else{
+                                 console.log('暂无')
                                 for(let k=0;k<this.allTopic.length;k++){
+                                    console.log(this.allTopic[k])
                                     if(this.allTopic[k].groupQuestionArr[0].id == list[j].question_id){
                                         this.allTopic[k].status = '待批阅'
                                         break
@@ -411,10 +437,11 @@ export default {
                             this.$message.warning('全部批阅完成')
 
                         }else{
-
+                            console.log(this.allTopic)
+                            console.log(this.selectNum)
                             this.NowSelectItem = this.allTopic[this.selectNum]
 
-                            // console.log(this.NowSelectItem)
+                            console.log(this.NowSelectItem)
 
 
 
@@ -442,11 +469,11 @@ export default {
                                 "status":2
                             }).then(res=>{
                                 // 上次没修改完成的试题
-                                console.log(res)
+                                // console.log(res)
                                 if(res.data.data){
                                     
                                     this.nowQuestion = res.data.data.list
-                                    console.log(this.nowQuestion)
+                                   
                                     // 判断几张试卷
                                     this.is_sheet_upload = true
                                     for(let i=0;i<this.nowQuestion.length;i++){
@@ -486,8 +513,6 @@ export default {
                                         Promise.all(promiseArr).then(res=>{
                                         })
                                     }
-
-                                    console.log(this.urlSrc)
 
                                 }else{
                                     
@@ -542,7 +567,6 @@ export default {
                                                 Promise.all(promiseArr).then(res=>{
                                                 })
                                             }
-                                            console.log(this.urlSrc)
                                         }else{
                                             
                                             this.$message.warning('修改完成。')
