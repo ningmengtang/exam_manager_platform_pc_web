@@ -528,6 +528,7 @@
 					}
 				})
 			},
+			
 			handleRemove(file, fileList) {
 				console.log(file, fileList);
 			},
